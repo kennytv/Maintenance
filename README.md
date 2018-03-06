@@ -5,7 +5,7 @@ When creating an issue, please include the following information.
 - Whether you are using the plugin on a Spigot or a BungeeCord server
 - Explanation of how to reproduce the issue
 
-Concrete error messages might sometimes be necessary as well and videos could also be usefull.
+Concrete error messages might sometimes be necessary as well and videos could also be useful.
 
 ### MaintenanceMode API
 
