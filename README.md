@@ -6,6 +6,8 @@ When creating an issue, please include the following information.
 - Explanation of how to reproduce the issue
 - The entire error message (!) if present
 
+Issues can be created here: https://github.com/KennyTV/Maintenance/issues
+
 ### MaintenanceMode API
 
 There's no official repo, yet, but you can manually add the Maintenance-API.jar file to your library (can be downloaded in the code section, https://github.com/KennyTV/Maintenance/raw/master/Maintenance-API.jar).
