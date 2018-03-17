@@ -4,8 +4,7 @@ When creating an issue, please include the following information.
 - MaintenanceMode version
 - Whether you are using the plugin on a Spigot or a BungeeCord server
 - Explanation of how to reproduce the issue
-
-Concrete error messages might sometimes be necessary as well and videos could also be useful.
+- The entire error message (!) if present
 
 ### MaintenanceMode API
 
