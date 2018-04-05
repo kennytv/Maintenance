@@ -1,0 +1,49 @@
+# MaintenanceBungee Plugin by KennyTV 
+# Version ${project.version}
+
+# Enables maintenance-mode.
+enable-maintenance-mode: false
+
+# The message shown in the multiplayer server list motd.
+pingmessage: "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
+
+# Is shown at the top right corner of the server in the serverlist,
+# where the playercount would normally be displayed.
+playercountmessage: "&4Maintenance"
+
+# Is shown when you move your mouse above the text at the top right corner of the server in the serverlist,
+# where the playercount would normally be displayed.
+playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
+
+# Will be shown, when a player tries to join on the server without the permission.
+kickmessage: "&cThe server is currently under maintenance!%NEWLINE%Try again later!"
+
+# Some self explanatory messages
+no-permission: "&cYou do not have the permission to execute that command."
+maintenance-activated: "&6Maintenance mode is now activated."
+maintenance-deactivated: "&6Maintenance mode is now deactivated."
+
+starttimer-broadcast-mesage: '&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%MINUTES% minutes&7.'
+endtimer-broadcast-mesage: '&8[&eMaintenance&8] &7Maintenance mode will be disabled in &6%MINUTES% minutes&7.'
+
+# If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
+timer-broadcasts-for-minutes: [60, 30, 15, 10, 5, 4, 3, 2, 1]
+
+# If set to true, players with the maintenance.joinnotification permission will receive a message,
+# that a player tried to join the server while maintenance is enabled.
+send-join-notification: false
+join-notification: "&e%PLAYER% &ctried to join the server."
+
+# If set to true, the server icon will be changed to maintenance-icon.png in the Bungee main/base-folder.
+custom-maintenance-icon: false
+
+# Only enable MySQL if you really know what you are doing.
+# You need to have a table with the two following columns: 'setting' and 'value'.
+mysql:
+  use-mysql: false
+  host: host
+  port: 3306
+  database: database
+  table: tablename
+  username: username
+  password: password

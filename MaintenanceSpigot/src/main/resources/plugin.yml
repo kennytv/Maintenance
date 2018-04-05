@@ -1,0 +1,11 @@
+name: ${project.name}
+version: ${project.version}
+main: eu.kennytv.maintenance.spigot.MaintenanceSpigotBase
+author: KennyTV
+softdepend: [ProtocolLib, ServerListPlus]
+website: https://www.spigotmc.org/resources/maintenancemode.40699/
+
+commands:
+  maintenance:
+    description: Maintenance main-command
+    aliases: [maintenancespigot]
