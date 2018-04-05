@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 This repo is mainly for reporting bugs in the issues section. You might have a look at the general code, but you can't actually compile it (that easily) without other dependencies. You may not copy the code or distribute it as your own.
 
-=======
->>>>>>> 214cd53751e7423edc91461ea1e4f6e6ba807981
 # MaintenanceMode-Issues
 
 When creating an issue, please include the following information.
