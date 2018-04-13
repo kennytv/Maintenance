@@ -20,8 +20,8 @@ public final class MaintenanceRunnable implements Runnable {
     public void run() {
         if (minutes <= 0) {
             plugin.setMaintenance(enable);
-
-            plugin.cancelTask();
+            if (plugin.isTaskRunning())
+                plugin.cancelTask();
         } else if (settings.getBroadcastIntervalls().contains(minutes)) {
             if (enable)
                 plugin.broadcast(settings.getTimerBroadcastMessage().replaceAll("%MINUTES%", String.valueOf(minutes)));

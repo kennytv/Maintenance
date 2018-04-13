@@ -25,13 +25,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
     private final MaintenanceSpigotBase plugin;
     private final SettingsSpigot settings;
 
-    // Great update for the Spigot version of the plugin as well as performance improvements and bugfixes in both versions!
-    // If you have ProtocolLib installed, you can set a custom server icon while maintenance is enabled, also the playercount-message and the playercount-hover-message are now available (as it has already been in the Bungee version)!
-    // The Spigot version is now much more compatible with other motd-changing plugins, such as SexyMotd!
-    // In the BungeeCord version of the plugin, the "/maintenance remove <player>" command now also works for offline players
-    // Fixed some other issues with the ProtocolLib integration
-    // Minor textfix for the updatemessage in the Spigot version
-    // General performance improvements
+    // The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create it anymore
+    // Fixed an error with canceling the start-/endtimer in the Bungee version
+    // Fixed an error with removing players from the whitelist in the Spigot version
+    // Minor performance improvements
+    // Code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());

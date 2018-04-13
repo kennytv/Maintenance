@@ -42,7 +42,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         if (settings.addWhitelistedPlayer(offlinePlayer.getUniqueId(), offlinePlayer.getName()))
             sender.sendMessage(plugin.getPrefix() + "§aAdded §b" + offlinePlayer.getName() + " §ato the maintenance whitelist!");
         else
-            sender.sendMessage(plugin.getPrefix() + "§b" + selected.getName() + " §calready is in the maintenance whitelist!");
+            sender.sendMessage(plugin.getPrefix() + "§b" + offlinePlayer.getName() + " §calready is in the maintenance whitelist!");
     }
 
     @Override
