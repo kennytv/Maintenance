@@ -44,6 +44,7 @@ mysql:
   host: host
   port: 3306
   database: database
-  table: tablename
   username: username
   password: password
+  # A new table with this name will be created on first startup when 'use-mysql' is set to true.
+  table: maintenance_settings

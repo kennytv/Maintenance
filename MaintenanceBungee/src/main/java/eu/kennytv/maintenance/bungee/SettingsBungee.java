@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.UUID;
 
 public final class SettingsBungee extends Settings implements ISettings {
-    private static final String UPDATE = "INSERT INTO %s (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
-    private final MaintenanceBungeeBase plugin;
-
+    private static final String UPDATE_QUERY = "INSERT INTO %s (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
+    private static final String MAINTENANCE_QUERY = "SELECT * FROM %s WHERE setting LIKE ?";
     private final MySQL mySQL;
     private final String mySQLTable;
 
+    private final MaintenanceBungeeBase plugin;
     private Configuration config;
     private Configuration whitelist;
 
@@ -29,7 +29,6 @@ public final class SettingsBungee extends Settings implements ISettings {
 
         final Configuration mySQLSection = config.getSection("mysql");
         if (mySQLSection.getBoolean("use-mysql", false)) {
-            // Needed: One column named "setting" (primary key), another named "value".
             plugin.getLogger().info("Trying to open database connection...");
             mySQL = new MySQL(mySQLSection.getString("host"),
                     mySQLSection.getInt("port"),
@@ -37,6 +36,8 @@ public final class SettingsBungee extends Settings implements ISettings {
                     mySQLSection.getString("password"),
                     mySQLSection.getString("database"));
             mySQLTable = mySQLSection.getString("table");
+            // Still varchar as the value regarding users with existing tables from earlier versions...
+            mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16), value VARCHAR(16))");
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
@@ -148,9 +149,10 @@ public final class SettingsBungee extends Settings implements ISettings {
     @Override
     public boolean isMaintenance() {
         if (mySQL != null) {
-            mySQL.executeQuery("SELECT * FROM " + mySQLTable + " WHERE setting LIKE ?", rs -> {
+            mySQL.executeQuery(String.format(MAINTENANCE_QUERY, mySQLTable), rs -> {
                 try {
                     maintenance = rs.next() && Boolean.parseBoolean(rs.getString("value"));
+                    rs.close();
                 } catch (final SQLException e) {
                     e.printStackTrace();
                 }
@@ -162,8 +164,7 @@ public final class SettingsBungee extends Settings implements ISettings {
 
     public void setMaintenanceToSQL(final boolean maintenance) {
         plugin.getProxy().getScheduler().runAsync(plugin, () ->
-                mySQL.executeUpdate(String.format(UPDATE, mySQLTable), res -> {
-                }, "maintenance", String.valueOf(maintenance), String.valueOf(maintenance)));
+                mySQL.executeUpdate(String.format(UPDATE_QUERY, mySQLTable), "maintenance", String.valueOf(maintenance), String.valueOf(maintenance)));
         this.maintenance = maintenance;
     }
 

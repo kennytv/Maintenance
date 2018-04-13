@@ -60,6 +60,11 @@ public final class MySQL {
         }
     }
 
+    public void executeUpdate(final String query, final Object... objects) {
+        executeUpdate(query, res -> {
+        }, objects);
+    }
+
     public void close() {
         if (hikariDataSource != null && !hikariDataSource.isClosed())
             hikariDataSource.close();
