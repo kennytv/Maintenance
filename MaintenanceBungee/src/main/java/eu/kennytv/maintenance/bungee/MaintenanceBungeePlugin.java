@@ -4,6 +4,7 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.MaintenanceBungeeAPI;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
+import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
 import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
@@ -36,7 +37,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         final PluginManager pm = getProxy().getPluginManager();
         pm.registerListener(plugin, new PostLoginListener(this, settings));
         pm.registerListener(plugin, new ProxyPingListener(plugin, settings));
-        pm.registerCommand(plugin, new MaintenanceBungeeCommand(this, settings));
+        final MaintenanceBungeeCommand maintenanceCommand = new MaintenanceBungeeCommand(this, settings);
+        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(maintenanceCommand));
 
         new MetricsLite(plugin);
 

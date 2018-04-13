@@ -39,16 +39,15 @@ public final class PacketListener {
                     players.add(new WrappedGameProfile(UUID.randomUUID(), string));
                 ping.setPlayers(players);
 
-                if (settings.hasCustomIcon()) {
-                    if (image != null)
-                        ping.setFavicon(image);
-                    else {
-                        try {
-                            image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(icon));
-                        } catch (final Exception e) {
-                            pl.getServer().getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot/Bukkit folder (not the plugins folder)?");
-                        }
-                    }
+                if (!settings.hasCustomIcon()) return;
+                if (image != null) {
+                    ping.setFavicon(image);
+                    return;
+                }
+                try {
+                    image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(icon));
+                } catch (final Exception e) {
+                    pl.getServer().getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot/Bukkit folder (not the plugins folder)?");
                 }
             }
         });
