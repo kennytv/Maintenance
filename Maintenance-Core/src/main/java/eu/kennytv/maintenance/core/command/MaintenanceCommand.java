@@ -21,6 +21,11 @@ public abstract class MaintenanceCommand {
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
+        if (!sender.hasPermission("maintenance.admin")) {
+            sender.sendMessage(settings.getNoPermMessage());
+            return;
+        }
+
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("on")) {
                 plugin.setMaintenance(true);

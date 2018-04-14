@@ -46,6 +46,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
+            serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }
@@ -67,8 +68,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             settings.reloadConfigs();
         }
 
-        if (serverListPlusHook != null)
+        if (serverListPlusHook != null) {
             serverListPlusHook.setEnabled(!maintenance);
+        }
 
         if (isTaskRunning())
             cancelTask();

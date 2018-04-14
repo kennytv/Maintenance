@@ -12,4 +12,8 @@ public final class ServerListPlusHook {
     public void setEnabled(final boolean enable) {
         serverListPlusCore.getProfiles().setEnabled(enable);
     }
+
+    public boolean isEnabled() {
+        return serverListPlusCore.getProfiles().isEnabled();
+    }
 }

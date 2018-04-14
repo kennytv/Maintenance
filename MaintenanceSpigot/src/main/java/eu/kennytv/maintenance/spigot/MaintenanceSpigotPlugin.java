@@ -26,10 +26,10 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
     private final SettingsSpigot settings;
 
     // The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create it anymore
+    // Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
     // Fixed an error with canceling the start-/endtimer in the Bungee version
     // Fixed an error with removing players from the whitelist in the Spigot version
-    // Minor performance improvements
-    // Code cleanup
+    // Some internal code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
