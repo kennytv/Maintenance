@@ -151,7 +151,8 @@ public final class SettingsBungee extends Settings implements ISettings {
         if (mySQL != null) {
             mySQL.executeQuery(String.format(MAINTENANCE_QUERY, mySQLTable), rs -> {
                 try {
-                    maintenance = rs.next() && Boolean.parseBoolean(rs.getString("value"));
+                    if (rs.next())
+                        maintenance = Boolean.parseBoolean(rs.getString("value"));
                     rs.close();
                 } catch (final SQLException e) {
                     e.printStackTrace();

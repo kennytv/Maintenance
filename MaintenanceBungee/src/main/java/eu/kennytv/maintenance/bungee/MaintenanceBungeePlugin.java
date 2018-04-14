@@ -68,9 +68,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             settings.reloadConfigs();
         }
 
-        if (serverListPlusHook != null) {
+        if (serverListPlusHook != null)
             serverListPlusHook.setEnabled(!maintenance);
-        }
 
         if (isTaskRunning())
             cancelTask();

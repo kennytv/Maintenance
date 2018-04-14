@@ -29,6 +29,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
     // Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
     // Fixed an error with canceling the start-/endtimer in the Bungee version
     // Fixed an error with removing players from the whitelist in the Spigot version
+    // Fixed some other minor bugs
     // Some internal code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
@@ -54,6 +55,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
+            serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }
