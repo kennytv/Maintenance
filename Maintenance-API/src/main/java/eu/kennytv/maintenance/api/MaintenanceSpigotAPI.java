@@ -1,6 +1,7 @@
 package eu.kennytv.maintenance.api;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Utility class to get the {@link IMaintenance} instance for the Spigot/Bukkit version of the plugin.
@@ -19,7 +20,7 @@ public final class MaintenanceSpigotAPI {
      * @return {@link IMaintenance} instance
      */
     public static IMaintenance getAPI() {
-        final org.bukkit.plugin.Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
+        final Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
         if (maintenance == null)
             Bukkit.getLogger().warning("Could not get instance of MaintenanceSpigot!");
 
