@@ -9,16 +9,10 @@ import java.io.File;
  * @since 2.1
  */
 public final class MaintenanceBungeeBase extends Plugin {
-    private MaintenanceBungeePlugin plugin;
 
     @Override
     public void onEnable() {
-        plugin = new MaintenanceBungeePlugin(this);
-    }
-
-    @Override
-    public void onDisable() {
-        plugin.onDisable();
+        new MaintenanceBungeePlugin(this);
     }
 
     File getPluginFile() {

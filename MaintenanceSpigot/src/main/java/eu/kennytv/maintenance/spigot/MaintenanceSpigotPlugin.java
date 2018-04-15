@@ -21,16 +21,16 @@ import java.io.File;
  * @author KennyTV
  * @since 1.0
  */
-public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin implements IMaintenance {
+public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final MaintenanceSpigotBase plugin;
     private final SettingsSpigot settings;
 
-    // The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create it anymore
+    // Added "/maintenance setmotd <1/2> <message>" command to edit the maintenance mode motd via a command
+    // The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create one anymore
     // Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
     // Fixed an error with canceling the start-/endtimer in the Bungee version
     // Fixed an error with removing players from the whitelist in the Spigot version
-    // Fixed some other minor bugs
-    // Some internal code cleanup
+    // Fixed some other minor bugs and did some internal code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
@@ -58,12 +58,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
-    }
-
-    @Override
-    public void onDisable() {
-        if (!getServer().getOnlinePlayers().isEmpty())
-            plugin.getLogger().warning("This plugin does not fully support reloads, consider restarting the server as soon as possible.");
     }
 
     @Override

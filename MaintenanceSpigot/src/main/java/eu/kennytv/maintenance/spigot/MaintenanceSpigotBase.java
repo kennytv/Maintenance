@@ -9,16 +9,10 @@ import java.io.File;
  * @since 2.1
  */
 public final class MaintenanceSpigotBase extends JavaPlugin {
-    private MaintenanceSpigotPlugin plugin;
 
     @Override
     public void onEnable() {
-        plugin = new MaintenanceSpigotPlugin(this);
-    }
-
-    @Override
-    public void onDisable() {
-        plugin.onDisable();
+        new MaintenanceSpigotPlugin(this);
     }
 
     File getPluginFile() {

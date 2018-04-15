@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author KennyTV
  * @since 1.0
  */
-public final class MaintenanceBungeePlugin extends MaintenanceModePlugin implements IMaintenance {
+public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     private final MaintenanceBungeeBase plugin;
     private final SettingsBungee settings;
 
@@ -49,12 +49,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
-    }
-
-    @Override
-    public void onDisable() {
-        if (settings.getMySQL() != null)
-            settings.getMySQL().close();
     }
 
     @Override

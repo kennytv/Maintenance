@@ -1,5 +1,6 @@
 package eu.kennytv.maintenance.core;
 
+import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 
 import java.io.*;
@@ -8,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public abstract class MaintenanceModePlugin {
+public abstract class MaintenanceModePlugin implements IMaintenance {
     protected final String version;
     protected int taskId;
     protected ServerListPlusHook serverListPlusHook;
@@ -20,14 +21,12 @@ public abstract class MaintenanceModePlugin {
         this.version = version;
     }
 
-    public abstract void onDisable();
-
-    public abstract void setMaintenance(boolean maintenance);
-
+    @Override
     public String getVersion() {
         return version;
     }
 
+    @Override
     public boolean isTaskRunning() {
         return taskId != 0;
     }
@@ -57,7 +56,7 @@ public abstract class MaintenanceModePlugin {
     public boolean updateAvailable() {
         try {
             final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
+            final String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z -]", "");
 
             final boolean available = !newVersion.equals(version);
             if (available)
