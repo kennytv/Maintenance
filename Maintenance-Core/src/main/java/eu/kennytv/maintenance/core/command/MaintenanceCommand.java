@@ -7,6 +7,7 @@ import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import net.md_5.bungee.api.ChatColor;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -129,19 +130,27 @@ public abstract class MaintenanceCommand {
                     sender.sendMessage(plugin.getPrefix() + "§cThe timer has been disabled.");
                 } else
                     sendUsage(sender);
-            } else if (args[0].equalsIgnoreCase("setmotd")) {
-                if (!MessageUtil.isNumeric(args[0])) {
+            } else if (args[0].equalsIgnoreCase("add")) {
+                addPlayerToWhitelist(sender, args[1]);
+            } else if (args[0].equalsIgnoreCase("remove")) {
+                removePlayerFromWhitelist(sender, args[1]);
+            } else
+                sendUsage(sender);
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("setmotd")) {
+                if (!MessageUtil.isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be numeric!");
                     return;
                 }
 
-                final int line = Integer.parseInt(args[0]);
+                final int line = Integer.parseInt(args[1]);
                 if (line < 1 || line > 2) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be a 1 or a 2!");
                     return;
                 }
 
-                final String message = ChatColor.translateAlternateColorCodes('&', args[1]);
+                final String message = ChatColor.translateAlternateColorCodes('&',
+                        String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
                 final String oldMessage = settings.getConfigString("pingmessage");
                 final String newMessage;
                 if (line == 1)
@@ -155,10 +164,6 @@ public abstract class MaintenanceCommand {
                 settings.saveConfig();
                 settings.reloadConfigs();
                 sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + newMessage);
-            } else if (args[0].equalsIgnoreCase("add")) {
-                addPlayerToWhitelist(sender, args[1]);
-            } else if (args[0].equalsIgnoreCase("remove")) {
-                removePlayerFromWhitelist(sender, args[1]);
             } else
                 sendUsage(sender);
         } else
