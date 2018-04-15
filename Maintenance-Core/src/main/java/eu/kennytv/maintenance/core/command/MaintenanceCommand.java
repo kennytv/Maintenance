@@ -163,7 +163,7 @@ public abstract class MaintenanceCommand {
                 settings.setToConfig("pingmessage", newMessage);
                 settings.saveConfig();
                 settings.reloadConfigs();
-                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + newMessage);
+                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + message);
             } else
                 sendUsage(sender);
         } else
