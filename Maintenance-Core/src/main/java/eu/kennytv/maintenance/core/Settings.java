@@ -62,7 +62,7 @@ public abstract class Settings {
 
     public abstract void reloadConfigs();
 
-    public abstract void setConfigBoolean(String path, boolean boo);
+    public abstract void setToConfig(String path, Object var);
 
     public String getTimerBroadcastMessage() {
         return timerBroadcastMessage;

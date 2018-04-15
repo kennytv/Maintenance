@@ -145,7 +145,7 @@ public final class SettingsBungee extends Settings implements ISettings {
     }
 
     @Override
-    public void setConfigBoolean(final String path, final boolean var) {
+    public void setToConfig(final String path, final Object var) {
         config.set(path, var);
     }
 

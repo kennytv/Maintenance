@@ -5,6 +5,7 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.Map;
 import java.util.UUID;
@@ -111,7 +112,7 @@ public abstract class MaintenanceCommand {
                     return;
                 }
                 if (minutes < 1) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThink about running a timer for a negative amount of minutes. Doesn't work §othat §r§cwell.");
+                    sender.sendMessage(plugin.getPrefix() + "§cThink about running a timer for a negative amount of minutes. Doesn't work §othat §cwell.");
                     return;
                 }
 
@@ -128,6 +129,32 @@ public abstract class MaintenanceCommand {
                     sender.sendMessage(plugin.getPrefix() + "§cThe timer has been disabled.");
                 } else
                     sendUsage(sender);
+            } else if (args[0].equalsIgnoreCase("setmotd")) {
+                if (!MessageUtil.isNumeric(args[0])) {
+                    sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be numeric!");
+                    return;
+                }
+
+                final int line = Integer.parseInt(args[0]);
+                if (line < 1 || line > 2) {
+                    sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be a 1 or a 2!");
+                    return;
+                }
+
+                final String message = ChatColor.translateAlternateColorCodes('&', args[1]);
+                final String oldMessage = settings.getConfigString("pingmessage");
+                final String newMessage;
+                if (line == 1)
+                    newMessage = oldMessage.contains("%NEWLINE%") ?
+                            message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
+                else
+                    newMessage = oldMessage.contains("%NEWLINE%") ?
+                            oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
+
+                settings.setToConfig("pingmessage", newMessage);
+                settings.saveConfig();
+                settings.reloadConfigs();
+                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + newMessage);
             } else if (args[0].equalsIgnoreCase("add")) {
                 addPlayerToWhitelist(sender, args[1]);
             } else if (args[0].equalsIgnoreCase("remove")) {
@@ -144,6 +171,7 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("§6/maintenance reload §7(Reloads the config file)");
         sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
         sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
+        sender.sendMessage("§6/maintenance setmotd <1/2> <message> §7(Sets the motd for maintenance mode)");
         sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
         sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
         sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");

@@ -69,7 +69,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin impleme
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.setConfigBoolean("enable-maintenance-mode", maintenance);
+        settings.setToConfig("enable-maintenance-mode", maintenance);
         settings.saveConfig();
         settings.reloadConfigs();
 

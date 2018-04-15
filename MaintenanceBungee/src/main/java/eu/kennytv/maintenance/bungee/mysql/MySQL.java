@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 public final class MySQL {
     private final HikariDataSource hikariDataSource;
 
+    // Excuse me and everything to do with the MySQL stuff, I have little to no idea of how to use databases
     public MySQL(final String hostname, final int port, final String username, final String password, final String database) {
         final HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setMaximumPoolSize(10);

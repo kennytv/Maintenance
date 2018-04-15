@@ -63,7 +63,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             settings.setMaintenanceToSQL(maintenance);
         } else {
             settings.setMaintenance(maintenance);
-            settings.setConfigBoolean("enable-maintenance-mode", maintenance);
+            settings.setToConfig("enable-maintenance-mode", maintenance);
             settings.saveConfig();
             settings.reloadConfigs();
         }
