@@ -2,13 +2,14 @@ package eu.kennytv.maintenance.core;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import eu.kennytv.maintenance.api.ISettings;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class Settings {
+public abstract class Settings implements ISettings {
     protected final Map<UUID, String> whitelistedPlayers = Maps.newHashMap();
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
@@ -108,14 +109,17 @@ public abstract class Settings {
         this.maintenance = maintenance;
     }
 
+    @Override
     public boolean isMaintenance() {
         return maintenance;
     }
 
+    @Override
     public boolean isJoinNotifications() {
         return joinNotifications;
     }
 
+    @Override
     public boolean hasCustomIcon() {
         return customMaintenanceIcon;
     }
@@ -124,10 +128,12 @@ public abstract class Settings {
         return broadcastIntervalls;
     }
 
+    @Override
     public Map<UUID, String> getWhitelistedPlayers() {
         return whitelistedPlayers;
     }
 
+    @Override
     public boolean removeWhitelistedPlayer(final UUID uuid) {
         if (!whitelistedPlayers.containsKey(uuid)) return false;
         whitelistedPlayers.remove(uuid);
@@ -137,6 +143,7 @@ public abstract class Settings {
     }
 
     @Deprecated
+    @Override
     public boolean removeWhitelistedPlayer(final String name) {
         if (!whitelistedPlayers.containsValue(name)) return false;
         final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findFirst().get().getKey();
@@ -146,6 +153,7 @@ public abstract class Settings {
         return true;
     }
 
+    @Override
     public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
         final boolean contains = !whitelistedPlayers.containsKey(uuid);
         whitelistedPlayers.put(uuid, name);

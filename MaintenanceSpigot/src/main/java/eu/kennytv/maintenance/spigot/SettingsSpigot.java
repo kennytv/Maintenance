@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.spigot;
 
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.Settings;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,7 +10,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
-public final class SettingsSpigot extends Settings implements ISettings {
+public final class SettingsSpigot extends Settings {
     private final MaintenanceSpigotBase plugin;
     private FileConfiguration config;
     private FileConfiguration whitelist;

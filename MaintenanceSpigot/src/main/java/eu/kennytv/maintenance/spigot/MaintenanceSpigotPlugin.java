@@ -30,7 +30,8 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     // Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
     // Fixed an error with canceling the start-/endtimer in the Bungee version
     // Fixed an error with removing players from the whitelist in the Spigot version
-    // Fixed some other minor bugs and did some internal code cleanup
+    // Fixed some other minor bugs
+    // Some internal code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());

@@ -5,7 +5,6 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -149,8 +148,7 @@ public abstract class MaintenanceCommand {
                     return;
                 }
 
-                final String message = ChatColor.translateAlternateColorCodes('&',
-                        String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
+                final String message = getColoredString(String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
                 final String oldMessage = settings.getConfigString("pingmessage");
                 final String newMessage;
                 if (line == 1)
@@ -194,4 +192,6 @@ public abstract class MaintenanceCommand {
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
+
+    protected abstract String getColoredString(String message);
 }

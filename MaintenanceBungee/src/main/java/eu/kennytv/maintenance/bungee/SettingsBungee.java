@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.bungee;
 
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
 import net.md_5.bungee.api.ChatColor;
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-public final class SettingsBungee extends Settings implements ISettings {
+public final class SettingsBungee extends Settings {
     private final String updateQuery;
     private final String maintenanceQuery;
     private final MySQL mySQL;

@@ -40,7 +40,9 @@ public interface ISettings {
      *
      * @param name name of the player to remove in lowercase letters
      * @return true if removing the player was successful
+     * @deprecated if a player changes their name, the list will still contain their old one
      */
+    @Deprecated
     boolean removeWhitelistedPlayer(String name);
 
     /**

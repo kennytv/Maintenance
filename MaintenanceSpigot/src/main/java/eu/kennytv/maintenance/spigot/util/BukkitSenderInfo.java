@@ -1,7 +1,6 @@
 package eu.kennytv.maintenance.spigot.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,10 +31,5 @@ public final class BukkitSenderInfo extends SenderInfo {
     @Override
     public void sendMessage(final String message) {
         sender.sendMessage(message);
-    }
-
-    @Override
-    public void sendMessage(final TextComponent textComponent) {
-        sender.spigot().sendMessage(textComponent);
     }
 }

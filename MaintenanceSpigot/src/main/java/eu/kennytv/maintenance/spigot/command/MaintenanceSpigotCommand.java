@@ -6,6 +6,7 @@ import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -75,5 +76,10 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
             sender.sendMessage(plugin.getPrefix() + "§eUse §c§l/maintenance forceupdate §eto update!");
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+    }
+
+    @Override
+    protected String getColoredString(final String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 }

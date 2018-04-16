@@ -34,7 +34,6 @@ public final class ProxiedSenderInfo extends SenderInfo {
         sender.sendMessage(message);
     }
 
-    @Override
     public void sendMessage(final TextComponent textComponent) {
         sender.sendMessage(textComponent);
     }
