@@ -11,10 +11,10 @@
     <name>Maintenance</name>
 
     <modules>
-        <module>maintenance</module>
+        <module>maintenance-parent</module>
         <module>maintenance-core</module>
-        <module>maintenancespigot</module>
-        <module>maintenancebungee</module>
+        <module>maintenance-spigot</module>
+        <module>maintenance-bungee</module>
         <module>maintenance-api</module>
     </modules>
 

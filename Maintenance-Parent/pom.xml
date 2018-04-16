@@ -9,26 +9,26 @@
         <version>2.2.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>maintenance</artifactId>
+    <artifactId>maintenance-parent</artifactId>
     <name>Maintenance</name>
 
     <dependencies>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-core</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <version>${parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.kennytv</groupId>
-            <artifactId>maintenancebungee</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <artifactId>maintenance-bungee</artifactId>
+            <version>${parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.kennytv</groupId>
-            <artifactId>maintenancespigot</artifactId>
-            <version>2.2.1-SNAPSHOT</version>
+            <artifactId>maintenance-spigot</artifactId>
+            <version>${parent.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
