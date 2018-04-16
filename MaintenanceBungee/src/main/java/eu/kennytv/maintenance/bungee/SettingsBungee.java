@@ -34,9 +34,9 @@ public final class SettingsBungee extends Settings {
                     mySQLSection.getString("password"),
                     mySQLSection.getString("database"));
 
-            // Still varchar as the value regarding users with existing tables from earlier versions...
+            // Varchar as the value regarding the possibility of saving stuff like the motd as well
             final String mySQLTable = mySQLSection.getString("table");
-            mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(16))");
+            mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
             updateQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
             plugin.getLogger().info("Done!");
