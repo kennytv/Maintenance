@@ -1,5 +1,9 @@
 package eu.kennytv.maintenance.api;
 
+/**
+ * @author KennyTV
+ * @since 2.1
+ */
 public interface IMaintenance {
 
     /**
@@ -15,7 +19,7 @@ public interface IMaintenance {
     void setMaintenance(boolean maintenance);
 
     /**
-     * @return true if maintenance is enabled on the proxy
+     * @return true if maintenance is currently enabled
      */
     boolean isMaintenance();
 
@@ -30,7 +34,7 @@ public interface IMaintenance {
     String getVersion();
 
     /**
-     * @return {@link ISettings} for more options
+     * @return {@link ISettings} for options regarding configuration files
      */
     ISettings getSettings();
 }

@@ -4,10 +4,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
-/**
- * @author KennyTV
- * @since 2.1
- */
 public final class MaintenanceSpigotBase extends JavaPlugin {
 
     @Override

@@ -10,7 +10,7 @@ import net.md_5.bungee.api.plugin.Plugin;
  * </p>
  *
  * @author KennyTV
- * @since 1.0
+ * @since 2.1
  */
 public final class MaintenanceBungeeAPI {
 

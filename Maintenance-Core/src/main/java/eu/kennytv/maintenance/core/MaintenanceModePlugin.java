@@ -22,6 +22,11 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     }
 
     @Override
+    public boolean isMaintenance() {
+        return getSettings().isMaintenance();
+    }
+
+    @Override
     public String getVersion() {
         return version;
     }

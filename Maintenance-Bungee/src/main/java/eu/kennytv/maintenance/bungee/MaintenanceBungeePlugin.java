@@ -78,11 +78,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public boolean isMaintenance() {
-        return settings.isMaintenance();
-    }
-
-    @Override
     public int schedule(final Runnable runnable) {
         return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.MINUTES).getId();
     }

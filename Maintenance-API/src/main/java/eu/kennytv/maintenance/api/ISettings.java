@@ -3,10 +3,14 @@ package eu.kennytv.maintenance.api;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author KennyTV
+ * @since 2.1
+ */
 public interface ISettings {
 
     /**
-     * @return true if maintenance is enabled on the proxy
+     * @return true if maintenance is currently enabled
      */
     boolean isMaintenance();
 
@@ -21,9 +25,7 @@ public interface ISettings {
     boolean hasCustomIcon();
 
     /**
-     * The keyset of the map contains the uuids as a string, the values the names of the players.
-     *
-     * @return map of uuids of whitelisted players with their last seen names
+     * @return map of uuids of whitelisted players with their given names
      */
     Map<UUID, String> getWhitelistedPlayers();
 
@@ -40,7 +42,8 @@ public interface ISettings {
      *
      * @param name name of the player to remove in lowercase letters
      * @return true if removing the player was successful
-     * @deprecated if a player changes their name, the list will still contain their old one
+     * @deprecated if a player changes their name, the list will still contain the old one and thus this might not work
+     * @see #removeWhitelistedPlayer(UUID)
      */
     @Deprecated
     boolean removeWhitelistedPlayer(String name);

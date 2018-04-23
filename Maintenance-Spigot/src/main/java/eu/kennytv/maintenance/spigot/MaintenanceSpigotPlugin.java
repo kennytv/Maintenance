@@ -19,19 +19,11 @@ import java.io.File;
 
 /**
  * @author KennyTV
- * @since 1.0
+ * @since 2.0
  */
 public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final MaintenanceSpigotBase plugin;
     private final SettingsSpigot settings;
-
-    // Added "/maintenance setmotd <1/2> <message>" command to edit the maintenance mode motd via a command
-    // The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create one anymore
-    // Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
-    // Fixed an error with canceling the start-/endtimer in the Bungee version
-    // Fixed an error with removing players from the whitelist in the Spigot version
-    // Fixed some other minor bugs
-    // Some internal code cleanup
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
@@ -81,11 +73,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
             getServer().broadcastMessage(settings.getMaintenanceActivated());
         } else
             getServer().broadcastMessage(settings.getMaintenanceDeactivated());
-    }
-
-    @Override
-    public boolean isMaintenance() {
-        return settings.isMaintenance();
     }
 
     @Override
