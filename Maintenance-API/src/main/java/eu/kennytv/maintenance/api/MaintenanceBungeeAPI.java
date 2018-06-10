@@ -24,6 +24,6 @@ public final class MaintenanceBungeeAPI {
         if (maintenance == null)
             ProxyServer.getInstance().getLogger().warning("Could not get instance of MaintenanceBungee!");
 
-        return (IMaintenance) maintenance;
+        return ((IMaintenanceBase) maintenance).getApi();
     }
 }

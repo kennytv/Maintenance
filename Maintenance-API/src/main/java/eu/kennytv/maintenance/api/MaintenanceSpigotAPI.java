@@ -24,6 +24,6 @@ public final class MaintenanceSpigotAPI {
         if (maintenance == null)
             Bukkit.getLogger().warning("Could not get instance of MaintenanceSpigot!");
 
-        return (IMaintenance) maintenance;
+        return ((IMaintenanceBase) maintenance).getApi();
     }
 }
