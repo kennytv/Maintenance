@@ -8,8 +8,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import com.google.common.collect.Lists;
+import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 
 import javax.imageio.ImageIO;
@@ -17,17 +17,17 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-public final class PacketListener {
-    private final File icon;
+public final class PacketListener implements IPingListener {
+    private final MaintenanceSpigotBase pl;
     private WrappedServerPing.CompressedImage image;
 
-    public PacketListener(final MaintenanceSpigotPlugin pl, final MaintenanceSpigotBase base, final SettingsSpigot settings) {
-        icon = new File("maintenance-icon.png");
+    public PacketListener(final MaintenanceSpigotBase base, final SettingsSpigot settings) {
+        this.pl = base;
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST,
                 PacketType.Status.Server.OUT_SERVER_INFO) {
             @Override
             public void onPacketSending(final PacketEvent event) {
-                if (!pl.isMaintenance()) return;
+                if (!settings.isMaintenance()) return;
 
                 final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
                 ping.setVersionProtocol(0);
@@ -39,17 +39,19 @@ public final class PacketListener {
                     players.add(new WrappedGameProfile(UUID.randomUUID(), string));
                 ping.setPlayers(players);
 
-                if (!settings.hasCustomIcon()) return;
-                if (image != null) {
+                if (settings.hasCustomIcon() && image != null)
                     ping.setFavicon(image);
-                    return;
-                }
-                try {
-                    image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(icon));
-                } catch (final Exception e) {
-                    pl.getServer().getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot/Bukkit folder (not the plugins folder)?");
-                }
             }
         });
+    }
+
+    public boolean loadIcon() {
+        try {
+            image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final Exception e) {
+            pl.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
+            return false;
+        }
+        return true;
     }
 }

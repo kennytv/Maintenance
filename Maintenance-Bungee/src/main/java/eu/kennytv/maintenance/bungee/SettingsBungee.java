@@ -1,8 +1,11 @@
 package eu.kennytv.maintenance.bungee;
 
+import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 
@@ -163,6 +166,14 @@ public final class SettingsBungee extends Settings {
         }
 
         return maintenance;
+    }
+
+    @Override
+    protected IPingListener setPingListener() {
+        final PluginManager pm = plugin.getProxy().getPluginManager();
+        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
+        pm.registerListener(plugin, listener);
+        return listener;
     }
 
     public void setMaintenanceToSQL(final boolean maintenance) {

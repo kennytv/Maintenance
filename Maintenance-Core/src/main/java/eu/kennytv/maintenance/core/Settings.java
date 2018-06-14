@@ -3,6 +3,7 @@ package eu.kennytv.maintenance.core;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.core.listener.IPingListener;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class Settings implements ISettings {
+    private final IPingListener pingListener;
     protected final Map<UUID, String> whitelistedPlayers = Maps.newHashMap();
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
@@ -26,6 +28,10 @@ public abstract class Settings implements ISettings {
     private boolean joinNotifications;
     private boolean customMaintenanceIcon;
 
+    protected Settings() {
+        pingListener = setPingListener();
+    }
+
     protected void loadSettings() {
         timerBroadcastMessage = getConfigString("starttimer-broadcast-mesage");
         endtimerBroadcastMessage = getConfigString("endtimer-broadcast-mesage");
@@ -41,6 +47,8 @@ public abstract class Settings implements ISettings {
         broadcastIntervalls = Sets.newHashSet(getBroadcastIntervallList());
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
+        if (hasCustomIcon())
+            reloadMaintenanceIcon();
 
         loadExtraSettings();
     }
@@ -161,4 +169,11 @@ public abstract class Settings implements ISettings {
         saveWhitelistedPlayers();
         return contains;
     }
+
+    @Override
+    public boolean reloadMaintenanceIcon() {
+        return pingListener.loadIcon();
+    }
+
+    protected abstract IPingListener setPingListener();
 }
