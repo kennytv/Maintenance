@@ -39,7 +39,7 @@ public abstract class MaintenanceCommand {
                 }
 
                 settings.reloadConfigs();
-                sender.sendMessage(plugin.getPrefix() + "§aReloaded config.yml");
+                sender.sendMessage(plugin.getPrefix() + "§aReloaded config, whitelistedplayers and the maintenance icon");
             } else if (args[0].equalsIgnoreCase("update")) {
                 if (!sender.hasPermission("maintenance.admin")) {
                     sender.sendMessage(settings.getNoPermMessage());

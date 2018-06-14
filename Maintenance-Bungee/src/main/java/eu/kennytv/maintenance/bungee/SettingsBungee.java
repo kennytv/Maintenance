@@ -21,11 +21,18 @@ public final class SettingsBungee extends Settings {
     private final MySQL mySQL;
 
     private final MaintenanceBungeeBase plugin;
+    private final IPingListener pingListener;
     private Configuration config;
     private Configuration whitelist;
 
     SettingsBungee(final MaintenanceBungeeBase plugin) {
         this.plugin = plugin;
+
+        final PluginManager pm = plugin.getProxy().getPluginManager();
+        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
+        pm.registerListener(plugin, listener);
+        pingListener = listener;
+
         reloadConfigs(createFiles());
 
         final Configuration mySQLSection = config.getSection("mysql");
@@ -169,11 +176,8 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    protected IPingListener setPingListener() {
-        final PluginManager pm = plugin.getProxy().getPluginManager();
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        pm.registerListener(plugin, listener);
-        return listener;
+    public boolean reloadMaintenanceIcon() {
+        return pingListener.loadIcon();
     }
 
     public void setMaintenanceToSQL(final boolean maintenance) {

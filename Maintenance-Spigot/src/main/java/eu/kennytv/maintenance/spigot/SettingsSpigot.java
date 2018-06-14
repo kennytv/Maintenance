@@ -16,11 +16,22 @@ import java.util.UUID;
 
 public final class SettingsSpigot extends Settings {
     private final MaintenanceSpigotBase plugin;
+    private final IPingListener pingListener;
     private FileConfiguration config;
     private FileConfiguration whitelist;
 
     SettingsSpigot(final MaintenanceSpigotBase plugin) {
         this.plugin = plugin;
+
+        final PluginManager pm = plugin.getServer().getPluginManager();
+        if (pm.getPlugin("ProtocolLib") != null) {
+            pingListener = new PacketListener(plugin, this);
+        } else {
+            final ServerListPingListener listener = new ServerListPingListener(plugin, this);
+            pm.registerEvents(listener, plugin);
+            pingListener = listener;
+        }
+
         createFiles();
         reloadConfigs();
     }
@@ -113,14 +124,7 @@ public final class SettingsSpigot extends Settings {
     }
 
     @Override
-    protected IPingListener setPingListener() {
-        final PluginManager pm = plugin.getServer().getPluginManager();
-        if (pm.getPlugin("ProtocolLib") != null) {
-            return new PacketListener(plugin, this);
-        } else {
-            final ServerListPingListener listener = new ServerListPingListener(plugin, this);
-            pm.registerEvents(listener, plugin);
-            return listener;
-        }
+    public boolean reloadMaintenanceIcon() {
+        return pingListener.loadIcon();
     }
 }

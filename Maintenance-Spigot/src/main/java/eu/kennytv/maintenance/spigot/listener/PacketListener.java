@@ -45,6 +45,7 @@ public final class PacketListener implements IPingListener {
         });
     }
 
+    @Override
     public boolean loadIcon() {
         try {
             image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(new File("maintenance-icon.png")));
