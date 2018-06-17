@@ -22,37 +22,23 @@ public abstract class MaintenanceCommand {
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
-        if (!sender.hasPermission("maintenance.admin")) {
-            sender.sendMessage(settings.getNoPermMessage());
-            return;
-        }
-
+        if (checkPermission(sender, "command")) return;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("on")) {
+                if (checkPermission(sender, "toggle")) return;
                 plugin.setMaintenance(true);
             } else if (args[0].equalsIgnoreCase("off")) {
+                if (checkPermission(sender, "toggle")) return;
                 plugin.setMaintenance(false);
             } else if (args[0].equalsIgnoreCase("reload")) {
-                if (!sender.hasPermission("maintenance.reload")) {
-                    sender.sendMessage(settings.getNoPermMessage());
-                    return;
-                }
-
+                if (checkPermission(sender, "reload")) return;
                 settings.reloadConfigs();
                 sender.sendMessage(plugin.getPrefix() + "§aReloaded config, whitelistedplayers and the maintenance icon");
             } else if (args[0].equalsIgnoreCase("update")) {
-                if (!sender.hasPermission("maintenance.admin")) {
-                    sender.sendMessage(settings.getNoPermMessage());
-                    return;
-                }
-
+                if (checkPermission(sender, "update")) return;
                 checkForUpdate(sender);
             } else if (args[0].equals("forceupdate")) {
-                if (!sender.hasPermission("maintenance.admin")) {
-                    sender.sendMessage(settings.getNoPermMessage());
-                    return;
-                }
-
+                if (checkPermission(sender, "update")) return;
                 sender.sendMessage(plugin.getPrefix() + "§c§lDownloading update...");
 
                 if (plugin.installUpdate())
@@ -60,6 +46,7 @@ public abstract class MaintenanceCommand {
                 else
                     sender.sendMessage(plugin.getPrefix() + "§4Failed!");
             } else if (args[0].equalsIgnoreCase("whitelist")) {
+                if (checkPermission(sender, "whitelist.list")) return;
                 final Map<UUID, String> players = settings.getWhitelistedPlayers();
                 if (players.isEmpty()) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe maintenance whitelist is empty! Use \"/maintenance add <player>\" to add someone!");
@@ -74,6 +61,7 @@ public abstract class MaintenanceCommand {
                 sendUsage(sender);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("endtimer")) {
+                if (checkPermission(sender, "timer")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§6/maintenance timer endtimer <minutes>");
                     return;
@@ -97,6 +85,7 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(plugin.getPrefix() + "§aStarted timer: §7Maintenance mode will be deactivated in §6" + minutes + " minutes§7.");
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, false)));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
+                if (checkPermission(sender, "timer")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§6/maintenance timer starttimer <minutes>");
                     return;
@@ -120,6 +109,7 @@ public abstract class MaintenanceCommand {
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, true)));
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
+                    if (checkPermission(sender, "timer")) return;
                     if (!plugin.isTaskRunning()) {
                         sender.sendMessage(plugin.getPrefix() + "§cThere's currently no running timer.");
                         return;
@@ -130,13 +120,17 @@ public abstract class MaintenanceCommand {
                 } else
                     sendUsage(sender);
             } else if (args[0].equalsIgnoreCase("add")) {
+                if (checkPermission(sender, "whitelist.add")) return;
                 addPlayerToWhitelist(sender, args[1]);
             } else if (args[0].equalsIgnoreCase("remove")) {
+                if (checkPermission(sender, "whitelist.remove")) return;
                 removePlayerFromWhitelist(sender, args[1]);
             } else
                 sendUsage(sender);
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("setmotd")) {
+                //TODO Perm per line?
+                if (checkPermission(sender, "setmotd")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be numeric!");
                     return;
@@ -185,6 +179,14 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("§9Created by: KennyTV");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
         sender.sendMessage("");
+    }
+
+    private boolean checkPermission(final SenderInfo sender, final String permission) {
+        if (!sender.hasPermission("maintenance." + permission)) {
+            sender.sendMessage(settings.getNoPermMessage());
+            return true;
+        }
+        return false;
     }
 
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
