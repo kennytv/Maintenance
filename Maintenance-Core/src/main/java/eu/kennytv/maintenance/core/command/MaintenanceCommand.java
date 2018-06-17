@@ -137,7 +137,7 @@ public abstract class MaintenanceCommand {
                 }
 
                 final int line = Integer.parseInt(args[1]);
-                if (line < 1 || line > 2) {
+                if (line != 1 && line != 2) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be a 1 or a 2!");
                     return;
                 }
