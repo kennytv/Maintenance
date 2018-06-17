@@ -1,16 +1,11 @@
 package eu.kennytv.maintenance.core;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.api.ISettings;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class Settings implements ISettings {
-    protected final Map<UUID, String> whitelistedPlayers = Maps.newHashMap();
+    protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
     private String timerBroadcastMessage;
@@ -38,7 +33,7 @@ public abstract class Settings implements ISettings {
         maintenance = getConfigBoolean("enable-maintenance-mode");
         joinNotifications = getConfigBoolean("send-join-notification");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
-        broadcastIntervalls = Sets.newHashSet(getBroadcastIntervallList());
+        broadcastIntervalls = new HashSet<>(getBroadcastIntervallList());
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
         if (hasCustomIcon())
