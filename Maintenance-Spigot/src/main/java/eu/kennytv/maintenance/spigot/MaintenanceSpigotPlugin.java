@@ -6,9 +6,7 @@ import eu.kennytv.maintenance.api.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
-import eu.kennytv.maintenance.spigot.listener.PacketListener;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
-import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bukkit.Server;
@@ -38,11 +36,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
 
         new MetricsLite(plugin);
-
-        if (pm.getPlugin("ProtocolLib") != null)
-            new PacketListener(this, plugin, settings);
-        else
-            pm.registerEvents(new ServerListPingListener(plugin, settings), plugin);
 
         // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
@@ -109,6 +102,10 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Deprecated
     public static IMaintenance getAPI() {
         return MaintenanceSpigotAPI.getAPI();
+    }
+
+    public MaintenanceSpigotBase getBase() {
+        return plugin;
     }
 
     public Server getServer() {

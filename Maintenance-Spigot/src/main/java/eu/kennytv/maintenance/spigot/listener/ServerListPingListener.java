@@ -1,5 +1,6 @@
 package eu.kennytv.maintenance.spigot.listener;
 
+import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import org.bukkit.Bukkit;
@@ -12,16 +13,14 @@ import org.bukkit.util.CachedServerIcon;
 import javax.imageio.ImageIO;
 import java.io.File;
 
-public final class ServerListPingListener implements Listener {
+public final class ServerListPingListener implements Listener, IPingListener {
     private final MaintenanceSpigotBase plugin;
     private final SettingsSpigot settings;
-    private final File icon;
     private CachedServerIcon serverIcon;
 
     public ServerListPingListener(final MaintenanceSpigotBase plugin, final SettingsSpigot settings) {
         this.plugin = plugin;
         this.settings = settings;
-        icon = new File("maintenance-icon.png");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -31,16 +30,18 @@ public final class ServerListPingListener implements Listener {
         event.setMaxPlayers(0);
         event.setMotd(settings.getPingMessage().replace("%NEWLINE%", "\n"));
 
-        if (settings.hasCustomIcon()) {
-            if (serverIcon != null)
-                event.setServerIcon(serverIcon);
-            else {
-                try {
-                    serverIcon = Bukkit.loadServerIcon(ImageIO.read(icon));
-                } catch (final Exception e) {
-                    plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot/Bukkit folder (not the plugins folder)?");
-                }
-            }
+        if (settings.hasCustomIcon() && serverIcon != null)
+            event.setServerIcon(serverIcon);
+    }
+
+    @Override
+    public boolean loadIcon() {
+        try {
+            serverIcon = Bukkit.loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final Exception e) {
+            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
+            return false;
         }
+        return true;
     }
 }

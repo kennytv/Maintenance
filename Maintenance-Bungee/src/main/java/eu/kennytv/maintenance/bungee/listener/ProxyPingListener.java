@@ -2,6 +2,7 @@ package eu.kennytv.maintenance.bungee.listener;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeeBase;
 import eu.kennytv.maintenance.bungee.SettingsBungee;
+import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -13,16 +14,14 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-public final class ProxyPingListener implements Listener {
+public final class ProxyPingListener implements Listener, IPingListener {
     private final MaintenanceBungeeBase plugin;
     private final SettingsBungee settings;
-    private final File icon;
     private Favicon favicon;
 
     public ProxyPingListener(final MaintenanceBungeeBase plugin, final SettingsBungee settings) {
         this.plugin = plugin;
         this.settings = settings;
-        icon = new File("maintenance-icon.png");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -36,16 +35,18 @@ public final class ProxyPingListener implements Listener {
                 new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage().replace("%NEWLINE%", "\n"), "")
         }));
 
-        if (settings.hasCustomIcon()) {
-            if (favicon != null)
-                ping.setFavicon(favicon);
-            else {
-                try {
-                    favicon = Favicon.create(ImageIO.read(icon));
-                } catch (final IOException | IllegalArgumentException e) {
-                    plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
-                }
-            }
+        if (settings.hasCustomIcon() && favicon != null)
+            ping.setFavicon(favicon);
+    }
+
+    @Override
+    public boolean loadIcon() {
+        try {
+            favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final IOException | IllegalArgumentException e) {
+            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
+            return false;
         }
+        return true;
     }
 }

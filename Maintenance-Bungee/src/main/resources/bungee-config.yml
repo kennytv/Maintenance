@@ -38,7 +38,6 @@ join-notification: "&e%PLAYER% &ctried to join the server."
 custom-maintenance-icon: false
 
 # Only enable MySQL if you really know what you are doing.
-# You need to have a table with the two following columns: 'setting' and 'value'.
 mysql:
   use-mysql: false
   host: host

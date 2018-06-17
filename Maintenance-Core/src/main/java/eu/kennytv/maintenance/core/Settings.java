@@ -41,6 +41,8 @@ public abstract class Settings implements ISettings {
         broadcastIntervalls = Sets.newHashSet(getBroadcastIntervallList());
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
+        if (hasCustomIcon())
+            reloadMaintenanceIcon();
 
         loadExtraSettings();
     }
