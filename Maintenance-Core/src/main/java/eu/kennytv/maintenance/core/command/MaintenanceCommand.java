@@ -171,7 +171,7 @@ public abstract class MaintenanceCommand {
     private void sendUsage(final SenderInfo sender) {
         sender.sendMessage("");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
-        sender.sendMessage("§6/maintenance reload §7(Reloads the config file)");
+        sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
         sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
         sender.sendMessage("§6/maintenance setmotd <1/2> <message> §7(Sets the motd for maintenance mode)");
