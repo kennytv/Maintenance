@@ -16,11 +16,6 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     private final String prefix;
     private String newestVersion;
 
-    // Changed the loading of the maintenance icon to be more predictable
-    //  It will load directly on startup and can now reloaded by using the "/maintenance reload" command as well
-    // Changed the reload message to read the proper changes
-    // API fix
-
     protected MaintenanceModePlugin(final String prefix, final String version) {
         this.prefix = prefix;
         this.version = version;
