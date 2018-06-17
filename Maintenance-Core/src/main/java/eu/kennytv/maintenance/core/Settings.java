@@ -48,6 +48,8 @@ public abstract class Settings implements ISettings {
 
     public abstract String getConfigString(String path);
 
+    public abstract String getRawConfigString(String path);
+
     public abstract boolean getConfigBoolean(String path);
 
     public abstract List<Integer> getBroadcastIntervallList();

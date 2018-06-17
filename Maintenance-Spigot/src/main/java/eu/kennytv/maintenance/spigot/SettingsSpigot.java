@@ -109,6 +109,11 @@ public final class SettingsSpigot extends Settings {
     }
 
     @Override
+    public String getRawConfigString(final String path) {
+        return config.getString(path);
+    }
+
+    @Override
     public boolean getConfigBoolean(final String path) {
         return config.getBoolean(path);
     }

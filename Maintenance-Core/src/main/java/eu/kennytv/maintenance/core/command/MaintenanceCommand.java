@@ -142,8 +142,8 @@ public abstract class MaintenanceCommand {
                     return;
                 }
 
-                final String message = getColoredString(String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
-                final String oldMessage = settings.getConfigString("pingmessage");
+                final String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                final String oldMessage = settings.getRawConfigString("pingmessage");
                 final String newMessage;
                 if (line == 1)
                     newMessage = oldMessage.contains("%NEWLINE%") ?
@@ -155,7 +155,7 @@ public abstract class MaintenanceCommand {
                 settings.setToConfig("pingmessage", newMessage);
                 settings.saveConfig();
                 settings.reloadConfigs();
-                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + message);
+                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + getColoredString(message));
             } else
                 sendUsage(sender);
         } else
