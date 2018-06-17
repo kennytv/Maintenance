@@ -58,7 +58,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             final TextComponent tc = new TextComponent("§6× §8[§aUpdate§8]");
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to update the plugin")));
-            tc.addExtra(" §8< §7Or use the command §c/maintenace forceupdate");
+            tc.addExtra(" §8< §7Or use the command §c/maintenance forceupdate");
 
             ((ProxiedSenderInfo) sender).sendMessage(tc);
         } else
