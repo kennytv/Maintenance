@@ -29,7 +29,8 @@ public final class ProxyPingListener implements Listener, IPingListener {
         if (!settings.isMaintenance()) return;
 
         final ServerPing ping = event.getResponse();
-        ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage(), 1));
+        ping.getVersion().setProtocol(1);
+        ping.getVersion().setName(settings.getPlayerCountMessage());
         ping.setDescription(settings.getPingMessage().replace("%NEWLINE%", "\n"));
         ping.setPlayers(new ServerPing.Players(0, 0, new ServerPing.PlayerInfo[]{
                 new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage().replace("%NEWLINE%", "\n"), "")
