@@ -27,7 +27,7 @@ public final class ServerListPingListener implements Listener, IPingListener {
         if (!settings.isMaintenance()) return;
 
         event.setMaxPlayers(0);
-        event.setMotd(settings.getPingMessage().replace("%NEWLINE%", "\n"));
+        event.setMotd(settings.getRandomPingMessage());
 
         if (settings.hasCustomIcon() && serverIcon != null)
             event.setServerIcon(serverIcon);

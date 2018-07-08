@@ -1,5 +1,6 @@
 package eu.kennytv.maintenance.bungee;
 
+import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
@@ -70,6 +71,15 @@ public final class SettingsBungee extends Settings {
         } catch (final IOException e) {
             throw new RuntimeException("Unable to save bungee-config.yml!", e);
         }
+    }
+
+    @Override
+    public void updateConfig() {
+        if (!config.contains("pingmessage")) return;
+
+        config.set("pingmessages", Lists.newArrayList(getConfigString("pingmessage")));
+        config.set("pingmessage", null);
+        saveConfig();
     }
 
     @Override
@@ -154,8 +164,13 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    public List<Integer> getBroadcastIntervallList() {
-        return config.getIntList("timer-broadcasts-for-minutes");
+    public List<Integer> getConfigIntList(final String path) {
+        return config.getIntList(path);
+    }
+
+    @Override
+    public List<String> getConfigList(final String path) {
+        return config.getStringList(path);
     }
 
     @Override

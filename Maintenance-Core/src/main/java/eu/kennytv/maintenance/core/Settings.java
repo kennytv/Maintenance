@@ -3,14 +3,16 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.maintenance.api.ISettings;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Settings implements ISettings {
+    private static final Random RANDOM = new Random();
     protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
+    private List<String> pingMessages;
     private String timerBroadcastMessage;
     private String endtimerBroadcastMessage;
-    private String pingMessage;
     private String kickMessage;
     private String joinNotification;
     private String noPermMessage;
@@ -22,9 +24,11 @@ public abstract class Settings implements ISettings {
     private boolean customMaintenanceIcon;
 
     protected void loadSettings() {
+        updateConfig();
+
+        pingMessages = getConfigList("pingmessages").stream().map(s -> s.replace("%NEWLINE%", "\n")).collect(Collectors.toList());
         timerBroadcastMessage = getConfigString("starttimer-broadcast-mesage");
         endtimerBroadcastMessage = getConfigString("endtimer-broadcast-mesage");
-        pingMessage = getConfigString("pingmessage");
         kickMessage = getConfigString("kickmessage");
         joinNotification = getConfigString("join-notification");
         noPermMessage = getConfigString("no-permission");
@@ -33,7 +37,7 @@ public abstract class Settings implements ISettings {
         maintenance = getConfigBoolean("enable-maintenance-mode");
         joinNotifications = getConfigBoolean("send-join-notification");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
-        broadcastIntervalls = new HashSet<>(getBroadcastIntervallList());
+        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
         if (hasCustomIcon())
@@ -41,6 +45,9 @@ public abstract class Settings implements ISettings {
 
         loadExtraSettings();
     }
+
+    @Deprecated
+    public abstract void updateConfig();
 
     public abstract void saveWhitelistedPlayers();
 
@@ -52,7 +59,9 @@ public abstract class Settings implements ISettings {
 
     public abstract boolean getConfigBoolean(String path);
 
-    public abstract List<Integer> getBroadcastIntervallList();
+    public abstract List<Integer> getConfigIntList(String path);
+
+    public abstract List<String> getConfigList(String path);
 
     public abstract void loadExtraSettings();
 
@@ -64,16 +73,20 @@ public abstract class Settings implements ISettings {
 
     public abstract void setToConfig(String path, Object var);
 
+    public List<String> getPingMessages() {
+        return pingMessages;
+    }
+
+    public Set<Integer> getBroadcastIntervalls() {
+        return broadcastIntervalls;
+    }
+
     public String getTimerBroadcastMessage() {
         return timerBroadcastMessage;
     }
 
     public String getEndtimerBroadcastMessage() {
         return endtimerBroadcastMessage;
-    }
-
-    public String getPingMessage() {
-        return pingMessage;
     }
 
     public String getKickMessage() {
@@ -108,6 +121,10 @@ public abstract class Settings implements ISettings {
         this.maintenance = maintenance;
     }
 
+    public String getRandomPingMessage() {
+        return pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
+    }
+
     @Override
     public boolean isMaintenance() {
         return maintenance;
@@ -121,10 +138,6 @@ public abstract class Settings implements ISettings {
     @Override
     public boolean hasCustomIcon() {
         return customMaintenanceIcon;
-    }
-
-    public Set<Integer> getBroadcastIntervalls() {
-        return broadcastIntervalls;
     }
 
     @Override
