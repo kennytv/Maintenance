@@ -6,7 +6,6 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -127,9 +126,8 @@ public abstract class MaintenanceCommand {
                 removePlayerFromWhitelist(sender, args[1]);
             } else
                 sendUsage(sender);
-        } else if (args.length == 3) {
+        /*} else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("setmotd")) {
-                //TODO Perm per line?
                 if (checkPermission(sender, "setmotd")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be numeric!");
@@ -157,7 +155,7 @@ public abstract class MaintenanceCommand {
                 settings.reloadConfigs();
                 sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + getColoredString(message));
             } else
-                sendUsage(sender);
+                sendUsage(sender);*/
         } else
             sendUsage(sender);
     }
@@ -168,7 +166,7 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
         sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
-        sender.sendMessage("§6/maintenance setmotd <1/2> <message> §7(Sets the motd for maintenance mode)");
+        //sender.sendMessage("§6/maintenance setmotd <1/2> <message> §7(Sets the motd for maintenance mode)");
         sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
         sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
         sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
