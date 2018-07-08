@@ -6,7 +6,7 @@ enable-maintenance-mode: false
 
 # The message shown in the multiplayer server list motd.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
-pingmessage:
+pingmessages:
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
  #- "Another entry"
 
