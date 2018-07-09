@@ -3,7 +3,6 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.maintenance.api.ISettings;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class Settings implements ISettings {
     private static final Random RANDOM = new Random();
@@ -26,7 +25,7 @@ public abstract class Settings implements ISettings {
     protected void loadSettings() {
         updateConfig();
 
-        pingMessages = getConfigList("pingmessages").stream().map(s -> s.replace("%NEWLINE%", "\n")).collect(Collectors.toList());
+        pingMessages = getConfigList("pingmessages");
         timerBroadcastMessage = getConfigString("starttimer-broadcast-mesage");
         endtimerBroadcastMessage = getConfigString("endtimer-broadcast-mesage");
         kickMessage = getConfigString("kickmessage");
@@ -55,8 +54,6 @@ public abstract class Settings implements ISettings {
 
     public abstract String getConfigString(String path);
 
-    public abstract String getRawConfigString(String path);
-
     public abstract boolean getConfigBoolean(String path);
 
     public abstract List<Integer> getConfigIntList(String path);
@@ -72,6 +69,8 @@ public abstract class Settings implements ISettings {
     public abstract void reloadConfigs();
 
     public abstract void setToConfig(String path, Object var);
+
+    public abstract String getColoredString(String s);
 
     public List<String> getPingMessages() {
         return pingMessages;
@@ -122,7 +121,8 @@ public abstract class Settings implements ISettings {
     }
 
     public String getRandomPingMessage() {
-        return pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
+        final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
+        return getColoredString(s.replace("%NEWLINE%", "\n"));
     }
 
     @Override

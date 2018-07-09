@@ -6,6 +6,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -126,36 +127,49 @@ public abstract class MaintenanceCommand {
                 removePlayerFromWhitelist(sender, args[1]);
             } else
                 sendUsage(sender);
-        /*} else if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("setmotd")) {
-                if (checkPermission(sender, "setmotd")) return;
-                if (!MessageUtil.isNumeric(args[1])) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be numeric!");
-                    return;
-                }
+        } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
+            if (checkPermission(sender, "setmotd")) return;
+            if (!MessageUtil.isNumeric(args[1])) {
+                sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be the motd number (see '/maintenance motd')!");
+                return;
+            }
 
-                final int line = Integer.parseInt(args[1]);
-                if (line != 1 && line != 2) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be a 1 or a 2!");
-                    return;
-                }
+            final int index = Integer.parseInt(args[1]);
+            if (index < 1 || index > settings.getPingMessages().size() + 1) {
+                sender.sendMessage(plugin.getPrefix() + "§cYou currently have " + settings.getPingMessages().size()
+                        + " motds, so you have to pick a number between 1 and " + (settings.getPingMessages().size() + 1));
+                return;
+            }
 
-                final String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                final String oldMessage = settings.getRawConfigString("pingmessage");
-                final String newMessage;
-                if (line == 1)
-                    newMessage = oldMessage.contains("%NEWLINE%") ?
-                            message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
-                else
-                    newMessage = oldMessage.contains("%NEWLINE%") ?
-                            oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
+            if (!MessageUtil.isNumeric(args[2])) {
+                sender.sendMessage(plugin.getPrefix() + "§cThe second argument has to be the line number (1 or 2)!");
+                return;
+            }
 
-                settings.setToConfig("pingmessage", newMessage);
-                settings.saveConfig();
-                settings.reloadConfigs();
-                sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the maintenance motd to §f" + getColoredString(message));
-            } else
-                sendUsage(sender);*/
+            final int line = Integer.parseInt(args[2]);
+            if (line != 1 && line != 2) {
+                sender.sendMessage(plugin.getPrefix() + "§cThe second argument has to be the line number (1 or 2)!");
+                return;
+            }
+
+            final String message = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+            final String oldMessage = index > settings.getPingMessages().size() ? "" : settings.getPingMessages().get(index - 1);
+            final String newMessage;
+            if (line == 1)
+                newMessage = oldMessage.contains("%NEWLINE%") ?
+                        message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
+            else
+                newMessage = oldMessage.contains("%NEWLINE%") ?
+                        oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
+
+            if (index > settings.getPingMessages().size())
+                settings.getPingMessages().add(newMessage);
+            else
+                settings.getPingMessages().set(index - 1, newMessage);
+            settings.setToConfig("pingmessages", settings.getPingMessages());
+            settings.saveConfig();
+            settings.reloadConfigs();
+            sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the " + index + ". maintenance motd to §f" + settings.getColoredString(message));
         } else
             sendUsage(sender);
     }
@@ -166,13 +180,14 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
         sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
-        //sender.sendMessage("§6/maintenance setmotd <1/2> <message> §7(Sets the motd for maintenance mode)");
         sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
         sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
         sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
+        sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
         sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
         sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
+        //sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        //sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
         sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
         sender.sendMessage("§9Created by: KennyTV");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
@@ -192,6 +207,4 @@ public abstract class MaintenanceCommand {
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
-
-    protected abstract String getColoredString(String message);
 }
