@@ -57,6 +57,15 @@ public abstract class MaintenanceCommand {
                     players.forEach((key, value) -> sender.sendMessage("§8- §e" + value));
                     sender.sendMessage("");
                 }
+            } else if (args[0].equalsIgnoreCase("motd")) {
+                sender.sendMessage(plugin.getPrefix() + "§7List of your maintenance motds:");
+                for (int i = 0; i < settings.getPingMessages().size(); i++) {
+                    sender.sendMessage("§b" + (i + 1) + "§8§m---------");
+                    for (final String motd : settings.getColoredString(settings.getPingMessages().get(i)).split("%NEWLINE%")) {
+                        sender.sendMessage(motd);
+                    }
+                }
+                sender.sendMessage("§8§m----------");
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
