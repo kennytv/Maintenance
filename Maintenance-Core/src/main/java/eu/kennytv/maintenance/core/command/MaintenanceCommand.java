@@ -58,6 +58,7 @@ public abstract class MaintenanceCommand {
                     sender.sendMessage("");
                 }
             } else if (args[0].equalsIgnoreCase("motd")) {
+                if (checkPermission(sender, "motd")) return;
                 sender.sendMessage(plugin.getPrefix() + "§7List of your maintenance motds:");
                 for (int i = 0; i < settings.getPingMessages().size(); i++) {
                     sender.sendMessage("§b" + (i + 1) + "§8§m---------");
