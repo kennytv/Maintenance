@@ -3,7 +3,6 @@ package eu.kennytv.maintenance.core.command;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
-import eu.kennytv.maintenance.core.util.MessageUtil;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Arrays;
@@ -72,7 +71,7 @@ public abstract class MaintenanceCommand {
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
-                if (!MessageUtil.isNumeric(args[1])) {
+                if (!isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§6/maintenance endtimer <minutes>");
                     return;
                 }
@@ -96,7 +95,7 @@ public abstract class MaintenanceCommand {
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, false)));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
-                if (!MessageUtil.isNumeric(args[1])) {
+                if (!isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§6/maintenance starttimer <minutes>");
                     return;
                 }
@@ -139,7 +138,7 @@ public abstract class MaintenanceCommand {
                 sendUsage(sender);
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
-            if (!MessageUtil.isNumeric(args[1])) {
+            if (!isNumeric(args[1])) {
                 sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be the motd index!");
                 return;
             }
@@ -151,7 +150,7 @@ public abstract class MaintenanceCommand {
                 return;
             }
 
-            if (!MessageUtil.isNumeric(args[2])) {
+            if (!isNumeric(args[2])) {
                 sender.sendMessage(plugin.getPrefix() + "§cThe second argument has to be the line number (1 or 2)!");
                 return;
             }
@@ -210,6 +209,15 @@ public abstract class MaintenanceCommand {
             return true;
         }
         return false;
+    }
+
+    private boolean isNumeric(final String string) {
+        try {
+            Integer.parseInt(string);
+        } catch (final NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
