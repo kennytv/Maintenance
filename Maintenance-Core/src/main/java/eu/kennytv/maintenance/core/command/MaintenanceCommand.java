@@ -54,7 +54,7 @@ public abstract class MaintenanceCommand {
                     sender.sendMessage(plugin.getPrefix() + "§cUse \"/maintenance add <player>\" to add someone. Alternatively, you can add the uuid of a player to the WhitelistedPlayers.yml as seen in the example in the file!");
                 } else {
                     sender.sendMessage("§6Whitelisted players for maintenance:");
-                    players.forEach((key, value) -> sender.sendMessage("§8- §e" + value));
+                    players.forEach((key, value) -> sender.sendMessage("§8- §e" + value + " §8(§7" + key + "§8)"));
                     sender.sendMessage("");
                 }
             } else if (args[0].equalsIgnoreCase("motd")) {
