@@ -140,7 +140,7 @@ public abstract class MaintenanceCommand {
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
             if (!MessageUtil.isNumeric(args[1])) {
-                sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be the motd number (see '/maintenance motd')!");
+                sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be the motd index!");
                 return;
             }
 
@@ -196,8 +196,8 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
         sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
         sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        //sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
-        //sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
+        sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
         sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
         sender.sendMessage("§9Created by: KennyTV");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
