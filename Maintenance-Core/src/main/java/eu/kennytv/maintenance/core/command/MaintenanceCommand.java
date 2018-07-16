@@ -73,7 +73,7 @@ public abstract class MaintenanceCommand {
             if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
-                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance timer endtimer <minutes>");
+                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance endtimer <minutes>");
                     return;
                 }
                 if (plugin.isTaskRunning()) {
@@ -97,7 +97,7 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!MessageUtil.isNumeric(args[1])) {
-                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance timer starttimer <minutes>");
+                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance starttimer <minutes>");
                     return;
                 }
                 if (plugin.isTaskRunning()) {
