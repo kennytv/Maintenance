@@ -5,7 +5,6 @@ import eu.kennytv.maintenance.bungee.SettingsBungee;
 import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -58,15 +57,10 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             final TextComponent tc = new TextComponent("§6× §8[§aUpdate§8]");
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to update the plugin")));
-            tc.addExtra(" §8< §7Or use the command §c/maintenace forceupdate");
+            tc.addExtra(" §8< §7Or use the command §c/maintenance forceupdate");
 
             ((ProxiedSenderInfo) sender).sendMessage(tc);
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
-    }
-
-    @Override
-    protected String getColoredString(final String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
     }
 }

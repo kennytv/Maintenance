@@ -104,10 +104,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         return MaintenanceSpigotAPI.getAPI();
     }
 
-    public MaintenanceSpigotBase getBase() {
-        return plugin;
-    }
-
     public Server getServer() {
         return plugin.getServer();
     }

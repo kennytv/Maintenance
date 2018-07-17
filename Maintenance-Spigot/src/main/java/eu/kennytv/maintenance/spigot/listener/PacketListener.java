@@ -31,7 +31,7 @@ public final class PacketListener implements IPingListener {
 
                 final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
                 ping.setVersionProtocol(0);
-                ping.setMotD(settings.getPingMessage().replace("%NEWLINE%", "\n"));
+                ping.setMotD(settings.getRandomPingMessage());
                 ping.setVersionName(settings.getPlayerCountMessage());
 
                 final List<WrappedGameProfile> players = Lists.newArrayList();

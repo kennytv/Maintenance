@@ -3,7 +3,6 @@ package eu.kennytv.maintenance.spigot.listener;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,7 +27,7 @@ public final class ServerListPingListener implements Listener, IPingListener {
         if (!settings.isMaintenance()) return;
 
         event.setMaxPlayers(0);
-        event.setMotd(settings.getPingMessage().replace("%NEWLINE%", "\n"));
+        event.setMotd(settings.getRandomPingMessage());
 
         if (settings.hasCustomIcon() && serverIcon != null)
             event.setServerIcon(serverIcon);
@@ -37,7 +36,7 @@ public final class ServerListPingListener implements Listener, IPingListener {
     @Override
     public boolean loadIcon() {
         try {
-            serverIcon = Bukkit.loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
+            serverIcon = plugin.getServer().loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final Exception e) {
             plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
             return false;
