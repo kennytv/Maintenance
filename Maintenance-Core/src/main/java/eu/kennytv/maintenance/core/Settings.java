@@ -46,7 +46,22 @@ public abstract class Settings implements ISettings {
     }
 
     @Deprecated
-    public abstract void updateConfig();
+    public void updateConfig() {
+        // 2.3 pingmessage -> pingmessages
+        if (configContains("pingmessage")) {
+            final List<Object> list = new ArrayList<>();
+            list.add(getConfigString("pingmessage"));
+            setToConfig("pingmessages", list);
+            setToConfig("pingmessage", null);
+            saveConfig();
+        }
+
+        // 2.3.1 mysql.update-interval
+        if (!configContains("mysql.update-interval")) {
+            setToConfig("mysql.update-interval", 15);
+            saveConfig();
+        }
+    }
 
     public abstract void saveWhitelistedPlayers();
 
@@ -69,6 +84,8 @@ public abstract class Settings implements ISettings {
     public abstract void reloadConfigs();
 
     public abstract void setToConfig(String path, Object var);
+
+    public abstract boolean configContains(String path);
 
     public abstract String getColoredString(String s);
 

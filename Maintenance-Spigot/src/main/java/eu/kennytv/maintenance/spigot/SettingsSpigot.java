@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.spigot;
 
-import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.listener.PacketListener;
@@ -44,14 +43,6 @@ public final class SettingsSpigot extends Settings {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void updateConfig() {
-        if (!config.contains("pingmessage")) return;
-        config.set("pingmessages", Lists.newArrayList(getConfigString("pingmessage")));
-        config.set("pingmessage", null);
-        saveConfig();
     }
 
     @Override
@@ -140,6 +131,11 @@ public final class SettingsSpigot extends Settings {
     @Override
     public void setToConfig(final String path, final Object var) {
         config.set(path, var);
+    }
+
+    @Override
+    public boolean configContains(final String path) {
+        return config.contains(path);
     }
 
     @Override

@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface ISettings {
 
     /**
+     * Note that the value might need a few seconds to update, if you're on BungeeCord with MySQL enabled
+     *
      * @return true if maintenance is currently enabled
      */
     boolean isMaintenance();

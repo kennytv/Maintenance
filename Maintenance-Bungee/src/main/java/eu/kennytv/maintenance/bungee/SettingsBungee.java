@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.bungee;
 
-import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
@@ -25,6 +24,9 @@ public final class SettingsBungee extends Settings {
     private final IPingListener pingListener;
     private Configuration config;
     private Configuration whitelist;
+
+    private long millisecondsToCheck;
+    private long lastMySQLCheck;
 
     SettingsBungee(final MaintenanceBungeeBase plugin) {
         this.plugin = plugin;
@@ -74,14 +76,6 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    public void updateConfig() {
-        if (!config.contains("pingmessage")) return;
-        config.set("pingmessages", Lists.newArrayList(getConfigString("pingmessage")));
-        config.set("pingmessage", null);
-        saveConfig();
-    }
-
-    @Override
     public void saveWhitelistedPlayers() {
         final File file = new File(plugin.getDataFolder(), "WhitelistedPlayers.yml");
         try {
@@ -112,6 +106,8 @@ public final class SettingsBungee extends Settings {
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        if (mySQL != null)
+            millisecondsToCheck = config.getInt("mysql.update-interval");
     }
 
     @Override
@@ -178,13 +174,18 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
+    public boolean configContains(final String path) {
+        return config.contains(path);
+    }
+
+    @Override
     public String getColoredString(final String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     @Override
     public boolean isMaintenance() {
-        if (mySQL != null) {
+        if (mySQL != null && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
             mySQL.executeQuery(maintenanceQuery, rs -> {
                 try {
                     if (rs.next())
@@ -194,6 +195,7 @@ public final class SettingsBungee extends Settings {
                     e.printStackTrace();
                 }
             }, "maintenance");
+            lastMySQLCheck = System.currentTimeMillis();
         }
 
         return maintenance;
@@ -208,6 +210,7 @@ public final class SettingsBungee extends Settings {
         plugin.getProxy().getScheduler().runAsync(plugin, () -> {
             final String s = String.valueOf(maintenance);
             mySQL.executeUpdate(updateQuery, "maintenance", s, s);
+            lastMySQLCheck = System.currentTimeMillis();
         });
         this.maintenance = maintenance;
     }
