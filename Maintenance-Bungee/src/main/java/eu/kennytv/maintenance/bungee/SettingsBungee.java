@@ -149,7 +149,12 @@ public final class SettingsBungee extends Settings {
 
     @Override
     public String getConfigString(final String path) {
-        return ChatColor.translateAlternateColorCodes('&', config.getString(path));
+        final String s = config.getString(path);
+        if (s == null) {
+            plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
