@@ -107,7 +107,7 @@ public final class SettingsBungee extends Settings {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
         if (mySQL != null)
-            millisecondsToCheck = config.getInt("mysql.update-interval");
+            millisecondsToCheck = ((long) config.getInt("mysql.update-interval")) * 1000;
     }
 
     @Override
