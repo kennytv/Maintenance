@@ -56,6 +56,7 @@ public abstract class Settings implements ISettings {
             saveConfig();
         }
 
+
         // 2.3.1 mysql.update-interval
         if (!configContains("mysql.update-interval")) {
             setToConfig("mysql.update-interval", 15);
@@ -175,7 +176,7 @@ public abstract class Settings implements ISettings {
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
         if (!whitelistedPlayers.containsValue(name)) return false;
-        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findFirst().get().getKey();
+        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findAny().get().getKey();
         whitelistedPlayers.remove(uuid);
         setWhitelist(uuid.toString(), null);
         saveWhitelistedPlayers();
