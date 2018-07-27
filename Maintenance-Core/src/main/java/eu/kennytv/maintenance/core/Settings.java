@@ -45,8 +45,7 @@ public abstract class Settings implements ISettings {
         loadExtraSettings();
     }
 
-    @Deprecated
-    public void updateConfig() {
+    private void updateConfig() {
         // 2.3 pingmessage -> pingmessages
         if (configContains("pingmessage")) {
             final List<Object> list = new ArrayList<>();
@@ -56,12 +55,10 @@ public abstract class Settings implements ISettings {
             saveConfig();
         }
 
+        updateExtraConfig();
+    }
 
-        // 2.3.1 mysql.update-interval
-        if (!configContains("mysql.update-interval")) {
-            setToConfig("mysql.update-interval", 15);
-            saveConfig();
-        }
+    public void updateExtraConfig() {
     }
 
     public abstract void saveWhitelistedPlayers();
