@@ -10,6 +10,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
@@ -69,7 +70,7 @@ public final class SettingsBungee extends Settings {
     public void saveConfig() {
         final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
         try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to save bungee-config.yml!", e);
         }
@@ -88,7 +89,7 @@ public final class SettingsBungee extends Settings {
     private void reloadConfigs(final boolean createdNewWhitelist) {
         final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
         try {
-            config = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(file), "UTF8"));
+            config = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load bungee-config.yml!", e);
