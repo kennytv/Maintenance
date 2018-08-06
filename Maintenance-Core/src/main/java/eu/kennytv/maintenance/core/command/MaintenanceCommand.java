@@ -186,19 +186,30 @@ public abstract class MaintenanceCommand {
     private void sendUsage(final SenderInfo sender) {
         sender.sendMessage("");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
-        sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
-        sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
-        sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
-        sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
-        sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
-        sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
-        sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
-        sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
-        sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
-        sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
-        sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
-        sender.sendMessage("§9Created by: KennyTV");
+        if (sender.hasPermission("reload"))
+            sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
+        if (sender.hasPermission("toggle")) {
+            sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
+            sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
+        }
+        if (sender.hasPermission("timer")) {
+            sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
+            sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
+            sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
+        }
+        if (sender.hasPermission("whitelist.list"))
+            sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
+        if (sender.hasPermission("whitelist.add"))
+            sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        if (sender.hasPermission("whitelist.remove"))
+            sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
+        if (sender.hasPermission("setmotd"))
+            sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
+        if (sender.hasPermission("motd"))
+            sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        if (sender.hasPermission("update"))
+            sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
+        sender.sendMessage("§7Created by §bKennyTV");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
         sender.sendMessage("");
     }
