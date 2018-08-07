@@ -42,10 +42,10 @@ public interface ISettings {
     /**
      * Removes a player from the maintenance whitelist.
      *
-     * @param name name of the player to remove in lowercase letters
+     * @param name name of the player to remove with original lower-/uppercase letters
      * @return true if removing the player was successful
+     * @deprecated if a player changes their name, the list will still contain the old one
      * @see #removeWhitelistedPlayer(UUID)
-     * @deprecated if a player changes their name, the list will still contain the old one and thus this might not work
      */
     @Deprecated
     boolean removeWhitelistedPlayer(String name);

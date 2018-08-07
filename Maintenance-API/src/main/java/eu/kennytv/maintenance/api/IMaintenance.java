@@ -24,7 +24,7 @@ public interface IMaintenance {
     boolean isMaintenance();
 
     /**
-     * @return true if a timer task is currently running
+     * @return true if a start- or endtimer task is currently running
      */
     boolean isTaskRunning();
 
