@@ -200,7 +200,6 @@ public final class SettingsBungee extends Settings {
                 try {
                     if (rs.next())
                         maintenance = Boolean.parseBoolean(rs.getString("value"));
-                    rs.close();
                 } catch (final SQLException e) {
                     e.printStackTrace();
                 }
