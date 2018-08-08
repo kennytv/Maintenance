@@ -39,7 +39,7 @@ public abstract class Settings implements ISettings {
         broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
-        if (hasCustomIcon())
+        if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
         loadExtraSettings();
@@ -53,6 +53,7 @@ public abstract class Settings implements ISettings {
             setToConfig("pingmessages", list);
             setToConfig("pingmessage", null);
             saveConfig();
+            reloadConfigs();
         }
 
         updateExtraConfig();

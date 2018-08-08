@@ -67,6 +67,7 @@ public final class SettingsBungee extends Settings {
         if (!configContains("mysql.update-interval")) {
             setToConfig("mysql.update-interval", 15);
             saveConfig();
+            reloadConfigs();
         }
     }
 
