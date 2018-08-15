@@ -120,6 +120,7 @@ public final class SettingsBungee extends Settings {
         if (mySQL != null) {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
+            lastMySQLCheck = 0;
         }
     }
 
