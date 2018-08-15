@@ -117,8 +117,10 @@ public final class SettingsBungee extends Settings {
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
-        if (mySQL != null)
-            millisecondsToCheck = ((long) config.getInt("mysql.update-interval")) * 1000;
+        if (mySQL != null) {
+            final long configValue = config.getInt("mysql.update-interval");
+            millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
+        }
     }
 
     @Override
@@ -196,7 +198,7 @@ public final class SettingsBungee extends Settings {
 
     @Override
     public boolean isMaintenance() {
-        if (mySQL != null && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
+        if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
             mySQL.executeQuery(maintenanceQuery, rs -> {
                 try {
                     if (rs.next())
@@ -205,7 +207,8 @@ public final class SettingsBungee extends Settings {
                     e.printStackTrace();
                 }
             }, "maintenance");
-            lastMySQLCheck = System.currentTimeMillis();
+            if (millisecondsToCheck != -1)
+                lastMySQLCheck = System.currentTimeMillis();
         }
 
         return maintenance;
@@ -220,7 +223,8 @@ public final class SettingsBungee extends Settings {
         plugin.getProxy().getScheduler().runAsync(plugin, () -> {
             final String s = String.valueOf(maintenance);
             mySQL.executeUpdate(updateQuery, "maintenance", s, s);
-            lastMySQLCheck = System.currentTimeMillis();
+            if (millisecondsToCheck != -1)
+                lastMySQLCheck = System.currentTimeMillis();
         });
         this.maintenance = maintenance;
     }
