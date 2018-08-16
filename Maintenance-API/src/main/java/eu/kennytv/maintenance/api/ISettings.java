@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface ISettings {
 
     /**
+     * Note that the value might need a few seconds to update, if you're on BungeeCord with MySQL enabled
+     *
      * @return true if maintenance is currently enabled
      */
     boolean isMaintenance();
@@ -40,10 +42,10 @@ public interface ISettings {
     /**
      * Removes a player from the maintenance whitelist.
      *
-     * @param name name of the player to remove in lowercase letters
+     * @param name name of the player to remove with original lower-/uppercase letters
      * @return true if removing the player was successful
+     * @deprecated if a player changes their name, the list will still contain the old one
      * @see #removeWhitelistedPlayer(UUID)
-     * @deprecated if a player changes their name, the list will still contain the old one and thus this might not work
      */
     @Deprecated
     boolean removeWhitelistedPlayer(String name);

@@ -4,9 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Utility class to get the {@link IMaintenance} instance for the Spigot/Bukkit version of the plugin.
+ * Utility class to get the {@link IMaintenance} instance for the Spigot version of the plugin.
  * <p>
- * This class is NOT available for the BungeeCord version!
+ * Only access this class if you're running the plugin on a Spigot server!
  * </p>
  *
  * @author KennyTV

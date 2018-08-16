@@ -39,14 +39,28 @@ public abstract class Settings implements ISettings {
         broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
-        if (hasCustomIcon())
+        if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
         loadExtraSettings();
     }
 
-    @Deprecated
-    public abstract void updateConfig();
+    private void updateConfig() {
+        // 2.3 pingmessage -> pingmessages
+        if (configContains("pingmessage")) {
+            final List<Object> list = new ArrayList<>();
+            list.add(getConfigString("pingmessage"));
+            setToConfig("pingmessages", list);
+            setToConfig("pingmessage", null);
+            saveConfig();
+            reloadConfigs();
+        }
+
+        updateExtraConfig();
+    }
+
+    public void updateExtraConfig() {
+    }
 
     public abstract void saveWhitelistedPlayers();
 
@@ -69,6 +83,8 @@ public abstract class Settings implements ISettings {
     public abstract void reloadConfigs();
 
     public abstract void setToConfig(String path, Object var);
+
+    public abstract boolean configContains(String path);
 
     public abstract String getColoredString(String s);
 
@@ -121,6 +137,7 @@ public abstract class Settings implements ISettings {
     }
 
     public String getRandomPingMessage() {
+        if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
         return getColoredString(s.replace("%NEWLINE%", "\n"));
     }
@@ -158,7 +175,7 @@ public abstract class Settings implements ISettings {
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
         if (!whitelistedPlayers.containsValue(name)) return false;
-        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findFirst().get().getKey();
+        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findAny().get().getKey();
         whitelistedPlayers.remove(uuid);
         setWhitelist(uuid.toString(), null);
         saveWhitelistedPlayers();

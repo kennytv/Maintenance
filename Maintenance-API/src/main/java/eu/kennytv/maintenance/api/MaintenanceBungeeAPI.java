@@ -6,7 +6,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 /**
  * Utility class to get the {@link IMaintenance} instance for the BungeeCord version of the plugin.
  * <p>
- * This class is NOT available for the Spigot version!
+ * Only access this class if you're running the plugin on a BungeeCord server!
  * </p>
  *
  * @author KennyTV

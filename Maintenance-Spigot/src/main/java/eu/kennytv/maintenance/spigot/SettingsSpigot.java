@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.spigot;
 
-import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.listener.PacketListener;
@@ -11,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
@@ -47,14 +47,6 @@ public final class SettingsSpigot extends Settings {
     }
 
     @Override
-    public void updateConfig() {
-        if (!config.contains("pingmessage")) return;
-        config.set("pingmessages", Lists.newArrayList(getConfigString("pingmessage")));
-        config.set("pingmessage", null);
-        saveConfig();
-    }
-
-    @Override
     public void saveWhitelistedPlayers() {
         try {
             whitelist.save(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
@@ -67,7 +59,7 @@ public final class SettingsSpigot extends Settings {
     public void reloadConfigs() {
         final File file = new File(plugin.getDataFolder(), "spigot-config.yml");
         try {
-            config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), "UTF8"));
+            config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load spigot-config.yml!", e);
@@ -114,7 +106,12 @@ public final class SettingsSpigot extends Settings {
 
     @Override
     public String getConfigString(final String path) {
-        return ChatColor.translateAlternateColorCodes('&', config.getString(path));
+        final String s = config.getString(path);
+        if (s == null) {
+            plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
@@ -135,6 +132,11 @@ public final class SettingsSpigot extends Settings {
     @Override
     public void setToConfig(final String path, final Object var) {
         config.set(path, var);
+    }
+
+    @Override
+    public boolean configContains(final String path) {
+        return config.contains(path);
     }
 
     @Override

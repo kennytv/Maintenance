@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -227,7 +228,7 @@ public final class MetricsLite {
         }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
-        gzip.write(str.getBytes("UTF-8"));
+        gzip.write(str.getBytes(StandardCharsets.UTF_8));
         gzip.close();
         return outputStream.toByteArray();
     }

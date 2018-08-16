@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.bungee;
 
-import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
@@ -11,6 +10,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,6 +25,9 @@ public final class SettingsBungee extends Settings {
     private final IPingListener pingListener;
     private Configuration config;
     private Configuration whitelist;
+
+    private long millisecondsToCheck;
+    private long lastMySQLCheck;
 
     SettingsBungee(final MaintenanceBungeeBase plugin) {
         this.plugin = plugin;
@@ -59,6 +62,16 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
+    public void updateExtraConfig() {
+        // 2.3.1 mysql.update-interval
+        if (!configContains("mysql.update-interval")) {
+            setToConfig("mysql.update-interval", 15);
+            saveConfig();
+            reloadConfigs();
+        }
+    }
+
+    @Override
     public void reloadConfigs() {
         reloadConfigs(false);
     }
@@ -67,18 +80,10 @@ public final class SettingsBungee extends Settings {
     public void saveConfig() {
         final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
         try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to save bungee-config.yml!", e);
         }
-    }
-
-    @Override
-    public void updateConfig() {
-        if (!config.contains("pingmessage")) return;
-        config.set("pingmessages", Lists.newArrayList(getConfigString("pingmessage")));
-        config.set("pingmessage", null);
-        saveConfig();
     }
 
     @Override
@@ -94,7 +99,7 @@ public final class SettingsBungee extends Settings {
     private void reloadConfigs(final boolean createdNewWhitelist) {
         final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
         try {
-            config = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(file), "UTF8"));
+            config = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load bungee-config.yml!", e);
@@ -112,6 +117,11 @@ public final class SettingsBungee extends Settings {
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        if (mySQL != null) {
+            final long configValue = config.getInt("mysql.update-interval");
+            millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
+            lastMySQLCheck = 0;
+        }
     }
 
     @Override
@@ -149,7 +159,12 @@ public final class SettingsBungee extends Settings {
 
     @Override
     public String getConfigString(final String path) {
-        return ChatColor.translateAlternateColorCodes('&', config.getString(path));
+        final String s = config.getString(path);
+        if (s == null) {
+            plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
@@ -173,22 +188,28 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
+    public boolean configContains(final String path) {
+        return config.contains(path);
+    }
+
+    @Override
     public String getColoredString(final String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     @Override
     public boolean isMaintenance() {
-        if (mySQL != null) {
+        if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
             mySQL.executeQuery(maintenanceQuery, rs -> {
                 try {
                     if (rs.next())
                         maintenance = Boolean.parseBoolean(rs.getString("value"));
-                    rs.close();
                 } catch (final SQLException e) {
                     e.printStackTrace();
                 }
             }, "maintenance");
+            if (millisecondsToCheck != -1)
+                lastMySQLCheck = System.currentTimeMillis();
         }
 
         return maintenance;
@@ -203,6 +224,8 @@ public final class SettingsBungee extends Settings {
         plugin.getProxy().getScheduler().runAsync(plugin, () -> {
             final String s = String.valueOf(maintenance);
             mySQL.executeUpdate(updateQuery, "maintenance", s, s);
+            if (millisecondsToCheck != -1)
+                lastMySQLCheck = System.currentTimeMillis();
         });
         this.maintenance = maintenance;
     }

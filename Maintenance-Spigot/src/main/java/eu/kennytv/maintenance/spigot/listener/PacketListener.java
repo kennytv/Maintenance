@@ -24,7 +24,7 @@ public final class PacketListener implements IPingListener {
     public PacketListener(final MaintenanceSpigotBase base, final SettingsSpigot settings) {
         this.pl = base;
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST,
-                PacketType.Status.Server.OUT_SERVER_INFO) {
+                PacketType.Status.Server.SERVER_INFO) {
             @Override
             public void onPacketSending(final PacketEvent event) {
                 if (!settings.isMaintenance()) return;
