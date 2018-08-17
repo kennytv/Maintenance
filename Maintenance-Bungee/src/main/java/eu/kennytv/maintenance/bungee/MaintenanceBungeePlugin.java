@@ -31,7 +31,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
         this.plugin = plugin;
         plugin.getLogger().info("Plugin by KennyTV");
 
-        settings = new SettingsBungee(plugin);
+        settings = new SettingsBungee(this, plugin);
 
         final PluginManager pm = getProxy().getPluginManager();
         pm.registerListener(plugin, new PostLoginListener(this, settings));
@@ -60,11 +60,15 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
             settings.reloadConfigs();
         }
 
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
+        serverActions(maintenance);
 
         if (isTaskRunning())
             cancelTask();
+    }
+
+    void serverActions(final boolean maintenance) {
+        if (serverListPlusHook != null)
+            serverListPlusHook.setEnabled(!maintenance);
 
         if (maintenance) {
             getProxy().getPlayers().stream()
