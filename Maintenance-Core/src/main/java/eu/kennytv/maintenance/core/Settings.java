@@ -48,7 +48,7 @@ public abstract class Settings implements ISettings {
     private void updateConfig() {
         // 2.3 pingmessage -> pingmessages
         if (configContains("pingmessage")) {
-            final List<Object> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(getConfigString("pingmessage"));
             setToConfig("pingmessages", list);
             setToConfig("pingmessage", null);

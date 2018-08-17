@@ -21,6 +21,7 @@ public final class SettingsBungee extends Settings {
     private final String maintenanceQuery;
     private final MySQL mySQL;
 
+    private final MaintenanceBungeePlugin maintenancePlugin;
     private final MaintenanceBungeeBase plugin;
     private final IPingListener pingListener;
     private Configuration config;
@@ -29,7 +30,8 @@ public final class SettingsBungee extends Settings {
     private long millisecondsToCheck;
     private long lastMySQLCheck;
 
-    SettingsBungee(final MaintenanceBungeeBase plugin) {
+    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
+        this.maintenancePlugin = maintenancePlugin;
         this.plugin = plugin;
 
         final PluginManager pm = plugin.getProxy().getPluginManager();
@@ -202,8 +204,14 @@ public final class SettingsBungee extends Settings {
         if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
             mySQL.executeQuery(maintenanceQuery, rs -> {
                 try {
-                    if (rs.next())
-                        maintenance = Boolean.parseBoolean(rs.getString("value"));
+                    if (rs.next()) {
+                        final boolean databaseValue = Boolean.parseBoolean(rs.getString("value"));
+                        if (databaseValue != maintenance)
+                            maintenancePlugin.serverActions(maintenance);
+
+                        maintenance = databaseValue;
+                    }
+
                 } catch (final SQLException e) {
                     e.printStackTrace();
                 }
