@@ -1,5 +1,6 @@
 package eu.kennytv.maintenance.spigot.listener;
 
+import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -13,9 +14,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.util.Set;
+import java.util.UUID;
+
 public final class PlayerLoginListener implements Listener {
     private final MaintenanceSpigotPlugin plugin;
     private final SettingsSpigot settings;
+    private final Set<UUID> notifiedPlayers = Sets.newHashSet();
 
     public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
         this.plugin = plugin;
@@ -39,13 +44,14 @@ public final class PlayerLoginListener implements Listener {
             }
         }
 
-        if (!p.hasPermission("maintenance.admin")) return;
+        if (!p.hasPermission("maintenance.admin") || notifiedPlayers.contains(p.getUniqueId())) return;
 
         plugin.async(() -> {
             if (plugin.updateAvailable()) {
-                try {
-                    p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                notifiedPlayers.add(p.getUniqueId());
 
+                try {
                     final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix()));
                     final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
                     final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
@@ -56,7 +62,6 @@ public final class PlayerLoginListener implements Listener {
 
                     p.spigot().sendMessage(tc1);
                 } catch (final Exception e) {
-                    p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
                     p.sendMessage(plugin.getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
                 }
             }

@@ -1,5 +1,6 @@
 package eu.kennytv.maintenance.bungee.listener;
 
+import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.SettingsBungee;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,9 +13,13 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.Set;
+import java.util.UUID;
+
 public final class PostLoginListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settings;
+    private final Set<UUID> notifiedPlayers = Sets.newHashSet();
 
     public PostLoginListener(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         this.plugin = plugin;
@@ -37,11 +42,12 @@ public final class PostLoginListener implements Listener {
             }
         }
 
-        if (!p.hasPermission("maintenance.admin")) return;
+        if (!p.hasPermission("maintenance.admin") || notifiedPlayers.contains(p.getUniqueId())) return;
 
         plugin.async(() -> {
             if (plugin.updateAvailable()) {
                 p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                notifiedPlayers.add(p.getUniqueId());
 
                 final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix() + " "));
                 final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
