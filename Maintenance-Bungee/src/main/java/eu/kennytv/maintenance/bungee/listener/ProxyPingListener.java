@@ -30,7 +30,9 @@ public final class ProxyPingListener implements Listener, IPingListener {
 
         final ServerPing ping = event.getResponse();
         ping.getVersion().setProtocol(1);
-        ping.getVersion().setName(settings.getPlayerCountMessage());
+        ping.getVersion().setName(settings.getPlayerCountMessage()
+                .replace("%ONLINE%", Integer.toString(ping.getPlayers().getOnline()))
+                .replace("%MAX%", Integer.toString(ping.getPlayers().getMax())));
         ping.setDescription(settings.getRandomPingMessage());
         ping.getPlayers().setOnline(0);
         ping.getPlayers().setMax(0);

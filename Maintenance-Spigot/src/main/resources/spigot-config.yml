@@ -12,6 +12,7 @@ pingmessages:
 
 # Is shown at the top right corner of the server in the serverlist,
 # where the playercount would normally be displayed.
+# Use '%ONLINE%' and '%MAX% if you want to include the playercount (e.g. '&cMaintenance &7%ONLINE%&8/&7%MAX%').
 playercountmessage: "&4Maintenance"
 
 # Is shown when you move your mouse above the text at the top right corner of the server in the serverlist,
@@ -26,8 +27,8 @@ no-permission: "&cYou do not have the permission to execute that command."
 maintenance-activated: "&6Maintenance mode is now activated."
 maintenance-deactivated: "&6Maintenance mode is now deactivated."
 
-starttimer-broadcast-mesage: '&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%MINUTES% minutes&7.'
-endtimer-broadcast-mesage: '&8[&eMaintenance&8] &7Maintenance mode will be disabled in &6%MINUTES% minutes&7.'
+starttimer-broadcast-mesage: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%MINUTES% minutes&7."
+endtimer-broadcast-mesage: "&8[&eMaintenance&8] &7Maintenance mode will be disabled in &6%MINUTES% minutes&7."
 
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcasts-for-minutes: [60, 30, 15, 10, 5, 4, 3, 2, 1]
