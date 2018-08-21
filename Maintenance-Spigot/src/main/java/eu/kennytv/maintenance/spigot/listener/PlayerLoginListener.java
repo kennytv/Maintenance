@@ -42,9 +42,8 @@ public final class PlayerLoginListener implements Listener {
         if (!p.hasPermission("maintenance.admin")) return;
 
         plugin.async(() -> {
-            try {
-
-                if (plugin.updateAvailable()) {
+            if (plugin.updateAvailable()) {
+                try {
                     p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
 
                     final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix()));
@@ -56,8 +55,10 @@ public final class PlayerLoginListener implements Listener {
                     tc1.addExtra(click);
 
                     p.spigot().sendMessage(tc1);
+                } catch (final Exception e) {
+                    p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                    p.sendMessage(plugin.getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
                 }
-            } catch (final Exception ignored) {
             }
         });
     }
