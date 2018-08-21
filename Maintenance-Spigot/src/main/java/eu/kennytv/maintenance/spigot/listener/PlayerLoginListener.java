@@ -13,11 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 public final class PlayerLoginListener implements Listener {
     private final MaintenanceSpigotPlugin plugin;
     private final SettingsSpigot settings;
@@ -48,11 +43,9 @@ public final class PlayerLoginListener implements Listener {
 
         plugin.async(() -> {
             try {
-                final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-                final String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine();
 
-                if (!newVersion.equals(plugin.getVersion())) {
-                    p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + newVersion + "§c, you're still on §a" + plugin.getVersion());
+                if (plugin.updateAvailable()) {
+                    p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
 
                     final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix()));
                     final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
