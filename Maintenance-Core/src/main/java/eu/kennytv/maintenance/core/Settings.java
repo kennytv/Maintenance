@@ -19,8 +19,9 @@ public abstract class Settings implements ISettings {
     private String maintenanceDeactivated;
     private String playerCountMessage;
     private String playerCountHoverMessage;
-    private boolean joinNotifications;
+    private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
+    private boolean joinNotifications;
 
     protected void loadSettings() {
         updateConfig();
@@ -34,8 +35,9 @@ public abstract class Settings implements ISettings {
         maintenanceActivated = getConfigString("maintenance-activated");
         maintenanceDeactivated = getConfigString("maintenance-deactivated");
         maintenance = getConfigBoolean("enable-maintenance-mode");
-        joinNotifications = getConfigBoolean("send-join-notification");
+        customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
+        joinNotifications = getConfigBoolean("send-join-notification");
         broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
@@ -140,6 +142,10 @@ public abstract class Settings implements ISettings {
         if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
         return getColoredString(s.replace("%NEWLINE%", "\n"));
+    }
+
+    public boolean hasCustomPlayerCountMessage() {
+        return customPlayerCountMessage;
     }
 
     @Override

@@ -10,9 +10,11 @@ pingmessages:
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
  #- "Another entry"
 
-# Is shown at the top right corner of the server in the serverlist,
+# If set to true, the message below will be shown at the top right corner of the server in the serverlist,
 # where the playercount would normally be displayed.
-# Use '%ONLINE%' and '%MAX% if you want to include the playercount (e.g. '&cMaintenance &7%ONLINE%&8/&7%MAX%').
+# If set to false, the normal playercount will be shown.
+# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message (e.g. '&cMaintenance &7%ONLINE%&8/&7%MAX%').
+enable-playercountmessage: true
 playercountmessage: "&4Maintenance"
 
 # Is shown when you move your mouse above the text at the top right corner of the server in the serverlist,
