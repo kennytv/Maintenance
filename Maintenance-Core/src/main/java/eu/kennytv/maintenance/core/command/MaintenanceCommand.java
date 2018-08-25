@@ -200,7 +200,7 @@ public abstract class MaintenanceCommand {
             sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
         }
         if (sender.hasPermission("maintenance.timer")) {
-            sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled. Broadcast settings for the timer can be found in the config)");
+            sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
             sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
             sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
         }
