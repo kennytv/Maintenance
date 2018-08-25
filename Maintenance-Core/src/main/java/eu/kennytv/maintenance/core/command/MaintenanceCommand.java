@@ -223,7 +223,7 @@ public abstract class MaintenanceCommand {
 
     private boolean checkPermission(final SenderInfo sender, final String permission) {
         if (!sender.hasPermission("maintenance." + permission)) {
-            sender.sendMessage(settings.getNoPermMessage());
+            sender.sendMessage(settings.getMessage("no-permission"));
             return true;
         }
         return false;

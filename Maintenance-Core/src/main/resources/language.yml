@@ -1,0 +1,10 @@
+# Maintenance Plugin by KennyTV
+# Don't remove words inbetween the '%' if you don't exactly know why you're doing it
+
+no-permission: "&cYou do not have the permission to execute that command."
+maintenance-activated: "&8[&eMaintenance&8] &6Maintenance mode is now activated."
+maintenance-deactivated: "&8[&eMaintenance&8] &6Maintenance mode is now deactivated."
+starttimer-broadcast: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%MINUTES% minutes&7."
+endtimer-broadcast: "&8[&eMaintenance&8] &7Maintenance mode will be disabled in &6%MINUTES% minutes&7."
+kickmessage: "&cThe server is currently under maintenance!%NEWLINE%Try again later!"
+join-notification: "&8[&eMaintenance&8] &e%PLAYER% &ctried to join the server."

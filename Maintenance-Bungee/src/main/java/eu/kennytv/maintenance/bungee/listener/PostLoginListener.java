@@ -33,11 +33,11 @@ public final class PostLoginListener implements Listener {
             p.sendMessage("§6MaintenanceBungee §aVersion " + plugin.getVersion());
         else if (settings.isMaintenance()) {
             if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n"));
+                p.disconnect(settings.getMessage("kickmessage").replace("%NEWLINE%", "\n"));
 
                 if (settings.isJoinNotifications())
                     plugin.getProxy().getPlayers().stream().filter(player -> player.hasPermission("maintenance.joinnotification"))
-                            .forEach(player -> player.sendMessage(settings.getJoinNotification().replace("%PLAYER%", p.getName())));
+                            .forEach(player -> player.sendMessage(settings.getMessage("join-notification").replace("%PLAYER%", p.getName())));
                 return;
             }
         }

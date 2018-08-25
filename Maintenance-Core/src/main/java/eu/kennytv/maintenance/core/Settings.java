@@ -10,13 +10,6 @@ public abstract class Settings implements ISettings {
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
-    private String timerBroadcastMessage;
-    private String endtimerBroadcastMessage;
-    private String kickMessage;
-    private String joinNotification;
-    private String noPermMessage;
-    private String maintenanceActivated;
-    private String maintenanceDeactivated;
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private boolean customPlayerCountMessage;
@@ -27,13 +20,6 @@ public abstract class Settings implements ISettings {
         updateConfig();
 
         pingMessages = getConfigList("pingmessages");
-        timerBroadcastMessage = getConfigString("starttimer-broadcast-mesage");
-        endtimerBroadcastMessage = getConfigString("endtimer-broadcast-mesage");
-        kickMessage = getConfigString("kickmessage");
-        joinNotification = getConfigString("join-notification");
-        noPermMessage = getConfigString("no-permission");
-        maintenanceActivated = getConfigString("maintenance-activated");
-        maintenanceDeactivated = getConfigString("maintenance-deactivated");
         maintenance = getConfigBoolean("enable-maintenance-mode");
         customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
@@ -102,34 +88,6 @@ public abstract class Settings implements ISettings {
 
     public Set<Integer> getBroadcastIntervalls() {
         return broadcastIntervalls;
-    }
-
-    public String getTimerBroadcastMessage() {
-        return timerBroadcastMessage;
-    }
-
-    public String getEndtimerBroadcastMessage() {
-        return endtimerBroadcastMessage;
-    }
-
-    public String getKickMessage() {
-        return kickMessage;
-    }
-
-    public String getJoinNotification() {
-        return joinNotification;
-    }
-
-    public String getNoPermMessage() {
-        return noPermMessage;
-    }
-
-    public String getMaintenanceActivated() {
-        return maintenanceActivated;
-    }
-
-    public String getMaintenanceDeactivated() {
-        return maintenanceDeactivated;
     }
 
     public String getPlayerCountMessage() {

@@ -73,10 +73,10 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
         if (maintenance) {
             getProxy().getPlayers().stream()
                     .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                    .forEach(p -> p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n")));
-            getProxy().broadcast(settings.getMaintenanceActivated());
+                    .forEach(p -> p.disconnect(settings.getMessage("kickmessage").replace("%NEWLINE%", "\n")));
+            getProxy().broadcast(settings.getMessage("maintenance-activated"));
         } else
-            getProxy().broadcast(settings.getMaintenanceDeactivated());
+            getProxy().broadcast(settings.getMessage("maintenance-deactivated"));
     }
 
     @Override
