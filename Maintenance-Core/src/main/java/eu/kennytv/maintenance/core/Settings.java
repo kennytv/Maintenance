@@ -57,6 +57,12 @@ public abstract class Settings implements ISettings {
             saveConfig();
             reloadConfigs();
         }
+        // 2.4 enable-playercountmessage
+        if (!configContains("enable-playercountmessage")) {
+            setToConfig("enable-playercountmessage", true);
+            saveConfig();
+            reloadConfigs();
+        }
 
         updateExtraConfig();
     }
@@ -66,9 +72,9 @@ public abstract class Settings implements ISettings {
 
     public abstract void saveWhitelistedPlayers();
 
-    public abstract boolean createFiles();
-
     public abstract String getConfigString(String path);
+
+    public abstract String getMessage(String path);
 
     public abstract boolean getConfigBoolean(String path);
 

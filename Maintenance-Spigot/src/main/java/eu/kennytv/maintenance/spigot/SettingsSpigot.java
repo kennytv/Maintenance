@@ -19,6 +19,7 @@ public final class SettingsSpigot extends Settings {
     private final MaintenanceSpigotBase plugin;
     private final IPingListener pingListener;
     private FileConfiguration config;
+    private FileConfiguration language;
     private FileConfiguration whitelist;
 
     SettingsSpigot(final MaintenanceSpigotBase plugin) {
@@ -33,8 +34,24 @@ public final class SettingsSpigot extends Settings {
             pingListener = listener;
         }
 
-        createFiles();
+        if (!plugin.getDataFolder().exists())
+            plugin.getDataFolder().mkdirs();
+        createFile("spigot-config.yml");
+        createFile("language.yml");
+        createFile("WhitelistedPlayers.yml");
+
         reloadConfigs();
+    }
+
+    private void createFile(final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource(name)) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
+            }
+        }
     }
 
     @Override
@@ -57,12 +74,14 @@ public final class SettingsSpigot extends Settings {
 
     @Override
     public void reloadConfigs() {
-        final File file = new File(plugin.getDataFolder(), "spigot-config.yml");
         try {
+            final File file = new File(plugin.getDataFolder(), "spigot-config.yml");
             config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            final File languageFile = new File(plugin.getDataFolder(), "language.yml");
+            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(languageFile), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to load spigot-config.yml!", e);
+            throw new RuntimeException("Unable to load Maintenance files!", e);
         }
 
         loadSettings();
@@ -80,35 +99,20 @@ public final class SettingsSpigot extends Settings {
     }
 
     @Override
-    public boolean createFiles() {
-        if (!plugin.getDataFolder().exists())
-            plugin.getDataFolder().mkdirs();
-
-        final File file = new File(plugin.getDataFolder(), "spigot-config.yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResource("spigot-config.yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create spigot-config.yml file for Maintenance!", e);
-            }
-        }
-
-        final File whitelistFile = new File(plugin.getDataFolder(), "WhitelistedPlayers.yml");
-        if (!whitelistFile.exists()) {
-            try (final InputStream in = plugin.getResource("WhitelistedPlayers.yml")) {
-                Files.copy(in, whitelistFile.toPath());
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create WhitelistedPlayers.yml file for Maintenance!", e);
-            }
-        }
-        return true;
-    }
-
-    @Override
     public String getConfigString(final String path) {
         final String s = config.getString(path);
         if (s == null) {
             plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    @Override
+    public String getMessage(final String path) {
+        final String s = language.getString(path);
+        if (s == null) {
+            plugin.getLogger().warning("The language file is missing the following string: " + path);
             return "null";
         }
         return ChatColor.translateAlternateColorCodes('&', s);
