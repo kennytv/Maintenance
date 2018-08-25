@@ -23,12 +23,15 @@ public abstract class MaintenanceCommand {
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkPermission(sender, "command")) return;
         if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("on")) {
+            if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
                 if (checkPermission(sender, "toggle")) return;
-                plugin.setMaintenance(true);
-            } else if (args[0].equalsIgnoreCase("off")) {
-                if (checkPermission(sender, "toggle")) return;
-                plugin.setMaintenance(false);
+
+                final boolean maintenance = args[0].equalsIgnoreCase("on");
+                if (maintenance == plugin.isMaintenance()) {
+                    sender.sendMessage(plugin.getPrefix() + "§cMaintenance already is " + (maintenance ? "enabled!" : "disabled!"));
+                    return;
+                }
+                plugin.setMaintenance(maintenance);
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (checkPermission(sender, "reload")) return;
                 settings.reloadConfigs();
@@ -97,6 +100,10 @@ public abstract class MaintenanceCommand {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
                     sender.sendMessage(plugin.getPrefix() + "§6/maintenance starttimer <minutes>");
+                    return;
+                }
+                if (plugin.isMaintenance()) {
+                    sender.sendMessage(plugin.getPrefix() + "§cMaintenance already is enabled!");
                     return;
                 }
                 if (plugin.isTaskRunning()) {
