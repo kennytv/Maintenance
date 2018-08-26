@@ -21,14 +21,14 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final ProxiedPlayer selected = ProxyServer.getInstance().getPlayer(name);
         if (selected == null) {
-            sender.sendMessage(plugin.getPrefix() + "§cThere's no player online with that name.");
+            sender.sendMessage(settings.getMessage("playerNotOnline"));
             return;
         }
 
         if (settings.addWhitelistedPlayer(selected.getUniqueId(), selected.getName()))
-            sender.sendMessage(plugin.getPrefix() + "§aAdded §b" + selected.getName() + " §ato the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
         else
-            sender.sendMessage(plugin.getPrefix() + "§b" + selected.getName() + " §calready is in the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
     }
 
     @Override
@@ -36,16 +36,16 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         final ProxiedPlayer selected = ProxyServer.getInstance().getPlayer(name);
         if (selected == null) {
             if (settings.removeWhitelistedPlayer(name.toLowerCase()))
-                sender.sendMessage(plugin.getPrefix() + "§aRemoved §b" + name.toLowerCase() + " §afrom the maintenance whitelist!");
+                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name.toLowerCase()));
             else
-                sender.sendMessage(plugin.getPrefix() + "§cThere is no player with that name in the maintenance whitelist!");
+                sender.sendMessage(settings.getMessage("whitelistNotFound"));
             return;
         }
 
         if (settings.removeWhitelistedPlayer(selected.getUniqueId()))
-            sender.sendMessage(plugin.getPrefix() + "§aRemoved §b" + selected.getName() + " §afrom the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
         else
-            sender.sendMessage(plugin.getPrefix() + "§cThis player is not in the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistNotFound"));
     }
 
     @Override

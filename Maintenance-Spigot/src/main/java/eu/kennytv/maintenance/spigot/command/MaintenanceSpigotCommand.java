@@ -28,42 +28,46 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            settings.addWhitelistedPlayer(selected.getUniqueId(), selected.getName());
-            sender.sendMessage(plugin.getPrefix() + "§aAdded §b" + selected.getName() + " §ato the maintenance whitelist!");
+            if (settings.addWhitelistedPlayer(selected.getUniqueId(), selected.getName()))
+                sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
+            else
+                sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
             return;
         }
 
         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
         if (!offlinePlayer.hasPlayedBefore()) {
-            sender.sendMessage(plugin.getPrefix() + "§cNo player with this name has played on this server before.");
+            sender.sendMessage(settings.getMessage("playerNotFound"));
             return;
         }
 
         if (settings.addWhitelistedPlayer(offlinePlayer.getUniqueId(), offlinePlayer.getName()))
-            sender.sendMessage(plugin.getPrefix() + "§aAdded §b" + offlinePlayer.getName() + " §ato the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", offlinePlayer.getName()));
         else
-            sender.sendMessage(plugin.getPrefix() + "§b" + offlinePlayer.getName() + " §calready is in the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", offlinePlayer.getName()));
     }
 
     @Override
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            settings.removeWhitelistedPlayer(selected.getUniqueId());
-            sender.sendMessage(plugin.getPrefix() + "§aRemoved §b" + selected.getName() + " §afrom the maintenance whitelist!");
+            if (settings.removeWhitelistedPlayer(selected.getUniqueId()))
+                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
+            else
+                sender.sendMessage(settings.getMessage("whitelistNotFound"));
             return;
         }
 
         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
         if (!offlinePlayer.hasPlayedBefore()) {
-            sender.sendMessage(plugin.getPrefix() + "§cNo player with this name has played on this server before.");
+            sender.sendMessage(settings.getMessage("playerNotFound"));
             return;
         }
 
         if (settings.removeWhitelistedPlayer(offlinePlayer.getUniqueId()))
-            sender.sendMessage(plugin.getPrefix() + "§aRemoved §b" + offlinePlayer.getName() + " §afrom the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", offlinePlayer.getName()));
         else
-            sender.sendMessage(plugin.getPrefix() + "§cThis player is not in the maintenance whitelist!");
+            sender.sendMessage(settings.getMessage("whitelistNotFound"));
     }
 
     @Override
