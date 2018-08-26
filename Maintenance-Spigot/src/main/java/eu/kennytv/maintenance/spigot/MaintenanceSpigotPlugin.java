@@ -63,9 +63,9 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
             getServer().getOnlinePlayers().stream()
                     .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                     .forEach(p -> p.kickPlayer(settings.getMessage("kickmessage").replace("%NEWLINE%", "\n")));
-            getServer().broadcastMessage(settings.getMessage("maintenance-activated"));
+            getServer().broadcastMessage(settings.getMessage("maintenanceActivated"));
         } else
-            getServer().broadcastMessage(settings.getMessage("maintenance-deactivated"));
+            getServer().broadcastMessage(settings.getMessage("maintenanceDeactivated"));
     }
 
     @Override

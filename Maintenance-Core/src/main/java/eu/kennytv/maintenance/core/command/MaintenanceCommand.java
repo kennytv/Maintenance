@@ -28,40 +28,41 @@ public abstract class MaintenanceCommand {
 
                 final boolean maintenance = args[0].equalsIgnoreCase("on");
                 if (maintenance == plugin.isMaintenance()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cMaintenance already is " + (maintenance ? "enabled!" : "disabled!"));
+                    sender.sendMessage(settings.getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
                     return;
                 }
                 plugin.setMaintenance(maintenance);
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (checkPermission(sender, "reload")) return;
                 settings.reloadConfigs();
-                sender.sendMessage(plugin.getPrefix() + "§aReloaded config, whitelistedplayers and the maintenance icon");
+                sender.sendMessage(settings.getMessage("reloaded"));
             } else if (args[0].equalsIgnoreCase("update")) {
                 if (checkPermission(sender, "update")) return;
                 checkForUpdate(sender);
             } else if (args[0].equals("forceupdate")) {
                 if (checkPermission(sender, "update")) return;
-                sender.sendMessage(plugin.getPrefix() + "§c§lDownloading update...");
+                sender.sendMessage(settings.getMessage("updateDownloading"));
 
                 if (plugin.installUpdate())
-                    sender.sendMessage(plugin.getPrefix() + "§a§lThe update was successful! To prevent issues with tasks and to complete the update, you have to restart the proxy!");
+                    sender.sendMessage(settings.getMessage("updateFinished"));
                 else
-                    sender.sendMessage(plugin.getPrefix() + "§4Failed!");
+                    sender.sendMessage(settings.getMessage("updateFailed"));
             } else if (args[0].equalsIgnoreCase("whitelist")) {
                 if (checkPermission(sender, "whitelist.list")) return;
                 final Map<UUID, String> players = settings.getWhitelistedPlayers();
                 if (players.isEmpty()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThe maintenance whitelist is empty! Use \"/maintenance add <player>\" to add someone!");
+                    sender.sendMessage(settings.getMessage("whitelistEmtpy"));
                 } else if (players.size() == 1 && players.containsKey(UUID.fromString("a8179ff3-c201-4a75-bdaa-9d14aca6f83f"))) {
-                    sender.sendMessage(plugin.getPrefix() + "§cUse \"/maintenance add <player>\" to add someone. Alternatively, you can add the uuid of a player to the WhitelistedPlayers.yml as seen in the example in the file!");
+                    sender.sendMessage(settings.getMessage("whitelistEmptyDefault"));
                 } else {
-                    sender.sendMessage("§6Whitelisted players for maintenance:");
-                    players.forEach((key, value) -> sender.sendMessage("§8- §e" + value + " §8(§7" + key + "§8)"));
+                    sender.sendMessage(settings.getMessage("whitelistedPlayers"));
+                    final String format = settings.getMessage("whitelistedPlayersFormat");
+                    players.forEach((key, value) -> sender.sendMessage(format.replace("%NAME%", value).replace("%UUID%", key.toString())));
                     sender.sendMessage("");
                 }
             } else if (args[0].equalsIgnoreCase("motd")) {
                 if (checkPermission(sender, "motd")) return;
-                sender.sendMessage(plugin.getPrefix() + "§7List of your maintenance motds:");
+                sender.sendMessage(settings.getMessage("motdList"));
                 for (int i = 0; i < settings.getPingMessages().size(); i++) {
                     sender.sendMessage("§b" + (i + 1) + "§8§m---------");
                     for (final String motd : settings.getColoredString(settings.getPingMessages().get(i)).split("%NEWLINE%")) {
@@ -75,64 +76,64 @@ public abstract class MaintenanceCommand {
             if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
-                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance endtimer <minutes>");
+                    sender.sendMessage(settings.getMessage("endtimerUsage"));
                     return;
                 }
                 if (plugin.isTaskRunning()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThere's already a starttimer scheduled!");
+                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
                     return;
                 }
 
                 final int minutes = Integer.parseInt(args[1]);
                 if (minutes > 40320) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThe number has to be less than 40320 (28 days)!");
+                    sender.sendMessage(settings.getMessage("timerTooLong"));
                     return;
                 }
                 if (minutes < 1) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThink about running a timer for a negative amount of minutes. Doesn't work §othat §r§cwell.");
+                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
                     return;
                 }
 
                 plugin.setMaintenance(true);
-                sender.sendMessage(plugin.getPrefix() + "§aStarted timer: §7Maintenance mode will be deactivated in §6" + minutes + " minutes§7.");
+                sender.sendMessage(settings.getMessage("endtimerStared").replace("%MINUTES%", args[1]));
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, false)));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
-                    sender.sendMessage(plugin.getPrefix() + "§6/maintenance starttimer <minutes>");
+                    sender.sendMessage(settings.getMessage("starttimerUsage"));
                     return;
                 }
                 if (plugin.isMaintenance()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cMaintenance already is enabled!");
+                    sender.sendMessage(settings.getMessage("alreadyEnabled"));
                     return;
                 }
                 if (plugin.isTaskRunning()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThere's already running a timer!");
+                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
                     return;
                 }
 
                 final int minutes = Integer.parseInt(args[1]);
                 if (minutes > 40320) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThe number has to be less than 40320 (28 days)!");
+                    sender.sendMessage(settings.getMessage("timerTooLong"));
                     return;
                 }
                 if (minutes < 1) {
-                    sender.sendMessage(plugin.getPrefix() + "§cThink about running a timer for a negative amount of minutes. Doesn't work §othat §cwell.");
+                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
                     return;
                 }
 
-                sender.sendMessage(plugin.getPrefix() + "§aStarted timer: §7Maintenance mode will be activated in §6" + minutes + " minutes§7.");
+                sender.sendMessage(settings.getMessage("starttimerStared").replace("%MINUTES%", args[1]));
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, true)));
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                     if (checkPermission(sender, "timer")) return;
                     if (!plugin.isTaskRunning()) {
-                        sender.sendMessage(plugin.getPrefix() + "§cThere's currently no running timer.");
+                        sender.sendMessage(settings.getMessage("timerNotRunning"));
                         return;
                     }
 
                     plugin.cancelTask();
-                    sender.sendMessage(plugin.getPrefix() + "§cThe timer has been disabled.");
+                    sender.sendMessage(settings.getMessage("timerCancelled"));
                 } else
                     sendUsage(sender);
             } else if (args[0].equalsIgnoreCase("add")) {
@@ -146,25 +147,25 @@ public abstract class MaintenanceCommand {
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
             if (!isNumeric(args[1])) {
-                sender.sendMessage(plugin.getPrefix() + "§cThe first argument has to be the motd index!");
+                sender.sendMessage(settings.getMessage("setMotdUsage"));
                 return;
             }
 
             final int index = Integer.parseInt(args[1]);
             if (index < 1 || index > settings.getPingMessages().size() + 1) {
-                sender.sendMessage(plugin.getPrefix() + "§cYou currently have " + settings.getPingMessages().size()
-                        + " motds, so you have to pick a number between 1 and " + (settings.getPingMessages().size() + 1));
+                sender.sendMessage(settings.getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
+                        .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size() + 1)));
                 return;
             }
 
             if (!isNumeric(args[2])) {
-                sender.sendMessage(plugin.getPrefix() + "§cThe second argument has to be the line number (1 or 2)!");
+                sender.sendMessage(settings.getMessage("setMotdUsage"));
                 return;
             }
 
             final int line = Integer.parseInt(args[2]);
             if (line != 1 && line != 2) {
-                sender.sendMessage(plugin.getPrefix() + "§cThe second argument has to be the line number (1 or 2)!");
+                sender.sendMessage(settings.getMessage("setMotdUsage"));
                 return;
             }
 
@@ -185,7 +186,8 @@ public abstract class MaintenanceCommand {
             settings.setToConfig("pingmessages", settings.getPingMessages());
             settings.saveConfig();
             settings.reloadConfigs();
-            sender.sendMessage(plugin.getPrefix() + "§aSet line " + line + " of the " + index + ". maintenance motd to §f" + settings.getColoredString(message));
+            sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
+                    .replace("%MOTD%", "§f" + settings.getColoredString(message)));
         } else
             sendUsage(sender);
     }

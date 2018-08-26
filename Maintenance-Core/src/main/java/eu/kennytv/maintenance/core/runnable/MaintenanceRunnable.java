@@ -24,9 +24,9 @@ public final class MaintenanceRunnable implements Runnable {
                 plugin.cancelTask();
         } else if (settings.getBroadcastIntervalls().contains(minutes)) {
             if (enable)
-                plugin.broadcast(settings.getMessage("starttimer-broadcast").replaceAll("%MINUTES%", String.valueOf(minutes)));
+                plugin.broadcast(settings.getMessage("starttimerBroadcast").replaceAll("%MINUTES%", String.valueOf(minutes)));
             else
-                plugin.broadcast(settings.getMessage("endtimer-broadcast").replaceAll("%MINUTES%", String.valueOf(minutes)));
+                plugin.broadcast(settings.getMessage("endtimerBroadcast").replaceAll("%MINUTES%", String.valueOf(minutes)));
         }
 
         minutes--;

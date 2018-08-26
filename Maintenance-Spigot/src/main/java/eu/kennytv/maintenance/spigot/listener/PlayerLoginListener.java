@@ -39,7 +39,7 @@ public final class PlayerLoginListener implements Listener {
 
                 if (settings.isJoinNotifications())
                     Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("maintenance.joinnotification"))
-                            .forEach(player -> player.sendMessage(settings.getMessage("join-notification").replace("%PLAYER%", p.getName())));
+                            .forEach(player -> player.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", p.getName())));
                 return;
             }
         }

@@ -37,7 +37,7 @@ public final class PostLoginListener implements Listener {
 
                 if (settings.isJoinNotifications())
                     plugin.getProxy().getPlayers().stream().filter(player -> player.hasPermission("maintenance.joinnotification"))
-                            .forEach(player -> player.sendMessage(settings.getMessage("join-notification").replace("%PLAYER%", p.getName())));
+                            .forEach(player -> player.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", p.getName())));
                 return;
             }
         }
