@@ -35,8 +35,8 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final ProxiedPlayer selected = ProxyServer.getInstance().getPlayer(name);
         if (selected == null) {
-            if (settings.removeWhitelistedPlayer(name.toLowerCase()))
-                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name.toLowerCase()));
+            if (settings.removeWhitelistedPlayer(name))
+                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name));
             else
                 sender.sendMessage(settings.getMessage("whitelistNotFound"));
             return;
@@ -51,7 +51,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     @Override
     protected void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
-            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the proxy to prevent further issues and to complete the update!" +
                     " If you can't do that, don't update!");
             final TextComponent tc = new TextComponent("§6× §8[§aUpdate§8]");

@@ -46,7 +46,7 @@ public final class PostLoginListener implements Listener {
 
         plugin.async(() -> {
             if (plugin.updateAvailable()) {
-                p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
                 notifiedPlayers.add(p.getUniqueId());
 
                 final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix() + " "));

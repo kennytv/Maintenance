@@ -48,7 +48,7 @@ public final class PlayerLoginListener implements Listener {
 
         plugin.async(() -> {
             if (plugin.updateAvailable()) {
-                p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+                p.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
                 notifiedPlayers.add(p.getUniqueId());
 
                 try {

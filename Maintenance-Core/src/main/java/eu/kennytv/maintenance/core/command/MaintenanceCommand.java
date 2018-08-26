@@ -35,7 +35,7 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (checkPermission(sender, "reload")) return;
                 settings.reloadConfigs();
-                sender.sendMessage(settings.getMessage("reloaded"));
+                sender.sendMessage(settings.getMessage("reload"));
             } else if (args[0].equalsIgnoreCase("update")) {
                 if (checkPermission(sender, "update")) return;
                 checkForUpdate(sender);
@@ -95,7 +95,7 @@ public abstract class MaintenanceCommand {
                 }
 
                 plugin.setMaintenance(true);
-                sender.sendMessage(settings.getMessage("endtimerStared").replace("%MINUTES%", args[1]));
+                sender.sendMessage(settings.getMessage("endtimerStarted").replace("%MINUTES%", args[1]));
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, false)));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
@@ -122,7 +122,7 @@ public abstract class MaintenanceCommand {
                     return;
                 }
 
-                sender.sendMessage(settings.getMessage("starttimerStared").replace("%MINUTES%", args[1]));
+                sender.sendMessage(settings.getMessage("starttimerStarted").replace("%MINUTES%", args[1]));
                 plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, true)));
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
@@ -159,13 +159,13 @@ public abstract class MaintenanceCommand {
             }
 
             if (!isNumeric(args[2])) {
-                sender.sendMessage(settings.getMessage("setMotdUsage"));
+                sender.sendMessage(settings.getMessage("setMotdLineError"));
                 return;
             }
 
             final int line = Integer.parseInt(args[2]);
             if (line != 1 && line != 2) {
-                sender.sendMessage(settings.getMessage("setMotdUsage"));
+                sender.sendMessage(settings.getMessage("setMotdLineError"));
                 return;
             }
 
@@ -225,7 +225,7 @@ public abstract class MaintenanceCommand {
 
     private boolean checkPermission(final SenderInfo sender, final String permission) {
         if (!sender.hasPermission("maintenance." + permission)) {
-            sender.sendMessage(settings.getMessage("no-permission"));
+            sender.sendMessage(settings.getMessage("noPermission"));
             return true;
         }
         return false;

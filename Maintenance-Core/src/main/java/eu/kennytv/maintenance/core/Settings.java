@@ -144,8 +144,10 @@ public abstract class Settings implements ISettings {
     @Deprecated
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
-        if (!whitelistedPlayers.containsValue(name)) return false;
-        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findAny().get().getKey();
+        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
+        if (entry == null) return false;
+
+        final UUID uuid = entry.getKey();
         whitelistedPlayers.remove(uuid);
         setWhitelist(uuid.toString(), null);
         saveWhitelistedPlayers();

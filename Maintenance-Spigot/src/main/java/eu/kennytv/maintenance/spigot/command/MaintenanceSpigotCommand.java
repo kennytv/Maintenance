@@ -73,7 +73,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     @Override
     protected void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
-            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're still on §a" + plugin.getVersion());
+            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update!" +
                     " If you can't do that, don't update!");
             sender.sendMessage(plugin.getPrefix() + "§eUse §c§l/maintenance forceupdate §eto update!");
