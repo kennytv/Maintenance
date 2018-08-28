@@ -81,7 +81,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
 
     @Override
     public int schedule(final Runnable runnable) {
-        return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.MINUTES).getId();
+        return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId();
     }
 
     @Override
@@ -92,7 +92,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     @Override
     public void cancelTask() {
         getProxy().getScheduler().cancel(taskId);
-        setTaskId(0);
+        runnable = null;
+        taskId = 0;
     }
 
     @Override

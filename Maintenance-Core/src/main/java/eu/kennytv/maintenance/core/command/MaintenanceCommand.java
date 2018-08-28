@@ -2,7 +2,6 @@ package eu.kennytv.maintenance.core.command;
 
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Arrays;
@@ -94,9 +93,10 @@ public abstract class MaintenanceCommand {
                     return;
                 }
 
-                plugin.setMaintenance(true);
+                if (!plugin.isMaintenance())
+                    plugin.setMaintenance(true);
                 sender.sendMessage(settings.getMessage("endtimerStarted").replace("%MINUTES%", args[1]));
-                plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, false)));
+                plugin.startMaintenanceRunnable(minutes, false);
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
@@ -123,7 +123,7 @@ public abstract class MaintenanceCommand {
                 }
 
                 sender.sendMessage(settings.getMessage("starttimerStarted").replace("%MINUTES%", args[1]));
-                plugin.setTaskId(plugin.schedule(new MaintenanceRunnable(plugin, settings, minutes, true)));
+                plugin.startMaintenanceRunnable(minutes, true);
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                     if (checkPermission(sender, "timer")) return;

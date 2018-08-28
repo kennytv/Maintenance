@@ -2,6 +2,7 @@ package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
+import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -11,8 +12,9 @@ import java.net.URLConnection;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
     protected final String version;
-    protected int taskId;
     protected ServerListPlusHook serverListPlusHook;
+    protected MaintenanceRunnable runnable;
+    protected int taskId;
     private final String prefix;
     private String newestVersion;
 
@@ -36,8 +38,9 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return taskId != 0;
     }
 
-    public void setTaskId(final int taskId) {
-        this.taskId = taskId;
+    public void startMaintenanceRunnable(final int minutes, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
+        taskId = schedule(runnable);
     }
 
     public String getNewestVersion() {
@@ -56,6 +59,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public String formatedTimer() {
+        final int preHours = runnable.getSecondsLeft() / 60;
+        final int minutes = preHours % 60;
+        final int seconds = runnable.getSecondsLeft() % 60;
+        return String.format("%02d:%02d:%02d", preHours / 60, minutes, seconds);
     }
 
     public boolean updateAvailable() {

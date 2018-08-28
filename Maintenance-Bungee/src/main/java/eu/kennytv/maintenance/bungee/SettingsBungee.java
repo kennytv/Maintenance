@@ -82,13 +82,13 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    public void updateExtraConfig() {
+    public boolean updateExtraConfig() {
         // 2.3.1 mysql.update-interval
         if (!configContains("mysql.update-interval")) {
             setToConfig("mysql.update-interval", 15);
-            saveConfig();
-            reloadConfigs();
+            return true;
         }
+        return false;
     }
 
     @Override

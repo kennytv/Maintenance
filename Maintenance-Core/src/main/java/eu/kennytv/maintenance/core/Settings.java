@@ -24,7 +24,7 @@ public abstract class Settings implements ISettings {
         customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
         joinNotifications = getConfigBoolean("send-join-notification");
-        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
+        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
         playerCountMessage = getConfigString("playercountmessage");
         playerCountHoverMessage = getConfigString("playercounthovermessage");
         if (customMaintenanceIcon)
@@ -34,26 +34,36 @@ public abstract class Settings implements ISettings {
     }
 
     private void updateConfig() {
+        boolean fileChanged = false;
+
         // 2.3 pingmessage -> pingmessages
         if (configContains("pingmessage")) {
             final List<String> list = new ArrayList<>();
             list.add(getConfigString("pingmessage"));
             setToConfig("pingmessages", list);
             setToConfig("pingmessage", null);
-            saveConfig();
-            reloadConfigs();
+            fileChanged = true;
         }
         // 2.4 enable-playercountmessage
         if (!configContains("enable-playercountmessage")) {
             setToConfig("enable-playercountmessage", true);
+            fileChanged = true;
+        }
+        // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
+        if (configContains("timer-broadcasts-for-minutes")) {
+            setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
+            setToConfig("timer-broadcasts-for-minutes", null);
+            fileChanged = true;
+        }
+
+        if (fileChanged || updateExtraConfig()) {
             saveConfig();
             reloadConfigs();
         }
-
-        updateExtraConfig();
     }
 
-    public void updateExtraConfig() {
+    public boolean updateExtraConfig() {
+        return false;
     }
 
     public abstract void saveWhitelistedPlayers();

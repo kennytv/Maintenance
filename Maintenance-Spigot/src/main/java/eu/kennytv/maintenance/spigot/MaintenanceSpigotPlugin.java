@@ -70,7 +70,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
     @Override
     public int schedule(final Runnable runnable) {
-        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 1200);
+        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20);
     }
 
     @Override
@@ -81,7 +81,8 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public void cancelTask() {
         getServer().getScheduler().cancelTask(taskId);
-        setTaskId(0);
+        runnable = null;
+        taskId = 0;
     }
 
     @Override

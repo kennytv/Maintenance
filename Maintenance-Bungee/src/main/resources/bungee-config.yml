@@ -22,7 +22,7 @@ playercountmessage: "&4Maintenance"
 playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
 
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
-timer-broadcasts-for-minutes: [60, 30, 15, 10, 5, 4, 3, 2, 1]
+timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
 
 # If set to true, players with the maintenance.joinnotification permission will receive a message,
 # that a player tried to join the server while maintenance is enabled.
