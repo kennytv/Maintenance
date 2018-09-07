@@ -30,6 +30,7 @@ public abstract class MaintenanceCommand {
                     sender.sendMessage(settings.getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
                     return;
                 }
+
                 plugin.setMaintenance(maintenance);
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (checkPermission(sender, "reload")) return;
@@ -95,8 +96,8 @@ public abstract class MaintenanceCommand {
 
                 if (!plugin.isMaintenance())
                     plugin.setMaintenance(true);
-                sender.sendMessage(settings.getMessage("endtimerStarted").replace("%MINUTES%", args[1]));
                 plugin.startMaintenanceRunnable(minutes, false);
+                sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
@@ -142,6 +143,29 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equalsIgnoreCase("remove")) {
                 if (checkPermission(sender, "whitelist.remove")) return;
                 removePlayerFromWhitelist(sender, args[1]);
+            } else if (args[0].equalsIgnoreCase("removemotd")) {
+                if (checkPermission(sender, "setmotd")) return;
+                if (!isNumeric(args[1])) {
+                    sender.sendMessage(settings.getMessage("removeMotdUsage"));
+                    return;
+                }
+                if (settings.getPingMessages().size() < 2) {
+                    sender.sendMessage(settings.getMessage("removeMotdError"));
+                    return;
+                }
+
+                final int index = Integer.parseInt(args[1]);
+                if (index > settings.getPingMessages().size()) {
+                    sender.sendMessage(settings.getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
+                            .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size())));
+                    return;
+                }
+
+                settings.getPingMessages().remove(index - 1);
+                settings.setToConfig("pingmessages", settings.getPingMessages());
+                settings.saveConfig();
+                settings.reloadConfigs();
+                sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
@@ -212,13 +236,15 @@ public abstract class MaintenanceCommand {
             sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
         if (sender.hasPermission("maintenance.whitelist.remove"))
             sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        if (sender.hasPermission("maintenance.setmotd"))
+        if (sender.hasPermission("maintenance.setmotd")) {
             sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
+            sender.sendMessage("§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
+        }
         if (sender.hasPermission("maintenance.motd"))
             sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
         if (sender.hasPermission("maintenance.update"))
             sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
-        sender.sendMessage("§7Created by §bKennyTV");
+        sender.sendMessage("§8× §7Created by §bKennyTV");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
         sender.sendMessage("");
     }

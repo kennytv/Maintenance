@@ -22,7 +22,7 @@ public final class MaintenanceRunnable implements Runnable {
             plugin.setMaintenance(enable);
             if (plugin.isTaskRunning())
                 plugin.cancelTask();
-        } else if (settings.getBroadcastIntervalls().contains(seconds * 60)) {
+        } else if (settings.getBroadcastIntervalls().contains(seconds)) {
             if (enable)
                 plugin.broadcast(settings.getMessage("starttimerBroadcast").replaceAll("%TIME%", getTime()));
             else
@@ -32,7 +32,7 @@ public final class MaintenanceRunnable implements Runnable {
         seconds--;
     }
 
-    private String getTime() {
+    public String getTime() {
         final int preHours = this.seconds / 60;
         final int minutes = preHours % 60;
         final int seconds = this.seconds % 60;

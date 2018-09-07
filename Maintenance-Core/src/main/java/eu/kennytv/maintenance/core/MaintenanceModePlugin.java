@@ -35,19 +35,19 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     @Override
     public boolean isTaskRunning() {
-        return taskId != 0;
+        return taskId != 0 && runnable != null;
     }
 
     public void startMaintenanceRunnable(final int minutes, final boolean enable) {
         runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
-        taskId = schedule(runnable);
+        taskId = startMaintenanceRunnable(runnable);
     }
 
     public String getNewestVersion() {
         return newestVersion;
     }
 
-    public abstract int schedule(Runnable runnable);
+    public abstract int startMaintenanceRunnable(Runnable runnable);
 
     public abstract void async(Runnable runnable);
 
@@ -57,11 +57,16 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract void broadcast(String message);
 
+    public MaintenanceRunnable getRunnable() {
+        return runnable;
+    }
+
     public String getPrefix() {
         return prefix;
     }
 
     public String formatedTimer() {
+        if (!isTaskRunning()) return "-";
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
         final int seconds = runnable.getSecondsLeft() % 60;

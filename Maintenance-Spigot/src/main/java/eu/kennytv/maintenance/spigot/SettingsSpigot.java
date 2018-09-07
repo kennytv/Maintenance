@@ -22,7 +22,8 @@ public final class SettingsSpigot extends Settings {
     private FileConfiguration language;
     private FileConfiguration whitelist;
 
-    SettingsSpigot(final MaintenanceSpigotBase plugin) {
+    SettingsSpigot(final MaintenanceSpigotPlugin pl, final MaintenanceSpigotBase plugin) {
+        super(pl);
         this.plugin = plugin;
 
         final PluginManager pm = plugin.getServer().getPluginManager();

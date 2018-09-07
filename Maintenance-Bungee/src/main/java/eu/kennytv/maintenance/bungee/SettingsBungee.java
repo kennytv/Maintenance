@@ -32,6 +32,7 @@ public final class SettingsBungee extends Settings {
     private long lastMySQLCheck;
 
     SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
+        super(maintenancePlugin);
         this.maintenancePlugin = maintenancePlugin;
         this.plugin = plugin;
 

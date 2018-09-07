@@ -80,7 +80,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public int schedule(final Runnable runnable) {
+    public int startMaintenanceRunnable(final Runnable runnable) {
         return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId();
     }
 

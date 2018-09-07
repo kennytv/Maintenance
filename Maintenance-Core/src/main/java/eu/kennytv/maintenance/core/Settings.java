@@ -7,6 +7,7 @@ import java.util.*;
 public abstract class Settings implements ISettings {
     private static final Random RANDOM = new Random();
     protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
+    private final MaintenanceModePlugin plugin;
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
@@ -15,6 +16,10 @@ public abstract class Settings implements ISettings {
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
+
+    protected Settings(final MaintenanceModePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     protected void loadSettings() {
         updateConfig();
@@ -115,7 +120,7 @@ public abstract class Settings implements ISettings {
     public String getRandomPingMessage() {
         if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
-        return getColoredString(s.replace("%NEWLINE%", "\n"));
+        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
     }
 
     public boolean hasCustomPlayerCountMessage() {

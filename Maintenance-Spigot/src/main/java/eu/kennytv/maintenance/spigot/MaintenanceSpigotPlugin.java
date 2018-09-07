@@ -27,7 +27,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
 
         this.plugin = plugin;
-        settings = new SettingsSpigot(plugin);
+        settings = new SettingsSpigot(this, plugin);
 
         plugin.getLogger().info("Plugin by KennyTV");
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
@@ -69,8 +69,8 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public int schedule(final Runnable runnable) {
-        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20);
+    public int startMaintenanceRunnable(final Runnable runnable) {
+        return getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, runnable, 0, 20);
     }
 
     @Override
