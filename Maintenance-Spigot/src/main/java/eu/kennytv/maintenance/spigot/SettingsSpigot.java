@@ -106,7 +106,7 @@ public final class SettingsSpigot extends Settings {
             plugin.getLogger().warning("The config is missing the following string: " + path);
             return "null";
         }
-        return ChatColor.translateAlternateColorCodes('&', s);
+        return s;
     }
 
     @Override

@@ -30,8 +30,8 @@ public abstract class Settings implements ISettings {
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
         joinNotifications = getConfigBoolean("send-join-notification");
         broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
-        playerCountMessage = getConfigString("playercountmessage");
-        playerCountHoverMessage = getConfigString("playercounthovermessage");
+        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
