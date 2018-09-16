@@ -21,6 +21,9 @@ playercountmessage: "&4Maintenance"
 # where the playercount would normally be displayed.
 playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
 
+# Is shown when a player tries to join while maintenance is enabled and they don't have the permission to bypass it.
+kickmessage: "&cThe server is currently under maintenance!%NEWLINE%Try again later!"
+
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
 

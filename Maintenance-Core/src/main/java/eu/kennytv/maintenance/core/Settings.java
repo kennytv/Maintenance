@@ -13,6 +13,7 @@ public abstract class Settings implements ISettings {
     private List<String> pingMessages;
     private String playerCountMessage;
     private String playerCountHoverMessage;
+    private String kickMessage;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
@@ -32,6 +33,7 @@ public abstract class Settings implements ISettings {
         broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
         playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
+        kickMessage = getColoredString(getConfigString("kickmessage"));
         if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
@@ -55,7 +57,7 @@ public abstract class Settings implements ISettings {
             fileChanged = true;
         }
         // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
-        if (configContains("timer-broadcasts-for-minutes")) {
+        if (configContains("timer-broadcasts-for-minutes") || !configContains("timer-broadcast-for-seconds")) {
             setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
             setToConfig("timer-broadcasts-for-minutes", null);
             fileChanged = true;
@@ -111,6 +113,10 @@ public abstract class Settings implements ISettings {
 
     public String getPlayerCountHoverMessage() {
         return playerCountHoverMessage;
+    }
+
+    public String getKickMessage() {
+        return kickMessage;
     }
 
     public void setMaintenance(final boolean maintenance) {

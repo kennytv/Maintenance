@@ -35,7 +35,7 @@ public final class PlayerLoginListener implements Listener {
         else if (settings.isMaintenance()) {
             if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-                event.setKickMessage(settings.getMessage("kickmessage").replace("%NEWLINE%", "\n"));
+                event.setKickMessage(settings.getKickMessage().replace("%NEWLINE%", "\n"));
 
                 if (settings.isJoinNotifications())
                     Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("maintenance.joinnotification"))
