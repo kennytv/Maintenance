@@ -6,7 +6,7 @@
 
     <groupId>eu.kennytv</groupId>
     <artifactId>maintenance-base</artifactId>
-    <version>2.4-SNAPSHOT</version>
+    <version>2.4</version>
     <name>Maintenance</name>
     <packaging>pom</packaging>
 
