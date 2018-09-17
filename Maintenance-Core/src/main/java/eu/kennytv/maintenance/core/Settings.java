@@ -7,38 +7,33 @@ import java.util.*;
 public abstract class Settings implements ISettings {
     private static final Random RANDOM = new Random();
     protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
+    private final MaintenanceModePlugin plugin;
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
-    private String timerBroadcastMessage;
-    private String endtimerBroadcastMessage;
-    private String kickMessage;
-    private String joinNotification;
-    private String noPermMessage;
-    private String maintenanceActivated;
-    private String maintenanceDeactivated;
     private String playerCountMessage;
     private String playerCountHoverMessage;
-    private boolean joinNotifications;
+    private String kickMessage;
+    private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
+    private boolean joinNotifications;
+
+    protected Settings(final MaintenanceModePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     protected void loadSettings() {
         updateConfig();
 
         pingMessages = getConfigList("pingmessages");
-        timerBroadcastMessage = getConfigString("starttimer-broadcast-mesage");
-        endtimerBroadcastMessage = getConfigString("endtimer-broadcast-mesage");
-        kickMessage = getConfigString("kickmessage");
-        joinNotification = getConfigString("join-notification");
-        noPermMessage = getConfigString("no-permission");
-        maintenanceActivated = getConfigString("maintenance-activated");
-        maintenanceDeactivated = getConfigString("maintenance-deactivated");
         maintenance = getConfigBoolean("enable-maintenance-mode");
-        joinNotifications = getConfigBoolean("send-join-notification");
+        customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
         customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
-        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcasts-for-minutes"));
-        playerCountMessage = getConfigString("playercountmessage");
-        playerCountHoverMessage = getConfigString("playercounthovermessage");
+        joinNotifications = getConfigBoolean("send-join-notification");
+        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
+        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
+        kickMessage = getColoredString(getConfigString("kickmessage"));
         if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
@@ -46,27 +41,43 @@ public abstract class Settings implements ISettings {
     }
 
     private void updateConfig() {
+        boolean fileChanged = false;
+
         // 2.3 pingmessage -> pingmessages
         if (configContains("pingmessage")) {
             final List<String> list = new ArrayList<>();
             list.add(getConfigString("pingmessage"));
             setToConfig("pingmessages", list);
             setToConfig("pingmessage", null);
+            fileChanged = true;
+        }
+        // 2.4 enable-playercountmessage
+        if (!configContains("enable-playercountmessage")) {
+            setToConfig("enable-playercountmessage", true);
+            fileChanged = true;
+        }
+        // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
+        if (configContains("timer-broadcasts-for-minutes") || !configContains("timer-broadcast-for-seconds")) {
+            setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
+            setToConfig("timer-broadcasts-for-minutes", null);
+            fileChanged = true;
+        }
+
+        if (updateExtraConfig() || fileChanged) {
             saveConfig();
             reloadConfigs();
         }
-
-        updateExtraConfig();
     }
 
-    public void updateExtraConfig() {
+    public boolean updateExtraConfig() {
+        return false;
     }
 
     public abstract void saveWhitelistedPlayers();
 
-    public abstract boolean createFiles();
-
     public abstract String getConfigString(String path);
+
+    public abstract String getMessage(String path);
 
     public abstract boolean getConfigBoolean(String path);
 
@@ -96,40 +107,16 @@ public abstract class Settings implements ISettings {
         return broadcastIntervalls;
     }
 
-    public String getTimerBroadcastMessage() {
-        return timerBroadcastMessage;
-    }
-
-    public String getEndtimerBroadcastMessage() {
-        return endtimerBroadcastMessage;
-    }
-
-    public String getKickMessage() {
-        return kickMessage;
-    }
-
-    public String getJoinNotification() {
-        return joinNotification;
-    }
-
-    public String getNoPermMessage() {
-        return noPermMessage;
-    }
-
-    public String getMaintenanceActivated() {
-        return maintenanceActivated;
-    }
-
-    public String getMaintenanceDeactivated() {
-        return maintenanceDeactivated;
-    }
-
     public String getPlayerCountMessage() {
         return playerCountMessage;
     }
 
     public String getPlayerCountHoverMessage() {
         return playerCountHoverMessage;
+    }
+
+    public String getKickMessage() {
+        return kickMessage;
     }
 
     public void setMaintenance(final boolean maintenance) {
@@ -139,7 +126,11 @@ public abstract class Settings implements ISettings {
     public String getRandomPingMessage() {
         if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
-        return getColoredString(s.replace("%NEWLINE%", "\n"));
+        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
+    }
+
+    public boolean hasCustomPlayerCountMessage() {
+        return customPlayerCountMessage;
     }
 
     @Override
@@ -174,8 +165,10 @@ public abstract class Settings implements ISettings {
     @Deprecated
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
-        if (!whitelistedPlayers.containsValue(name)) return false;
-        final UUID uuid = whitelistedPlayers.entrySet().stream().filter(entry -> entry.getValue().equals(name)).findAny().get().getKey();
+        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
+        if (entry == null) return false;
+
+        final UUID uuid = entry.getKey();
         whitelistedPlayers.remove(uuid);
         setWhitelist(uuid.toString(), null);
         saveWhitelistedPlayers();

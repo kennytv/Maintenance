@@ -25,12 +25,14 @@ public final class SettingsBungee extends Settings {
     private final MaintenanceBungeeBase plugin;
     private final IPingListener pingListener;
     private Configuration config;
+    private Configuration language;
     private Configuration whitelist;
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
 
     SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
+        super(maintenancePlugin);
         this.maintenancePlugin = maintenancePlugin;
         this.plugin = plugin;
 
@@ -39,7 +41,13 @@ public final class SettingsBungee extends Settings {
         pm.registerListener(plugin, listener);
         pingListener = listener;
 
-        reloadConfigs(createFiles());
+        if (!plugin.getDataFolder().exists())
+            plugin.getDataFolder().mkdirs();
+        createFile("bungee-config.yml");
+        createFile("language.yml");
+        createFile("WhitelistedPlayers.yml");
+
+        reloadConfigs();
 
         final Configuration mySQLSection = config.getSection("mysql");
         if (mySQLSection.getBoolean("use-mysql", false)) {
@@ -63,19 +71,40 @@ public final class SettingsBungee extends Settings {
         }
     }
 
-    @Override
-    public void updateExtraConfig() {
-        // 2.3.1 mysql.update-interval
-        if (!configContains("mysql.update-interval")) {
-            setToConfig("mysql.update-interval", 15);
-            saveConfig();
-            reloadConfigs();
+    private void createFile(final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResourceAsStream(name)) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                throw new RuntimeException("Unable to create " + name + " file for MaintenanceBungee", e);
+            }
         }
     }
 
     @Override
+    public boolean updateExtraConfig() {
+        // 2.3.1 mysql.update-interval
+        if (!configContains("mysql.update-interval")) {
+            setToConfig("mysql.update-interval", 15);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void reloadConfigs() {
-        reloadConfigs(false);
+        try {
+            config = YamlConfiguration.getProvider(YamlConfiguration.class)
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "bungee-config.yml")), StandardCharsets.UTF_8));
+            language = YamlConfiguration.getProvider(YamlConfiguration.class)
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language.yml")), StandardCharsets.UTF_8));
+            whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance files!", e);
+        }
+
+        loadSettings();
     }
 
     @Override
@@ -98,23 +127,6 @@ public final class SettingsBungee extends Settings {
         }
     }
 
-    private void reloadConfigs(final boolean createdNewWhitelist) {
-        final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
-        try {
-            config = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to load bungee-config.yml!", e);
-        }
-
-        if (createdNewWhitelist) {
-            whitelist.set("a8179ff3-c201-4a75-bdaa-9d14aca6f83f", "KennyTV");
-            saveWhitelistedPlayers();
-        }
-
-        loadSettings();
-    }
-
     @Override
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
@@ -132,38 +144,20 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    public boolean createFiles() {
-        if (!plugin.getDataFolder().exists())
-            plugin.getDataFolder().mkdirs();
-
-        final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResourceAsStream("bungee-config.yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create bungee-config.yml file for MaintenanceBungee", e);
-            }
-        }
-
-        boolean createdNewWhitelist = false;
-        final File whitelistFile = new File(plugin.getDataFolder(), "WhitelistedPlayers.yml");
-        if (!whitelistFile.exists()) {
-            createdNewWhitelist = true;
-            try {
-                whitelistFile.createNewFile();
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create WhitelistedPlayers.yml file for MaintenanceBungee", e);
-            }
-        }
-
-        return createdNewWhitelist;
-    }
-
-    @Override
     public String getConfigString(final String path) {
         final String s = config.getString(path);
         if (s == null) {
             plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return s;
+    }
+
+    @Override
+    public String getMessage(final String path) {
+        final String s = language.getString(path);
+        if (s == null) {
+            plugin.getLogger().warning("The language file is missing the following string: " + path);
             return "null";
         }
         return ChatColor.translateAlternateColorCodes('&', s);

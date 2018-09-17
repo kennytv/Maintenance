@@ -74,14 +74,14 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
             getProxy().getPlayers().stream()
                     .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                     .forEach(p -> p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n")));
-            getProxy().broadcast(settings.getMaintenanceActivated());
+            getProxy().broadcast(settings.getMessage("maintenanceActivated"));
         } else
-            getProxy().broadcast(settings.getMaintenanceDeactivated());
+            getProxy().broadcast(settings.getMessage("maintenanceDeactivated"));
     }
 
     @Override
-    public int schedule(final Runnable runnable) {
-        return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.MINUTES).getId();
+    public int startMaintenanceRunnable(final Runnable runnable) {
+        return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId();
     }
 
     @Override
@@ -92,7 +92,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     @Override
     public void cancelTask() {
         getProxy().getScheduler().cancel(taskId);
-        setTaskId(0);
+        runnable = null;
+        taskId = 0;
     }
 
     @Override

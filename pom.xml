@@ -6,7 +6,7 @@
 
     <groupId>eu.kennytv</groupId>
     <artifactId>maintenance-base</artifactId>
-    <version>2.3.1</version>
+    <version>2.4</version>
     <name>Maintenance</name>
     <packaging>pom</packaging>
 
@@ -38,6 +38,14 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.zaxxer.hikari</pattern>
+                                    <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

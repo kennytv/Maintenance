@@ -27,7 +27,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
 
         this.plugin = plugin;
-        settings = new SettingsSpigot(plugin);
+        settings = new SettingsSpigot(this, plugin);
 
         plugin.getLogger().info("Plugin by KennyTV");
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
@@ -63,14 +63,14 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
             getServer().getOnlinePlayers().stream()
                     .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                     .forEach(p -> p.kickPlayer(settings.getKickMessage().replace("%NEWLINE%", "\n")));
-            getServer().broadcastMessage(settings.getMaintenanceActivated());
+            getServer().broadcastMessage(settings.getMessage("maintenanceActivated"));
         } else
-            getServer().broadcastMessage(settings.getMaintenanceDeactivated());
+            getServer().broadcastMessage(settings.getMessage("maintenanceDeactivated"));
     }
 
     @Override
-    public int schedule(final Runnable runnable) {
-        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 1200);
+    public int startMaintenanceRunnable(final Runnable runnable) {
+        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20);
     }
 
     @Override
@@ -81,7 +81,8 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public void cancelTask() {
         getServer().getScheduler().cancelTask(taskId);
-        setTaskId(0);
+        runnable = null;
+        taskId = 0;
     }
 
     @Override

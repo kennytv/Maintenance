@@ -17,7 +17,7 @@ public interface ISettings {
     boolean isMaintenance();
 
     /**
-     * @return true if "join-notification" is set to true in the config
+     * @return true if "send-join-notification" is set to true in the config
      */
     boolean isJoinNotifications();
 

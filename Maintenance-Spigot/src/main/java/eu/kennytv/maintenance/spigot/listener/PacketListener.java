@@ -30,9 +30,14 @@ public final class PacketListener implements IPingListener {
                 if (!settings.isMaintenance()) return;
 
                 final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-                ping.setVersionProtocol(0);
                 ping.setMotD(settings.getRandomPingMessage());
-                ping.setVersionName(settings.getPlayerCountMessage());
+
+                if (settings.hasCustomPlayerCountMessage()) {
+                    ping.setVersionProtocol(0);
+                    ping.setVersionName(settings.getPlayerCountMessage()
+                            .replace("%ONLINE%", Integer.toString(pl.getServer().getOnlinePlayers().size()))
+                            .replace("%MAX%", Integer.toString(pl.getServer().getMaxPlayers())));
+                }
 
                 final List<WrappedGameProfile> players = Lists.newArrayList();
                 for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
