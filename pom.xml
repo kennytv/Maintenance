@@ -44,6 +44,10 @@
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.slf4j</pattern>
+                                    <shadedPattern>eu.kennytv.lib.slf4j</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
