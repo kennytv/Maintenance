@@ -7,7 +7,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
-public final class ProxiedSenderInfo extends SenderInfo {
+public final class ProxiedSenderInfo implements SenderInfo {
     private final CommandSender sender;
 
     public ProxiedSenderInfo(final CommandSender sender) {

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public final class BukkitSenderInfo extends SenderInfo {
+public final class BukkitSenderInfo implements SenderInfo {
     private final CommandSender sender;
 
     public BukkitSenderInfo(final CommandSender sender) {
