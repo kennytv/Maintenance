@@ -123,8 +123,8 @@ public abstract class MaintenanceCommand {
                     return;
                 }
 
-                sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
                 plugin.startMaintenanceRunnable(minutes, true);
+                sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                     if (checkPermission(sender, "timer")) return;
