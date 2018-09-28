@@ -14,6 +14,7 @@ public abstract class Settings implements ISettings {
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String kickMessage;
+    private String languageName;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
@@ -34,6 +35,7 @@ public abstract class Settings implements ISettings {
         playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         kickMessage = getColoredString(getConfigString("kickmessage"));
+        languageName = getConfigString("language");
         if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 
@@ -61,6 +63,10 @@ public abstract class Settings implements ISettings {
             setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
             setToConfig("timer-broadcasts-for-minutes", null);
             fileChanged = true;
+        }
+        // 2.5 language
+        if (!configContains("language")) {
+            setToConfig("language", "en");
         }
 
         if (updateExtraConfig() || fileChanged) {
@@ -117,6 +123,10 @@ public abstract class Settings implements ISettings {
 
     public String getKickMessage() {
         return kickMessage;
+    }
+
+    public String getLanguage() {
+        return languageName;
     }
 
     public void setMaintenance(final boolean maintenance) {

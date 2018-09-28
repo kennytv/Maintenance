@@ -44,7 +44,7 @@ public final class SettingsBungee extends Settings {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         createFile("bungee-config.yml");
-        createFile("language.yml");
+        createLanguageFile();
         createFile("WhitelistedPlayers.yml");
 
         reloadConfigs();
@@ -78,6 +78,19 @@ public final class SettingsBungee extends Settings {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
                 throw new RuntimeException("Unable to create " + name + " file for MaintenanceBungee", e);
+            }
+        }
+    }
+
+    private void createLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language.yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResourceAsStream("language-" + getLanguage() + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                plugin.getLogger().warning("Unable to provide language " + getLanguage());
+                plugin.getLogger().warning("Falling back to default language: en");
+                createFile("language.yml");
             }
         }
     }
