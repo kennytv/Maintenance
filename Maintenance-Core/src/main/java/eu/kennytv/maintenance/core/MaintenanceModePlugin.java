@@ -18,8 +18,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     private final String prefix;
     private String newestVersion;
 
-    //TODO language file system
-    //TODO merge bungee and spigot config (?)
+    //TODO merge bungee and spigot config
     //TODO enable maintenance on single servers on bungee
     protected MaintenanceModePlugin(final String prefix, final String version) {
         this.prefix = prefix;
