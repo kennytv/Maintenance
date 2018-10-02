@@ -3,6 +3,7 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,13 +17,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     protected MaintenanceRunnable runnable;
     protected int taskId;
     private final String prefix;
+    private final ServerType serverType;
     private String newestVersion;
 
-    //TODO merge bungee and spigot config
-    //TODO enable maintenance on single servers on bungee
-    protected MaintenanceModePlugin(final String prefix, final String version) {
+    protected MaintenanceModePlugin(final String prefix, final String version, final ServerType serverType) {
         this.prefix = prefix;
         this.version = version;
+        this.serverType = serverType;
     }
 
     @Override
@@ -65,6 +66,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public ServerType getServerType() {
+        return serverType;
     }
 
     public String formatedTimer() {

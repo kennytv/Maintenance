@@ -39,6 +39,7 @@ whitelistAdded: "&8[&eMaintenance&8] &aAdded &b%PLAYER% &ato the maintenance whi
 whitelistRemoved: "&8[&eMaintenance&8] &aRemoved &b%PLAYER% &afrom the maintenance whitelist!"
 playerNotOnline: "&8[&eMaintenance&8] &cThere's no player online with that name."
 playerNotFound: "&8[&eMaintenance&8] &cNo player with this name has played on this server before."
+serverNotFound: "&8[&eMaintenance&8] &cNo server with this name is registered on the proxy!"
 
 second: "second"
 seconds: "seconds"

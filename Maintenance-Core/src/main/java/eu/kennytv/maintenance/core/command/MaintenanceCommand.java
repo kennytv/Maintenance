@@ -3,6 +3,7 @@ package eu.kennytv.maintenance.core.command;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -73,7 +74,10 @@ public abstract class MaintenanceCommand {
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("endtimer")) {
+            if ((args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) && plugin.getServerType() == ServerType.BUNGEE) {
+                if (checkPermission(sender, "toggle")) return;
+                handleToggleServerCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (!isNumeric(args[1])) {
                     sender.sendMessage(settings.getMessage("endtimerUsage"));
@@ -222,8 +226,13 @@ public abstract class MaintenanceCommand {
         if (sender.hasPermission("maintenance.reload"))
             sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         if (sender.hasPermission("maintenance.toggle")) {
-            sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
-            sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
+            if (plugin.getServerType() == ServerType.BUNGEE) {
+                sender.sendMessage("§6/maintenance on [server] §7(Enables maintenance mode");
+                sender.sendMessage("§6/maintenance off [server] §7(Disables maintenance mode)");
+            } else {
+                sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
+                sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
+            }
         }
         if (sender.hasPermission("maintenance.timer")) {
             sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
@@ -271,4 +280,6 @@ public abstract class MaintenanceCommand {
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
+
+    protected abstract void handleToggleServerCommand(SenderInfo sender, String args[]);
 }

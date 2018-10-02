@@ -80,4 +80,9 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
+
+    @Override
+    @Deprecated
+    protected void handleToggleServerCommand(final SenderInfo senderInfo, final String[] args) {
+    }
 }

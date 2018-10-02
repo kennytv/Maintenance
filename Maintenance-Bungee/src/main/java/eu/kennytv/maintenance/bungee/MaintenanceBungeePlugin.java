@@ -9,6 +9,7 @@ import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
+import eu.kennytv.maintenance.core.util.ServerType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -26,7 +27,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
     private final SettingsBungee settings;
 
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
-        super("§8[§eMaintenanceBungee§8] ", plugin.getDescription().getVersion());
+        super("§8[§eMaintenanceBungee§8] ", plugin.getDescription().getVersion(), ServerType.BUNGEE);
 
         this.plugin = plugin;
         plugin.getLogger().info("Plugin by KennyTV");

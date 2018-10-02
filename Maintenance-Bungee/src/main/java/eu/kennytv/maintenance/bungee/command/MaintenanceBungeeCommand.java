@@ -9,12 +9,15 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class MaintenanceBungeeCommand extends MaintenanceCommand {
+    private final SettingsBungee settingsBungee;
 
     public MaintenanceBungeeCommand(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         super(plugin, settings, "MaintenanceBungee");
+        settingsBungee = settings;
     }
 
     @Override
@@ -62,5 +65,22 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             ((ProxiedSenderInfo) sender).sendMessage(tc);
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+    }
+
+    @Override
+    protected void handleToggleServerCommand(final SenderInfo sender, final String args[]) {
+        final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+        if (server == null) {
+            sender.sendMessage(settings.getMessage("serverNotFound"));
+            return;
+        }
+
+        final boolean maintenance = args[0].equalsIgnoreCase("on");
+        if (maintenance == settingsBungee.getMaintenanceServers().contains(server.getName())) {
+            sender.sendMessage(settings.getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
+            return;
+        }
+
+        settingsBungee.setMaintenanceToServer(server.getName(), maintenance);
     }
 }

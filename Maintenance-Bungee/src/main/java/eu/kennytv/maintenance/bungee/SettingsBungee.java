@@ -13,7 +13,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public final class SettingsBungee extends Settings {
@@ -24,6 +26,7 @@ public final class SettingsBungee extends Settings {
     private final MaintenanceBungeePlugin maintenancePlugin;
     private final MaintenanceBungeeBase plugin;
     private final IPingListener pingListener;
+    private final Set<String> maintenanceServers = new HashSet<>();
     private Configuration config;
     private Configuration language;
     private Configuration whitelist;
@@ -247,5 +250,13 @@ public final class SettingsBungee extends Settings {
 
     public MySQL getMySQL() {
         return mySQL;
+    }
+
+    public Set<String> getMaintenanceServers() {
+        return maintenanceServers;
+    }
+
+    public void setMaintenanceToServer(final String server, final boolean maintenance) {
+        //TODO
     }
 }

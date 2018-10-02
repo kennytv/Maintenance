@@ -39,6 +39,7 @@ whitelistAdded: "&8[&eMaintenance&8] &b%PLAYER% &awurde zur Maintenance Whitelis
 whitelistRemoved: "&8[&eMaintenance&8] &b%PLAYER% &awurde von der Maintenance Whitelist entfernt!"
 playerNotOnline: "&8[&eMaintenance&8] &cEs ist momentan kein Spieler mit diesem Namen online."
 playerNotFound: "&8[&eMaintenance&8] &cBisher hat kein Spieler mit diesem Namen jemals auf diesem Server gespielt."
+serverNotFound: "&8[&eMaintenance&8] &cEs wurde kein Server mit diesem Namen gefunden!"
 
 second: "Sekunde"
 seconds: "Sekunden"
