@@ -81,6 +81,8 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        settingsBungee.setMaintenanceToServer(server.getName(), maintenance);
+        settingsBungee.setMaintenanceToServer(server, maintenance);
+        //TODO
+        sender.sendMessage(settings.getMessage(""));
     }
 }

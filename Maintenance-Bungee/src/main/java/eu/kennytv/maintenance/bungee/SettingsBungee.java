@@ -5,6 +5,7 @@ import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -256,7 +257,22 @@ public final class SettingsBungee extends Settings {
         return maintenanceServers;
     }
 
-    public void setMaintenanceToServer(final String server, final boolean maintenance) {
-        //TODO
+    public void setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
+        if (maintenance) {
+            maintenanceServers.add(server.getName());
+            server.getPlayers().forEach(p -> {
+                if (!p.hasPermission("maintenance.bypass") && !getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                    //TODO runterwerfen
+                    p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
+                } else {
+                    //TODO
+                    p.sendMessage(getMessage("maintenanceActivated"));
+                }
+            });
+        } else {
+            maintenanceServers.remove(server.getName());
+            //TODO
+            server.getPlayers().forEach(p -> p.sendMessage(getMessage("maintenanceDeactivated")));
+        }
     }
 }
