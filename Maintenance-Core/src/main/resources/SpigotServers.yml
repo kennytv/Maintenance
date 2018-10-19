@@ -1,0 +1,4 @@
+# Enables maintenance on certain Spigot servers managed by your Bungee instance(s)
+maintenance-on:
+  #- SpigotServer1
+  #- AnotherServer

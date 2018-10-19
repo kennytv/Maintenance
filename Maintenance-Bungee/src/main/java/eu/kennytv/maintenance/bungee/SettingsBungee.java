@@ -14,23 +14,22 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public final class SettingsBungee extends Settings {
     private final String updateQuery;
     private final String maintenanceQuery;
+    private final String serversQuery;
     private final MySQL mySQL;
 
     private final MaintenanceBungeePlugin maintenancePlugin;
     private final MaintenanceBungeeBase plugin;
     private final IPingListener pingListener;
-    private final Set<String> maintenanceServers = new HashSet<>();
+    private Set<String> maintenanceServers;
     private Configuration config;
     private Configuration language;
     private Configuration whitelist;
+    private Configuration spigotServers;
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
@@ -50,6 +49,7 @@ public final class SettingsBungee extends Settings {
         createFile("bungee-config.yml");
         createLanguageFile();
         createFile("WhitelistedPlayers.yml");
+        createFile("SpigotServers.yml");
 
         reloadConfigs();
 
@@ -62,16 +62,19 @@ public final class SettingsBungee extends Settings {
                     mySQLSection.getString("password"),
                     mySQLSection.getString("database"));
 
+            //TODO boolean there + extra table?
             // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
             final String mySQLTable = mySQLSection.getString("table");
             mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
             updateQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
+            serversQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
             updateQuery = null;
             maintenanceQuery = null;
+            serversQuery = null;
         }
     }
 
@@ -117,6 +120,7 @@ public final class SettingsBungee extends Settings {
             language = YamlConfiguration.getProvider(YamlConfiguration.class)
                     .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "spigot-servers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
@@ -136,11 +140,19 @@ public final class SettingsBungee extends Settings {
 
     @Override
     public void saveWhitelistedPlayers() {
-        final File file = new File(plugin.getDataFolder(), "WhitelistedPlayers.yml");
+        saveFile(whitelist, "WhitelistedPlayers.yml");
+    }
+
+    public void saveSpigotServers() {
+        saveFile(spigotServers, "SpigotServers.yml");
+    }
+
+    private void saveFile(final Configuration config, final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
         try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(whitelist, file);
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to save WhitelistedPlayers.yml!", e);
+            throw new RuntimeException("Unable to save " + name + "!", e);
         }
     }
 
@@ -152,6 +164,10 @@ public final class SettingsBungee extends Settings {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
             lastMySQLCheck = 0;
+            //TODO maintenance servers from database
+        } else {
+            final List<String> list = spigotServers.getStringList("maintenance-on");
+            maintenanceServers = list == null || list.isEmpty() ? Collections.emptySet() : new HashSet<>(list);
         }
     }
 
@@ -257,22 +273,30 @@ public final class SettingsBungee extends Settings {
         return maintenanceServers;
     }
 
-    public void setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
+    public boolean setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
         if (maintenance) {
-            maintenanceServers.add(server.getName());
+            if (!maintenanceServers.add(server.getName())) return false;
             server.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    //TODO runterwerfen
+                    //TODO message
                     p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
                 } else {
-                    //TODO
+                    //TODO message
                     p.sendMessage(getMessage("maintenanceActivated"));
                 }
             });
         } else {
-            maintenanceServers.remove(server.getName());
-            //TODO
+            if (!maintenanceServers.remove(server.getName())) return false;
             server.getPlayers().forEach(p -> p.sendMessage(getMessage("maintenanceDeactivated")));
         }
+
+        if (mySQL != null) {
+            //TODO test query with single entry
+            mySQL.executeUpdate(serversQuery, "spigot-servers-with-maintenance", maintenanceServers, maintenanceServers);
+        } else {
+            spigotServers.set("maintenance-on", maintenanceServers);
+            saveSpigotServers();
+        }
+        return true;
     }
 }

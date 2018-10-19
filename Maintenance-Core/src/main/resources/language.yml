@@ -41,6 +41,12 @@ whitelistEmptyDefault: "&8[&eMaintenance&8] &cUse '/maintenance add <player>' to
 playerNotFound: "&8[&eMaintenance&8] &cNo player with this name has played on this server before."
 playerNotOnline: "&8[&eMaintenance&8] &cThere's no player online with that name."
 
+# Some messages for the Bungee part
+singleMaintenanceActivated: "&8[&eMaintenance&8] &6Maintenance mode is now activated on server &e%SERVER%&6."
+singleMaintenanceDeactivated: "&8[&eMaintenance&8] &6Maintenance mode is now deactivated on server &e%SERVER%&6."
+singleServeralreadyEnabled: "&8[&eMaintenance&8] &cMaintenance already is enabled on server &e%SERVER%&c!"
+singleServeralreadyDisabled: "&8[&eMaintenance&8] &cMaintenance already is disabled on server &e%SERVER%&c!"
+
 second: "second"
 seconds: "seconds"
 minute: "minute"
