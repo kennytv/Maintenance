@@ -84,6 +84,6 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         if (settingsBungee.setMaintenanceToServer(server, maintenance)) {
             sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
         } else
-            sender.sendMessage(settings.getMessage(maintenance ? "singleServeralreadyEnabled" : "singleServeralreadyDisabled"));
+            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
     }
 }

@@ -4,8 +4,8 @@
 noPermission: "&cYou do not have the permission to execute that command."
 maintenanceActivated: "&8[&eMaintenance&8] &6Maintenance mode is now activated."
 maintenanceDeactivated: "&8[&eMaintenance&8] &6Maintenance mode is now deactivated."
-alreadyEnabled: "&8[&eMaintenance&8] &cMaintenance already is enabled!"
-alreadyDisabled: "&8[&eMaintenance&8] &cMaintenance already is disabled!"
+alreadyEnabled: "&8[&eMaintenance&8] &cMaintenance is already enabled!"
+alreadyDisabled: "&8[&eMaintenance&8] &cMaintenance is already disabled!"
 endtimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode will be disabled in &6%TIME%&7."
 endtimerStarted: "&8[&eMaintenance&8] &aStarted timer: &7Maintenance mode will be deactivated in &6%TIME%&7."
 endtimerUsage: "&8[&eMaintenance&8] &c/maintenance endtimer <minutes>"
@@ -44,8 +44,8 @@ playerNotOnline: "&8[&eMaintenance&8] &cThere's no player online with that name.
 # Some messages for the Bungee part
 singleMaintenanceActivated: "&8[&eMaintenance&8] &6Maintenance mode is now activated on server &e%SERVER%&6."
 singleMaintenanceDeactivated: "&8[&eMaintenance&8] &6Maintenance mode is now deactivated on server &e%SERVER%&6."
-singleServeralreadyEnabled: "&8[&eMaintenance&8] &cMaintenance already is enabled on server &e%SERVER%&c!"
-singleServeralreadyDisabled: "&8[&eMaintenance&8] &cMaintenance already is disabled on server &e%SERVER%&c!"
+singleServerAlreadyEnabled: "&8[&eMaintenance&8] &cMaintenance is already enabled on server &e%SERVER%&c!"
+singleServerAlreadyDisabled: "&8[&eMaintenance&8] &cMaintenance is already disabled on server &e%SERVER%&c!"
 
 second: "second"
 seconds: "seconds"

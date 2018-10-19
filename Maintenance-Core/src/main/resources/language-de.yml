@@ -41,6 +41,12 @@ whitelistEmptyDefault: "&8[&eMaintenance&8] &cNutze '/maintenance add <player>',
 playerNotFound: "&8[&eMaintenance&8] &cBisher hat kein Spieler mit diesem Namen jemals auf diesem Server gespielt."
 playerNotOnline: "&8[&eMaintenance&8] &cEs ist momentan kein Spieler mit diesem Namen online."
 
+# Nachrichten für den Bungee Teil des Plugins
+singleMaintenanceActivated: "&8[&eMaintenance&8] &6Der Wartungsmodus wurde auf Server &e%SERVER% &6aktiviert."
+singleMaintenanceDeactivated: "&8[&eMaintenance&8] &6Der Wartungsmodus wurde auf Server &e%SERVER% &6deaktiviert."
+singleServerAlreadyEnabled: "&8[&eMaintenance&8] &cDer Wartungsmodus ist bereits an auf Server &e%SERVER%&c!"
+singleServerAlreadyDisabled: "&8[&eMaintenance&8] &cDer Wartungsmodus ist bereits aus auf Server &e%SERVER%&c!"
+
 second: "Sekunde"
 seconds: "Sekunden"
 minute: "Minute"
