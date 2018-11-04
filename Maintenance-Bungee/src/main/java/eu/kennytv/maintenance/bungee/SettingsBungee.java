@@ -14,12 +14,15 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public final class SettingsBungee extends Settings {
     private final String updateQuery;
     private final String maintenanceQuery;
-    private final String serversQuery;
+    //private final String serversQuery;
     private final MySQL mySQL;
 
     private final MaintenanceBungeePlugin maintenancePlugin;
@@ -62,19 +65,18 @@ public final class SettingsBungee extends Settings {
                     mySQLSection.getString("password"),
                     mySQLSection.getString("database"));
 
-            //TODO boolean there + extra table?
             // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
             final String mySQLTable = mySQLSection.getString("table");
             mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
             updateQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
-            serversQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
+            //serversQuery = "INSERT INTO " + serversTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
             updateQuery = null;
             maintenanceQuery = null;
-            serversQuery = null;
+            //serversQuery = null;
         }
     }
 
@@ -164,11 +166,13 @@ public final class SettingsBungee extends Settings {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
             lastMySQLCheck = 0;
-            //TODO maintenance servers from database
-        } else {
+        }/* else {
             final List<String> list = spigotServers.getStringList("maintenance-on");
-            maintenanceServers = list == null || list.isEmpty() ? Collections.emptySet() : new HashSet<>(list);
-        }
+            maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
+        }*/
+
+        final List<String> list = spigotServers.getStringList("maintenance-on");
+        maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
     }
 
     @Override
@@ -290,13 +294,14 @@ public final class SettingsBungee extends Settings {
             server.getPlayers().forEach(p -> p.sendMessage(getMessage("maintenanceDeactivated")));
         }
 
-        if (mySQL != null) {
-            //TODO test query with single entry
+        /*if (mySQL != null) {
             mySQL.executeUpdate(serversQuery, "spigot-servers-with-maintenance", maintenanceServers, maintenanceServers);
         } else {
             spigotServers.set("maintenance-on", maintenanceServers);
             saveSpigotServers();
-        }
+        }*/
+        spigotServers.set("maintenance-on", maintenanceServers);
+        saveSpigotServers();
         return true;
     }
 }
