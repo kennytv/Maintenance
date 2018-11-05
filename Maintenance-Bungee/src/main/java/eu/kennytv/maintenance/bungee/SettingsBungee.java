@@ -5,6 +5,7 @@ import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
@@ -33,6 +34,7 @@ public final class SettingsBungee extends Settings {
     private Configuration language;
     private Configuration whitelist;
     private Configuration spigotServers;
+    private String fallbackServer;
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
@@ -162,6 +164,7 @@ public final class SettingsBungee extends Settings {
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        fallbackServer = spigotServers.getString("fallback", "hub");
         if (mySQL != null) {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
@@ -250,7 +253,6 @@ public final class SettingsBungee extends Settings {
             if (millisecondsToCheck != -1)
                 lastMySQLCheck = System.currentTimeMillis();
         }
-
         return maintenance;
     }
 
@@ -280,10 +282,18 @@ public final class SettingsBungee extends Settings {
     public boolean setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
         if (maintenance) {
             if (!maintenanceServers.add(server.getName())) return false;
+
+            final ServerInfo fallback = ProxyServer.getInstance().getServerInfo(fallbackServer);
+            if (fallback == null)
+                plugin.getLogger().warning("Fallback server set in the SpigotServers.yml could not be found! Instead kicking players from the network!");
             server.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    //TODO message
-                    p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
+                    //TODO message (+ kickmessage)
+                    if (fallback != null && fallback.canAccess(p)) {
+                        p.sendMessage(getMessage("maintenanceActivated"));
+                        p.connect(fallback);
+                    } else
+                        p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
                 } else {
                     //TODO message
                     p.sendMessage(getMessage("maintenanceActivated"));

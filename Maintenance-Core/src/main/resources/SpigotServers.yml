@@ -1,4 +1,6 @@
 # Enables maintenance on certain Spigot servers managed by your Bungee instance(s)
+# If it's enabled on a server while players are on it, they will be forwarded to the fallback server (kicked completely if not set correctly)
 maintenance-on:
   #- SpigotServer1
   #- AnotherServer
+fallback: lobby
