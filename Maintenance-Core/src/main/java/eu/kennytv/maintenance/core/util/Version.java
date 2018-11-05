@@ -29,6 +29,7 @@ public final class Version implements Comparable<Version> {
      */
     @Override
     public int compareTo(final Version version) {
+        if (version == null || version.toString() == null) return 0;
         final int max = Math.max(this.parts.length, version.parts.length);
         for (int i = 0; i < max; i += 1) {
             final int partA = i < this.parts.length ? this.parts[i] : 0;

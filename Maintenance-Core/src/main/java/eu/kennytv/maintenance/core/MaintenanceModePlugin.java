@@ -25,7 +25,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         this.prefix = prefix;
         this.version = new Version(version);
         this.serverType = serverType;
-        updateAvailable();
+        checkNewestVersion();
     }
 
     @Override
@@ -82,20 +82,23 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return String.format("%02d:%02d:%02d", preHours / 60, minutes, seconds);
     }
 
-    public boolean updateAvailable() {
+    public void checkNewestVersion() {
         try {
             final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
             final String newVersionString = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine();
-            if (newVersionString == null) return false;
+            if (newVersionString == null) return;
 
             final Version newVersion = new Version(newVersionString);
             final boolean available = !newVersion.equals(version);
             if (available)
                 newestVersion = newVersion;
-            return available;
         } catch (final Exception ignored) {
-            return false;
         }
+    }
+
+    public boolean updateAvailable() {
+        checkNewestVersion();
+        return version.compareTo(newestVersion) == -1;
     }
 
     public String getUpdateMessage() {
