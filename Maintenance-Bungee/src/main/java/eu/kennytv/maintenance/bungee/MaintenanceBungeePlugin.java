@@ -32,6 +32,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin {
 
         this.plugin = plugin;
         plugin.getLogger().info("Plugin by KennyTV");
+        plugin.getLogger().info(getUpdateMessage());
 
         settings = new SettingsBungee(this, plugin);
 

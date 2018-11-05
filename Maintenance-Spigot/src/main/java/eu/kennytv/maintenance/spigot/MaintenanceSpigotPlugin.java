@@ -31,6 +31,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         settings = new SettingsSpigot(this, plugin);
 
         plugin.getLogger().info("Plugin by KennyTV");
+        plugin.getLogger().info(getUpdateMessage());
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 
         final PluginManager pm = getServer().getPluginManager();

@@ -4,6 +4,7 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.ServerType;
+import eu.kennytv.maintenance.core.util.Version;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,18 +13,19 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
-    protected final String version;
+    protected final Version version;
     protected ServerListPlusHook serverListPlusHook;
     protected MaintenanceRunnable runnable;
     protected int taskId;
     private final String prefix;
     private final ServerType serverType;
-    private String newestVersion;
+    private Version newestVersion;
 
     protected MaintenanceModePlugin(final String prefix, final String version, final ServerType serverType) {
         this.prefix = prefix;
-        this.version = version;
+        this.version = new Version(version);
         this.serverType = serverType;
+        updateAvailable();
     }
 
     @Override
@@ -33,7 +35,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     @Override
     public String getVersion() {
-        return version;
+        return version.toString();
     }
 
     @Override
@@ -46,7 +48,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         taskId = startMaintenanceRunnable(runnable);
     }
 
-    public String getNewestVersion() {
+    public Version getNewestVersion() {
         return newestVersion;
     }
 
@@ -83,16 +85,30 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public boolean updateAvailable() {
         try {
             final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final String newVersion = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine().replaceAll("[a-zA-Z -]", "");
+            final String newVersionString = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine();
+            if (newVersionString == null) return false;
 
+            final Version newVersion = new Version(newVersionString);
             final boolean available = !newVersion.equals(version);
             if (available)
                 newestVersion = newVersion;
-
             return available;
         } catch (final Exception ignored) {
             return false;
         }
+    }
+
+    public String getUpdateMessage() {
+        if (version.compareTo(newestVersion) == -1) {
+            return "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
+        } else if (version.compareTo(newestVersion) != 0) {
+            if (version.getTag().equalsIgnoreCase("snapshot")) {
+                return "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub tracker (https://kennytv.eu/maintenance/issues)";
+            } else {
+                return "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
+            }
+        }
+        return "You have the latest version of the plugin installed.";
     }
 
     public boolean installUpdate() {
