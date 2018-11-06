@@ -1,5 +1,4 @@
 # MaintenanceBungee Plugin by KennyTV
-# Version ${project.version}
 
 # Enables maintenance-mode.
 enable-maintenance-mode: false

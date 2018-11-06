@@ -14,7 +14,7 @@ public abstract class Settings implements ISettings {
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String kickMessage;
-    private String languageName;
+    protected String languageName;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;

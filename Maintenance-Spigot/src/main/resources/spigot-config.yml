@@ -1,5 +1,4 @@
 # MaintenanceSpigot Plugin by KennyTV
-# Version ${project.version}
 # Important note: To use this plugin to its full extend, it requires the plugin 'ProtocolLib'
 
 # Enables maintenance-mode.

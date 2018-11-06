@@ -86,7 +86,6 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         try {
             final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
             final String newVersionString = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine();
-            if (newVersionString == null) return;
 
             final Version newVersion = new Version(newVersionString);
             final boolean available = !newVersion.equals(version);

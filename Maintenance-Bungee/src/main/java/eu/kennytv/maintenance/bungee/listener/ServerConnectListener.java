@@ -22,8 +22,7 @@ public final class ServerConnectListener implements Listener {
         if (settings.getMaintenanceServers().contains(target.getName())) {
             if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 event.setCancelled(true);
-                //TODO message
-                p.sendMessage("");
+                p.sendMessage(settings.getMessage("singleMaintenanceKick"));
                 if (settings.isJoinNotifications())
                     target.getPlayers().stream().filter(player -> player.hasPermission("maintenance.joinnotification"))
                             .forEach(player -> player.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", p.getName())));

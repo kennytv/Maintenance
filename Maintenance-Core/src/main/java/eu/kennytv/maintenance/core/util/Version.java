@@ -6,11 +6,17 @@ public final class Version implements Comparable<Version> {
     private final String tag;
 
     public Version(final String version) {
+        if (version == null || version.isEmpty()) {
+            this.version = "";
+            tag = "";
+            System.out.println("Unknown Maintenance version detected!");
+            return;
+        }
         final String[] split = version.split("-", 2)[0].split("\\.");
         for (int i = 0; i < split.length; i++) {
             if (!isNumeric(split[i])) {
-                this.version = null;
-                tag = null;
+                this.version = "";
+                tag = "";
                 System.out.println("Unknown Maintenance version detected!");
                 return;
             }

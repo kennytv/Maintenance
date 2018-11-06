@@ -62,8 +62,11 @@ public final class SettingsSpigot extends Settings {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
                 plugin.getLogger().warning("Unable to provide language " + getLanguage());
-                plugin.getLogger().warning("Falling back to default language: en");
-                createFile("language.yml");
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createLanguageFile();
+                }
             }
         }
     }
@@ -71,10 +74,11 @@ public final class SettingsSpigot extends Settings {
     @Override
     public boolean updateExtraConfig() {
         // Remove MySQL part from default config
-        if (configContains("mysql")) {
+        //TODO with single config
+        /*if (configContains("mysql")) {
             setToConfig("mysql", null);
             return true;
-        }
+        }*/
         return false;
     }
 

@@ -100,8 +100,11 @@ public final class SettingsBungee extends Settings {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
                 plugin.getLogger().warning("Unable to provide language " + getLanguage());
-                plugin.getLogger().warning("Falling back to default language: en");
-                createFile("language.yml");
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createLanguageFile();
+                }
             }
         }
     }
@@ -285,23 +288,22 @@ public final class SettingsBungee extends Settings {
 
             final ServerInfo fallback = ProxyServer.getInstance().getServerInfo(fallbackServer);
             if (fallback == null)
-                plugin.getLogger().warning("Fallback server set in the SpigotServers.yml could not be found! Instead kicking players from the network!");
+                plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from the network!");
             server.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    //TODO message (+ kickmessage)
+                    //TODO messages, yikes
                     if (fallback != null && fallback.canAccess(p)) {
-                        p.sendMessage(getMessage("maintenanceActivated"));
+                        p.sendMessage(getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                         p.connect(fallback);
                     } else
                         p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
                 } else {
-                    //TODO message
-                    p.sendMessage(getMessage("maintenanceActivated"));
+                    p.sendMessage(getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                 }
             });
         } else {
             if (!maintenanceServers.remove(server.getName())) return false;
-            server.getPlayers().forEach(p -> p.sendMessage(getMessage("maintenanceDeactivated")));
+            server.getPlayers().forEach(p -> p.sendMessage(getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
         }
 
         /*if (mySQL != null) {

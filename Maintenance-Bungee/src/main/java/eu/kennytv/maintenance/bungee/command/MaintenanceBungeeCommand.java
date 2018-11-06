@@ -74,6 +74,10 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return;
         }
+        if (!sender.hasPermission("maintenance.toggleserver." + server.getName().toLowerCase())) {
+            sender.sendMessage(settings.getMessage("noServerPermission").replace("%SERVER%", server.getName()));
+            return;
+        }
 
         final boolean maintenance = args[0].equalsIgnoreCase("on");
         if (maintenance == settingsBungee.getMaintenanceServers().contains(server.getName())) {

@@ -75,7 +75,7 @@ public abstract class MaintenanceCommand {
                 sendUsage(sender);
         } else if (args.length == 2) {
             if ((args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) && plugin.getServerType() == ServerType.BUNGEE) {
-                if (checkPermission(sender, "toggle")) return;
+                if (checkPermission(sender, "toggleserver")) return;
                 handleToggleServerCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
@@ -226,7 +226,7 @@ public abstract class MaintenanceCommand {
         if (sender.hasPermission("maintenance.reload"))
             sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         if (sender.hasPermission("maintenance.toggle")) {
-            if (plugin.getServerType() == ServerType.BUNGEE) {
+            if (plugin.getServerType() == ServerType.BUNGEE && sender.hasPermission("maintenance.toggleserver")) {
                 sender.sendMessage("§6/maintenance on [server] §7(Enables maintenance mode");
                 sender.sendMessage("§6/maintenance off [server] §7(Disables maintenance mode)");
             } else {
