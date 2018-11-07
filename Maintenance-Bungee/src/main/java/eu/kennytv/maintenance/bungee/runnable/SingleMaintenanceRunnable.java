@@ -19,7 +19,6 @@ public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     protected void finish() {
         final MaintenanceBungeePlugin plugin = (MaintenanceBungeePlugin) this.plugin;
         plugin.setMaintenanceToServer(server, enable);
-        plugin.cancelSingleTask(server);
     }
 
     @Override

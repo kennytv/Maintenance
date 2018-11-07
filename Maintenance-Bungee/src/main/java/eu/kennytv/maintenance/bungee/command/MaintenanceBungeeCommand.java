@@ -4,6 +4,7 @@ import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.SettingsBungee;
 import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
+import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -91,5 +92,55 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
         } else
             sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
+    }
+
+    @Override
+    protected void handleTimerServerCommands(final SenderInfo sender, final String args[]) {
+        if (args[0].equalsIgnoreCase("endtimer")) {
+            if (checkPermission(sender, "servertimer")) return;
+            if (checkTimerArgs(sender, args[2], "singleEndtimerUsage")) return;
+
+            final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+            if (server == null) {
+                sender.sendMessage(settings.getMessage("serverNotFound"));
+                return;
+            }
+            if (!plugin.isMaintenance(server))
+                plugin.setMaintenanceToServer(server, true);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
+            sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", runnable.getTime()));
+        } else if (args[0].equalsIgnoreCase("starttimer")) {
+            if (checkPermission(sender, "servertimer")) return;
+            if (checkTimerArgs(sender, args[2], "singleStarttimerUsage")) return;
+            final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+            if (server == null) {
+                sender.sendMessage(settings.getMessage("serverNotFound"));
+                return;
+            }
+            if (plugin.isMaintenance(server)) {
+                sender.sendMessage(settings.getMessage("alreadyEnabled"));
+                return;
+            }
+
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), true);
+            sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
+        } else if (args[0].equalsIgnoreCase("timer")) {
+            if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
+                if (checkPermission(sender, "servertimer")) return;
+                final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+                if (server == null) {
+                    sender.sendMessage(settings.getMessage("serverNotFound"));
+                    return;
+                }
+                if (!plugin.isServerTaskRunning(server)) {
+                    sender.sendMessage(settings.getMessage("timerNotRunning"));
+                    return;
+                }
+
+                plugin.cancelSingleTask(server);
+                sender.sendMessage(settings.getMessage("timerCancelled"));
+            } else
+                sendUsage(sender);
+        }
     }
 }

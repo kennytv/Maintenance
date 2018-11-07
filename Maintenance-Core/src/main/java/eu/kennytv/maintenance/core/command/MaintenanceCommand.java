@@ -43,7 +43,6 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equals("forceupdate")) {
                 if (checkPermission(sender, "update")) return;
                 sender.sendMessage(settings.getMessage("updateDownloading"));
-
                 if (plugin.installUpdate())
                     sender.sendMessage(settings.getMessage("updateFinished"));
                 else
@@ -79,55 +78,20 @@ public abstract class MaintenanceCommand {
                 handleToggleServerCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
-                if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("endtimerUsage"));
-                    return;
-                }
-                if (plugin.isTaskRunning()) {
-                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
-                    return;
-                }
-
-                final int minutes = Integer.parseInt(args[1]);
-                if (minutes > 40320) {
-                    sender.sendMessage(settings.getMessage("timerTooLong"));
-                    return;
-                }
-                if (minutes < 1) {
-                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
-                    return;
-                }
-
+                if (checkTimerArgs(sender, args[1], "endtimerUsage")) return;
                 if (!plugin.isMaintenance())
                     plugin.setMaintenance(true);
-                plugin.startMaintenanceRunnable(minutes, false);
+                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
                 sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
-                if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("starttimerUsage"));
-                    return;
-                }
+                if (checkTimerArgs(sender, args[1], "starttimerUsage")) return;
                 if (plugin.isMaintenance()) {
                     sender.sendMessage(settings.getMessage("alreadyEnabled"));
                     return;
                 }
-                if (plugin.isTaskRunning()) {
-                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
-                    return;
-                }
 
-                final int minutes = Integer.parseInt(args[1]);
-                if (minutes > 40320) {
-                    sender.sendMessage(settings.getMessage("timerTooLong"));
-                    return;
-                }
-                if (minutes < 1) {
-                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
-                    return;
-                }
-
-                plugin.startMaintenanceRunnable(minutes, true);
+                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), true);
                 sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
@@ -172,6 +136,8 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
+        } else if (args.length == 3) {
+
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
             if (!isNumeric(args[1])) {
@@ -220,7 +186,8 @@ public abstract class MaintenanceCommand {
             sendUsage(sender);
     }
 
-    private void sendUsage(final SenderInfo sender) {
+    protected void sendUsage(final SenderInfo sender) {
+        //TODO split, switch toggle permission check, timer usage
         sender.sendMessage("");
         sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
         if (sender.hasPermission("maintenance.reload"))
@@ -258,7 +225,7 @@ public abstract class MaintenanceCommand {
         sender.sendMessage("");
     }
 
-    private boolean checkPermission(final SenderInfo sender, final String permission) {
+    protected boolean checkPermission(final SenderInfo sender, final String permission) {
         if (!sender.hasPermission("maintenance." + permission)) {
             sender.sendMessage(settings.getMessage("noPermission"));
             return true;
@@ -266,7 +233,7 @@ public abstract class MaintenanceCommand {
         return false;
     }
 
-    private boolean isNumeric(final String string) {
+    protected boolean isNumeric(final String string) {
         try {
             Integer.parseInt(string);
         } catch (final NumberFormatException nfe) {
@@ -275,11 +242,37 @@ public abstract class MaintenanceCommand {
         return true;
     }
 
+    protected boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
+        if (!isNumeric(time)) {
+            sender.sendMessage(settings.getMessage(usageKey));
+            return true;
+        }
+        if (plugin.isTaskRunning()) {
+            sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+            return true;
+        }
+
+        final int minutes = Integer.parseInt(time);
+        if (minutes > 40320) {
+            sender.sendMessage(settings.getMessage("timerTooLong"));
+            return true;
+        }
+        if (minutes < 1) {
+            sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
+            return true;
+        }
+        return false;
+    }
+
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
 
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
 
-    protected abstract void handleToggleServerCommand(SenderInfo sender, String args[]);
+    protected void handleToggleServerCommand(SenderInfo sender, String args[]) {
+    }
+
+    protected void handleTimerServerCommands(SenderInfo sender, String args[]) {
+    }
 }

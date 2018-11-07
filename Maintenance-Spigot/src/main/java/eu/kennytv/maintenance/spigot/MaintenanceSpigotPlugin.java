@@ -2,7 +2,7 @@ package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
-import eu.kennytv.maintenance.api.MaintenanceSpigotAPI;
+import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.ServerType;

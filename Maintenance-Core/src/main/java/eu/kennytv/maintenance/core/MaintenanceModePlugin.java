@@ -52,7 +52,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return newestVersion;
     }
 
-    public abstract int startMaintenanceRunnable(Runnable runnable);
+    protected abstract int startMaintenanceRunnable(Runnable runnable);
 
     public abstract void async(Runnable runnable);
 

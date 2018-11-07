@@ -12,8 +12,6 @@ public final class MaintenanceRunnable extends MaintenanceRunnableBase {
     @Override
     protected void finish() {
         plugin.setMaintenance(enable);
-        if (plugin.isTaskRunning())
-            plugin.cancelTask();
     }
 
     @Override
