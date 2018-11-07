@@ -1,5 +1,7 @@
-package eu.kennytv.maintenance.api;
+package eu.kennytv.maintenance.api.bungee;
 
+import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.IMaintenanceBase;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -10,7 +12,7 @@ import net.md_5.bungee.api.plugin.Plugin;
  * </p>
  *
  * @author KennyTV
- * @since 2.1
+ * @since 2.5
  */
 public final class MaintenanceBungeeAPI {
 
@@ -23,7 +25,6 @@ public final class MaintenanceBungeeAPI {
         final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");
         if (maintenance == null)
             ProxyServer.getInstance().getLogger().warning("Could not get instance of MaintenanceBungee!");
-
         return ((IMaintenanceBase) maintenance).getApi();
     }
 }

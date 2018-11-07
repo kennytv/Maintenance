@@ -1,5 +1,7 @@
-package eu.kennytv.maintenance.api;
+package eu.kennytv.maintenance.api.spigot;
 
+import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.IMaintenanceBase;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -10,7 +12,7 @@ import org.bukkit.plugin.Plugin;
  * </p>
  *
  * @author KennyTV
- * @since 2.1
+ * @since 2.5
  */
 public final class MaintenanceSpigotAPI {
 
@@ -23,7 +25,6 @@ public final class MaintenanceSpigotAPI {
         final Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
         if (maintenance == null)
             Bukkit.getLogger().warning("Could not get instance of MaintenanceSpigot!");
-
         return ((IMaintenanceBase) maintenance).getApi();
     }
 }
