@@ -5,8 +5,6 @@ import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -282,38 +280,12 @@ public final class SettingsBungee extends Settings {
         return maintenanceServers;
     }
 
-    public boolean setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
-        if (maintenance) {
-            if (!maintenanceServers.add(server.getName())) return false;
-
-            final ServerInfo fallback = ProxyServer.getInstance().getServerInfo(fallbackServer);
-            if (fallback == null)
-                plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from the network!");
-            server.getPlayers().forEach(p -> {
-                if (!p.hasPermission("maintenance.bypass") && !getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    //TODO messages, yikes
-                    if (fallback != null && fallback.canAccess(p)) {
-                        p.sendMessage(getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
-                        p.connect(fallback);
-                    } else
-                        p.disconnect(getKickMessage().replace("%NEWLINE%", "\n"));
-                } else {
-                    p.sendMessage(getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
-                }
-            });
-        } else {
-            if (!maintenanceServers.remove(server.getName())) return false;
-            server.getPlayers().forEach(p -> p.sendMessage(getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
-        }
-
-        /*if (mySQL != null) {
-            mySQL.executeUpdate(serversQuery, "spigot-servers-with-maintenance", maintenanceServers, maintenanceServers);
-        } else {
-            spigotServers.set("maintenance-on", maintenanceServers);
-            saveSpigotServers();
-        }*/
+    public void saveServersToConfig() {
         spigotServers.set("maintenance-on", maintenanceServers);
         saveSpigotServers();
-        return true;
+    }
+
+    public String getFallbackServer() {
+        return fallbackServer;
     }
 }

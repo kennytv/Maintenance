@@ -13,10 +13,12 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class MaintenanceBungeeCommand extends MaintenanceCommand {
+    private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settingsBungee;
 
     public MaintenanceBungeeCommand(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         super(plugin, settings, "MaintenanceBungee");
+        this.plugin = plugin;
         settingsBungee = settings;
     }
 
@@ -85,7 +87,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        if (settingsBungee.setMaintenanceToServer(server, maintenance)) {
+        if (plugin.setMaintenanceToServer(server, maintenance)) {
             sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
         } else
             sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
