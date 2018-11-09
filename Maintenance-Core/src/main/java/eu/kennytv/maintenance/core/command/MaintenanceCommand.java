@@ -189,7 +189,7 @@ public abstract class MaintenanceCommand {
     protected void sendUsage(final SenderInfo sender) {
         //TODO split, switch toggle permission check, timer usage
         sender.sendMessage("");
-        sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
+        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
         if (sender.hasPermission("maintenance.reload"))
             sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
         if (sender.hasPermission("maintenance.toggle")) {
@@ -221,7 +221,7 @@ public abstract class MaintenanceCommand {
         if (sender.hasPermission("maintenance.update"))
             sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
         sender.sendMessage("§8× §7Created by §bKennyTV");
-        sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
+        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
         sender.sendMessage("");
     }
 

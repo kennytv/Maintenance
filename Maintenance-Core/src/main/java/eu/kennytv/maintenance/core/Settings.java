@@ -35,7 +35,7 @@ public abstract class Settings implements ISettings {
         playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         kickMessage = getColoredString(getConfigString("kickmessage"));
-        languageName = getConfigString("language");
+        languageName = getConfigString("language").toLowerCase();
         if (customMaintenanceIcon)
             reloadMaintenanceIcon();
 

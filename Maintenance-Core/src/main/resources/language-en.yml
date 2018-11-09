@@ -49,7 +49,6 @@ hour: "hour"
 hours: "hours"
 
 # Some messages for the Bungee part, just ignore them if you use the plugin on Spigot
-noServerPermission: "&8[&eMaintenance&8] &cYou don't have the permission to set maintenance on server %SERVER%!"
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be disabled in &6%TIME%&7."
 singleEndtimerUsage: "&8[&eMaintenance&8] &c/maintenance endtimer <server> <minutes>"
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME%&7."

@@ -49,7 +49,6 @@ hour: "Stunde"
 hours: "Stunden"
 
 # Nachrichten für den Bungee Teil des Plugins, einfach ignorieren, falls das Plugin auf Spigot verwendet wird
-noServerPermission: "&8[&eMaintenance&8] &cDu nicht die erforderliche Berechtigung, den Wartungsmodus auf dem Server %SERVER% zu ändern!"
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird deaktiviert in: &6%TIME%&7."
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird aktiviert in: &6%TIME%&7."
 singleMaintenanceKick: "&8[&eMaintenance&8] &cDieser Server befindet sich momentan im Wartungsmodus! Probier es später nochmal!"

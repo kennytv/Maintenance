@@ -38,9 +38,7 @@ public final class SettingsSpigot extends Settings {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         createFile("spigot-config.yml");
-        createLanguageFile();
         createFile("WhitelistedPlayers.yml");
-
         reloadConfigs();
     }
 
@@ -55,8 +53,8 @@ public final class SettingsSpigot extends Settings {
         }
     }
 
-    private void createLanguageFile() {
-        final File file = new File(plugin.getDataFolder(), "language.yml");
+    private void createAndLoadLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
         if (!file.exists()) {
             try (final InputStream in = plugin.getResource("language-" + getLanguage() + ".yml")) {
                 Files.copy(in, file.toPath());
@@ -65,9 +63,15 @@ public final class SettingsSpigot extends Settings {
                 if (!languageName.equals("en")) {
                     plugin.getLogger().warning("Falling back to default language: en");
                     languageName = "en";
-                    createLanguageFile();
+                    createAndLoadLanguageFile();
+                    return;
                 }
             }
+        }
+        try {
+            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
     }
 
@@ -104,13 +108,13 @@ public final class SettingsSpigot extends Settings {
     public void reloadConfigs() {
         try {
             config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "spigot-config.yml")), StandardCharsets.UTF_8));
-            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
 
         loadSettings();
+        createAndLoadLanguageFile();
     }
 
     @Override

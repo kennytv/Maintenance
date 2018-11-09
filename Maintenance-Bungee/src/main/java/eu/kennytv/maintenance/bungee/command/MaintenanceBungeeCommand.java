@@ -77,10 +77,6 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return;
         }
-        if (!sender.hasPermission("maintenance.toggleserver." + server.getName().toLowerCase())) {
-            sender.sendMessage(settings.getMessage("noServerPermission").replace("%SERVER%", server.getName()));
-            return;
-        }
 
         final boolean maintenance = args[0].equalsIgnoreCase("on");
         if (maintenance == settingsBungee.getMaintenanceServers().contains(server.getName())) {
@@ -88,10 +84,10 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        if (plugin.setMaintenanceToServer(server, maintenance)) {
-            sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
-        } else
+        if (!plugin.setMaintenanceToServer(server, maintenance))
             sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
+        else if (!ProxyServer.getInstance().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
+            sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
     }
 
     @Override
@@ -127,7 +123,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         } else if (args[0].equalsIgnoreCase("timer")) {
             if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                 if (checkPermission(sender, "servertimer")) return;
-                final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+                final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[2]);
                 if (server == null) {
                     sender.sendMessage(settings.getMessage("serverNotFound"));
                     return;

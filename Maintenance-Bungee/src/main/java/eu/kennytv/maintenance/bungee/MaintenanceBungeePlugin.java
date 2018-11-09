@@ -121,7 +121,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         }
 
         /*if (mySQL != null) {
-            mySQL.executeUpdate(serversQuery, "spigot-servers-with-maintenance", maintenanceServers, maintenanceServers);
+            mySQL.executeUpdate(serversQuery, "spigotServers-with-maintenance", maintenanceServers, maintenanceServers);
         } else {
             spigotServers.set("maintenance-on", maintenanceServers);
             saveSpigotServers();

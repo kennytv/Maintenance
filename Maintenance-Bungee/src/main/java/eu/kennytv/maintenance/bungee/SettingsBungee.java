@@ -50,10 +50,8 @@ public final class SettingsBungee extends Settings {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         createFile("bungee-config.yml");
-        createLanguageFile();
         createFile("WhitelistedPlayers.yml");
         createFile("SpigotServers.yml");
-
         reloadConfigs();
 
         final Configuration mySQLSection = config.getSection("mysql");
@@ -91,22 +89,6 @@ public final class SettingsBungee extends Settings {
         }
     }
 
-    private void createLanguageFile() {
-        final File file = new File(plugin.getDataFolder(), "language.yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResourceAsStream("language-" + getLanguage() + ".yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                plugin.getLogger().warning("Unable to provide language " + getLanguage());
-                if (!languageName.equals("en")) {
-                    plugin.getLogger().warning("Falling back to default language: en");
-                    languageName = "en";
-                    createLanguageFile();
-                }
-            }
-        }
-    }
-
     @Override
     public boolean updateExtraConfig() {
         // 2.3.1 mysql.update-interval
@@ -122,15 +104,37 @@ public final class SettingsBungee extends Settings {
         try {
             config = YamlConfiguration.getProvider(YamlConfiguration.class)
                     .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "bungee-config.yml")), StandardCharsets.UTF_8));
-            language = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
-            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "spigot-servers.yml"));
+            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "spigotServers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
 
         loadSettings();
+        createAndLoadLanguageFile();
+    }
+
+    private void createAndLoadLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResourceAsStream("language-" + getLanguage() + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException | NullPointerException e) {
+                plugin.getLogger().warning("Unable to provide language " + getLanguage());
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createAndLoadLanguageFile();
+                    return;
+                }
+            }
+        }
+        try {
+            language = YamlConfiguration.getProvider(YamlConfiguration.class)
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
     }
 
     @Override
