@@ -136,8 +136,8 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
-        } else if (args.length == 3) {
-
+        } else if (args.length == 3 && plugin.getServerType() == ServerType.BUNGEE) {
+            handleTimerServerCommands(sender, args);
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
             if (!isNumeric(args[1])) {
