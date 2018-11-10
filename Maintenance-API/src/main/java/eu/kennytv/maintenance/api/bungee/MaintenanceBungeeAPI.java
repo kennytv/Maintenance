@@ -1,12 +1,11 @@
 package eu.kennytv.maintenance.api.bungee;
 
-import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.IMaintenanceBase;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
- * Utility class to get the {@link IMaintenance} instance for the BungeeCord version of the plugin.
+ * Utility class to get the {@link IMaintenanceBungee} instance for the BungeeCord version of the plugin.
  * <p>
  * Only access this class if you're running the plugin on a BungeeCord server!
  * </p>
@@ -19,12 +18,12 @@ public final class MaintenanceBungeeAPI {
     /**
      * Returns API instance of IMaintenance.
      *
-     * @return {@link IMaintenance} instance
+     * @return {@link IMaintenanceBungee} instance
      */
-    public static IMaintenance getAPI() {
+    public static IMaintenanceBungee getAPI() {
         final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");
         if (maintenance == null)
             ProxyServer.getInstance().getLogger().warning("Could not get instance of MaintenanceBungee!");
-        return ((IMaintenanceBase) maintenance).getApi();
+        return (IMaintenanceBungee) ((IMaintenanceBase) maintenance).getApi();
     }
 }
