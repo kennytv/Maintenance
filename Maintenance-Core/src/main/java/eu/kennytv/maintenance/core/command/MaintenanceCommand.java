@@ -5,19 +5,43 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class MaintenanceCommand {
     protected final MaintenanceModePlugin plugin;
     protected final Settings settings;
+    private final List<CommandInfo> commandInfos;
     private final String name;
 
     protected MaintenanceCommand(final MaintenanceModePlugin plugin, final Settings settings, final String name) {
         this.plugin = plugin;
         this.settings = settings;
         this.name = name;
+        this.commandInfos = new ArrayList<>();
+        addCommandInfo("reload", "§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
+        addCommandInfo("toggle", "§6/maintenance on §7(Enables maintenance mode)", "§6/maintenance off §7(Disables maintenance mode)");
+        if (plugin.getServerType() == ServerType.BUNGEE) {
+            addCommandInfo("toggleserver", "§6/maintenance on <server> §7(Enables maintenance mode on a specific proxied server)",
+                    "§6/maintenance off <server> §7(Disables maintenance mode on a specific proxied server)");
+        }
+        addCommandInfo("timer", "§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)",
+                "§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)",
+                "§6/maintenance timer abort §7(If running, the current timer will be aborted)");
+        if (plugin.getServerType() == ServerType.BUNGEE) {
+            addCommandInfo("servertimer", "§6/maintenance starttimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be enabled on the given server)",
+                    "§6/maintenance endtimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be disabled on the given server)",
+                    "§6/maintenance timer abort <server> §7(If running, the timer running for that server will be aborted)");
+        }
+        addCommandInfo("whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
+        addCommandInfo("whitelist.add", "§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        addCommandInfo("whitelist.remove", "§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
+        addCommandInfo("setmotd", "§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)", "§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
+        addCommandInfo("motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        addCommandInfo("update", "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
+    }
+
+    private void addCommandInfo(final String permission, final String... messages) {
+        commandInfos.add(new CommandInfo(permission, messages));
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
@@ -76,7 +100,13 @@ public abstract class MaintenanceCommand {
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
-            if ((args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) && plugin.getServerType() == ServerType.BUNGEE) {
+            if (args[0].equalsIgnoreCase("help")) {
+                if (!isNumeric(args[1])) {
+                    sender.sendMessage(settings.getMessage("helpUsage"));
+                    return;
+                }
+                sendUsage(sender, Integer.parseInt(args[1]));
+            } else if ((args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) && plugin.getServerType() == ServerType.BUNGEE) {
                 if (checkPermission(sender, "toggleserver")) return;
                 handleToggleServerCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("endtimer")) {
@@ -190,42 +220,43 @@ public abstract class MaintenanceCommand {
     }
 
     protected void sendUsage(final SenderInfo sender) {
-        //TODO split, switch toggle permission check, timer usage
-        sender.sendMessage("");
-        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
-        if (sender.hasPermission("maintenance.reload"))
-            sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
-        if (sender.hasPermission("maintenance.toggle")) {
-            if (plugin.getServerType() == ServerType.BUNGEE && sender.hasPermission("maintenance.toggleserver")) {
-                sender.sendMessage("§6/maintenance on [server] §7(Enables maintenance mode");
-                sender.sendMessage("§6/maintenance off [server] §7(Disables maintenance mode)");
-            } else {
-                sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
-                sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
+        sendUsage(sender, 1);
+    }
+
+    private static final int COMMANDS_PER_PAGE = 8;
+
+    protected void sendUsage(final SenderInfo sender, final int page) {
+        final List<String> commands = new ArrayList<>();
+        commandInfos.stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
+            for (String message : cmd.getMessages()) {
+                commands.add(message);
             }
+        });
+        if ((page - 1) * COMMANDS_PER_PAGE > commands.size()) {
+            sender.sendMessage(plugin.getPrefix() + "§cThere is no page with that number!");
+            return;
         }
-        if (sender.hasPermission("maintenance.timer")) {
-            sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
-            sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
-            sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
-        }
-        if (sender.hasPermission("maintenance.whitelist.list"))
-            sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
-        if (sender.hasPermission("maintenance.whitelist.add"))
-            sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
-        if (sender.hasPermission("maintenance.whitelist.remove"))
-            sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        if (sender.hasPermission("maintenance.setmotd")) {
-            sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
-            sender.sendMessage("§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
-        }
-        if (sender.hasPermission("maintenance.motd"))
-            sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
-        if (sender.hasPermission("maintenance.update"))
-            sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
-        sender.sendMessage("§8× §7Created by §bKennyTV");
-        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
+
+        final List<String> filteredCommands;
+        if (page * COMMANDS_PER_PAGE >= commands.size())
+            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, commands.size());
+        else
+            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
+
         sender.sendMessage("");
+        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
+        filteredCommands.forEach(sender::sendMessage);
+        if (page * 10 < commands.size())
+            sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
+        else
+            sender.sendMessage("§8× §7Created by §bKennyTV");
+        sender.sendMessage("§8========[ §e" + name + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========");
+        sender.sendMessage("");
+    }
+
+    private int getDivide(final int size) {
+        final int commandSize = size % COMMANDS_PER_PAGE;
+        return commandSize > 0 ? COMMANDS_PER_PAGE - commandSize : 0;
     }
 
     protected boolean checkPermission(final SenderInfo sender, final String permission) {
