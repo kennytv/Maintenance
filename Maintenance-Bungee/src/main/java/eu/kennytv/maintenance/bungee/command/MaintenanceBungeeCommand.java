@@ -96,11 +96,8 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             if (checkPermission(sender, "servertimer")) return;
             if (checkTimerArgs(sender, args[2], "singleEndtimerUsage")) return;
 
-            final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
-            if (server == null) {
-                sender.sendMessage(settings.getMessage("serverNotFound"));
-                return;
-            }
+            final ServerInfo server = checkSingleTimerArgs(sender, args);
+            if (server == null) return;
             if (!plugin.isMaintenance(server))
                 plugin.setMaintenanceToServer(server, true);
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
@@ -108,11 +105,9 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         } else if (args[0].equalsIgnoreCase("starttimer")) {
             if (checkPermission(sender, "servertimer")) return;
             if (checkTimerArgs(sender, args[2], "singleStarttimerUsage")) return;
-            final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
-            if (server == null) {
-                sender.sendMessage(settings.getMessage("serverNotFound"));
-                return;
-            }
+
+            final ServerInfo server = checkSingleTimerArgs(sender, args);
+            if (server == null) return;
             if (plugin.isMaintenance(server)) {
                 sender.sendMessage(settings.getMessage("alreadyEnabled"));
                 return;
@@ -138,5 +133,28 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             } else
                 sendUsage(sender);
         }
+    }
+
+    @Override
+    protected void showMaintenanceStatus(final SenderInfo sender) {
+        if (settingsBungee.getMaintenanceServers().isEmpty()) {
+            sender.sendMessage(settings.getMessage("singleServerMaintenanceListEmpty"));
+        } else {
+            sender.sendMessage(settings.getMessage("singleServerMaintenanceList"));
+            settingsBungee.getMaintenanceServers().forEach(server -> sender.sendMessage("§8- §b" + server));
+        }
+    }
+
+    private ServerInfo checkSingleTimerArgs(final SenderInfo sender, final String[] args) {
+        final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+        if (server == null) {
+            sender.sendMessage(settings.getMessage("serverNotFound"));
+            return null;
+        }
+        if (plugin.isServerTaskRunning(server)) {
+            sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+            return null;
+        }
+        return server;
     }
 }

@@ -70,6 +70,9 @@ public abstract class MaintenanceCommand {
                     }
                 }
                 sender.sendMessage("§8§m----------");
+            } else if (args[0].equalsIgnoreCase("status") && plugin.getServerType() == ServerType.BUNGEE) {
+                if (checkPermission(sender, "status")) return;
+                showMaintenanceStatus(sender);
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
@@ -269,6 +272,9 @@ public abstract class MaintenanceCommand {
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
+
+    protected void showMaintenanceStatus(SenderInfo sender) {
+    }
 
     protected void handleToggleServerCommand(SenderInfo sender, String args[]) {
     }
