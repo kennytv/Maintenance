@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * @author KennyTV
@@ -46,7 +47,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
 
         final PluginManager pm = getProxy().getPluginManager();
         pm.registerListener(plugin, new PostLoginListener(this, settings));
-        pm.registerListener(plugin, new ServerConnectListener(settings));
+        pm.registerListener(plugin, new ServerConnectListener(this, settings));
         final MaintenanceBungeeCommand maintenanceCommand = new MaintenanceBungeeCommand(this, settings);
         pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(maintenanceCommand));
 
@@ -100,9 +101,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         if (maintenance) {
             if (!settings.getMaintenanceServers().add(server.getName())) return false;
 
-            final ServerInfo fallback = ProxyServer.getInstance().getServerInfo(settings.getFallbackServer());
+            final ServerInfo fallback = getProxy().getServerInfo(settings.getFallbackServer());
             if (fallback == null)
-                plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from the network!");
+                plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
+            else if (fallback.equals(server))
+                plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             server.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                     //TODO messages, yikes
@@ -187,5 +190,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
 
     public ProxyServer getProxy() {
         return plugin.getProxy();
+    }
+
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 }

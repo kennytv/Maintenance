@@ -13,10 +13,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public final class SettingsBungee extends Settings {
     private final String updateQuery;
@@ -285,7 +282,7 @@ public final class SettingsBungee extends Settings {
     }
 
     public void saveServersToConfig() {
-        spigotServers.set("maintenance-on", maintenanceServers);
+        spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
         saveSpigotServers();
     }
 

@@ -78,7 +78,6 @@ public final class SettingsSpigot extends Settings {
     @Override
     public boolean updateExtraConfig() {
         // Remove MySQL part from default config
-        //TODO with single config
         /*if (configContains("mysql")) {
             setToConfig("mysql", null);
             return true;

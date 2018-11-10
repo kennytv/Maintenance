@@ -6,7 +6,6 @@ import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -25,7 +24,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
 
     @Override
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final ProxiedPlayer selected = ProxyServer.getInstance().getPlayer(name);
+        final ProxiedPlayer selected = plugin.getProxy().getPlayer(name);
         if (selected == null) {
             sender.sendMessage(settings.getMessage("playerNotOnline"));
             return;
@@ -39,7 +38,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
 
     @Override
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final ProxiedPlayer selected = ProxyServer.getInstance().getPlayer(name);
+        final ProxiedPlayer selected = plugin.getProxy().getPlayer(name);
         if (selected == null) {
             if (settings.removeWhitelistedPlayer(name))
                 sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name));
@@ -72,7 +71,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
 
     @Override
     protected void handleToggleServerCommand(final SenderInfo sender, final String args[]) {
-        final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+        final ServerInfo server = plugin.getProxy().getServerInfo(args[1]);
         if (server == null) {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return;
@@ -86,7 +85,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
 
         if (!plugin.setMaintenanceToServer(server, maintenance))
             sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
-        else if (!ProxyServer.getInstance().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
+        else if (!plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
             sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
     }
 
@@ -118,7 +117,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         } else if (args[0].equalsIgnoreCase("timer")) {
             if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                 if (checkPermission(sender, "servertimer")) return;
-                final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[2]);
+                final ServerInfo server = plugin.getProxy().getServerInfo(args[2]);
                 if (server == null) {
                     sender.sendMessage(settings.getMessage("serverNotFound"));
                     return;
@@ -146,7 +145,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     }
 
     private ServerInfo checkSingleTimerArgs(final SenderInfo sender, final String[] args) {
-        final ServerInfo server = ProxyServer.getInstance().getServerInfo(args[1]);
+        final ServerInfo server = plugin.getProxy().getServerInfo(args[1]);
         if (server == null) {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return null;
