@@ -32,6 +32,7 @@ public final class ServerConnectListener implements Listener {
                     .forEach(player -> player.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", p.getName())));
         }
         // Normal serverconnect
+        //TODO check other reasons
         if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT) {
             p.sendMessage(settings.getMessage("singleMaintenanceKick"));
             return;
@@ -39,12 +40,10 @@ public final class ServerConnectListener implements Listener {
 
         // If it's the initial proxy join or a kick from another server, go back to fallback server
         final ServerInfo fallback = plugin.getProxy().getServerInfo(settings.getFallbackServer());
-        //TODO message
         if (fallback == null || !fallback.canAccess(p) || plugin.isMaintenance(fallback)) {
-            p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n"));
+            p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
             plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
         } else
             p.connect(fallback);
-
     }
 }

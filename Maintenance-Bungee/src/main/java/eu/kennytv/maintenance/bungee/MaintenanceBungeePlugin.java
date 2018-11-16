@@ -108,12 +108,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
                 plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             server.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    //TODO messages, yikes
                     if (fallback != null && fallback.canAccess(p)) {
                         p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                         p.connect(fallback);
                     } else
-                        p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n"));
+                        p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
                 } else {
                     p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                 }
