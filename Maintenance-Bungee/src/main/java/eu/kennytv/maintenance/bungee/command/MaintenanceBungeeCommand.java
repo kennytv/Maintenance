@@ -86,7 +86,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         if (!plugin.setMaintenanceToServer(server, maintenance))
             sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
         else if (!plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
-            sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDectivated"));
+            sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
     }
 
     @Override
@@ -97,8 +97,10 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
 
             final ServerInfo server = checkSingleTimerArgs(sender, args);
             if (server == null) return;
-            if (!plugin.isMaintenance(server))
-                plugin.setMaintenanceToServer(server, true);
+            if (!plugin.isMaintenance(server)) {
+                sender.sendMessage(settings.getMessage("singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
+                return;
+            }
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
             sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", runnable.getTime()));
         } else if (args[0].equalsIgnoreCase("starttimer")) {
@@ -108,7 +110,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             final ServerInfo server = checkSingleTimerArgs(sender, args);
             if (server == null) return;
             if (plugin.isMaintenance(server)) {
-                sender.sendMessage(settings.getMessage("alreadyEnabled"));
+                sender.sendMessage(settings.getMessage("singleServerAlreadyEnabled").replace("%SERVER%", server.getName()));
                 return;
             }
 

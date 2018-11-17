@@ -54,7 +54,7 @@ singleEndtimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERV
 singleEndtimerUsage: "&8[&eMaintenance&8] &c/maintenance endtimer <server> <minutes>"
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME%&7."
 singleStarttimerUsage: "&8[&eMaintenance&8] &c/maintenance starttimer <server> <minutes>"
-singleMaintenanceKick: "&8[&eMaintenance&8] &cThis server is currently under maintenance! Try again later!"
+singleMaintenanceKick: "&8[&eMaintenance&8] &cThe server %SERVER% is currently under maintenance! Try again later!"
 singleMaintenanceKickComplete: "&cThe server %SERVER% is under maintenance!%NEWLINE%&cYou may try to rejoin to go onto another server!"
 singleMaintenanceActivated: "&8[&eMaintenance&8] &6Maintenance mode is now activated on server &e%SERVER%&6."
 singleMaintenanceDeactivated: "&8[&eMaintenance&8] &6Maintenance mode is now deactivated on server &e%SERVER%&6."

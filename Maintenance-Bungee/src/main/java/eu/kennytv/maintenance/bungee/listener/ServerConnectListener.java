@@ -12,6 +12,7 @@ import net.md_5.bungee.event.EventPriority;
 public final class ServerConnectListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settings;
+    private boolean warned;
 
     public ServerConnectListener(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         this.plugin = plugin;
@@ -34,7 +35,7 @@ public final class ServerConnectListener implements Listener {
         // Normal serverconnect
         if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
                 && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT) {
-            p.sendMessage(settings.getMessage("singleMaintenanceKick"));
+            p.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
             return;
         }
 
@@ -42,7 +43,10 @@ public final class ServerConnectListener implements Listener {
         final ServerInfo fallback = plugin.getProxy().getServerInfo(settings.getFallbackServer());
         if (fallback == null || !fallback.canAccess(p) || plugin.isMaintenance(fallback)) {
             p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
-            plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
+            if (!warned) {
+                plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
+                warned = true;
+            }
         } else
             p.connect(fallback);
     }

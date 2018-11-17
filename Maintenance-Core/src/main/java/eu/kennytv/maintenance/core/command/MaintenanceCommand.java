@@ -112,8 +112,10 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equalsIgnoreCase("endtimer")) {
                 if (checkPermission(sender, "timer")) return;
                 if (checkTimerArgs(sender, args[1], "endtimerUsage")) return;
-                if (!plugin.isMaintenance())
-                    plugin.setMaintenance(true);
+                if (!plugin.isMaintenance()) {
+                    sender.sendMessage(settings.getMessage("alreadyDisabled"));
+                    return;
+                }
                 plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
                 sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
@@ -259,23 +261,6 @@ public abstract class MaintenanceCommand {
         return commandSize > 0 ? COMMANDS_PER_PAGE - commandSize : 0;
     }
 
-    protected boolean checkPermission(final SenderInfo sender, final String permission) {
-        if (!sender.hasPermission("maintenance." + permission)) {
-            sender.sendMessage(settings.getMessage("noPermission"));
-            return true;
-        }
-        return false;
-    }
-
-    protected boolean isNumeric(final String string) {
-        try {
-            Integer.parseInt(string);
-        } catch (final NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
     protected boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
         if (!isNumeric(time)) {
             sender.sendMessage(settings.getMessage(usageKey));
@@ -296,6 +281,23 @@ public abstract class MaintenanceCommand {
             return true;
         }
         return false;
+    }
+
+    protected boolean checkPermission(final SenderInfo sender, final String permission) {
+        if (!sender.hasPermission("maintenance." + permission)) {
+            sender.sendMessage(settings.getMessage("noPermission"));
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean isNumeric(final String string) {
+        try {
+            Integer.parseInt(string);
+        } catch (final NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
