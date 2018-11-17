@@ -2,13 +2,13 @@ package eu.kennytv.maintenance.core.util;
 
 import java.util.UUID;
 
-public abstract class SenderInfo {
+public interface SenderInfo {
 
-    public abstract UUID getUuid();
+    UUID getUuid();
 
-    public abstract String getName();
+    String getName();
 
-    public abstract boolean hasPermission(String permission);
+    boolean hasPermission(String permission);
 
-    public abstract void sendMessage(String message);
+    void sendMessage(String message);
 }

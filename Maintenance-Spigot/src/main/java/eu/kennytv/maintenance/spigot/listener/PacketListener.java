@@ -7,13 +7,13 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
-import com.google.common.collect.Lists;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +39,7 @@ public final class PacketListener implements IPingListener {
                             .replace("%MAX%", Integer.toString(pl.getServer().getMaxPlayers())));
                 }
 
-                final List<WrappedGameProfile> players = Lists.newArrayList();
+                final List<WrappedGameProfile> players = new ArrayList<>();
                 for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
                     players.add(new WrappedGameProfile(UUID.randomUUID(), string));
                 ping.setPlayers(players);

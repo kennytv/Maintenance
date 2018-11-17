@@ -2,9 +2,10 @@ package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
-import eu.kennytv.maintenance.api.MaintenanceSpigotAPI;
+import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
+import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
@@ -24,12 +25,13 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final SettingsSpigot settings;
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
-        super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion());
+        super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion(), ServerType.SPIGOT);
 
         this.plugin = plugin;
         settings = new SettingsSpigot(this, plugin);
 
         plugin.getLogger().info("Plugin by KennyTV");
+        plugin.getLogger().info(getUpdateMessage());
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 
         final PluginManager pm = getServer().getPluginManager();

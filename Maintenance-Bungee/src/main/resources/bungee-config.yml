@@ -1,5 +1,4 @@
 # MaintenanceBungee Plugin by KennyTV
-# Version ${project.version}
 
 # Enables maintenance-mode.
 enable-maintenance-mode: false
@@ -33,6 +32,10 @@ send-join-notification: false
 
 # If set to true, the server icon will be changed to maintenance-icon.png in the Bungee main/base-folder.
 custom-maintenance-icon: false
+
+# Changes the language of command feedback/messages.
+# Currently available are: en (English), de (German)
+language: en
 
 # Only enable MySQL if you really know what you are doing.
 mysql:

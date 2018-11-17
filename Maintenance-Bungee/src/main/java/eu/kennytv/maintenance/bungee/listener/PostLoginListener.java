@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.bungee.listener;
 
-import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.SettingsBungee;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -13,13 +12,14 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public final class PostLoginListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settings;
-    private final Set<UUID> notifiedPlayers = Sets.newHashSet();
+    private final Set<UUID> notifiedPlayers = new HashSet<>();
 
     public PostLoginListener(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         this.plugin = plugin;

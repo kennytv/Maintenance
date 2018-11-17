@@ -38,9 +38,7 @@ public final class SettingsSpigot extends Settings {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         createFile("spigot-config.yml");
-        createFile("language.yml");
         createFile("WhitelistedPlayers.yml");
-
         reloadConfigs();
     }
 
@@ -53,6 +51,38 @@ public final class SettingsSpigot extends Settings {
                 throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
             }
         }
+    }
+
+    private void createAndLoadLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource("language-" + getLanguage() + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                plugin.getLogger().warning("Unable to provide language " + getLanguage());
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createAndLoadLanguageFile();
+                    return;
+                }
+            }
+        }
+        try {
+            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
+    }
+
+    @Override
+    public boolean updateExtraConfig() {
+        // Remove MySQL part from default config
+        /*if (configContains("mysql")) {
+            setToConfig("mysql", null);
+            return true;
+        }*/
+        return false;
     }
 
     @Override
@@ -76,16 +106,14 @@ public final class SettingsSpigot extends Settings {
     @Override
     public void reloadConfigs() {
         try {
-            final File file = new File(plugin.getDataFolder(), "spigot-config.yml");
-            config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-            final File languageFile = new File(plugin.getDataFolder(), "language.yml");
-            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(languageFile), StandardCharsets.UTF_8));
+            config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "spigot-config.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
 
         loadSettings();
+        createAndLoadLanguageFile();
     }
 
     @Override

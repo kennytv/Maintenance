@@ -3,20 +3,45 @@ package eu.kennytv.maintenance.core.command;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.core.util.ServerType;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class MaintenanceCommand {
     protected final MaintenanceModePlugin plugin;
     protected final Settings settings;
+    private final List<CommandInfo> commandInfos;
     private final String name;
 
     protected MaintenanceCommand(final MaintenanceModePlugin plugin, final Settings settings, final String name) {
         this.plugin = plugin;
         this.settings = settings;
         this.name = name;
+        this.commandInfos = new ArrayList<>();
+        addCommandInfo("reload", "§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
+        addCommandInfo("toggle", "§6/maintenance on §7(Enables maintenance mode)", "§6/maintenance off §7(Disables maintenance mode)");
+        if (plugin.getServerType() == ServerType.BUNGEE) {
+            addCommandInfo("toggleserver", "§6/maintenance on <server> §7(Enables maintenance mode on a specific proxied server)",
+                    "§6/maintenance off <server> §7(Disables maintenance mode on a specific proxied server)");
+        }
+        addCommandInfo("timer", "§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)",
+                "§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)",
+                "§6/maintenance timer abort §7(If running, the current timer will be aborted)");
+        if (plugin.getServerType() == ServerType.BUNGEE) {
+            addCommandInfo("servertimer", "§6/maintenance starttimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be enabled on the given server)",
+                    "§6/maintenance endtimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be disabled on the given server)",
+                    "§6/maintenance timer abort <server> §7(If running, the timer running for that server will be aborted)");
+        }
+        addCommandInfo("whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
+        addCommandInfo("whitelist.add", "§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        addCommandInfo("whitelist.remove", "§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
+        addCommandInfo("setmotd", "§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)", "§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
+        addCommandInfo("motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        addCommandInfo("update", "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
+    }
+
+    private void addCommandInfo(final String permission, final String... messages) {
+        commandInfos.add(new CommandInfo(permission, messages));
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
@@ -42,7 +67,6 @@ public abstract class MaintenanceCommand {
             } else if (args[0].equals("forceupdate")) {
                 if (checkPermission(sender, "update")) return;
                 sender.sendMessage(settings.getMessage("updateDownloading"));
-
                 if (plugin.installUpdate())
                     sender.sendMessage(settings.getMessage("updateFinished"));
                 else
@@ -70,61 +94,40 @@ public abstract class MaintenanceCommand {
                     }
                 }
                 sender.sendMessage("§8§m----------");
+            } else if (args[0].equalsIgnoreCase("status") && plugin.getServerType() == ServerType.BUNGEE) {
+                if (checkPermission(sender, "status")) return;
+                showMaintenanceStatus(sender);
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("endtimer")) {
-                if (checkPermission(sender, "timer")) return;
+            if (args[0].equalsIgnoreCase("help")) {
                 if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("endtimerUsage"));
+                    sender.sendMessage(settings.getMessage("helpUsage"));
                     return;
                 }
-                if (plugin.isTaskRunning()) {
-                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+                sendUsage(sender, Integer.parseInt(args[1]));
+            } else if ((args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) && plugin.getServerType() == ServerType.BUNGEE) {
+                if (checkPermission(sender, "toggleserver")) return;
+                handleToggleServerCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("endtimer")) {
+                if (checkPermission(sender, "timer")) return;
+                if (checkTimerArgs(sender, args[1], "endtimerUsage")) return;
+                if (!plugin.isMaintenance()) {
+                    sender.sendMessage(settings.getMessage("alreadyDisabled"));
                     return;
                 }
-
-                final int minutes = Integer.parseInt(args[1]);
-                if (minutes > 40320) {
-                    sender.sendMessage(settings.getMessage("timerTooLong"));
-                    return;
-                }
-                if (minutes < 1) {
-                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
-                    return;
-                }
-
-                if (!plugin.isMaintenance())
-                    plugin.setMaintenance(true);
-                plugin.startMaintenanceRunnable(minutes, false);
+                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
                 sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (args[0].equalsIgnoreCase("starttimer")) {
                 if (checkPermission(sender, "timer")) return;
-                if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("starttimerUsage"));
-                    return;
-                }
+                if (checkTimerArgs(sender, args[1], "starttimerUsage")) return;
                 if (plugin.isMaintenance()) {
                     sender.sendMessage(settings.getMessage("alreadyEnabled"));
                     return;
                 }
-                if (plugin.isTaskRunning()) {
-                    sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
-                    return;
-                }
 
-                final int minutes = Integer.parseInt(args[1]);
-                if (minutes > 40320) {
-                    sender.sendMessage(settings.getMessage("timerTooLong"));
-                    return;
-                }
-                if (minutes < 1) {
-                    sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
-                    return;
-                }
-
+                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), true);
                 sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-                plugin.startMaintenanceRunnable(minutes, true);
             } else if (args[0].equalsIgnoreCase("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
                     if (checkPermission(sender, "timer")) return;
@@ -168,6 +171,8 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
+        } else if (args.length == 3 && plugin.getServerType() == ServerType.BUNGEE) {
+            handleTimerServerCommands(sender, args);
         } else if (args.length > 3 && args[0].equalsIgnoreCase("setmotd")) {
             if (checkPermission(sender, "setmotd")) return;
             if (!isNumeric(args[1])) {
@@ -216,40 +221,69 @@ public abstract class MaintenanceCommand {
             sendUsage(sender);
     }
 
-    private void sendUsage(final SenderInfo sender) {
+    protected void sendUsage(final SenderInfo sender) {
+        sendUsage(sender, 1);
+    }
+
+    private static final int COMMANDS_PER_PAGE = 8;
+
+    protected void sendUsage(final SenderInfo sender, final int page) {
+        final List<String> commands = new ArrayList<>();
+        commandInfos.stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
+            for (String message : cmd.getMessages()) {
+                commands.add(message);
+            }
+        });
+        if ((page - 1) * COMMANDS_PER_PAGE > commands.size()) {
+            sender.sendMessage(plugin.getPrefix() + "§cThere is no page with that number!");
+            return;
+        }
+
+        final List<String> filteredCommands;
+        if (page * COMMANDS_PER_PAGE >= commands.size())
+            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, commands.size());
+        else
+            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
+
         sender.sendMessage("");
-        sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
-        if (sender.hasPermission("maintenance.reload"))
-            sender.sendMessage("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
-        if (sender.hasPermission("maintenance.toggle")) {
-            sender.sendMessage("§6/maintenance on §7(Enables maintenance mode");
-            sender.sendMessage("§6/maintenance off §7(Disables maintenance mode)");
-        }
-        if (sender.hasPermission("maintenance.timer")) {
-            sender.sendMessage("§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
-            sender.sendMessage("§6/maintenance endtimer <minutes> §7(Enables maintenance mode. After the given time in minutes, maintenance mode will be disabled)");
-            sender.sendMessage("§6/maintenance timer abort §7(If running, the current timer will be aborted)");
-        }
-        if (sender.hasPermission("maintenance.whitelist.list"))
-            sender.sendMessage("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
-        if (sender.hasPermission("maintenance.whitelist.add"))
-            sender.sendMessage("§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
-        if (sender.hasPermission("maintenance.whitelist.remove"))
-            sender.sendMessage("§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
-        if (sender.hasPermission("maintenance.setmotd")) {
-            sender.sendMessage("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
-            sender.sendMessage("§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
-        }
-        if (sender.hasPermission("maintenance.motd"))
-            sender.sendMessage("§6/maintenance motd §7(Lists the currently set maintenance motds)");
-        if (sender.hasPermission("maintenance.update"))
-            sender.sendMessage("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
-        sender.sendMessage("§8× §7Created by §bKennyTV");
-        sender.sendMessage("§8===========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]===========");
+        sender.sendMessage("§8========[ §e" + name + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
+        filteredCommands.forEach(sender::sendMessage);
+        if (page * 10 < commands.size())
+            sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
+        else
+            sender.sendMessage("§8× §7Created by §bKennyTV");
+        sender.sendMessage("§8========[ §e" + name + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========");
         sender.sendMessage("");
     }
 
-    private boolean checkPermission(final SenderInfo sender, final String permission) {
+    private int getDivide(final int size) {
+        final int commandSize = size % COMMANDS_PER_PAGE;
+        return commandSize > 0 ? COMMANDS_PER_PAGE - commandSize : 0;
+    }
+
+    protected boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
+        if (!isNumeric(time)) {
+            sender.sendMessage(settings.getMessage(usageKey));
+            return true;
+        }
+        if (plugin.isTaskRunning()) {
+            sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+            return true;
+        }
+
+        final int minutes = Integer.parseInt(time);
+        if (minutes > 40320) {
+            sender.sendMessage(settings.getMessage("timerTooLong"));
+            return true;
+        }
+        if (minutes < 1) {
+            sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean checkPermission(final SenderInfo sender, final String permission) {
         if (!sender.hasPermission("maintenance." + permission)) {
             sender.sendMessage(settings.getMessage("noPermission"));
             return true;
@@ -257,7 +291,7 @@ public abstract class MaintenanceCommand {
         return false;
     }
 
-    private boolean isNumeric(final String string) {
+    protected boolean isNumeric(final String string) {
         try {
             Integer.parseInt(string);
         } catch (final NumberFormatException nfe) {
@@ -271,4 +305,13 @@ public abstract class MaintenanceCommand {
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 
     protected abstract void checkForUpdate(SenderInfo sender);
+
+    protected void showMaintenanceStatus(SenderInfo sender) {
+    }
+
+    protected void handleToggleServerCommand(SenderInfo sender, String args[]) {
+    }
+
+    protected void handleTimerServerCommands(SenderInfo sender, String args[]) {
+    }
 }

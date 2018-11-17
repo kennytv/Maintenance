@@ -1,5 +1,4 @@
 # MaintenanceSpigot Plugin by KennyTV
-# Version ${project.version}
 # Important note: To use this plugin to its full extend, it requires the plugin 'ProtocolLib'
 
 # Enables maintenance-mode.
@@ -34,3 +33,7 @@ send-join-notification: false
 
 # If set to true, the server icon will be changed to maintenance-icon.png in the Bungee main/base-folder.
 custom-maintenance-icon: false
+
+# Changes the language of command feedback/messages.
+# Currently available are: en (English), de (German)
+language: en

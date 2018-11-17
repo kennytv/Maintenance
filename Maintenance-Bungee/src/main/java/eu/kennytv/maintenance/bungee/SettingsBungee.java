@@ -13,20 +13,23 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public final class SettingsBungee extends Settings {
     private final String updateQuery;
     private final String maintenanceQuery;
+    //private final String serversQuery;
     private final MySQL mySQL;
 
     private final MaintenanceBungeePlugin maintenancePlugin;
     private final MaintenanceBungeeBase plugin;
     private final IPingListener pingListener;
+    private Set<String> maintenanceServers;
     private Configuration config;
     private Configuration language;
     private Configuration whitelist;
+    private Configuration spigotServers;
+    private String fallbackServer;
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
@@ -44,9 +47,8 @@ public final class SettingsBungee extends Settings {
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         createFile("bungee-config.yml");
-        createFile("language.yml");
         createFile("WhitelistedPlayers.yml");
-
+        createFile("SpigotServers.yml");
         reloadConfigs();
 
         final Configuration mySQLSection = config.getSection("mysql");
@@ -63,11 +65,13 @@ public final class SettingsBungee extends Settings {
             mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
             updateQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
+            //serversQuery = "INSERT INTO " + serversTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
             updateQuery = null;
             maintenanceQuery = null;
+            //serversQuery = null;
         }
     }
 
@@ -97,14 +101,37 @@ public final class SettingsBungee extends Settings {
         try {
             config = YamlConfiguration.getProvider(YamlConfiguration.class)
                     .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "bungee-config.yml")), StandardCharsets.UTF_8));
-            language = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "spigotServers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
 
         loadSettings();
+        createAndLoadLanguageFile();
+    }
+
+    private void createAndLoadLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResourceAsStream("language-" + getLanguage() + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException | NullPointerException e) {
+                plugin.getLogger().warning("Unable to provide language " + getLanguage());
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createAndLoadLanguageFile();
+                    return;
+                }
+            }
+        }
+        try {
+            language = YamlConfiguration.getProvider(YamlConfiguration.class)
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
     }
 
     @Override
@@ -119,11 +146,19 @@ public final class SettingsBungee extends Settings {
 
     @Override
     public void saveWhitelistedPlayers() {
-        final File file = new File(plugin.getDataFolder(), "WhitelistedPlayers.yml");
+        saveFile(whitelist, "WhitelistedPlayers.yml");
+    }
+
+    public void saveSpigotServers() {
+        saveFile(spigotServers, "SpigotServers.yml");
+    }
+
+    private void saveFile(final Configuration config, final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
         try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(whitelist, file);
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to save WhitelistedPlayers.yml!", e);
+            throw new RuntimeException("Unable to save " + name + "!", e);
         }
     }
 
@@ -131,11 +166,18 @@ public final class SettingsBungee extends Settings {
     public void loadExtraSettings() {
         whitelistedPlayers.clear();
         whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        fallbackServer = spigotServers.getString("fallback", "hub");
         if (mySQL != null) {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
             lastMySQLCheck = 0;
-        }
+        }/* else {
+            final List<String> list = spigotServers.getStringList("maintenance-on");
+            maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
+        }*/
+
+        final List<String> list = spigotServers.getStringList("maintenance-on");
+        maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
     }
 
     @Override
@@ -213,7 +255,6 @@ public final class SettingsBungee extends Settings {
             if (millisecondsToCheck != -1)
                 lastMySQLCheck = System.currentTimeMillis();
         }
-
         return maintenance;
     }
 
@@ -234,5 +275,18 @@ public final class SettingsBungee extends Settings {
 
     public MySQL getMySQL() {
         return mySQL;
+    }
+
+    public Set<String> getMaintenanceServers() {
+        return maintenanceServers;
+    }
+
+    public void saveServersToConfig() {
+        spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
+        saveSpigotServers();
+    }
+
+    public String getFallbackServer() {
+        return fallbackServer;
     }
 }

@@ -1,6 +1,5 @@
 package eu.kennytv.maintenance.spigot.listener;
 
-import com.google.common.collect.Sets;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -14,13 +13,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public final class PlayerLoginListener implements Listener {
     private final MaintenanceSpigotPlugin plugin;
     private final SettingsSpigot settings;
-    private final Set<UUID> notifiedPlayers = Sets.newHashSet();
+    private final Set<UUID> notifiedPlayers = new HashSet<>();
 
     public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
         this.plugin = plugin;
