@@ -102,7 +102,7 @@ public final class SettingsBungee extends Settings {
             config = YamlConfiguration.getProvider(YamlConfiguration.class)
                     .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "bungee-config.yml")), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
-            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "spigotServers.yml"));
+            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "SpigotServers.yml"));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
