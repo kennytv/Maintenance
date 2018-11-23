@@ -24,7 +24,6 @@ reload: "&8[&eMaintenance&8] &aConfig, WhitelistedPlayers, Language Datei und Ma
 removedMotd: "&8[&eMaintenance&8] &aDie %INDEX%. Maintenance MOTD wurde entfernt."
 removeMotdError: "&8[&eMaintenance&8] &cDu hast nur eine Maintenance MOTD, daher kannst du auch keine entfernen!"
 removeMotdUsage: "&8[&eMaintenance&8] &c/maintenance removemotd <Index>"
-serverNotFound: "&8[&eMaintenance&8] &cEs wurde kein Server mit diesem Namen gefunden!"
 setMotd: "&8[&eMaintenance&8] &aDie %LINE%. Zeile der %INDEX%. Maintenance MOTD wurde geändert zu: %MOTD%"
 setMotdUsage: "&8[&eMaintenance&8] &c/maintenance setmotd <Index> <1/2> <Text>"
 setMotdIndexError: "&8[&eMaintenance&8] &cMomentan gibt es %MOTDS% MOTDs, du musst also eine Zahl zwischen 1 and %NEWAMOUNT% wählen."
@@ -51,6 +50,7 @@ hour: "Stunde"
 hours: "Stunden"
 
 # Nachrichten für den Bungee Teil des Plugins, einfach ignorieren, falls das Plugin auf Spigot verwendet wird
+serverNotFound: "&8[&eMaintenance&8] &cEs wurde kein Server mit diesem Namen gefunden!"
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird deaktiviert in: &6%TIME%&7."
 singleEndtimerUsage: "&8[&eMaintenance&8] &c/maintenance endtimer <Server> <Minuten>"
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird aktiviert in: &6%TIME%&7."
