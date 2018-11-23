@@ -230,12 +230,12 @@ public abstract class MaintenanceCommand {
     protected void sendUsage(final SenderInfo sender, final int page) {
         final List<String> commands = new ArrayList<>();
         commandInfos.stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
-            for (String message : cmd.getMessages()) {
+            for (final String message : cmd.getMessages()) {
                 commands.add(message);
             }
         });
         if ((page - 1) * COMMANDS_PER_PAGE > commands.size()) {
-            sender.sendMessage(plugin.getPrefix() + "§cThere is no page with that number!");
+            sender.sendMessage(settings.getMessage("helpPageNotFound"));
             return;
         }
 
