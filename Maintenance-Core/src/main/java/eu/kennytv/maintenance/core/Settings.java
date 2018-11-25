@@ -18,6 +18,7 @@ public abstract class Settings implements ISettings {
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
+    private boolean debug;
 
     protected Settings(final MaintenanceModePlugin plugin) {
         this.plugin = plugin;
@@ -36,10 +37,25 @@ public abstract class Settings implements ISettings {
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         kickMessage = getColoredString(getConfigString("kickmessage"));
         languageName = getConfigString("language").toLowerCase();
-        if (customMaintenanceIcon)
+        debug = getConfigBoolean("debug");
+        if (customMaintenanceIcon) {
             reloadMaintenanceIcon();
+        }
 
         loadExtraSettings();
+        if (debug) {
+            plugin.getLogger().info("enable-maintenance-mode:" + maintenance);
+            plugin.getLogger().info("whitelistedPlayers:" + whitelistedPlayers);
+            plugin.getLogger().info("timer-broadcast-for-seconds:" + broadcastIntervalls);
+            plugin.getLogger().info("pingmessages:" + pingMessages);
+            plugin.getLogger().info("playercountmessage:" + playerCountMessage);
+            plugin.getLogger().info("playercounthovermessage:" + playerCountHoverMessage);
+            plugin.getLogger().info("kickmessage:" + kickMessage);
+            plugin.getLogger().info("language:" + languageName);
+            plugin.getLogger().info("enable-playercountmessage:" + customPlayerCountMessage);
+            plugin.getLogger().info("custom-maintenance-icon:" + customMaintenanceIcon);
+            plugin.getLogger().info("send-join-notification:" + joinNotifications);
+        }
     }
 
     private void updateConfig() {
@@ -192,5 +208,10 @@ public abstract class Settings implements ISettings {
         setWhitelist(uuid.toString(), name);
         saveWhitelistedPlayers();
         return contains;
+    }
+
+    @Override
+    public boolean debugEnabled() {
+        return debug;
     }
 }

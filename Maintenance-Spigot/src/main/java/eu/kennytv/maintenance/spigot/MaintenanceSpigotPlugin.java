@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * @author KennyTV
@@ -109,5 +110,10 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
     public Server getServer() {
         return plugin.getServer();
+    }
+
+    @Override
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 }

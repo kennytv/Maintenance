@@ -191,6 +191,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         return plugin.getProxy();
     }
 
+    @Override
     public Logger getLogger() {
         return plugin.getLogger();
     }

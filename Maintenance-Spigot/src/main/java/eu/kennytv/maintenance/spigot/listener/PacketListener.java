@@ -56,6 +56,8 @@ public final class PacketListener implements IPingListener {
             image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final Exception e) {
             pl.getLogger().warning("Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
+            if (pl.getApi().getSettings().debugEnabled())
+                e.printStackTrace();
             return false;
         }
         return true;

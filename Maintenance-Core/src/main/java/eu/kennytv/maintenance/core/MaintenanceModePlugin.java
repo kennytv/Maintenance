@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Logger;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
     protected final Version version;
@@ -155,4 +156,6 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
             return false;
         }
     }
+
+    public abstract Logger getLogger();
 }

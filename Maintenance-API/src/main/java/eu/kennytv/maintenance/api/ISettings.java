@@ -65,4 +65,6 @@ public interface ISettings {
      * @return true if loading the image was successful
      */
     boolean reloadMaintenanceIcon();
+
+    boolean debugEnabled();
 }

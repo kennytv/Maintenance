@@ -53,6 +53,8 @@ public final class ProxyPingListener implements Listener, IPingListener {
             favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final IOException | IllegalArgumentException e) {
             plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
+            if (settings.debugEnabled())
+                e.printStackTrace();
             return false;
         }
         return true;
