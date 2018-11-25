@@ -38,7 +38,7 @@ public final class ServerListPingListener implements Listener, IPingListener {
         try {
             serverIcon = plugin.getServer().loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final Exception e) {
-            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
+            plugin.getLogger().warning("Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
             return false;
         }
         return true;
