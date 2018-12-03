@@ -2,23 +2,17 @@ package eu.kennytv.maintenance.spigot.metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -27,24 +21,16 @@ import java.util.zip.GZIPOutputStream;
 
 public final class MetricsLite {
 
-    static {
-        if (System.getProperty("bstats.relocatecheck") == null || !System.getProperty("bstats.relocatecheck").equals("false")) {
-            final String defaultPackage = new String(
-                    new byte[]{'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's', '.', 'b', 'u', 'k', 'k', 'i', 't'});
-            final String examplePackage = new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
-            if (MetricsLite.class.getPackage().getName().equals(defaultPackage) || MetricsLite.class.getPackage().getName().equals(examplePackage)) {
-                throw new IllegalStateException("bStats Metrics class has not been relocated correctly!");
-            }
-        }
-    }
-
     public static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
+    private boolean enabled;
     private static boolean logFailedRequests;
+    private static boolean logSentData;
+    private static boolean logResponseStatusText;
     private static String serverUUID;
-    private final JavaPlugin plugin;
+    private final Plugin plugin;
 
-    public MetricsLite(final JavaPlugin plugin) {
+    public MetricsLite(final Plugin plugin) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
@@ -55,10 +41,11 @@ public final class MetricsLite {
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         if (!config.isSet("serverUuid")) {
-
             config.addDefault("enabled", true);
             config.addDefault("serverUuid", UUID.randomUUID().toString());
             config.addDefault("logFailedRequests", false);
+            config.addDefault("logSentData", false);
+            config.addDefault("logResponseStatusText", false);
 
             config.options().header(
                     "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
@@ -68,13 +55,16 @@ public final class MetricsLite {
             ).copyDefaults(true);
             try {
                 config.save(configFile);
-            } catch (final IOException ignored) {
+            } catch (IOException ignored) {
             }
         }
 
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
-        if (config.getBoolean("enabled", true)) {
+        logSentData = config.getBoolean("logSentData", false);
+        logResponseStatusText = config.getBoolean("logResponseStatusText", false);
+        enabled = config.getBoolean("enabled", true);
+        if (enabled) {
             boolean found = false;
             for (final Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
                 try {
@@ -91,8 +81,12 @@ public final class MetricsLite {
         }
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     private void startSubmitting() {
-        final Timer timer = new Timer(true); // We use a timer cause the Bukkit scheduler is affected by server lags
+        final Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -120,18 +114,9 @@ public final class MetricsLite {
     }
 
     private JSONObject getServerData() {
-        int playerAmount;
-        try {
-            final Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
-            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class)
-                    ? ((Collection<?>) onlinePlayersMethod.invoke(Bukkit.getServer())).size()
-                    : ((Player[]) onlinePlayersMethod.invoke(Bukkit.getServer())).length;
-        } catch (final Exception e) {
-            playerAmount = Bukkit.getOnlinePlayers().size(); // Just use the new method if the Reflection failed
-        }
+        final int playerAmount = Bukkit.getOnlinePlayers().size();
         final int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = Bukkit.getVersion();
-        bukkitVersion = bukkitVersion.substring(bukkitVersion.indexOf("MC: ") + 4, bukkitVersion.length() - 1);
+        final String bukkitVersion = Bukkit.getVersion();
 
         final String javaVersion = System.getProperty("java.version");
         final String osName = System.getProperty("os.name");
@@ -178,7 +163,7 @@ public final class MetricsLite {
 
         new Thread(() -> {
             try {
-                sendData(data);
+                sendData(plugin, data);
             } catch (final Exception e) {
                 if (logFailedRequests) {
                     plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
@@ -187,12 +172,15 @@ public final class MetricsLite {
         }).start();
     }
 
-    private static void sendData(final JSONObject data) throws Exception {
+    private static void sendData(final Plugin plugin, final JSONObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
         }
         if (Bukkit.isPrimaryThread()) {
             throw new IllegalAccessException("This method must not be called from the main thread!");
+        }
+        if (logSentData) {
+            plugin.getLogger().info("Sending data to bStats: " + data.toString());
         }
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -201,9 +189,9 @@ public final class MetricsLite {
         connection.setRequestMethod("POST");
         connection.addRequestProperty("Accept", "application/json");
         connection.addRequestProperty("Connection", "close");
-        connection.addRequestProperty("Content-Encoding", "gzip"); // We gzip our request
+        connection.addRequestProperty("Content-Encoding", "gzip");
         connection.addRequestProperty("Content-Length", String.valueOf(compressedData.length));
-        connection.setRequestProperty("Content-Type", "application/json"); // We send our data in JSON format
+        connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("User-Agent", "MC-Server/" + B_STATS_VERSION);
 
         connection.setDoOutput(true);
@@ -212,16 +200,22 @@ public final class MetricsLite {
         outputStream.flush();
         outputStream.close();
 
-        connection.getInputStream().close();
+        if (logResponseStatusText) {
+            final InputStream inputStream = connection.getInputStream();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            final StringBuilder builder = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line);
+            }
+            bufferedReader.close();
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+        } else {
+            connection.getInputStream().close();
+        }
     }
 
-    /**
-     * Gzips the given String.
-     *
-     * @param str The string to gzip.
-     * @return The gzipped String.
-     * @throws IOException If the compression failed.
-     */
     private static byte[] compress(final String str) throws IOException {
         if (str == null) {
             return null;

@@ -54,7 +54,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         settings.setMaintenance(maintenance);
         settings.setToConfig("enable-maintenance-mode", maintenance);
         settings.saveConfig();
-        settings.reloadConfigs();
+        //settings.reloadConfigs();
 
         if (isTaskRunning())
             cancelTask();
