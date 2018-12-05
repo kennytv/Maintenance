@@ -309,9 +309,9 @@ public abstract class MaintenanceCommand {
     protected void showMaintenanceStatus(SenderInfo sender) {
     }
 
-    protected void handleToggleServerCommand(SenderInfo sender, String args[]) {
+    protected void handleToggleServerCommand(SenderInfo sender, String[] args) {
     }
 
-    protected void handleTimerServerCommands(SenderInfo sender, String args[]) {
+    protected void handleTimerServerCommands(SenderInfo sender, String[] args) {
     }
 }
