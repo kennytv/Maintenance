@@ -1,5 +1,7 @@
 # MaintenanceSpigot Plugin by KennyTV
 # Important note: To use this plugin to its full extend, it requires the plugin 'ProtocolLib'
+# Also, configs are cool, which means after the first plugin save, all comments will vanish
+# To still know what each field is for, check https://gist.github.com/KennyTV/a73f2aed1e278d4c927f9f6a3ef9fde2#file-spigot-config-yml
 
 # Enables maintenance-mode.
 enable-maintenance-mode: false
