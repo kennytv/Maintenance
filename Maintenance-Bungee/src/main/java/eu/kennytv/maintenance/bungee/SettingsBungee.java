@@ -314,6 +314,8 @@ public final class SettingsBungee extends Settings {
             loadMaintenanceServersFromSQL();
             if (!maintenanceServers.add(server)) return false;
             maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?) ON DUPLICATE KEY IGNORE", server));
+            if (millisecondsToCheck != -1)
+                lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.add(server)) return false;
             saveServersToConfig();
@@ -326,6 +328,8 @@ public final class SettingsBungee extends Settings {
             loadMaintenanceServersFromSQL();
             if (!maintenanceServers.remove(server)) return false;
             maintenancePlugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
+            if (millisecondsToCheck != -1)
+                lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.remove(server)) return false;
             saveServersToConfig();
