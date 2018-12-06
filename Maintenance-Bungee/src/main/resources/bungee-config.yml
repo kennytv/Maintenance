@@ -47,8 +47,6 @@ mysql:
   database: database
   username: username
   password: password
-  # A new table with this name will be created on first startup when 'use-mysql' is set to true.
-  table: maintenance_settings
   # Requests to the database will only be made at least x seconds after the last request,
   # so there won't be a request on every single ping on a server with many players.
   # Set this to 0 to make a database request on every single ping.
