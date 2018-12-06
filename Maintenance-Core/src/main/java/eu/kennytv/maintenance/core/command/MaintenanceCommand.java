@@ -167,7 +167,6 @@ public abstract class MaintenanceCommand {
                 settings.getPingMessages().remove(index - 1);
                 settings.setToConfig("pingmessages", settings.getPingMessages());
                 settings.saveConfig();
-                settings.reloadConfigs();
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
@@ -214,7 +213,6 @@ public abstract class MaintenanceCommand {
                 settings.getPingMessages().set(index - 1, newMessage);
             settings.setToConfig("pingmessages", settings.getPingMessages());
             settings.saveConfig();
-            settings.reloadConfigs();
             sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
                     .replace("%MOTD%", "§f" + settings.getColoredString(message)));
         } else

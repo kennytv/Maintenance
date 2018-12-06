@@ -87,7 +87,6 @@ public abstract class Settings implements ISettings {
 
         if (updateExtraConfig() || fileChanged) {
             saveConfig();
-            reloadConfigs();
         }
     }
 
