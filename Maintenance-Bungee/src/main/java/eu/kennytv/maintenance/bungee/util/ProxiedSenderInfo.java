@@ -34,6 +34,11 @@ public final class ProxiedSenderInfo implements SenderInfo {
         sender.sendMessage(message);
     }
 
+    @Override
+    public boolean isPlayer() {
+        return sender instanceof ProxiedPlayer;
+    }
+
     public void sendMessage(final TextComponent textComponent) {
         sender.sendMessage(textComponent);
     }

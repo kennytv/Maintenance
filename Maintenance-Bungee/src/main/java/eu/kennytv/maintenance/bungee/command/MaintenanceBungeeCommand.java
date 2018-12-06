@@ -83,13 +83,11 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        if (!plugin.setMaintenanceToServer(server, maintenance))
-            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
-        else {
-            final ProxiedPlayer player = plugin.getProxy().getPlayer(sender.getUuid());
-            if (player == null || !player.getServer().getInfo().equals(server))
+        if (plugin.setMaintenanceToServer(server, maintenance)) {
+            if (!sender.isPlayer() || !plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
                 sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
-        }
+        } else
+            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
     }
 
     @Override
