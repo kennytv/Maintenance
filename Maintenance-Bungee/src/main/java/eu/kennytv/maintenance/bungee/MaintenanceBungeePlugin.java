@@ -101,7 +101,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             if (!settings.addMaintenanceServer(server.getName())) return false;
 
             final ServerInfo fallback = getProxy().getServerInfo(settings.getFallbackServer());
-            if (fallback == null)
+            if (fallback == null && !server.getPlayers().isEmpty())
                 plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
             else if (fallback.equals(server))
                 plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");

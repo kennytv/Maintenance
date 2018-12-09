@@ -82,7 +82,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             if (!sender.isPlayer() || !plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
                 sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
         } else
-            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
+            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
     }
 
     @Override

@@ -313,7 +313,7 @@ public final class SettingsBungee extends Settings {
         if (mySQL != null) {
             loadMaintenanceServersFromSQL();
             if (!maintenanceServers.add(server)) return false;
-            maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?) ON DUPLICATE KEY IGNORE", server));
+            maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
             if (millisecondsToCheck != -1)
                 lastServerCheck = System.currentTimeMillis();
         } else {
