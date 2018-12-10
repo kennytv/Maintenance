@@ -178,14 +178,14 @@ public final class SettingsBungee extends Settings {
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
             lastMySQLCheck = 0;
             lastServerCheck = 0;
-            loadMaintenanceServersFromSQL();
+            maintenanceServers = loadMaintenanceServersFromSQL();
         } else {
             final List<String> list = spigotServers.getStringList("maintenance-on");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
         }
     }
 
-    private void loadMaintenanceServersFromSQL() {
+    private Set<String> loadMaintenanceServersFromSQL() {
         final Set<String> maintenanceServers = new HashSet<>();
         mySQL.executeQuery(serverQuery, rs -> {
             try {
@@ -197,7 +197,7 @@ public final class SettingsBungee extends Settings {
                 e.printStackTrace();
             }
         });
-        this.maintenanceServers = maintenanceServers;
+        return maintenanceServers;
     }
 
     @Override
@@ -285,7 +285,11 @@ public final class SettingsBungee extends Settings {
 
     public boolean isMaintenance(final ServerInfo server) {
         if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastServerCheck > millisecondsToCheck)) {
-            loadMaintenanceServersFromSQL();
+            final Set<String> databaseValue = loadMaintenanceServersFromSQL();
+            if (databaseValue.equals(maintenanceServers)) {
+                maintenancePlugin.serverActions(server, maintenance);
+                maintenanceServers = databaseValue;
+            }
             if (millisecondsToCheck != -1)
                 lastServerCheck = System.currentTimeMillis();
         }
@@ -297,7 +301,7 @@ public final class SettingsBungee extends Settings {
         return pingListener.loadIcon();
     }
 
-    public void setMaintenanceToSQL(final boolean maintenance) {
+    void setMaintenanceToSQL(final boolean maintenance) {
         maintenancePlugin.async(() -> {
             final String s = String.valueOf(maintenance);
             mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
@@ -307,17 +311,13 @@ public final class SettingsBungee extends Settings {
         this.maintenance = maintenance;
     }
 
-    public MySQL getMySQL() {
+    MySQL getMySQL() {
         return mySQL;
     }
 
-    public Set<String> getMaintenanceServers() {
-        return maintenanceServers;
-    }
-
-    public boolean addMaintenanceServer(final String server) {
+    boolean addMaintenanceServer(final String server) {
         if (mySQL != null) {
-            loadMaintenanceServersFromSQL();
+            maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.add(server)) return false;
             maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
             if (millisecondsToCheck != -1)
@@ -329,9 +329,9 @@ public final class SettingsBungee extends Settings {
         return true;
     }
 
-    public boolean removeMaintenanceServer(final String server) {
+    boolean removeMaintenanceServer(final String server) {
         if (mySQL != null) {
-            loadMaintenanceServersFromSQL();
+            maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.remove(server)) return false;
             maintenancePlugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
             if (millisecondsToCheck != -1)
@@ -346,6 +346,10 @@ public final class SettingsBungee extends Settings {
     public void saveServersToConfig() {
         spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
         saveSpigotServers();
+    }
+
+    public Set<String> getMaintenanceServers() {
+        return maintenanceServers;
     }
 
     public String getFallbackServer() {
