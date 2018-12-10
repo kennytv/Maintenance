@@ -70,6 +70,7 @@ public final class SettingsBungee extends Settings {
             mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
             serverQuery = "SELECT * FROM " + serverTable;
+            maintenance = loadMaintenance();
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
@@ -257,24 +258,29 @@ public final class SettingsBungee extends Settings {
     @Override
     public boolean isMaintenance() {
         if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
-            mySQL.executeQuery(maintenanceQuery, rs -> {
-                try {
-                    if (rs.next()) {
-                        final boolean databaseValue = Boolean.parseBoolean(rs.getString("value"));
-                        if (databaseValue != maintenance)
-                            maintenancePlugin.serverActions(maintenance);
-
-                        maintenance = databaseValue;
-                    }
-
-                } catch (final SQLException e) {
-                    e.printStackTrace();
-                }
-            }, "maintenance");
+            final boolean databaseValue = loadMaintenance();
+            if (databaseValue != maintenance) {
+                maintenancePlugin.serverActions(maintenance);
+                maintenance = databaseValue;
+            }
             if (millisecondsToCheck != -1)
                 lastMySQLCheck = System.currentTimeMillis();
         }
         return maintenance;
+    }
+
+    private boolean loadMaintenance() {
+        final boolean[] databaseValue = {false};
+        mySQL.executeQuery(maintenanceQuery, rs -> {
+            try {
+                if (rs.next()) {
+                    databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
+                }
+            } catch (final SQLException e) {
+                e.printStackTrace();
+            }
+        }, "maintenance");
+        return databaseValue[0];
     }
 
     public boolean isMaintenance(final ServerInfo server) {
