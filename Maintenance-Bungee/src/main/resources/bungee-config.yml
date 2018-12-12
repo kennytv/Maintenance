@@ -36,7 +36,7 @@ send-join-notification: false
 custom-maintenance-icon: false
 
 # Changes the language of command feedback/messages.
-# Currently available are: en (English), de (German), fr (French)
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese)
 language: en
 
 # Only enable MySQL if you really know what you are doing.
