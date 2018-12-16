@@ -286,7 +286,7 @@ public final class SettingsBungee extends Settings {
     public boolean isMaintenance(final ServerInfo server) {
         if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastServerCheck > millisecondsToCheck)) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
-            if (databaseValue.equals(maintenanceServers)) {
+            if (!databaseValue.equals(maintenanceServers)) {
                 maintenancePlugin.serverActions(server, maintenance);
                 maintenanceServers = databaseValue;
             }
