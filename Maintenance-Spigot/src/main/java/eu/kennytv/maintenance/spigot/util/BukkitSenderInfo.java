@@ -32,4 +32,9 @@ public final class BukkitSenderInfo implements SenderInfo {
     public void sendMessage(final String message) {
         sender.sendMessage(message);
     }
+
+    @Override
+    public boolean isPlayer() {
+        return sender instanceof Player;
+    }
 }

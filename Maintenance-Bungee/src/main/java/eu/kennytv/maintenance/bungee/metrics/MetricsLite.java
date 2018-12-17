@@ -3,7 +3,6 @@ package eu.kennytv.maintenance.bungee.metrics;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -14,33 +13,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 public final class MetricsLite {
 
-    static {
-        final String defaultPackage = new String(new byte[]{'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's'});
-        final String examplePackage = new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
-        if (MetricsLite.class.getPackage().getName().equals(defaultPackage) || MetricsLite.class.getPackage().getName().equals(examplePackage)) {
-            throw new IllegalStateException("bStats Metrics class has not been relocated correctly!");
-        }
-    }
-
     public static final int B_STATS_VERSION = 1;
-
     private static final String URL = "https://bStats.org/submitData/bungeecord";
-
     private final Plugin plugin;
-
     private boolean enabled;
-
     private String serverUUID;
-
     private boolean logFailedRequests;
-
+    private static boolean logSentData;
+    private static boolean logResponseStatusText;
     private static final List<Object> knownMetricsInstances = new ArrayList<>();
 
     public MetricsLite(final Plugin plugin) {
@@ -67,12 +56,16 @@ public final class MetricsLite {
         } else {
             try {
                 usedMetricsClass.getMethod("linkMetrics", Object.class).invoke(null, this);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 if (logFailedRequests) {
                     plugin.getLogger().log(Level.WARNING, "Failed to link to first metrics class " + usedMetricsClass.getName() + "!", e);
                 }
             }
         }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public static void linkMetrics(final Object metrics) {
@@ -95,14 +88,7 @@ public final class MetricsLite {
     }
 
     private void startSubmitting() {
-        final Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                final TaskScheduler scheduler = plugin.getProxy().getScheduler();
-                scheduler.schedule(plugin, () -> submitData(), 0L, TimeUnit.SECONDS);
-            }
-        }, 1000 * 60 * 2, 1000 * 60 * 30);
+        plugin.getProxy().getScheduler().schedule(plugin, this::submitData, 2, 30, TimeUnit.MINUTES);
     }
 
     private JsonObject getServerData() {
@@ -146,21 +132,19 @@ public final class MetricsLite {
                 if (plugin instanceof JsonObject) {
                     pluginData.add((JsonObject) plugin);
                 }
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
             }
         }
 
         data.add("plugins", pluginData);
 
-        new Thread(() -> {
-            try {
-                sendData(data);
-            } catch (Exception e) {
-                if (logFailedRequests) {
-                    plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats!", e);
-                }
+        try {
+            sendData(plugin, data);
+        } catch (final Exception e) {
+            if (logFailedRequests) {
+                plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats!", e);
             }
-        }).start();
+        }
     }
 
     private void loadConfig() throws IOException {
@@ -174,8 +158,10 @@ public final class MetricsLite {
                     "#This has nearly no effect on the server performance!",
                     "#Check out https://bStats.org/ to learn more :)",
                     "enabled: true",
-                    "serverUuid: \"" + UUID.randomUUID() + "\"",
-                    "logFailedRequests: false");
+                    "serverUuid: \"" + UUID.randomUUID().toString() + "\"",
+                    "logFailedRequests: false",
+                    "logSentData: false",
+                    "logResponseStatusText: false");
         }
 
         final Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
@@ -183,6 +169,8 @@ public final class MetricsLite {
         enabled = configuration.getBoolean("enabled", true);
         serverUUID = configuration.getString("serverUuid");
         logFailedRequests = configuration.getBoolean("logFailedRequests", false);
+        logSentData = configuration.getBoolean("logSentData", false);
+        logResponseStatusText = configuration.getBoolean("logResponseStatusText", false);
     }
 
     private Class<?> getFirstBStatsClass() {
@@ -213,8 +201,8 @@ public final class MetricsLite {
             return null;
         }
         try (
-                FileReader fileReader = new FileReader(file);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                final FileReader fileReader = new FileReader(file);
+                final BufferedReader bufferedReader = new BufferedReader(fileReader);
         ) {
             return bufferedReader.readLine();
         }
@@ -225,8 +213,8 @@ public final class MetricsLite {
             file.createNewFile();
         }
         try (
-                FileWriter fileWriter = new FileWriter(file);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
+                final FileWriter fileWriter = new FileWriter(file);
+                final BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
         ) {
             for (final String line : lines) {
                 bufferedWriter.write(line);
@@ -235,9 +223,12 @@ public final class MetricsLite {
         }
     }
 
-    private static void sendData(final JsonObject data) throws Exception {
+    private static void sendData(final Plugin plugin, final JsonObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null");
+        }
+        if (logSentData) {
+            plugin.getLogger().info("Sending data to bStats: " + data.toString());
         }
 
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
@@ -258,7 +249,20 @@ public final class MetricsLite {
         outputStream.flush();
         outputStream.close();
 
-        connection.getInputStream().close();
+        if (logResponseStatusText) {
+            final InputStream inputStream = connection.getInputStream();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            final StringBuilder builder = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line);
+            }
+            bufferedReader.close();
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+        } else {
+            connection.getInputStream().close();
+        }
     }
 
     private static byte[] compress(final String str) throws IOException {

@@ -23,7 +23,7 @@ public final class ServerConnectListener implements Listener {
     public void serverConnect(final ServerConnectEvent event) {
         final ProxiedPlayer p = event.getPlayer();
         final ServerInfo target = event.getTarget();
-        if (!settings.getMaintenanceServers().contains(target.getName())) return;
+        if (!plugin.isMaintenance(target))return;
         if (p.hasPermission("maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
             return;
 

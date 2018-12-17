@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * @author KennyTV
@@ -53,7 +54,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         settings.setMaintenance(maintenance);
         settings.setToConfig("enable-maintenance-mode", maintenance);
         settings.saveConfig();
-        settings.reloadConfigs();
 
         if (isTaskRunning())
             cancelTask();
@@ -109,5 +109,10 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
     public Server getServer() {
         return plugin.getServer();
+    }
+
+    @Override
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 }

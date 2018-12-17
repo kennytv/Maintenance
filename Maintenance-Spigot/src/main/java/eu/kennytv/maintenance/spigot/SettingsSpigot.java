@@ -2,7 +2,7 @@ package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
-import eu.kennytv.maintenance.spigot.listener.PacketListener;
+import eu.kennytv.maintenance.spigot.listener.ServerInfoPacketListener;
 import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,7 +28,9 @@ public final class SettingsSpigot extends Settings {
 
         final PluginManager pm = plugin.getServer().getPluginManager();
         if (pm.getPlugin("ProtocolLib") != null) {
-            pingListener = new PacketListener(plugin, this);
+            final ServerInfoPacketListener serverInfoListener = new ServerInfoPacketListener(plugin, this);
+            pm.registerEvents(serverInfoListener, plugin);
+            pingListener = serverInfoListener;
         } else {
             final ServerListPingListener listener = new ServerListPingListener(plugin, this);
             pm.registerEvents(listener, plugin);

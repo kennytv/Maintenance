@@ -70,7 +70,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     }
 
     @Override
-    protected void handleToggleServerCommand(final SenderInfo sender, final String args[]) {
+    protected void handleToggleServerCommand(final SenderInfo sender, final String[] args) {
         final ServerInfo server = plugin.getProxy().getServerInfo(args[1]);
         if (server == null) {
             sender.sendMessage(settings.getMessage("serverNotFound"));
@@ -78,19 +78,15 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         }
 
         final boolean maintenance = args[0].equalsIgnoreCase("on");
-        if (maintenance == settingsBungee.getMaintenanceServers().contains(server.getName())) {
-            sender.sendMessage(settings.getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
-            return;
-        }
-
-        if (!plugin.setMaintenanceToServer(server, maintenance))
-            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled"));
-        else if (!plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
-            sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+        if (plugin.setMaintenanceToServer(server, maintenance)) {
+            if (!sender.isPlayer() || !plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
+                sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+        } else
+            sender.sendMessage(settings.getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
     }
 
     @Override
-    protected void handleTimerServerCommands(final SenderInfo sender, final String args[]) {
+    protected void handleTimerServerCommands(final SenderInfo sender, final String[] args) {
         if (args[0].equalsIgnoreCase("endtimer")) {
             if (checkPermission(sender, "servertimer")) return;
             if (checkTimerArgs(sender, args[2], "singleEndtimerUsage")) return;

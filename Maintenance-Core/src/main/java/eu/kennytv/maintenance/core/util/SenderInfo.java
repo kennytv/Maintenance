@@ -11,4 +11,6 @@ public interface SenderInfo {
     boolean hasPermission(String permission);
 
     void sendMessage(String message);
+
+    boolean isPlayer();
 }

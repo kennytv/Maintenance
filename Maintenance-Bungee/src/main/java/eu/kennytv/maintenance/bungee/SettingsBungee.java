@@ -5,6 +5,7 @@ import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -16,9 +17,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 public final class SettingsBungee extends Settings {
-    private final String updateQuery;
+    private final String mySQLTable;
+    private final String serverTable;
     private final String maintenanceQuery;
-    //private final String serversQuery;
+    private final String serverQuery;
     private final MySQL mySQL;
 
     private final MaintenanceBungeePlugin maintenancePlugin;
@@ -33,6 +35,7 @@ public final class SettingsBungee extends Settings {
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
+    private long lastServerCheck;
 
     SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
         super(maintenancePlugin);
@@ -61,17 +64,20 @@ public final class SettingsBungee extends Settings {
                     mySQLSection.getString("database"));
 
             // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
-            final String mySQLTable = mySQLSection.getString("table");
+            mySQLTable = mySQLSection.getString("table", "maintenance_settings");
+            serverTable = mySQLSection.getString("servertable", "maintenance_servers");
             mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
-            updateQuery = "INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
+            mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
             maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
-            //serversQuery = "INSERT INTO " + serversTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?";
+            serverQuery = "SELECT * FROM " + serverTable;
+            maintenance = loadMaintenance();
             plugin.getLogger().info("Done!");
         } else {
             mySQL = null;
-            updateQuery = null;
+            mySQLTable = null;
             maintenanceQuery = null;
-            //serversQuery = null;
+            serverTable = null;
+            serverQuery = null;
         }
     }
 
@@ -171,13 +177,27 @@ public final class SettingsBungee extends Settings {
             final long configValue = config.getInt("mysql.update-interval");
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
             lastMySQLCheck = 0;
-        }/* else {
+            lastServerCheck = 0;
+            maintenanceServers = loadMaintenanceServersFromSQL();
+        } else {
             final List<String> list = spigotServers.getStringList("maintenance-on");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
-        }*/
+        }
+    }
 
-        final List<String> list = spigotServers.getStringList("maintenance-on");
-        maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
+    private Set<String> loadMaintenanceServersFromSQL() {
+        final Set<String> maintenanceServers = new HashSet<>();
+        mySQL.executeQuery(serverQuery, rs -> {
+            try {
+                while (rs.next()) {
+                    maintenanceServers.add(rs.getString("server"));
+                }
+            } catch (final SQLException e) {
+                plugin.getLogger().warning("An error occured while trying to get the list of single servers with maintenance!");
+                e.printStackTrace();
+            }
+        });
+        return maintenanceServers;
     }
 
     @Override
@@ -238,24 +258,42 @@ public final class SettingsBungee extends Settings {
     @Override
     public boolean isMaintenance() {
         if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
-            mySQL.executeQuery(maintenanceQuery, rs -> {
-                try {
-                    if (rs.next()) {
-                        final boolean databaseValue = Boolean.parseBoolean(rs.getString("value"));
-                        if (databaseValue != maintenance)
-                            maintenancePlugin.serverActions(maintenance);
-
-                        maintenance = databaseValue;
-                    }
-
-                } catch (final SQLException e) {
-                    e.printStackTrace();
-                }
-            }, "maintenance");
+            final boolean databaseValue = loadMaintenance();
+            if (databaseValue != maintenance) {
+                maintenancePlugin.serverActions(maintenance);
+                maintenance = databaseValue;
+            }
             if (millisecondsToCheck != -1)
                 lastMySQLCheck = System.currentTimeMillis();
         }
         return maintenance;
+    }
+
+    private boolean loadMaintenance() {
+        final boolean[] databaseValue = {false};
+        mySQL.executeQuery(maintenanceQuery, rs -> {
+            try {
+                if (rs.next()) {
+                    databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
+                }
+            } catch (final SQLException e) {
+                e.printStackTrace();
+            }
+        }, "maintenance");
+        return databaseValue[0];
+    }
+
+    public boolean isMaintenance(final ServerInfo server) {
+        if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastServerCheck > millisecondsToCheck)) {
+            final Set<String> databaseValue = loadMaintenanceServersFromSQL();
+            if (!databaseValue.equals(maintenanceServers)) {
+                maintenancePlugin.serverActions(server, maintenance);
+                maintenanceServers = databaseValue;
+            }
+            if (millisecondsToCheck != -1)
+                lastServerCheck = System.currentTimeMillis();
+        }
+        return maintenanceServers.contains(server.getName());
     }
 
     @Override
@@ -263,27 +301,55 @@ public final class SettingsBungee extends Settings {
         return pingListener.loadIcon();
     }
 
-    public void setMaintenanceToSQL(final boolean maintenance) {
-        plugin.getProxy().getScheduler().runAsync(plugin, () -> {
+    void setMaintenanceToSQL(final boolean maintenance) {
+        maintenancePlugin.async(() -> {
             final String s = String.valueOf(maintenance);
-            mySQL.executeUpdate(updateQuery, "maintenance", s, s);
+            mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
             if (millisecondsToCheck != -1)
                 lastMySQLCheck = System.currentTimeMillis();
         });
         this.maintenance = maintenance;
     }
 
-    public MySQL getMySQL() {
+    MySQL getMySQL() {
         return mySQL;
     }
 
-    public Set<String> getMaintenanceServers() {
-        return maintenanceServers;
+    boolean addMaintenanceServer(final String server) {
+        if (mySQL != null) {
+            maintenanceServers = loadMaintenanceServersFromSQL();
+            if (!maintenanceServers.add(server)) return false;
+            maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
+            if (millisecondsToCheck != -1)
+                lastServerCheck = System.currentTimeMillis();
+        } else {
+            if (!maintenanceServers.add(server)) return false;
+            saveServersToConfig();
+        }
+        return true;
+    }
+
+    boolean removeMaintenanceServer(final String server) {
+        if (mySQL != null) {
+            maintenanceServers = loadMaintenanceServersFromSQL();
+            if (!maintenanceServers.remove(server)) return false;
+            maintenancePlugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
+            if (millisecondsToCheck != -1)
+                lastServerCheck = System.currentTimeMillis();
+        } else {
+            if (!maintenanceServers.remove(server)) return false;
+            saveServersToConfig();
+        }
+        return true;
     }
 
     public void saveServersToConfig() {
         spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
         saveSpigotServers();
+    }
+
+    public Set<String> getMaintenanceServers() {
+        return maintenanceServers;
     }
 
     public String getFallbackServer() {

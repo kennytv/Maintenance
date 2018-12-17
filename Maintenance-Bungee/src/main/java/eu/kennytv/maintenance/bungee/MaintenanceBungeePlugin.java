@@ -70,7 +70,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
             settings.setMaintenance(maintenance);
             settings.setToConfig("enable-maintenance-mode", maintenance);
             settings.saveConfig();
-            settings.reloadConfigs();
         }
 
         serverActions(maintenance);
@@ -93,16 +92,25 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
 
     @Override
     public boolean isMaintenance(final ServerInfo server) {
-        return settings.getMaintenanceServers().contains(server.getName());
+        return settings.isMaintenance(server);
     }
 
     @Override
     public boolean setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
         if (maintenance) {
-            if (!settings.getMaintenanceServers().add(server.getName())) return false;
+            if (!settings.addMaintenanceServer(server.getName())) return false;
+        } else {
+            if (!settings.removeMaintenanceServer(server.getName())) return false;
+        }
+        serverActions(server, maintenance);
+        cancelSingleTask(server);
+        return true;
+    }
 
+    void serverActions(final ServerInfo server, final boolean maintenance) {
+        if (maintenance) {
             final ServerInfo fallback = getProxy().getServerInfo(settings.getFallbackServer());
-            if (fallback == null)
+            if (fallback == null && !server.getPlayers().isEmpty())
                 plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
             else if (fallback.equals(server))
                 plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
@@ -117,20 +125,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
                     p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                 }
             });
-        } else {
-            if (!settings.getMaintenanceServers().remove(server.getName())) return false;
+        } else
             server.getPlayers().forEach(p -> p.sendMessage(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
-        }
-
-        /*if (mySQL != null) {
-            mySQL.executeUpdate(serversQuery, "spigotServers-with-maintenance", maintenanceServers, maintenanceServers);
-        } else {
-            spigotServers.set("maintenance-on", maintenanceServers);
-            saveSpigotServers();
-        }*/
-        cancelSingleTask(server);
-        settings.saveServersToConfig();
-        return true;
     }
 
     @Override
@@ -191,6 +187,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         return plugin.getProxy();
     }
 
+    @Override
     public Logger getLogger() {
         return plugin.getLogger();
     }

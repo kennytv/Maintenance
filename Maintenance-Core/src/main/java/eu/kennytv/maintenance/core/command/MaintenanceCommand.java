@@ -167,7 +167,6 @@ public abstract class MaintenanceCommand {
                 settings.getPingMessages().remove(index - 1);
                 settings.setToConfig("pingmessages", settings.getPingMessages());
                 settings.saveConfig();
-                settings.reloadConfigs();
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
                 sendUsage(sender);
@@ -214,7 +213,6 @@ public abstract class MaintenanceCommand {
                 settings.getPingMessages().set(index - 1, newMessage);
             settings.setToConfig("pingmessages", settings.getPingMessages());
             settings.saveConfig();
-            settings.reloadConfigs();
             sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
                     .replace("%MOTD%", "§f" + settings.getColoredString(message)));
         } else
@@ -230,12 +228,12 @@ public abstract class MaintenanceCommand {
     protected void sendUsage(final SenderInfo sender, final int page) {
         final List<String> commands = new ArrayList<>();
         commandInfos.stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
-            for (String message : cmd.getMessages()) {
+            for (final String message : cmd.getMessages()) {
                 commands.add(message);
             }
         });
         if ((page - 1) * COMMANDS_PER_PAGE > commands.size()) {
-            sender.sendMessage(plugin.getPrefix() + "§cThere is no page with that number!");
+            sender.sendMessage(settings.getMessage("helpPageNotFound"));
             return;
         }
 
@@ -309,9 +307,9 @@ public abstract class MaintenanceCommand {
     protected void showMaintenanceStatus(SenderInfo sender) {
     }
 
-    protected void handleToggleServerCommand(SenderInfo sender, String args[]) {
+    protected void handleToggleServerCommand(SenderInfo sender, String[] args) {
     }
 
-    protected void handleTimerServerCommands(SenderInfo sender, String args[]) {
+    protected void handleTimerServerCommands(SenderInfo sender, String[] args) {
     }
 }
