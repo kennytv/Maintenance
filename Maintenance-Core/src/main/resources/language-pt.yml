@@ -24,7 +24,7 @@ reload: "&8[&cManutencao&8] &aReloaded config, whitelistedplayers, linguagem e i
 removedMotd: "&8[&cManutencao&8] &aRemovida motd numero %INDEX%."
 removeMotdError: "&8[&cManutencao&8] &cSo tens uma motd, entao nao podes remover esta!"
 removeMotdUsage: "&8[&cManutencao&8] &c/maintenance removemotd <index>"
-setMotd: setMotd: "&8[&eManutencao&8] &aLinha %LINE% do %INDEX%. Motd de manutencao %MOTD%"
+setMotd: "&8[&eManutencao&8] &aLinha %LINE% do %INDEX%. Motd de manutencao %MOTD%"
 setMotdUsage: "&8[&cManutencao&8] &c/maintenance setmotd <index> <1/2> <message>"
 setMotdIndexError: "&8[&cManutencao&8] §cTens atualmente %MOTDS% motds, entao escolhe um numero entre 1 e %NEWAMOUNT%."
 setMotdLineError: "&8[&cManutencao&8] &cO segundo argumento tem de ser na linha (1 ou 2)!"
