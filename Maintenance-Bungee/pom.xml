@@ -4,20 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>maintenance-base</artifactId>
+        <artifactId>maintenance-parent</artifactId>
         <groupId>eu.kennytv</groupId>
         <version>2.5.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>maintenance-bungee</artifactId>
     <name>MaintenanceBungee</name>
-
-    <repositories>
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

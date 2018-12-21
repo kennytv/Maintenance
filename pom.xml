@@ -5,17 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.kennytv</groupId>
-    <artifactId>maintenance-base</artifactId>
+    <artifactId>maintenance-parent</artifactId>
     <version>2.5.3-SNAPSHOT</version>
-    <name>Maintenance</name>
     <packaging>pom</packaging>
+    <name>Maintenance</name>
+    <url>https://github.com/KennyTV/Maintenance</url>
+    <inceptionYear>2018</inceptionYear>
+
+    <developers>
+        <developer>
+            <id>KennyTV</id>
+            <url>https://kennytv.eu/</url>
+        </developer>
+    </developers>
 
     <modules>
-        <module>maintenance-parent</module>
+        <module>maintenance-api</module>
         <module>maintenance-core</module>
         <module>maintenance-spigot</module>
         <module>maintenance-bungee</module>
-        <module>maintenance-api</module>
+        <module>maintenance-build</module>
     </modules>
 
     <properties>
@@ -24,6 +33,21 @@
         <maven.compiler.source>${plugin.java}</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+    </repositories>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -44,10 +68,6 @@
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
                                 </relocation>
-                                <!--<relocation>
-                                    <pattern>org.slf4j</pattern>
-                                    <shadedPattern>eu.kennytv.lib.slf4j</shadedPattern>
-                                </relocation>-->
                             </relocations>
                         </configuration>
                     </execution>
