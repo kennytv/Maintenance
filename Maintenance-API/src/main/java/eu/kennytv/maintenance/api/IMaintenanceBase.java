@@ -7,7 +7,7 @@ package eu.kennytv.maintenance.api;
 public interface IMaintenanceBase {
 
     /**
-     * Returns API instance of IMaintenance.
+     * This method is used internally when getting the api instance.
      *
      * @return {@link IMaintenance} instance
      */

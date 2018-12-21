@@ -16,14 +16,14 @@ import net.md_5.bungee.api.plugin.Plugin;
 public final class MaintenanceBungeeAPI {
 
     /**
-     * Returns API instance of IMaintenance.
+     * Returns API instance of the Maintenance plugin.
      *
      * @return {@link IMaintenanceBungee} instance
      */
     public static IMaintenanceBungee getAPI() {
         final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");
         if (maintenance == null)
-            ProxyServer.getInstance().getLogger().warning("Could not get instance of MaintenanceBungee!");
+            throw new IllegalArgumentException("Could not get instance of MaintenanceBungee! Broken/custom build of the plugin?");
         return (IMaintenanceBungee) ((IMaintenanceBase) maintenance).getApi();
     }
 }
