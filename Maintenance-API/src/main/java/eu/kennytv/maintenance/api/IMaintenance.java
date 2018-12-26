@@ -34,7 +34,7 @@ public interface IMaintenance {
     String getVersion();
 
     /**
-     * Returns the {@link ISettings} instance, which gives further insight intosettings set in the config files.
+     * Returns the {@link ISettings} instance, which gives further insight into settings set in the config files.
      *
      * @return {@link ISettings} instance
      */
