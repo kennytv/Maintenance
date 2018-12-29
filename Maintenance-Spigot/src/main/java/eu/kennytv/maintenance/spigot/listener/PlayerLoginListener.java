@@ -21,6 +21,7 @@ public final class PlayerLoginListener implements Listener {
     private final MaintenanceSpigotPlugin plugin;
     private final SettingsSpigot settings;
     private final Set<UUID> notifiedPlayers = new HashSet<>();
+    private final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
 
     public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
         this.plugin = plugin;
@@ -30,7 +31,7 @@ public final class PlayerLoginListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void postLogin(final PlayerLoginEvent event) {
         final Player p = event.getPlayer();
-        if (p.getUniqueId().toString().equals("a8179ff3-c201-4a75-bdaa-9d14aca6f83f"))
+        if (p.getUniqueId().equals(notifyUuid))
             p.sendMessage("§6MaintenanceSpigot §aVersion " + plugin.getVersion());
         else if (settings.isMaintenance()) {
             if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {

@@ -20,6 +20,7 @@ public final class PostLoginListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settings;
     private final Set<UUID> notifiedPlayers = new HashSet<>();
+    private final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
 
     public PostLoginListener(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
         this.plugin = plugin;
@@ -29,7 +30,7 @@ public final class PostLoginListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void postLogin(final PostLoginEvent event) {
         final ProxiedPlayer p = event.getPlayer();
-        if (p.getUniqueId().toString().equals("a8179ff3-c201-4a75-bdaa-9d14aca6f83f"))
+        if (p.getUniqueId().equals(notifyUuid))
             p.sendMessage("§6MaintenanceBungee §aVersion " + plugin.getVersion());
         else if (settings.isMaintenance()) {
             if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
