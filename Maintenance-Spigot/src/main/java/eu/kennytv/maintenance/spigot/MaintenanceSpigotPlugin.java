@@ -93,6 +93,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void broadcast(final String message) {
+        getServer().broadcastMessage(message);
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -103,16 +108,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void broadcast(final String message) {
-        getServer().broadcastMessage(message);
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 
     public Server getServer() {
         return plugin.getServer();
-    }
-
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
     }
 }

@@ -30,12 +30,6 @@ public abstract class MaintenanceRunnableBase implements Runnable {
         seconds--;
     }
 
-    protected abstract void finish();
-
-    protected abstract String startMessageKey();
-
-    protected abstract String endMessageKey();
-
     public String getTime() {
         final int preHours = this.seconds / 60;
         final int minutes = preHours % 60;
@@ -58,4 +52,10 @@ public abstract class MaintenanceRunnableBase implements Runnable {
     public int getSecondsLeft() {
         return seconds;
     }
+
+    protected abstract void finish();
+
+    protected abstract String startMessageKey();
+
+    protected abstract String endMessageKey();
 }

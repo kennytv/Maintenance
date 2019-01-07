@@ -9,8 +9,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     private final ServerInfo server;
 
-    public SingleMaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes,
-                                     final boolean enable, final ServerInfo server) {
+    public SingleMaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable, final ServerInfo server) {
         super(plugin, settings, minutes, enable);
         this.server = server;
     }

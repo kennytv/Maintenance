@@ -62,6 +62,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         }
     }
 
+    @Deprecated
+    public static IMaintenance getAPI() {
+        return MaintenanceBungeeAPI.getAPI();
+    }
+
     @Override
     public void setMaintenance(final boolean maintenance) {
         if (settings.getMySQL() != null) {
@@ -164,6 +169,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Override
+    public void broadcast(final String message) {
+        getProxy().broadcast(message);
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -174,21 +184,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Override
-    public void broadcast(final String message) {
-        getProxy().broadcast(message);
-    }
-
-    @Deprecated
-    public static IMaintenance getAPI() {
-        return MaintenanceBungeeAPI.getAPI();
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 
     public ProxyServer getProxy() {
         return plugin.getProxy();
-    }
-
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
     }
 }
