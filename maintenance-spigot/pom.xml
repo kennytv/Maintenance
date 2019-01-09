@@ -9,27 +9,32 @@
         <version>2.5.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>maintenance-build</artifactId>
-    <name>Maintenance</name>
+    <artifactId>maintenance-spigot</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-core</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>eu.kennytv</groupId>
-            <artifactId>maintenance-bungee</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>eu.kennytv</groupId>
-            <artifactId>maintenance-spigot</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
+            <groupId>net.minecrell</groupId>
+            <artifactId>ServerListPlus</artifactId>
+            <version>3.4.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib-API</artifactId>
+            <version>4.4.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

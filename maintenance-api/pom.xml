@@ -9,20 +9,19 @@
         <version>2.5.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>maintenance-core</artifactId>
-    <name>Maintenance-Core</name>
+    <artifactId>maintenance-api</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>eu.kennytv</groupId>
-            <artifactId>maintenance-api</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.13-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.minecrell</groupId>
-            <artifactId>ServerListPlus</artifactId>
-            <version>3.4.8</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
