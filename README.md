@@ -1,4 +1,5 @@
-This repo is mainly for reporting bugs in the issues section. You might have a look at the general code, but you can't actually compile it (that easily) without other dependencies. You may not copy the code or distribute it as your own.
+This repo is mainly for reporting bugs in the issues section. You might have a look at the code, but you can't actually compile it (that easily) without other dependencies.
+You may not copy the code or distribute it as your own.
 
 # MaintenanceMode-Issues
 
@@ -12,5 +13,5 @@ Issues can be created here: https://github.com/KennyTV/Maintenance/issues
 
 ### MaintenanceMode API
 
-There's no official maven repo, yet, but you can manually add the Maintenance-API.jar file to your library (can be downloaded in the code section, https://github.com/KennyTV/Maintenance/raw/master/Maintenance-API.jar).
+There's no official maven repo, yet, but you can manually add the Maintenance-API.jar file to your library (it can be downloaded in the code section, https://github.com/KennyTV/Maintenance/raw/master/Maintenance-API.jar).
 By using MaintenanceBungeeAPI#getAPI or MaintenanceSpigotAPI#getAPI (depending on what server you are using the plugin) you can get some base methods. A rough documentation can be found here https://github.com/KennyTV/Maintenance/tree/master/Maintenance-API/src/main/java/eu/kennytv/maintenance/api

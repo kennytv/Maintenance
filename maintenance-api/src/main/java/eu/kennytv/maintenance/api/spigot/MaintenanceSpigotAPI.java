@@ -17,14 +17,14 @@ import org.bukkit.plugin.Plugin;
 public final class MaintenanceSpigotAPI {
 
     /**
-     * Returns API instance of IMaintenance.
+     * Returns API instance of the Maintenance plugin.
      *
      * @return {@link IMaintenance} instance
      */
     public static IMaintenance getAPI() {
         final Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
         if (maintenance == null)
-            Bukkit.getLogger().warning("Could not get instance of MaintenanceSpigot!");
+            throw new IllegalArgumentException("Could not get instance of MaintenanceSpigot! Broken/custom build of the plugin?");
         return ((IMaintenanceBase) maintenance).getApi();
     }
 }

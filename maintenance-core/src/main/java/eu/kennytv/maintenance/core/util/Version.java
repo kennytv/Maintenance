@@ -66,11 +66,6 @@ public final class Version implements Comparable<Version> {
     }
 
     private boolean isNumeric(final String string) {
-        try {
-            Integer.parseInt(string);
-        } catch (final NumberFormatException nfe) {
-            return false;
-        }
-        return true;
+        return string.matches("[0-9]+");
     }
 }

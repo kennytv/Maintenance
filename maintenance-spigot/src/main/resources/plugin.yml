@@ -4,6 +4,7 @@ main: eu.kennytv.maintenance.spigot.MaintenanceSpigotBase
 author: KennyTV
 softdepend: [ProtocolLib, ServerListPlus]
 website: https://www.spigotmc.org/resources/maintenancemode.40699/
+api-version: 1.13
 
 commands:
   maintenance:

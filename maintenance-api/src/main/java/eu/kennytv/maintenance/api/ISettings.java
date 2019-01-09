@@ -17,16 +17,19 @@ public interface ISettings {
     boolean isMaintenance();
 
     /**
-     * @return true if "send-join-notification" is set to true in the config
+     * @return value of the 'send-join-notification' config field
      */
     boolean isJoinNotifications();
 
     /**
-     * @return true if "custom-maintenance-icon" is set to true in the config
+     * @return value of the 'custom-maintenance-icon' config field
      */
     boolean hasCustomIcon();
 
     /**
+     * Returns a map of the currently maintenance-whitelisted players as their uuid mapped to their saved name.
+     * Note that the names might be incorrect/outdated.
+     *
      * @return map of uuids of whitelisted players with their given names
      */
     Map<UUID, String> getWhitelistedPlayers();
@@ -66,5 +69,10 @@ public interface ISettings {
      */
     boolean reloadMaintenanceIcon();
 
+    /**
+     * This indicates if the optional 'debug' value in the config is set to true.
+     *
+     * @return true if debug is enabled
+     */
     boolean debugEnabled();
 }

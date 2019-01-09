@@ -290,12 +290,7 @@ public abstract class MaintenanceCommand {
     }
 
     protected boolean isNumeric(final String string) {
-        try {
-            Integer.parseInt(string);
-        } catch (final NumberFormatException nfe) {
-            return false;
-        }
-        return true;
+        return string.matches("[0-9]+");
     }
 
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);

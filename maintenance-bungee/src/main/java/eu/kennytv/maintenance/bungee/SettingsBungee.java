@@ -269,6 +269,11 @@ public final class SettingsBungee extends Settings {
         return maintenance;
     }
 
+    @Override
+    public boolean reloadMaintenanceIcon() {
+        return pingListener.loadIcon();
+    }
+
     private boolean loadMaintenance() {
         final boolean[] databaseValue = {false};
         mySQL.executeQuery(maintenanceQuery, rs -> {
@@ -294,11 +299,6 @@ public final class SettingsBungee extends Settings {
                 lastServerCheck = System.currentTimeMillis();
         }
         return maintenanceServers.contains(server.getName());
-    }
-
-    @Override
-    public boolean reloadMaintenanceIcon() {
-        return pingListener.loadIcon();
     }
 
     void setMaintenanceToSQL(final boolean maintenance) {

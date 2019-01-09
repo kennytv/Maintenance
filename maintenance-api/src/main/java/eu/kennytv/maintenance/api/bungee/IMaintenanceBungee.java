@@ -15,6 +15,7 @@ public interface IMaintenanceBungee extends IMaintenance {
      * If MySQL is enabled, it will also be written into the database.
      *
      * @param maintenance true to enable, false to disable maintenance mode
+     * @return true if the mode was changed
      */
     boolean setMaintenanceToServer(ServerInfo server, boolean maintenance);
 
@@ -24,7 +25,7 @@ public interface IMaintenanceBungee extends IMaintenance {
     boolean isMaintenance(ServerInfo server);
 
     /**
-     * @return true if a start- or endtimer task is currently running regarding the proxied server
+     * @return true if a start- or endtimer task is currently running for the proxied server
      */
     boolean isServerTaskRunning(ServerInfo server);
 }

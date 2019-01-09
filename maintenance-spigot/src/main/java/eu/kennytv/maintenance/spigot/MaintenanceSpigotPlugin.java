@@ -42,11 +42,16 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
         // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
-        if (serverListPlus != null) {
+        if (pm.isPluginEnabled(serverListPlus)) {
             serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
+    }
+
+    @Deprecated
+    public static IMaintenance getAPI() {
+        return MaintenanceSpigotAPI.getAPI();
     }
 
     @Override
@@ -88,6 +93,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void broadcast(final String message) {
+        getServer().broadcastMessage(message);
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -98,21 +108,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void broadcast(final String message) {
-        getServer().broadcastMessage(message);
-    }
-
-    @Deprecated
-    public static IMaintenance getAPI() {
-        return MaintenanceSpigotAPI.getAPI();
+    public Logger getLogger() {
+        return plugin.getLogger();
     }
 
     public Server getServer() {
         return plugin.getServer();
-    }
-
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
     }
 }

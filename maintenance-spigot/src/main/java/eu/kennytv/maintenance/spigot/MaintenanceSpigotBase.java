@@ -14,12 +14,12 @@ public final class MaintenanceSpigotBase extends JavaPlugin implements IMaintena
         maintenance = new MaintenanceSpigotPlugin(this);
     }
 
-    File getPluginFile() {
-        return getFile();
-    }
-
     @Override
     public IMaintenance getApi() {
         return maintenance;
+    }
+
+    File getPluginFile() {
+        return getFile();
     }
 }
