@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>maintenance-bungee</artifactId>
-    <name>MaintenanceBungee</name>
 
     <dependencies>
         <dependency>
