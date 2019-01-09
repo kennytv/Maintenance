@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>maintenance-api</artifactId>
-    <name>Maintenance-API</name>
 
     <dependencies>
         <dependency>
