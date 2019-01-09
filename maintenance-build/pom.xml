@@ -15,19 +15,19 @@
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-bungee</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-spigot</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

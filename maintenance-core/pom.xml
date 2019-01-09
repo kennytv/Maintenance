@@ -15,7 +15,7 @@
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
