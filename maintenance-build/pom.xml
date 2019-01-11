@@ -31,4 +31,8 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>Maintenance</finalName>
+    </build>
 </project>
