@@ -52,7 +52,9 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public void checkNewestVersion() {
         try {
             final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final String newVersionString = new BufferedReader(new InputStreamReader(c.getInputStream())).readLine();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            final String newVersionString = reader.readLine();
+            reader.close();
             final Version newVersion = new Version(newVersionString);
             if (!newVersion.equals(version))
                 newestVersion = newVersion;
@@ -63,36 +65,31 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public boolean installUpdate() {
         try {
             final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
-            final InputStream is = new BufferedInputStream(conn.getInputStream());
-            final OutputStream os = new BufferedOutputStream(new FileOutputStream("plugins/Maintenance.tmp"));
-            final byte[] chunk = new byte[1024];
-            int chunkSize;
-            while ((chunkSize = is.read(chunk)) != -1) {
-                os.write(chunk, 0, chunkSize);
-            }
-            os.close();
-            final File newfile = new File("plugins/Maintenance.tmp");
-            final long newlength = newfile.length();
-            if (newlength <= 10000) {
-                newfile.delete();
+            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream("plugins/Maintenance.tmp")));
+            final File file = new File("plugins/Maintenance.tmp");
+            final long newlength = file.length();
+            if (newlength < 10000) {
+                file.delete();
                 return false;
             }
 
-            final FileInputStream is2 = new FileInputStream(new File("plugins/Maintenance.tmp"));
-            final OutputStream os2 = new BufferedOutputStream(new FileOutputStream(getPluginFile()));
-            final byte[] chunk2 = new byte[1024];
-            int chunkSize2;
-            while ((chunkSize2 = is2.read(chunk2)) != -1)
-                os2.write(chunk2, 0, chunkSize2);
-            is2.close();
-            os2.close();
-            //TODO nicht jedes mal file objekt neu nehmen?
-            new File("plugins/Maintenance.tmp").delete();
+            writeFile(new FileInputStream(file), new BufferedOutputStream(new FileOutputStream(getPluginFile())));
+            file.delete();
             return true;
         } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void writeFile(final InputStream is, final OutputStream os) throws IOException {
+        final byte[] chunk = new byte[1024];
+        int chunkSize;
+        while ((chunkSize = is.read(chunk)) != -1) {
+            os.write(chunk, 0, chunkSize);
+        }
+        is.close();
+        os.close();
     }
 
     public boolean updateAvailable() {
