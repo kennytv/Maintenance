@@ -70,6 +70,11 @@ public interface ISettings {
     boolean reloadMaintenanceIcon();
 
     /**
+     * Reloads config, language file, WhitelistedPlayers (and if on Bungee/Velocity the SpigotServers file).
+     */
+    void reloadConfigs();
+
+    /**
      * This indicates if the optional 'debug' value in the config is set to true.
      *
      * @return true if debug is enabled

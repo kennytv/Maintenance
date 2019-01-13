@@ -25,6 +25,7 @@
         <module>maintenance-core</module>
         <module>maintenance-spigot</module>
         <module>maintenance-bungee</module>
+        <module>maintenance-sponge</module>
         <module>maintenance-build</module>
     </modules>
 
@@ -45,8 +46,16 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
+            <id>sponge</id>
+            <url>http://repo.spongepowered.org/maven</url>
+        </repository>
+        <repository>
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
     </repositories>
 

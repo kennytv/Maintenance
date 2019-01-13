@@ -112,8 +112,6 @@ public abstract class Settings implements ISettings {
 
     public abstract void saveConfig();
 
-    public abstract void reloadConfigs();
-
     public abstract void setToConfig(String path, Object var);
 
     public abstract boolean configContains(String path);
