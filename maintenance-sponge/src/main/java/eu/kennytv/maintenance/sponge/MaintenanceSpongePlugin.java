@@ -8,12 +8,14 @@ import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
-import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
-import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
+import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
+import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
+import eu.kennytv.maintenance.sponge.util.MaintenanceVersion;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
@@ -28,6 +30,7 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -35,7 +38,7 @@ import java.util.logging.Logger;
  * @author KennyTV
  * @since 3.0
  */
-@Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = "3.0-SNAPSHOT", authors = "KennyTV",
+@Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenancemode.40699/",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
@@ -50,10 +53,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     // Sponge related
     //TODO entire settingssponge
-
-    //TODO gamereload
-    //TODO getPluginFile method
-    //TODO MaintenanceVersion.VERSION
+    //TODO getPluginFile, datafolder, resource, sendupdatenotification methods
     //TODO look at the rest of command stuff
 
     // General
@@ -63,7 +63,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Inject
     public MaintenanceSpongePlugin() {
-        super("§8[§eMaintenanceSponge§8] ", "3.0-SNAPSHOT", ServerType.SPONGE);
+        super("§8[§eMaintenanceSponge§8] ", MaintenanceVersion.VERSION, ServerType.SPONGE);
     }
 
     @Listener
@@ -144,6 +144,16 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void sendUpdateNotification(final SenderInfo sender) {
+
+    }
+
+    @Override
+    public File getDataFolder() {
+        return null;
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -151,6 +161,11 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public File getPluginFile() {
         //return container.getSource().get();
+        return null;
+    }
+
+    @Override
+    public InputStream getResource(String name) {
         return null;
     }
 

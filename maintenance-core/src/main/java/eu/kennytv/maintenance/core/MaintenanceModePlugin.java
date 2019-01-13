@@ -3,6 +3,7 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Version;
 
@@ -141,7 +142,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract void broadcast(String message);
 
+    public abstract void sendUpdateNotification(SenderInfo sender);
+
+    public abstract File getDataFolder();
+
     public abstract File getPluginFile();
+
+    public abstract InputStream getResource(String name);
 
     public abstract Logger getLogger();
 }

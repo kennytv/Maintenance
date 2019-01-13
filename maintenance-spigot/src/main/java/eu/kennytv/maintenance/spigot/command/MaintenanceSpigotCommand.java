@@ -4,6 +4,7 @@ import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
+import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -28,10 +29,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            if (settings.addWhitelistedPlayer(selected.getUniqueId(), selected.getName()))
-                sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
-            else
-                sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
+            whitelistAddMessage(new BukkitSenderInfo(selected));
             return;
         }
 
@@ -41,20 +39,14 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
             return;
         }
 
-        if (settings.addWhitelistedPlayer(offlinePlayer.getUniqueId(), offlinePlayer.getName()))
-            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", offlinePlayer.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", offlinePlayer.getName()));
+        whitelistAddMessage(new BukkitOfflinePlayerInfo(offlinePlayer));
     }
 
     @Override
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            if (settings.removeWhitelistedPlayer(selected.getUniqueId()))
-                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
-            else
-                sender.sendMessage(settings.getMessage("whitelistNotFound"));
+            whitelistRemoveMessage(new BukkitSenderInfo(selected));
             return;
         }
 
@@ -64,9 +56,6 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
             return;
         }
 
-        if (settings.removeWhitelistedPlayer(offlinePlayer.getUniqueId()))
-            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", offlinePlayer.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistNotFound"));
+        whitelistRemoveMessage(new BukkitOfflinePlayerInfo(offlinePlayer));
     }
 }

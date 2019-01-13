@@ -12,7 +12,6 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -81,17 +80,6 @@ public final class SettingsBungee extends Settings {
         }
     }
 
-    private void createFile(final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResourceAsStream(name)) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create " + name + " file for MaintenanceBungee", e);
-            }
-        }
-    }
-
     @Override
     public boolean updateExtraConfig() {
         // 2.3.1 mysql.update-interval
@@ -114,27 +102,10 @@ public final class SettingsBungee extends Settings {
         }
 
         loadSettings();
-        createAndLoadLanguageFile();
-    }
+        createLanguageFile();
 
-    private void createAndLoadLanguageFile() {
-        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResourceAsStream("language-" + getLanguage() + ".yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException | NullPointerException e) {
-                plugin.getLogger().warning("Unable to provide language " + getLanguage());
-                if (!languageName.equals("en")) {
-                    plugin.getLogger().warning("Falling back to default language: en");
-                    languageName = "en";
-                    createAndLoadLanguageFile();
-                    return;
-                }
-            }
-        }
         try {
-            language = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+            language = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
@@ -222,7 +193,7 @@ public final class SettingsBungee extends Settings {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
             return "null";
         }
-        return ChatColor.translateAlternateColorCodes('&', s);
+        return getColoredString(s);
     }
 
     @Override

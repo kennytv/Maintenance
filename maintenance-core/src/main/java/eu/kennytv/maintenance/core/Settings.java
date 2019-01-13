@@ -2,6 +2,10 @@ package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.*;
 
 public abstract class Settings implements ISettings {
@@ -14,7 +18,7 @@ public abstract class Settings implements ISettings {
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String kickMessage;
-    protected String languageName;
+    private String languageName;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
@@ -22,6 +26,17 @@ public abstract class Settings implements ISettings {
 
     protected Settings(final MaintenanceModePlugin plugin) {
         this.plugin = plugin;
+    }
+
+    protected void createFile(final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource(name)) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
+            }
+        }
     }
 
     protected void loadSettings() {
@@ -55,6 +70,22 @@ public abstract class Settings implements ISettings {
             plugin.getLogger().info("enable-playercountmessage:" + customPlayerCountMessage);
             plugin.getLogger().info("custom-maintenance-icon:" + customMaintenanceIcon);
             plugin.getLogger().info("send-join-notification:" + joinNotifications);
+        }
+    }
+
+    protected void createLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource("language-" + languageName + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                plugin.getLogger().warning("Unable to provide language " + languageName);
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createLanguageFile();
+                }
+            }
         }
     }
 

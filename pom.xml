@@ -26,6 +26,7 @@
         <module>maintenance-spigot</module>
         <module>maintenance-bungee</module>
         <module>maintenance-sponge</module>
+        <module>maintenance-velocity</module>
         <module>maintenance-build</module>
     </modules>
 
@@ -48,6 +49,10 @@
         <repository>
             <id>sponge</id>
             <url>http://repo.spongepowered.org/maven</url>
+        </repository>
+        <repository>
+            <id>velocity</id>
+            <url>https://repo.velocitypowered.com/snapshots</url>
         </repository>
         <repository>
             <id>dmulloy2-repo</id>

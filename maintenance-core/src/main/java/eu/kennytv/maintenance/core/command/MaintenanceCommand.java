@@ -219,11 +219,11 @@ public abstract class MaintenanceCommand {
             sendUsage(sender);
     }
 
+    private static final int COMMANDS_PER_PAGE = 8;
+
     protected void sendUsage(final SenderInfo sender) {
         sendUsage(sender, 1);
     }
-
-    private static final int COMMANDS_PER_PAGE = 8;
 
     protected void sendUsage(final SenderInfo sender, final int page) {
         final List<String> commands = new ArrayList<>();
@@ -289,14 +289,6 @@ public abstract class MaintenanceCommand {
         return false;
     }
 
-    protected boolean isNumeric(final String string) {
-        return string.matches("[0-9]+");
-    }
-
-    protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
-
-    protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
-
     protected void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
@@ -307,6 +299,24 @@ public abstract class MaintenanceCommand {
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
 
+    protected void whitelistAddMessage(final SenderInfo sender) {
+        if (settings.addWhitelistedPlayer(sender.getUuid(), sender.getName()))
+            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", sender.getName()));
+        else
+            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", sender.getName()));
+    }
+
+    protected void whitelistRemoveMessage(final SenderInfo sender) {
+        if (settings.removeWhitelistedPlayer(sender.getUuid()))
+            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", sender.getName()));
+        else
+            sender.sendMessage(settings.getMessage("whitelistNotFound"));
+    }
+
+    private boolean isNumeric(final String string) {
+        return string.matches("[0-9]+");
+    }
+
     protected void showMaintenanceStatus(SenderInfo sender) {
     }
 
@@ -315,4 +325,8 @@ public abstract class MaintenanceCommand {
 
     protected void handleTimerServerCommands(SenderInfo sender, String[] args) {
     }
+
+    protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
+
+    protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 }

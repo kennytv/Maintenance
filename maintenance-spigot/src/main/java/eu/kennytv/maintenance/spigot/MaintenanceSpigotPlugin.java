@@ -5,16 +5,22 @@ import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 /**
@@ -98,6 +104,29 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void sendUpdateNotification(final SenderInfo sender) {
+        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
+        //TODO check why on some spigot servers under some conditions this doesn't work?
+        try {
+            final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
+            final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
+            final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
+            click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
+            click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
+            tc1.addExtra(tc2);
+            tc1.addExtra(click);
+            getServer().getPlayer(sender.getUuid()).spigot().sendMessage(tc1);
+        } catch (final Exception e) {
+            sender.sendMessage(getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+        }
+    }
+
+    @Override
+    public File getDataFolder() {
+        return plugin.getDataFolder();
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -105,6 +134,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public File getPluginFile() {
         return plugin.getPluginFile();
+    }
+
+    @Override
+    public InputStream getResource(final String name) {
+        return plugin.getResource(name);
     }
 
     @Override

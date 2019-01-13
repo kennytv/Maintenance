@@ -30,10 +30,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        if (settings.addWhitelistedPlayer(selected.getUniqueId(), selected.getName()))
-            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
+        whitelistAddMessage(new ProxiedSenderInfo(selected));
     }
 
     @Override
@@ -47,10 +44,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        if (settings.removeWhitelistedPlayer(selected.getUniqueId()))
-            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistNotFound"));
+        whitelistRemoveMessage(new ProxiedSenderInfo(selected));
     }
 
     @Override

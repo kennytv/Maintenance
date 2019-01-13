@@ -10,18 +10,25 @@ import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
 import eu.kennytv.maintenance.bungee.runnable.SingleMaintenanceRunnable;
+import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -174,6 +181,24 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Override
+    public void sendUpdateNotification(final SenderInfo sender) {
+        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
+        final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix() + " "));
+        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
+        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
+        tc1.addExtra(tc2);
+        tc1.addExtra(click);
+        ((ProxiedSenderInfo) sender).sendMessage(tc1);
+    }
+
+    @Override
+    public File getDataFolder() {
+        return plugin.getDataFolder();
+    }
+
+    @Override
     public ISettings getSettings() {
         return settings;
     }
@@ -181,6 +206,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     @Override
     public File getPluginFile() {
         return plugin.getPluginFile();
+    }
+
+    @Override
+    public InputStream getResource(final String name) {
+        return plugin.getResourceAsStream(name);
     }
 
     @Override

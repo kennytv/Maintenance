@@ -9,9 +9,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,39 +44,6 @@ public final class SettingsSpigot extends Settings {
         createFile("spigot-config.yml");
         createFile("WhitelistedPlayers.yml");
         reloadConfigs();
-    }
-
-    private void createFile(final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResource(name)) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
-            }
-        }
-    }
-
-    private void createAndLoadLanguageFile() {
-        final File file = new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResource("language-" + getLanguage() + ".yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                plugin.getLogger().warning("Unable to provide language " + getLanguage());
-                if (!languageName.equals("en")) {
-                    plugin.getLogger().warning("Falling back to default language: en");
-                    languageName = "en";
-                    createAndLoadLanguageFile();
-                    return;
-                }
-            }
-        }
-        try {
-            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to load Maintenance language file!", e);
-        }
     }
 
     @Override
@@ -115,7 +84,13 @@ public final class SettingsSpigot extends Settings {
         }
 
         loadSettings();
-        createAndLoadLanguageFile();
+        createLanguageFile();
+
+        try {
+            language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
     }
 
     @Override
@@ -146,7 +121,7 @@ public final class SettingsSpigot extends Settings {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
             return "null";
         }
-        return ChatColor.translateAlternateColorCodes('&', s);
+        return getColoredString(s);
     }
 
     @Override

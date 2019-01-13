@@ -19,9 +19,29 @@ public final class SettingsSponge extends Settings {
         Sponge.getEventManager().registerListeners(plugin, listener);
         pingListener = listener;
 
-        //createFile("spigot-config.yml");
-        //createFile("WhitelistedPlayers.yml");
+        createFile("spigot-config.yml");
+        createFile("WhitelistedPlayers.yml");
         reloadConfigs();
+    }
+
+    @Override
+    public void reloadConfigs() {
+
+    }
+
+    @Override
+    public void loadExtraSettings() {
+
+    }
+
+    @Override
+    public void setWhitelist(final String uuid, final String s) {
+
+    }
+
+    @Override
+    public void saveConfig() {
+
     }
 
     @Override
@@ -55,21 +75,6 @@ public final class SettingsSponge extends Settings {
     }
 
     @Override
-    public void loadExtraSettings() {
-
-    }
-
-    @Override
-    public void setWhitelist(final String uuid, final String s) {
-
-    }
-
-    @Override
-    public void saveConfig() {
-
-    }
-
-    @Override
     public void setToConfig(final String path, final Object var) {
 
     }
@@ -87,10 +92,5 @@ public final class SettingsSponge extends Settings {
     @Override
     public boolean reloadMaintenanceIcon() {
         return false;
-    }
-
-    @Override
-    public void reloadConfigs() {
-
     }
 }

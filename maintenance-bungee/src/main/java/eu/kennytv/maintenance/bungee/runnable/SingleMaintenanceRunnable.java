@@ -1,6 +1,6 @@
 package eu.kennytv.maintenance.bungee.runnable;
 
-import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
+import eu.kennytv.maintenance.api.bungee.IMaintenanceBungee;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
@@ -16,8 +16,7 @@ public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
 
     @Override
     protected void finish() {
-        final MaintenanceBungeePlugin plugin = (MaintenanceBungeePlugin) this.plugin;
-        plugin.setMaintenanceToServer(server, enable);
+        ((IMaintenanceBungee) this.plugin).setMaintenanceToServer(server, enable);
     }
 
     @Override
