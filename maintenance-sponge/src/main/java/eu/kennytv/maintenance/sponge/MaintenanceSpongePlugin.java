@@ -50,6 +50,7 @@ import java.util.logging.Logger;
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     private SettingsSponge settings;
+    private Task task;
     private Logger logger;
     @Inject
     private Game game;
@@ -133,7 +134,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public void startMaintenanceRunnable(final int minutes, final boolean enable) {
         runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
-        game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(runnable).submit(this);
+        task = game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(runnable).submit(this);
     }
 
     @Override
@@ -153,8 +154,9 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public void cancelTask() {
-        game.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
         runnable = null;
+        task.cancel();
+        task = null;
     }
 
     @Override
