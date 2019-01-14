@@ -19,6 +19,7 @@ public final class MaintenanceBungeeAPI {
      * Returns API instance of the Maintenance plugin.
      *
      * @return {@link IMaintenanceBungee} instance
+     * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenanceBungee getAPI() {
         final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");

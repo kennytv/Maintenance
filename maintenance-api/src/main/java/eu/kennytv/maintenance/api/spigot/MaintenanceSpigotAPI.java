@@ -20,6 +20,7 @@ public final class MaintenanceSpigotAPI {
      * Returns API instance of the Maintenance plugin.
      *
      * @return {@link IMaintenance} instance
+     * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenance getAPI() {
         final Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
