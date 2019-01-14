@@ -16,6 +16,7 @@ import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.MaintenanceVersion;
+import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
@@ -29,9 +30,14 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -57,7 +63,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     // Sponge related
     //TODO entire settingssponge
-    //TODO getPluginFile, resource, sendupdatenotification methods
+    //TODO getResource methods
     //TODO look at the rest of command stuff
     //TODO do MaintenanceVersion properly
 
@@ -68,6 +74,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     //whitelist
     //config saving/reloading
     //timer
+    //updater
 
     // General
     //TODO split api module
@@ -157,7 +164,19 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-
+        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
+        Text text;
+        try {
+            text = Text.builder(getPrefix())
+                    .append(Text.of("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/ "))
+                    .append(Text.builder("§7§l§o(CLICK ME)")
+                            .onClick(TextActions.openUrl(new URL("https://www.spigotmc.org/resources/maintenancemode.40699/")))
+                            .onHover(TextActions.showText(Text.of("§aDownload the latest version"))).build()).build();
+        } catch (final MalformedURLException e) {
+            text = Text.of("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+            e.printStackTrace();
+        }
+        ((SpongeSenderInfo) sender).sendMessage(text);
     }
 
     @Override
@@ -172,8 +191,8 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public File getPluginFile() {
-        //return container.getSource().get();
-        return null;
+        final Optional<Path> source = container.getSource();
+        return source.map(Path::toFile).orElse(null);
     }
 
     @Override

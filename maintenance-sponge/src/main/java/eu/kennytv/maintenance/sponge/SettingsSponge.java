@@ -91,6 +91,6 @@ public final class SettingsSponge extends Settings {
 
     @Override
     public boolean reloadMaintenanceIcon() {
-        return false;
+        return pingListener.loadIcon();
     }
 }

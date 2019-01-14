@@ -8,11 +8,11 @@ final class CommandInfo {
 
     CommandInfo(final String permission, final String... messages) {
         this.messages = messages;
-        this.permission = permission;
+        this.permission = "maintenance." + permission;
     }
 
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasPermission("maintenance." + permission);
+        return sender.hasPermission(permission);
     }
 
     public String[] getMessages() {

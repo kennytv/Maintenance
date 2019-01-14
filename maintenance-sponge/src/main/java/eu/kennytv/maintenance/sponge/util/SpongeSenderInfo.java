@@ -38,4 +38,8 @@ public final class SpongeSenderInfo implements SenderInfo {
     public boolean isPlayer() {
         return sender instanceof Player;
     }
+
+    public void sendMessage(final Text text) {
+        sender.sendMessage(text);
+    }
 }
