@@ -64,9 +64,9 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     // Sponge related
     //TODO entire settingssponge
-    //TODO getResource methods
     //TODO look at the rest of command stuff
     //TODO do MaintenanceVersion properly
+    //TODO getResource method works?
 
     //TODO To test:
     //everything in ping
@@ -78,8 +78,8 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     //updater
 
     // General
-    //TODO split api module
     //TODO tabcompletion
+    //TODO (split api module)
 
     @Inject
     public MaintenanceSpongePlugin() {
@@ -194,12 +194,12 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public File getPluginFile() {
         final Optional<Path> source = container.getSource();
-        return source.map(Path::toFile).orElse(null);
+        return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));
     }
 
     @Override
-    public InputStream getResource(String name) {
-        return null;
+    public InputStream getResource(final String name) {
+        return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 
     @Override
