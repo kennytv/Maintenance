@@ -33,7 +33,7 @@ public final class ClientPingServerListener implements IPingListener {
 
         final ClientPingServerEvent.Response response = event.getResponse();
         if (settings.hasCustomPlayerCountMessage()) {
-            //TODO versionmessage
+            //TODO versionmessage possible without much trouble?
         }
 
         response.setDescription(Text.of(settings.getRandomPingMessage()));
@@ -53,7 +53,7 @@ public final class ClientPingServerListener implements IPingListener {
         try {
             favicon = Sponge.getGame().getRegistry().loadFavicon(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final IOException | IllegalArgumentException e) {
-            plugin.getSpongeLogger().warn("§4Could not load 'maintenance-icon.png' - did you create one in your Sponge folder (not the plugins folder)?");
+            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Sponge folder (not the plugins folder)?");
             if (settings.debugEnabled())
                 e.printStackTrace();
             return false;

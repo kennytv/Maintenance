@@ -32,7 +32,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final SettingsSpigot settings;
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
-        super("§8[§eMaintenanceSpigot§8] ", plugin.getDescription().getVersion(), ServerType.SPIGOT);
+        super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
 
         this.plugin = plugin;
         settings = new SettingsSpigot(this, plugin);

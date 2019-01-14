@@ -14,6 +14,6 @@ public final class GameReloadListener {
     @Listener
     public void reload(final GameReloadEvent event) {
         plugin.getSettings().reloadConfigs();
-        plugin.getSpongeLogger().info("Reloaded files!");
+        plugin.getLogger().info("Reloaded config files!");
     }
 }

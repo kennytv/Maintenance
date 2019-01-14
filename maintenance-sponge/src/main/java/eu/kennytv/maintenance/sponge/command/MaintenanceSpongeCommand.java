@@ -41,7 +41,7 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
 
     @Override
     public boolean testPermission(final CommandSource source) {
-        return false;
+        return true;
     }
 
     @Override

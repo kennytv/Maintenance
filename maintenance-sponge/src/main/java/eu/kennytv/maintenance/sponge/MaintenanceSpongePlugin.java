@@ -20,6 +20,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -49,30 +50,41 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Inject
     private PluginContainer container;
     @Inject
+    @ConfigDir(sharedRoot = false)
+    private File dataFolder;
+    @Inject
     private Metrics2 metrics;
 
     // Sponge related
     //TODO entire settingssponge
-    //TODO getPluginFile, datafolder, resource, sendupdatenotification methods
+    //TODO getPluginFile, resource, sendupdatenotification methods
     //TODO look at the rest of command stuff
+    //TODO do MaintenanceVersion properly
+
+    //TODO To test:
+    //everything in ping
+    //join blocked+screen message
+    //message format (updatenotification, help)
+    //whitelist
+    //config saving/reloading
+    //timer
 
     // General
-    //TODO abstract loginlistener
     //TODO split api module
     //TODO tabcompletion
 
     @Inject
     public MaintenanceSpongePlugin() {
-        super("§8[§eMaintenanceSponge§8] ", MaintenanceVersion.VERSION, ServerType.SPONGE);
+        super(MaintenanceVersion.VERSION, ServerType.SPONGE);
     }
 
     @Listener
     public void onEnable(final GameInitializationEvent event) {
-        logger = new LoggerWrapper(getSpongeLogger());
+        logger = new LoggerWrapper(container.getLogger());
         settings = new SettingsSponge(this);
 
-        getSpongeLogger().info("Plugin by KennyTV");
-        getSpongeLogger().info(getUpdateMessage());
+        logger.info("Plugin by KennyTV");
+        logger.info(getUpdateMessage());
 
         game.getCommandManager().register(this, new MaintenanceSpongeCommand(this, settings), "maintenance", "maintenancesponge");
         final EventManager em = game.getEventManager();
@@ -84,7 +96,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
             serverListPlusHook.setEnabled(!settings.isMaintenance());
-            getSpongeLogger().info("Enabled ServerListPlus integration!");
+            logger.info("Enabled ServerListPlus integration!");
         }));
     }
 
@@ -150,7 +162,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public File getDataFolder() {
-        return null;
+        return dataFolder;
     }
 
     @Override
@@ -172,10 +184,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public Logger getLogger() {
         return logger;
-    }
-
-    public org.slf4j.Logger getSpongeLogger() {
-        return container.getLogger();
     }
 
     public Server getServer() {

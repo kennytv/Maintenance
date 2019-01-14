@@ -44,7 +44,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     private final Map<String, Integer> serverTaskIds = new HashMap<>();
 
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
-        super("§8[§eMaintenanceBungee§8] ", plugin.getDescription().getVersion(), ServerType.BUNGEE);
+        super(plugin.getDescription().getVersion(), ServerType.BUNGEE);
 
         this.plugin = plugin;
         plugin.getLogger().info("Plugin by KennyTV");
