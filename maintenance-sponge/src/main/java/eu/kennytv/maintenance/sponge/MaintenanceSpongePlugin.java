@@ -17,7 +17,6 @@ import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.MaintenanceVersion;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
@@ -76,6 +75,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     //config saving/reloading
     //timer
     //updater
+    //serverlistplus integration
 
     // General
     //TODO tabcompletion
@@ -102,7 +102,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
-            serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
+            serverListPlusHook = new ServerListPlusHook(serverListPlus);
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             logger.info("Enabled ServerListPlus integration!");
         }));

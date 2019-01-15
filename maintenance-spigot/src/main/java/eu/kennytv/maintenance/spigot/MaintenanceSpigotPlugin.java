@@ -15,7 +15,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -50,7 +49,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (pm.isPluginEnabled(serverListPlus)) {
-            serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
+            serverListPlusHook = new ServerListPlusHook(serverListPlus);
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }

@@ -25,7 +25,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
 import java.io.File;
 import java.io.InputStream;
@@ -63,7 +62,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
-            serverListPlusHook = new ServerListPlusHook(((ServerListPlusPlugin) serverListPlus).getCore());
+            serverListPlusHook = new ServerListPlusHook(serverListPlus);
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
