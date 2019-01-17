@@ -84,6 +84,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Inject
     public MaintenanceSpongePlugin() {
         super(MaintenanceVersion.VERSION, ServerType.SPONGE);
+        System.out.println("THIS MAINTENANCE VERSION IS NOT PRODUCTION READY, PLEASE USE IT WITH CAUTION");
     }
 
     @Listener
