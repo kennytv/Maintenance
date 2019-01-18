@@ -9,8 +9,16 @@ public enum ServerType {
 
     private final String name;
 
+
     ServerType(final String name) {
         this.name = name;
+    }
+
+    /**
+     * @return true if type is BUNGEE or VELOCITY
+     */
+    public boolean isProxy() {
+        return this == BUNGEE || this == VELOCITY;
     }
 
     @Override

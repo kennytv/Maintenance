@@ -11,12 +11,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public final class MaintenanceSpigotCommand extends MaintenanceCommand implements CommandExecutor {
+import java.util.List;
+
+public final class MaintenanceSpigotCommand extends MaintenanceCommand implements CommandExecutor, TabCompleter {
 
     public MaintenanceSpigotCommand(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
-        super(plugin, settings, "MaintenanceSpigot");
+        super(plugin, settings);
     }
 
     @Override
@@ -57,5 +60,10 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         }
 
         whitelistRemoveMessage(new BukkitOfflinePlayerInfo(offlinePlayer));
+    }
+
+    @Override
+    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
+        return getSuggestions(new BukkitSenderInfo(sender), args);
     }
 }

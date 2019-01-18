@@ -75,10 +75,11 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     //config saving/reloading
     //timer
     //updater
+
     //serverlistplus integration
+    //tabcompletion with servers on bungee
 
     // General
-    //TODO tabcompletion
     //TODO (split api module)
 
     @Inject

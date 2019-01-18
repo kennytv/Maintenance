@@ -25,23 +25,23 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     private static final String[] EMPTY = new String[0];
 
     public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final SettingsSponge settings) {
-        super(plugin, settings, "MaintenanceSponge");
+        super(plugin, settings);
     }
 
     @Override
     public CommandResult process(final CommandSource source, final String arguments) throws CommandException {
-        execute(new SpongeSenderInfo(source), arguments.isEmpty() ? EMPTY : arguments.split(" "));
+        execute(new SpongeSenderInfo(source), getArgs(arguments));
         return CommandResult.success();
     }
 
     @Override
     public List<String> getSuggestions(final CommandSource source, final String arguments, @Nullable final Location<World> targetPosition) throws CommandException {
-        return null;
+        return getSuggestions(new SpongeSenderInfo(source), getArgs(arguments));
     }
 
     @Override
     public boolean testPermission(final CommandSource source) {
-        return true;
+        return source.hasPermission("maintenance.command");
     }
 
     @Override
@@ -87,5 +87,9 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
             sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", player.getName()));
         else
             sender.sendMessage(settings.getMessage("whitelistNotFound"));
+    }
+
+    private String[] getArgs(final String arguments) {
+        return arguments.isEmpty() ? EMPTY : arguments.split(" ");
     }
 }
