@@ -42,7 +42,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
             return "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
         } else if (version.compareTo(newestVersion) != 0) {
             if (version.getTag().equalsIgnoreCase("snapshot")) {
-                return "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub tracker (https://kennytv.eu/maintenance/issues)";
+                return "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub issue tracker (https://kennytv.eu/maintenance/issues)";
             } else {
                 return "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
             }
