@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class ServerInfoPacketListener extends PingListenerBase {
+    private final UUID uuid = new UUID(0, 0);
     //private WrappedServerPing.CompressedImage image;
 
     public ServerInfoPacketListener(final MaintenanceSpigotBase base, final SettingsSpigot settings) {
@@ -44,7 +45,7 @@ public final class ServerInfoPacketListener extends PingListenerBase {
 
                 final List<WrappedGameProfile> players = new ArrayList<>();
                 for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
-                    players.add(new WrappedGameProfile(UUID.randomUUID(), string));
+                    players.add(new WrappedGameProfile(uuid, string));
                 ping.setPlayers(players);
                 //if (settings.hasCustomIcon() && image != null) ping.setFavicon(image);
             }

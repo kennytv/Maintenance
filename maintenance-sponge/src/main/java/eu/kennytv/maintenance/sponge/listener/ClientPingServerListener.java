@@ -20,6 +20,7 @@ import java.util.UUID;
 public final class ClientPingServerListener implements IPingListener {
     private final MaintenanceSpongePlugin plugin;
     private final SettingsSponge settings;
+    private final UUID uuid = new UUID(0, 0);
     private Favicon favicon;
 
     public ClientPingServerListener(final MaintenanceSpongePlugin plugin, final SettingsSponge settings) {
@@ -41,7 +42,7 @@ public final class ClientPingServerListener implements IPingListener {
             final List<GameProfile> profiles = players.getProfiles();
             profiles.clear();
             for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
-                profiles.add(GameProfile.of(UUID.randomUUID(), string));
+                profiles.add(GameProfile.of(uuid, string));
         });
 
         if (settings.hasCustomIcon() && favicon != null)

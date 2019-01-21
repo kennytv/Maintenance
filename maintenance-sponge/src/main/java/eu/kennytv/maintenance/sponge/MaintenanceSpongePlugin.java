@@ -56,14 +56,13 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Inject
     private PluginContainer container;
     @Inject
+    private Metrics2 metrics;
+    @Inject
     @ConfigDir(sharedRoot = false)
     private File dataFolder;
-    @Inject
-    private Metrics2 metrics;
 
     // Sponge related
     //TODO entire settingssponge
-    //TODO look at the rest of command stuff
     //TODO do MaintenanceVersion properly
     //TODO getResource method works?
 
@@ -78,9 +77,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     //serverlistplus integration
     //tabcompletion with servers on bungee
-
-    // General
-    //TODO (split api module)
+    //ping with protocollib
 
     @Inject
     public MaintenanceSpongePlugin() {
