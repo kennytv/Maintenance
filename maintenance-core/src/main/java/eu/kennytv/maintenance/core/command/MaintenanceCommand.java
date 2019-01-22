@@ -225,7 +225,7 @@ public abstract class MaintenanceCommand {
                 }
 
                 settings.getPingMessages().remove(index - 1);
-                settings.setToConfig("pingmessages", settings.getPingMessages());
+                settings.getConfig().set("pingmessages", settings.getPingMessages());
                 settings.saveConfig();
                 sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
             } else
@@ -271,7 +271,7 @@ public abstract class MaintenanceCommand {
                 settings.getPingMessages().add(newMessage);
             else
                 settings.getPingMessages().set(index - 1, newMessage);
-            settings.setToConfig("pingmessages", settings.getPingMessages());
+            settings.getConfig().set("pingmessages", settings.getPingMessages());
             settings.saveConfig();
             sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
                     .replace("%MOTD%", "§f" + settings.getColoredString(message)));
@@ -279,7 +279,7 @@ public abstract class MaintenanceCommand {
             sendUsage(sender);
     }
 
-    protected List<String> getSuggestions(final SenderInfo sender, final String[] args) {
+    public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
         if (!sender.hasPermission("maintenance.command") || args.length == 0) return Collections.emptyList();
         final String s = args[0].toLowerCase();
         if (args.length == 1)

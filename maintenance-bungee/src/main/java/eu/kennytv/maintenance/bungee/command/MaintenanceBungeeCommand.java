@@ -6,18 +6,16 @@ import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class MaintenanceBungeeCommand extends MaintenanceCommand implements TabExecutor {
+public final class MaintenanceBungeeCommand extends MaintenanceCommand {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsBungee settingsBungee;
 
@@ -143,7 +141,8 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand implement
 
     @Override
     protected List<String> getServersCompletion(final String s) {
-        return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().startsWith(s)).map(entry -> entry.getValue().getName()).collect(Collectors.toList());
+        return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
+                .filter(entry -> !plugin.isMaintenance(entry.getValue())).map(entry -> entry.getValue().getName()).collect(Collectors.toList());
     }
 
     @Override
@@ -162,10 +161,5 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand implement
             return null;
         }
         return server;
-    }
-
-    @Override
-    public Iterable<String> onTabComplete(final CommandSender sender, final String[] args) {
-        return getSuggestions(new ProxiedSenderInfo(sender), args);
     }
 }

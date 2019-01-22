@@ -1,10 +1,12 @@
 package eu.kennytv.maintenance.core;
 
+import eu.kennytv.lib.config.Configuration;
+import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.core.listener.IPingListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -13,6 +15,7 @@ public abstract class Settings implements ISettings {
     protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final MaintenanceModePlugin plugin;
     protected boolean maintenance;
+    protected IPingListener pingListener;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
     private String playerCountMessage;
@@ -24,8 +27,48 @@ public abstract class Settings implements ISettings {
     private boolean joinNotifications;
     private boolean debug;
 
+    protected Configuration config;
+    protected Configuration language;
+    protected Configuration whitelist;
+
     protected Settings(final MaintenanceModePlugin plugin) {
         this.plugin = plugin;
+        if (!plugin.getDataFolder().exists())
+            plugin.getDataFolder().mkdirs();
+
+        createFile(getConfigName());
+        createFile("WhitelistedPlayers.yml");
+        createExtraFiles();
+    }
+
+    @Override
+    public void reloadConfigs() {
+        try {
+            config = YamlConfiguration.getProvider(YamlConfiguration.class)
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), getConfigName())), StandardCharsets.UTF_8));
+            whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            reloadExtraConfigs();
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance files!", e);
+        }
+
+        loadSettings();
+        createLanguageFile();
+
+        try {
+            language = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + languageName + ".yml")), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
+    }
+
+    public void saveConfig() {
+        final File file = new File(plugin.getDataFolder(), getConfigName());
+        try {
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to save " + getConfigName() + "!", e);
+        }
     }
 
     protected void createFile(final String name) {
@@ -36,40 +79,6 @@ public abstract class Settings implements ISettings {
             } catch (final IOException e) {
                 throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
             }
-        }
-    }
-
-    protected void loadSettings() {
-        updateConfig();
-
-        pingMessages = getConfigList("pingmessages");
-        maintenance = getConfigBoolean("enable-maintenance-mode");
-        customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
-        customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
-        joinNotifications = getConfigBoolean("send-join-notification");
-        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
-        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
-        playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
-        kickMessage = getColoredString(getConfigString("kickmessage"));
-        languageName = getConfigString("language").toLowerCase();
-        debug = getConfigBoolean("debug");
-        if (customMaintenanceIcon) {
-            reloadMaintenanceIcon();
-        }
-
-        loadExtraSettings();
-        if (debug) {
-            plugin.getLogger().info("enable-maintenance-mode:" + maintenance);
-            plugin.getLogger().info("whitelistedPlayers:" + whitelistedPlayers);
-            plugin.getLogger().info("timer-broadcast-for-seconds:" + broadcastIntervalls);
-            plugin.getLogger().info("pingmessages:" + pingMessages);
-            plugin.getLogger().info("playercountmessage:" + playerCountMessage);
-            plugin.getLogger().info("playercounthovermessage:" + playerCountHoverMessage);
-            plugin.getLogger().info("kickmessage:" + kickMessage);
-            plugin.getLogger().info("language:" + languageName);
-            plugin.getLogger().info("enable-playercountmessage:" + customPlayerCountMessage);
-            plugin.getLogger().info("custom-maintenance-icon:" + customMaintenanceIcon);
-            plugin.getLogger().info("send-join-notification:" + joinNotifications);
         }
     }
 
@@ -89,65 +98,169 @@ public abstract class Settings implements ISettings {
         }
     }
 
+    protected void loadSettings() {
+        updateConfig();
+
+        pingMessages = config.getStringList("pingmessages");
+        maintenance = config.getBoolean("enable-maintenance-mode");
+        customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
+        customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
+        joinNotifications = config.getBoolean("send-join-notification");
+        broadcastIntervalls = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
+        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
+        kickMessage = getColoredString(getConfigString("kickmessage"));
+        languageName = getConfigString("language").toLowerCase();
+        debug = config.getBoolean("debug");
+        if (customMaintenanceIcon) {
+            reloadMaintenanceIcon();
+        }
+
+        whitelistedPlayers.clear();
+        whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        loadExtraSettings();
+    }
+
     private void updateConfig() {
         boolean fileChanged = false;
 
         // 2.3 pingmessage -> pingmessages
-        if (configContains("pingmessage")) {
+        if (config.contains("pingmessage")) {
             final List<String> list = new ArrayList<>();
             list.add(getConfigString("pingmessage"));
-            setToConfig("pingmessages", list);
-            setToConfig("pingmessage", null);
+            config.set("pingmessages", list);
+            config.set("pingmessage", null);
             fileChanged = true;
         }
         // 2.4 enable-playercountmessage
-        if (!configContains("enable-playercountmessage")) {
-            setToConfig("enable-playercountmessage", true);
+        if (!config.contains("enable-playercountmessage")) {
+            config.set("enable-playercountmessage", true);
             fileChanged = true;
         }
         // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
-        if (configContains("timer-broadcasts-for-minutes") || !configContains("timer-broadcast-for-seconds")) {
-            setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
-            setToConfig("timer-broadcasts-for-minutes", null);
+        if (config.contains("timer-broadcasts-for-minutes") || !config.contains("timer-broadcast-for-seconds")) {
+            config.set("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
+            config.set("timer-broadcasts-for-minutes", null);
             fileChanged = true;
         }
         // 2.5 language
-        if (!configContains("language")) {
-            setToConfig("language", "en");
+        if (!config.contains("language")) {
+            config.set("language", "en");
         }
 
         if (updateExtraConfig() || fileChanged) {
+            plugin.getLogger().info("Updated config to the latest version!");
             saveConfig();
         }
     }
 
-    public boolean updateExtraConfig() {
-        return false;
+    protected void saveFile(final Configuration config, final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        try {
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to save " + name + "!", e);
+        }
     }
 
-    public abstract void saveWhitelistedPlayers();
+    protected void saveWhitelistedPlayers() {
+        saveFile(whitelist, "WhitelistedPlayers.yml");
+    }
 
-    public abstract String getConfigString(String path);
+    public String getConfigString(final String path) {
+        if (!config.contains(path)) {
+            plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "";
+        }
+        return config.getString(path);
+    }
 
-    public abstract String getMessage(String path);
+    public String getMessage(final String path) {
+        if (!language.contains(path)) {
+            plugin.getLogger().warning("The language file is missing the following string: " + path);
+            return "";
+        }
+        return getColoredString(language.getString(path));
+    }
 
-    public abstract boolean getConfigBoolean(String path);
+    public String getRandomPingMessage() {
+        if (pingMessages.isEmpty()) return "";
+        final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
+        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
+    }
 
-    public abstract List<Integer> getConfigIntList(String path);
+    @Override
+    public boolean reloadMaintenanceIcon() {
+        return pingListener.loadIcon();
+    }
 
-    public abstract List<String> getConfigList(String path);
+    @Override
+    public boolean removeWhitelistedPlayer(final UUID uuid) {
+        if (!whitelistedPlayers.containsKey(uuid)) return false;
+        whitelistedPlayers.remove(uuid);
+        whitelist.set(uuid.toString(), null);
+        saveWhitelistedPlayers();
+        return true;
+    }
 
-    public abstract void loadExtraSettings();
+    @Deprecated
+    @Override
+    public boolean removeWhitelistedPlayer(final String name) {
+        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
+        if (entry == null) return false;
 
-    public abstract void setWhitelist(String uuid, String s);
+        final UUID uuid = entry.getKey();
+        whitelistedPlayers.remove(uuid);
+        whitelist.set(uuid.toString(), null);
+        saveWhitelistedPlayers();
+        return true;
+    }
 
-    public abstract void saveConfig();
+    @Override
+    public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
+        final boolean contains = !whitelistedPlayers.containsKey(uuid);
+        whitelistedPlayers.put(uuid, name);
+        whitelist.set(uuid.toString(), name);
+        saveWhitelistedPlayers();
+        return contains;
+    }
 
-    public abstract void setToConfig(String path, Object var);
+    @Override
+    public Map<UUID, String> getWhitelistedPlayers() {
+        return whitelistedPlayers;
+    }
 
-    public abstract boolean configContains(String path);
+    @Override
+    public boolean isMaintenance() {
+        return maintenance;
+    }
 
-    public abstract String getColoredString(String s);
+    public void setMaintenance(final boolean maintenance) {
+        this.maintenance = maintenance;
+    }
+
+    @Override
+    public boolean isJoinNotifications() {
+        return joinNotifications;
+    }
+
+    @Override
+    public boolean hasCustomIcon() {
+        return customMaintenanceIcon;
+    }
+
+    @Override
+    public boolean debugEnabled() {
+        return debug;
+    }
+
+    public Configuration getConfig() {
+        return config;
+    }
+
+    public Configuration getWhitelist() {
+        return whitelist;
+    }
 
     public List<String> getPingMessages() {
         return pingMessages;
@@ -173,73 +286,24 @@ public abstract class Settings implements ISettings {
         return languageName;
     }
 
-    public void setMaintenance(final boolean maintenance) {
-        this.maintenance = maintenance;
-    }
-
-    public String getRandomPingMessage() {
-        if (pingMessages.isEmpty()) return "";
-        final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
-        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
-    }
-
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
     }
 
-    @Override
-    public boolean isMaintenance() {
-        return maintenance;
+    protected boolean updateExtraConfig() {
+        return false;
     }
 
-    @Override
-    public boolean isJoinNotifications() {
-        return joinNotifications;
+    protected void reloadExtraConfigs() throws IOException {
     }
 
-    @Override
-    public boolean hasCustomIcon() {
-        return customMaintenanceIcon;
+    protected void createExtraFiles() {
     }
 
-    @Override
-    public Map<UUID, String> getWhitelistedPlayers() {
-        return whitelistedPlayers;
+    protected void loadExtraSettings() {
     }
 
-    @Override
-    public boolean removeWhitelistedPlayer(final UUID uuid) {
-        if (!whitelistedPlayers.containsKey(uuid)) return false;
-        whitelistedPlayers.remove(uuid);
-        setWhitelist(uuid.toString(), null);
-        saveWhitelistedPlayers();
-        return true;
-    }
+    public abstract String getColoredString(String s);
 
-    @Deprecated
-    @Override
-    public boolean removeWhitelistedPlayer(final String name) {
-        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
-        if (entry == null) return false;
-
-        final UUID uuid = entry.getKey();
-        whitelistedPlayers.remove(uuid);
-        setWhitelist(uuid.toString(), null);
-        saveWhitelistedPlayers();
-        return true;
-    }
-
-    @Override
-    public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
-        final boolean contains = !whitelistedPlayers.containsKey(uuid);
-        whitelistedPlayers.put(uuid, name);
-        setWhitelist(uuid.toString(), name);
-        saveWhitelistedPlayers();
-        return contains;
-    }
-
-    @Override
-    public boolean debugEnabled() {
-        return debug;
-    }
+    protected abstract String getConfigName();
 }

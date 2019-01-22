@@ -7,16 +7,12 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
-import eu.kennytv.maintenance.core.listener.IPingListener;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
 import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

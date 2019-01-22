@@ -33,12 +33,12 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
-
         this.plugin = plugin;
-        settings = new SettingsSpigot(this, plugin);
-
         plugin.getLogger().info("Plugin by KennyTV");
         plugin.getLogger().info(getUpdateMessage());
+
+        settings = new SettingsSpigot(this, plugin);
+
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 
         final PluginManager pm = getServer().getPluginManager();
@@ -63,7 +63,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.setToConfig("enable-maintenance-mode", maintenance);
+        settings.getConfig().set("enable-maintenance-mode", maintenance);
         settings.saveConfig();
 
         if (isTaskRunning())
@@ -106,18 +106,14 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
-        try {
-            final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
-            final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
-            final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-            click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
-            click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
-            tc1.addExtra(tc2);
-            tc1.addExtra(click);
-            ((BukkitSenderInfo) sender).sendMessage(tc1);
-        } catch (final Exception ignored) {
-            sender.sendMessage(getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
-        }
+        final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
+        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
+        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
+        tc1.addExtra(tc2);
+        tc1.addExtra(click);
+        ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
     }
 
     @Override

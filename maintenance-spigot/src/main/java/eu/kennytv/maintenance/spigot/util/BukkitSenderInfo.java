@@ -39,7 +39,11 @@ public final class BukkitSenderInfo implements SenderInfo {
         return sender instanceof Player;
     }
 
-    public void sendMessage(final TextComponent textComponent) {
-        sender.spigot().sendMessage(textComponent);
+    public void sendMessage(final TextComponent textComponent, final String backup) {
+        try {
+            sender.spigot().sendMessage(textComponent);
+        } catch (final NoSuchMethodError e) {
+            sender.sendMessage(backup);
+        }
     }
 }

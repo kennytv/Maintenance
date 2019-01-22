@@ -62,22 +62,20 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     private File dataFolder;
 
     // Sponge related
-    //TODO entire settingssponge
-    //TODO do MaintenanceVersion properly
+    //TODO settings coloredstring method
     //TODO getResource method works?
+    //TODO (do MaintenanceVersion properly)
+
+    //TODO dump command
+    //TODO check protocollib ping for some versions
 
     //TODO To test:
     //everything in ping
     //join blocked+screen message
     //message format (updatenotification, help)
     //whitelist
-    //config saving/reloading
     //timer
     //updater
-
-    //serverlistplus integration
-    //tabcompletion with servers on bungee
-    //ping with protocollib
 
     @Inject
     public MaintenanceSpongePlugin() {
@@ -88,10 +86,10 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Listener
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
-        settings = new SettingsSponge(this);
-
         logger.info("Plugin by KennyTV");
         logger.info(getUpdateMessage());
+
+        settings = new SettingsSponge(this);
 
         game.getCommandManager().register(this, new MaintenanceSpongeCommand(this, settings), "maintenance", "maintenancesponge");
         final EventManager em = game.getEventManager();
@@ -115,7 +113,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.setToConfig("enable-maintenance-mode", maintenance);
+        settings.getConfig().set("enable-maintenance-mode", maintenance);
         settings.saveConfig();
         if (serverListPlusHook != null)
             serverListPlusHook.setEnabled(!maintenance);

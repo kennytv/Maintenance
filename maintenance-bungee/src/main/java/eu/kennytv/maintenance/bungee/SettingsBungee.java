@@ -1,19 +1,20 @@
 package eu.kennytv.maintenance.bungee;
 
+import eu.kennytv.lib.config.Configuration;
+import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.listener.IPingListener;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.plugin.PluginManager;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.YamlConfiguration;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class SettingsBungee extends Settings {
     private final String mySQLTable;
@@ -24,13 +25,9 @@ public final class SettingsBungee extends Settings {
 
     private final MaintenanceBungeePlugin maintenancePlugin;
     private final MaintenanceBungeeBase plugin;
-    private final IPingListener pingListener;
     private Set<String> maintenanceServers;
-    private Configuration config;
-    private Configuration language;
-    private Configuration whitelist;
-    private Configuration spigotServers;
     private String fallbackServer;
+    private Configuration spigotServers;
 
     private long millisecondsToCheck;
     private long lastMySQLCheck;
@@ -41,16 +38,10 @@ public final class SettingsBungee extends Settings {
         this.maintenancePlugin = maintenancePlugin;
         this.plugin = plugin;
 
-        final PluginManager pm = plugin.getProxy().getPluginManager();
         final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        pm.registerListener(plugin, listener);
+        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
         pingListener = listener;
 
-        if (!plugin.getDataFolder().exists())
-            plugin.getDataFolder().mkdirs();
-        createFile("bungee-config.yml");
-        createFile("WhitelistedPlayers.yml");
-        createFile("SpigotServers.yml");
         reloadConfigs();
 
         final Configuration mySQLSection = config.getSection("mysql");
@@ -81,72 +72,37 @@ public final class SettingsBungee extends Settings {
     }
 
     @Override
-    public boolean updateExtraConfig() {
+    protected void reloadExtraConfigs() throws IOException {
+        spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "SpigotServers.yml"));
+    }
+
+    @Override
+    protected void createExtraFiles() {
+        createFile("SpigotServers.yml");
+    }
+
+    @Override
+    protected String getConfigName() {
+        return "bungee-config.yml";
+    }
+
+    @Override
+    protected boolean updateExtraConfig() {
         // 2.3.1 mysql.update-interval
-        if (!configContains("mysql.update-interval")) {
-            setToConfig("mysql.update-interval", 15);
+        if (!config.contains("mysql.update-interval")) {
+            config.set("mysql.update-interval", 15);
             return true;
         }
         return false;
     }
 
     @Override
-    public void reloadConfigs() {
-        try {
-            config = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "bungee-config.yml")), StandardCharsets.UTF_8));
-            whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
-            spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "SpigotServers.yml"));
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to load Maintenance files!", e);
-        }
-
-        loadSettings();
-        createLanguageFile();
-
-        try {
-            language = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + getLanguage() + ".yml")), StandardCharsets.UTF_8));
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to load Maintenance language file!", e);
-        }
-    }
-
-    @Override
-    public void saveConfig() {
-        final File file = new File(plugin.getDataFolder(), "bungee-config.yml");
-        try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to save bungee-config.yml!", e);
-        }
-    }
-
-    @Override
-    public void saveWhitelistedPlayers() {
-        saveFile(whitelist, "WhitelistedPlayers.yml");
-    }
-
-    public void saveSpigotServers() {
-        saveFile(spigotServers, "SpigotServers.yml");
-    }
-
-    private void saveFile(final Configuration config, final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to save " + name + "!", e);
-        }
-    }
-
-    @Override
-    public void loadExtraSettings() {
-        whitelistedPlayers.clear();
-        whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+    protected void loadExtraSettings() {
         fallbackServer = spigotServers.getString("fallback", "hub");
         if (mySQL != null) {
             final long configValue = config.getInt("mysql.update-interval");
-            millisecondsToCheck = configValue > 0 ? configValue * 1000 : -1;
+            // Even if set to 0, only check every 500 millis
+            millisecondsToCheck = configValue > 0 ? configValue * 1000 : 500;
             lastMySQLCheck = 0;
             lastServerCheck = 0;
             maintenanceServers = loadMaintenanceServersFromSQL();
@@ -154,6 +110,70 @@ public final class SettingsBungee extends Settings {
             final List<String> list = spigotServers.getStringList("maintenance-on");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
         }
+    }
+
+    @Override
+    public boolean isMaintenance() {
+        if (mySQL != null && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
+            final boolean databaseValue = loadMaintenance();
+            if (databaseValue != maintenance) {
+                maintenancePlugin.serverActions(maintenance);
+                maintenance = databaseValue;
+            }
+            lastMySQLCheck = System.currentTimeMillis();
+        }
+        return maintenance;
+    }
+
+    public boolean isMaintenance(final ServerInfo server) {
+        if (mySQL != null && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
+            final Set<String> databaseValue = loadMaintenanceServersFromSQL();
+            if (!databaseValue.equals(maintenanceServers)) {
+                maintenancePlugin.serverActions(server, maintenance);
+                maintenanceServers = databaseValue;
+            }
+            lastServerCheck = System.currentTimeMillis();
+        }
+        return maintenanceServers.contains(server.getName());
+    }
+
+    void setMaintenanceToSQL(final boolean maintenance) {
+        maintenancePlugin.async(() -> {
+            final String s = String.valueOf(maintenance);
+            mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
+            lastMySQLCheck = System.currentTimeMillis();
+        });
+        this.maintenance = maintenance;
+    }
+
+    MySQL getMySQL() {
+        return mySQL;
+    }
+
+    boolean addMaintenanceServer(final String server) {
+        if (mySQL != null) {
+            maintenanceServers = loadMaintenanceServersFromSQL();
+            if (!maintenanceServers.add(server)) return false;
+            maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
+            lastServerCheck = System.currentTimeMillis();
+        } else {
+            if (!maintenanceServers.add(server)) return false;
+            saveServersToConfig();
+        }
+        return true;
+    }
+
+    boolean removeMaintenanceServer(final String server) {
+        if (mySQL != null) {
+            maintenanceServers = loadMaintenanceServersFromSQL();
+            if (!maintenanceServers.remove(server)) return false;
+            maintenancePlugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
+            lastServerCheck = System.currentTimeMillis();
+        } else {
+            if (!maintenanceServers.remove(server)) return false;
+            saveServersToConfig();
+        }
+        return true;
     }
 
     private Set<String> loadMaintenanceServersFromSQL() {
@@ -171,80 +191,6 @@ public final class SettingsBungee extends Settings {
         return maintenanceServers;
     }
 
-    @Override
-    public void setWhitelist(final String uuid, final String s) {
-        whitelist.set(uuid, s);
-    }
-
-    @Override
-    public String getConfigString(final String path) {
-        final String s = config.getString(path);
-        if (s == null) {
-            plugin.getLogger().warning("The config is missing the following string: " + path);
-            return "null";
-        }
-        return s;
-    }
-
-    @Override
-    public String getMessage(final String path) {
-        final String s = language.getString(path);
-        if (s == null) {
-            plugin.getLogger().warning("The language file is missing the following string: " + path);
-            return "null";
-        }
-        return getColoredString(s);
-    }
-
-    @Override
-    public boolean getConfigBoolean(final String path) {
-        return config.getBoolean(path);
-    }
-
-    @Override
-    public List<Integer> getConfigIntList(final String path) {
-        return config.getIntList(path);
-    }
-
-    @Override
-    public List<String> getConfigList(final String path) {
-        return config.getStringList(path);
-    }
-
-    @Override
-    public void setToConfig(final String path, final Object var) {
-        config.set(path, var);
-    }
-
-    @Override
-    public boolean configContains(final String path) {
-        return config.contains(path);
-    }
-
-    @Override
-    public String getColoredString(final String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
-
-    @Override
-    public boolean isMaintenance() {
-        if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck)) {
-            final boolean databaseValue = loadMaintenance();
-            if (databaseValue != maintenance) {
-                maintenancePlugin.serverActions(maintenance);
-                maintenance = databaseValue;
-            }
-            if (millisecondsToCheck != -1)
-                lastMySQLCheck = System.currentTimeMillis();
-        }
-        return maintenance;
-    }
-
-    @Override
-    public boolean reloadMaintenanceIcon() {
-        return pingListener.loadIcon();
-    }
-
     private boolean loadMaintenance() {
         final boolean[] databaseValue = {false};
         mySQL.executeQuery(maintenanceQuery, rs -> {
@@ -259,64 +205,18 @@ public final class SettingsBungee extends Settings {
         return databaseValue[0];
     }
 
-    public boolean isMaintenance(final ServerInfo server) {
-        if (mySQL != null && (millisecondsToCheck == -1 || System.currentTimeMillis() - lastServerCheck > millisecondsToCheck)) {
-            final Set<String> databaseValue = loadMaintenanceServersFromSQL();
-            if (!databaseValue.equals(maintenanceServers)) {
-                maintenancePlugin.serverActions(server, maintenance);
-                maintenanceServers = databaseValue;
-            }
-            if (millisecondsToCheck != -1)
-                lastServerCheck = System.currentTimeMillis();
-        }
-        return maintenanceServers.contains(server.getName());
-    }
-
-    void setMaintenanceToSQL(final boolean maintenance) {
-        maintenancePlugin.async(() -> {
-            final String s = String.valueOf(maintenance);
-            mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
-            if (millisecondsToCheck != -1)
-                lastMySQLCheck = System.currentTimeMillis();
-        });
-        this.maintenance = maintenance;
-    }
-
-    MySQL getMySQL() {
-        return mySQL;
-    }
-
-    boolean addMaintenanceServer(final String server) {
-        if (mySQL != null) {
-            maintenanceServers = loadMaintenanceServersFromSQL();
-            if (!maintenanceServers.add(server)) return false;
-            maintenancePlugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
-            if (millisecondsToCheck != -1)
-                lastServerCheck = System.currentTimeMillis();
-        } else {
-            if (!maintenanceServers.add(server)) return false;
-            saveServersToConfig();
-        }
-        return true;
-    }
-
-    boolean removeMaintenanceServer(final String server) {
-        if (mySQL != null) {
-            maintenanceServers = loadMaintenanceServersFromSQL();
-            if (!maintenanceServers.remove(server)) return false;
-            maintenancePlugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
-            if (millisecondsToCheck != -1)
-                lastServerCheck = System.currentTimeMillis();
-        } else {
-            if (!maintenanceServers.remove(server)) return false;
-            saveServersToConfig();
-        }
-        return true;
-    }
-
-    public void saveServersToConfig() {
+    protected void saveServersToConfig() {
         spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
         saveSpigotServers();
+    }
+
+    protected void saveSpigotServers() {
+        saveFile(spigotServers, "SpigotServers.yml");
+    }
+
+    @Override
+    public String getColoredString(final String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public Set<String> getMaintenanceServers() {

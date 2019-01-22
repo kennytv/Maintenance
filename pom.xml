@@ -83,6 +83,10 @@
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.yaml.snakeyaml</pattern>
+                                    <shadedPattern>eu.kennytv.lib.snakeyaml</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
