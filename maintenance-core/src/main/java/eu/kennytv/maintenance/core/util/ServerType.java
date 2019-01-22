@@ -27,7 +27,6 @@ public enum ServerType {
 
     private final String name;
 
-
     ServerType(final String name) {
         this.name = name;
     }
