@@ -80,8 +80,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     private File dataFolder;
 
     // Sponge related
-    //TODO settings coloredstring method
-    //TODO getResource method works?
     //TODO (do MaintenanceVersion properly)
 
     //TODO dump command
@@ -90,21 +88,19 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     //TODO To test:
     //everything in ping
     //join blocked+screen message
-    //message format (updatenotification, help)
     //whitelist
     //timer
-    //updater
 
     @Inject
     public MaintenanceSpongePlugin() {
         super(MaintenanceVersion.VERSION, ServerType.SPONGE);
-        System.out.println("THIS MAINTENANCE VERSION IS NOT PRODUCTION READY, PLEASE USE IT WITH CAUTION");
     }
 
     @Listener
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
         logger.info("Plugin by KennyTV");
+        logger.warning("§4The Maintenance plugin under Sponge might still be unstable! Use it with caution and update as soon as a new release is available!");
         logger.info(getUpdateMessage());
 
         settings = new SettingsSponge(this);
@@ -210,6 +206,11 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     public File getPluginFile() {
         final Optional<Path> source = container.getSource();
         return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));
+    }
+
+    @Override
+    protected String getPluginFolder() {
+        return "mods/";
     }
 
     @Override

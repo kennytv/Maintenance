@@ -84,8 +84,8 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public boolean installUpdate() {
         try {
             final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
-            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream("plugins/Maintenance.tmp")));
-            final File file = new File("plugins/Maintenance.tmp");
+            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
+            final File file = new File(getPluginFolder() + "Maintenance.tmp");
             final long newlength = file.length();
             if (newlength < 10000) {
                 file.delete();
@@ -164,7 +164,9 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract File getDataFolder();
 
-    public abstract File getPluginFile();
+    protected abstract File getPluginFile();
+
+    protected abstract String getPluginFolder();
 
     public abstract InputStream getResource(String name);
 

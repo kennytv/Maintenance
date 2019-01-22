@@ -226,6 +226,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Override
+    protected String getPluginFolder() {
+        return "plugins/";
+    }
+
+    @Override
     public InputStream getResource(final String name) {
         return plugin.getResourceAsStream(name);
     }

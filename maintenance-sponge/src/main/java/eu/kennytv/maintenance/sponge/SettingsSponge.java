@@ -34,9 +34,19 @@ public final class SettingsSponge extends Settings {
         reloadConfigs();
     }
 
+    private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
+
     @Override
     public String getColoredString(final String s) {
-        return s;
+        // Method taken from Bungee
+        final char[] b = s.toCharArray();
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == '&' && ALL_CODES.indexOf(b[i + 1]) > -1) {
+                b[i] = '§';
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
     }
 
     @Override

@@ -150,6 +150,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    protected String getPluginFolder() {
+        return "plugins/";
+    }
+
+    @Override
     public InputStream getResource(final String name) {
         return plugin.getResource(name);
     }
