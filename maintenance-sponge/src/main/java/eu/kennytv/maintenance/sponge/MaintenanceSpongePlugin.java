@@ -26,6 +26,7 @@ import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
@@ -33,7 +34,6 @@ import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
-import eu.kennytv.maintenance.sponge.util.MaintenanceVersion;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
@@ -79,10 +79,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
-    // Sponge related
-    //TODO (do MaintenanceVersion properly)
-
-    //TODO dump command
+    //TODO dump command?
     //TODO check protocollib ping for some versions
 
     //TODO To test:
@@ -99,9 +96,8 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Listener
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
-        logger.info("Plugin by KennyTV");
+        sendEnableMessage();
         logger.warning("§4The Maintenance plugin under Sponge might still be unstable! Use it with caution and update as soon as a new release is available!");
-        logger.info(getUpdateMessage());
 
         settings = new SettingsSponge(this);
 

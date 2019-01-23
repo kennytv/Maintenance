@@ -421,7 +421,6 @@ public abstract class MaintenanceCommand {
         return null;
     }
 
-
     protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
 
     protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);

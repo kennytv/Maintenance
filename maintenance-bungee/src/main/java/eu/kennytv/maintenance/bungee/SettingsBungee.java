@@ -23,7 +23,6 @@ import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.mysql.MySQL;
 import eu.kennytv.maintenance.core.Settings;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.io.File;
@@ -223,18 +222,13 @@ public final class SettingsBungee extends Settings {
         return databaseValue[0];
     }
 
-    protected void saveServersToConfig() {
+    private void saveServersToConfig() {
         spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
         saveSpigotServers();
     }
 
-    protected void saveSpigotServers() {
+    private void saveSpigotServers() {
         saveFile(spigotServers, "SpigotServers.yml");
-    }
-
-    @Override
-    public String getColoredString(final String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public Set<String> getMaintenanceServers() {

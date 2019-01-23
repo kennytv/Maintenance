@@ -45,7 +45,7 @@ public abstract class JoinListenerBase {
      */
     public boolean handleLogin(final SenderInfo sender) {
         if (sender.getUuid().equals(notifyUuid))
-            sender.sendMessage("§6MaintenanceBungee §aVersion " + plugin.getVersion());
+            sender.sendMessage("§6Maintenance §aVersion " + plugin.getVersion());
         else if (settings.isMaintenance()) {
             if (!sender.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(sender.getUuid())) {
                 if (settings.isJoinNotifications())

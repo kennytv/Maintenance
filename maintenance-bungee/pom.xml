@@ -10,13 +10,14 @@
     </parent>
 
     <artifactId>maintenance-bungee</artifactId>
+    <name>MaintenanceBungee</name>
 
     <dependencies>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>

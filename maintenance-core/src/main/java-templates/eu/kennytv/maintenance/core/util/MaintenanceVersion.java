@@ -1,4 +1,4 @@
-package eu.kennytv.maintenance.velocity.util;
+package eu.kennytv.maintenance.core.util;
 
 public final class MaintenanceVersion {
 

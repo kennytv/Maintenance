@@ -30,7 +30,7 @@ import java.util.*;
 
 public abstract class Settings implements ISettings {
     private static final Random RANDOM = new Random();
-    protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
+    private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final MaintenanceModePlugin plugin;
     protected boolean maintenance;
     protected IPingListener pingListener;
@@ -89,6 +89,15 @@ public abstract class Settings implements ISettings {
         }
     }
 
+    protected void saveFile(final Configuration config, final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        try {
+            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to save " + name + "!", e);
+        }
+    }
+
     protected void createFile(final String name) {
         final File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
@@ -100,7 +109,11 @@ public abstract class Settings implements ISettings {
         }
     }
 
-    protected void createLanguageFile() {
+    private void saveWhitelistedPlayers() {
+        saveFile(whitelist, "WhitelistedPlayers.yml");
+    }
+
+    private void createLanguageFile() {
         final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
         if (!file.exists()) {
             try (final InputStream in = plugin.getResource("language-" + languageName + ".yml")) {
@@ -116,7 +129,7 @@ public abstract class Settings implements ISettings {
         }
     }
 
-    protected void loadSettings() {
+    private void loadSettings() {
         updateConfig();
 
         pingMessages = config.getStringList("pingmessages");
@@ -172,17 +185,18 @@ public abstract class Settings implements ISettings {
         }
     }
 
-    protected void saveFile(final Configuration config, final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to save " + name + "!", e);
-        }
-    }
+    private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
 
-    protected void saveWhitelistedPlayers() {
-        saveFile(whitelist, "WhitelistedPlayers.yml");
+    public String getColoredString(final String s) {
+        // Method taken from Bungee
+        final char[] b = s.toCharArray();
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == '&' && ALL_CODES.indexOf(b[i + 1]) > -1) {
+                b[i] = '§';
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
     }
 
     public String getConfigString(final String path) {
@@ -320,8 +334,6 @@ public abstract class Settings implements ISettings {
 
     protected void loadExtraSettings() {
     }
-
-    public abstract String getColoredString(String s);
 
     protected abstract String getConfigName();
 }

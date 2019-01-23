@@ -55,30 +55,30 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return String.format("%02d:%02d:%02d", preHours / 60, minutes, seconds);
     }
 
-    public String getUpdateMessage() {
-        if (version.compareTo(newestVersion) == -1) {
-            return "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
-        } else if (version.compareTo(newestVersion) != 0) {
-            if (version.getTag().equalsIgnoreCase("snapshot")) {
-                return "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub issue tracker (https://kennytv.eu/maintenance/issues)";
-            } else {
-                return "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
-            }
-        }
-        return "You have the latest version of the plugin installed.";
+    public void startMaintenanceRunnable(final int minutes, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
+        taskId = startMaintenanceRunnable(runnable);
     }
 
-    public void checkNewestVersion() {
-        try {
-            final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
-            final String newVersionString = reader.readLine();
-            reader.close();
-            final Version newVersion = new Version(newVersionString);
-            if (!newVersion.equals(version))
-                newestVersion = newVersion;
-        } catch (final Exception ignored) {
-        }
+    public boolean updateAvailable() {
+        checkNewestVersion();
+        return version.compareTo(newestVersion) == -1;
+    }
+
+    protected void sendEnableMessage() {
+        final String updateMessage;
+        if (version.compareTo(newestVersion) == -1) {
+            updateMessage = "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
+        } else if (version.compareTo(newestVersion) != 0) {
+            if (version.getTag().equalsIgnoreCase("snapshot")) {
+                updateMessage = "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub issue tracker (https://kennytv.eu/maintenance/issues)";
+            } else {
+                updateMessage = "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
+            }
+        } else
+            updateMessage = "You have the latest version of the plugin installed.";
+        getLogger().info("Plugin by KennyTV");
+        getLogger().info(updateMessage);
     }
 
     public boolean installUpdate() {
@@ -111,14 +111,17 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         os.close();
     }
 
-    public boolean updateAvailable() {
-        checkNewestVersion();
-        return version.compareTo(newestVersion) == -1;
-    }
-
-    public void startMaintenanceRunnable(final int minutes, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
-        taskId = startMaintenanceRunnable(runnable);
+    private void checkNewestVersion() {
+        try {
+            final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            final String newVersionString = reader.readLine();
+            reader.close();
+            final Version newVersion = new Version(newVersionString);
+            if (!newVersion.equals(version))
+                newestVersion = newVersion;
+        } catch (final Exception ignored) {
+        }
     }
 
     @Override

@@ -63,8 +63,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.BUNGEE);
         this.plugin = plugin;
-        plugin.getLogger().info("Plugin by KennyTV");
-        plugin.getLogger().info(getUpdateMessage());
+        sendEnableMessage();
 
         settings = new SettingsBungee(this, plugin);
 
