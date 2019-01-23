@@ -42,7 +42,7 @@ public final class MaintenanceSpongeAPI {
      * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenance getAPI() {
-        final Optional<PluginContainer> container = Sponge.getPluginManager().getPlugin("MaintenanceSponge");
+        final Optional<PluginContainer> container = Sponge.getPluginManager().getPlugin("maintenancesponge");
         if (!container.isPresent() || !container.get().getInstance().isPresent())
             throw new IllegalArgumentException("Could not get instance of MaintenanceSponge! Broken/custom build of the plugin?");
         return (IMaintenance) container.get().getInstance().get();
