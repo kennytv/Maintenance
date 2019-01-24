@@ -16,21 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.sponge.util;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
-import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.util.Task;
 
-public final class SettingsBungee extends SettingsProxy {
+public final class SpongeTask implements Task {
+    private final org.spongepowered.api.scheduler.Task task;
 
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
+    public SpongeTask(final org.spongepowered.api.scheduler.Task task) {
+        this.task = task;
+    }
 
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
-        pingListener = listener;
-
-        reloadConfigs();
-        setupMySQL();
+    @Override
+    public void cancel() {
+        task.cancel();
     }
 }

@@ -23,6 +23,7 @@
     <modules>
         <module>maintenance-api</module>
         <module>maintenance-core</module>
+        <module>maintenance-core-proxy</module>
         <module>maintenance-spigot</module>
         <module>maintenance-bungee</module>
         <module>maintenance-sponge</module>

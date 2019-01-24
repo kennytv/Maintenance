@@ -16,21 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.api.proxy;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
-import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+/**
+ * Wrapper class for a proxied server.
+ * Use {@link IMaintenanceProxy#getServer(String)} to get a server instance.
+ *
+ * @author KennyTV
+ * @since 3.0
+ */
+public interface Server {
 
-public final class SettingsBungee extends SettingsProxy {
-
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
-
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
-        pingListener = listener;
-
-        reloadConfigs();
-        setupMySQL();
-    }
+    /**
+     * @return name of the server
+     */
+    String getName();
 }

@@ -16,18 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.velocity;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
+import com.velocitypowered.api.event.PostOrder;
+import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.velocity.listener.ProxyPingListener;
 
-public final class SettingsBungee extends SettingsProxy {
+public final class SettingsVelocity extends SettingsProxy {
 
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
+    SettingsVelocity(final MaintenanceVelocityPlugin plugin) {
+        super(plugin);
 
         final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
+        plugin.getServer().getEventManager().register(plugin, ProxyPingEvent.class, PostOrder.LAST, listener);
         pingListener = listener;
 
         reloadConfigs();

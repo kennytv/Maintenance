@@ -25,10 +25,12 @@ import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
+import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
+import eu.kennytv.maintenance.spigot.util.BukkitTask;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -99,20 +101,13 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public int startMaintenanceRunnable(final Runnable runnable) {
-        return getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20);
+    public Task startMaintenanceRunnable(final Runnable runnable) {
+        return new BukkitTask(getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20));
     }
 
     @Override
     public void async(final Runnable runnable) {
         getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
-    }
-
-    @Override
-    public void cancelTask() {
-        getServer().getScheduler().cancelTask(taskId);
-        runnable = null;
-        taskId = 0;
     }
 
     @Override

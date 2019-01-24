@@ -16,21 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.velocity.util;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
-import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import com.velocitypowered.api.scheduler.ScheduledTask;
+import eu.kennytv.maintenance.core.util.Task;
 
-public final class SettingsBungee extends SettingsProxy {
+public final class VelocityTask implements Task {
+    private final ScheduledTask task;
 
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
+    public VelocityTask(final ScheduledTask task) {
+        this.task = task;
+    }
 
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
-        pingListener = listener;
-
-        reloadConfigs();
-        setupMySQL();
+    @Override
+    public void cancel() {
+        task.cancel();
     }
 }

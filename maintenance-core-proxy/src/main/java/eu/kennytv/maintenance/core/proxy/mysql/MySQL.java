@@ -1,4 +1,4 @@
-package eu.kennytv.maintenance.bungee.mysql;
+package eu.kennytv.maintenance.core.proxy.mysql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

@@ -18,7 +18,7 @@
 
 package eu.kennytv.maintenance.bungee.command;
 
-import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
+import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
@@ -33,11 +33,11 @@ public final class MaintenanceBungeeCommandBase extends Command implements TabEx
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
-        command.execute(new ProxiedSenderInfo(sender), args);
+        command.execute(new BungeeSenderInfo(sender), args);
     }
 
     @Override
     public Iterable<String> onTabComplete(final CommandSender sender, final String[] args) {
-        return command.getSuggestions(new ProxiedSenderInfo(sender), args);
+        return command.getSuggestions(new BungeeSenderInfo(sender), args);
     }
 }

@@ -23,18 +23,18 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
-import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
-import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
+import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
+import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
@@ -45,7 +45,6 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 
@@ -67,7 +66,6 @@ import java.util.logging.Logger;
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     private SettingsSponge settings;
-    private Task task;
     private Logger logger;
     @Inject
     private Game game;
@@ -139,31 +137,13 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void startMaintenanceRunnable(final int minutes, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
-        task = game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(runnable).submit(this);
-    }
-
-    @Override
-    public boolean isTaskRunning() {
-        return runnable != null;
-    }
-
-    @Override
-    public int startMaintenanceRunnable(final Runnable runnable) {
-        throw new UnsupportedOperationException();
+    public Task startMaintenanceRunnable(final Runnable runnable) {
+        return new SpongeTask(game.getScheduler().createTaskBuilder().execute(runnable).interval(1, TimeUnit.SECONDS).submit(this));
     }
 
     @Override
     public void async(final Runnable runnable) {
         game.getScheduler().createTaskBuilder().async().execute(runnable).submit(this);
-    }
-
-    @Override
-    public void cancelTask() {
-        runnable = null;
-        task.cancel();
-        task = null;
     }
 
     @Override

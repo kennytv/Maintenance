@@ -18,23 +18,24 @@
 
 package eu.kennytv.maintenance.bungee;
 
-import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
-import eu.kennytv.maintenance.api.bungee.IMaintenanceBungee;
 import eu.kennytv.maintenance.api.bungee.MaintenanceBungeeAPI;
+import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
 import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
-import eu.kennytv.maintenance.bungee.runnable.SingleMaintenanceRunnable;
-import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
-import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
+import eu.kennytv.maintenance.bungee.util.BungeeServer;
+import eu.kennytv.maintenance.bungee.util.BungeeTask;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
-import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
+import eu.kennytv.maintenance.core.util.Task;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -46,8 +47,6 @@ import net.md_5.bungee.api.plugin.PluginManager;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -55,10 +54,9 @@ import java.util.logging.Logger;
  * @author KennyTV
  * @since 1.0
  */
-public final class MaintenanceBungeePlugin extends MaintenanceModePlugin implements IMaintenanceBungee {
+public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     private final MaintenanceBungeeBase plugin;
     private final SettingsBungee settings;
-    private final Map<String, Integer> serverTaskIds = new HashMap<>();
 
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.BUNGEE);
@@ -85,26 +83,12 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Deprecated
-    public static IMaintenance getAPI() {
+    public static IMaintenanceProxy getAPI() {
         return MaintenanceBungeeAPI.getAPI();
     }
 
     @Override
-    public void setMaintenance(final boolean maintenance) {
-        if (settings.getMySQL() != null) {
-            settings.setMaintenanceToSQL(maintenance);
-        } else {
-            settings.setMaintenance(maintenance);
-            settings.getConfig().set("enable-maintenance-mode", maintenance);
-            settings.saveConfig();
-        }
-
-        serverActions(maintenance);
-        if (isTaskRunning())
-            cancelTask();
-    }
-
-    void serverActions(final boolean maintenance) {
+    protected void serverActions(final boolean maintenance) {
         if (serverListPlusHook != null)
             serverListPlusHook.setEnabled(!maintenance);
 
@@ -118,77 +102,53 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     }
 
     @Override
-    public boolean isMaintenance(final ServerInfo server) {
-        return settings.isMaintenance(server);
-    }
-
-    @Override
-    public boolean setMaintenanceToServer(final ServerInfo server, final boolean maintenance) {
-        if (maintenance) {
-            if (!settings.addMaintenanceServer(server.getName())) return false;
-        } else {
-            if (!settings.removeMaintenanceServer(server.getName())) return false;
-        }
-        serverActions(server, maintenance);
-        cancelSingleTask(server);
-        return true;
-    }
-
-    void serverActions(final ServerInfo server, final boolean maintenance) {
+    protected void serverActions(final Server server, final boolean maintenance) {
+        final ServerInfo serverInfo = ((BungeeServer) server).getServer();
         if (maintenance) {
             final ServerInfo fallback = getProxy().getServerInfo(settings.getFallbackServer());
             if (fallback == null) {
-                if (!server.getPlayers().isEmpty())
+                if (!serverInfo.getPlayers().isEmpty())
                     plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
-            } else if (fallback.equals(server))
+            } else if (fallback.equals(serverInfo))
                 plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
-            server.getPlayers().forEach(p -> {
+            serverInfo.getPlayers().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                     if (fallback != null && fallback.canAccess(p)) {
-                        p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+                        p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getName()));
                         p.connect(fallback);
                     } else
-                        p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
+                        p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", serverInfo.getName()));
                 } else {
-                    p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+                    p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getName()));
                 }
             });
         } else
-            server.getPlayers().forEach(p -> p.sendMessage(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
+            serverInfo.getPlayers().forEach(p -> p.sendMessage(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
+    }
+
+    public boolean isMaintenance(final ServerInfo serverInfo) {
+        return settings.getMaintenanceServers().contains(serverInfo.getName());
     }
 
     @Override
-    public boolean isServerTaskRunning(final ServerInfo server) {
-        return serverTaskIds.containsKey(server.getName());
+    protected Task startMaintenanceRunnable(final Runnable runnable) {
+        return new BungeeTask(getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
     }
 
     @Override
-    protected int startMaintenanceRunnable(final Runnable runnable) {
-        return getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId();
+    protected SettingsProxy getSettingsProxy() {
+        return settings;
     }
 
-    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final ServerInfo server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, (Settings) getSettings(), minutes, enable, server);
-        serverTaskIds.put(server.getName(), getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
-        return runnable;
+    @Override
+    public Server getServer(final String server) {
+        final ServerInfo serverInfo = getProxy().getServerInfo(server);
+        return serverInfo != null ? new BungeeServer(serverInfo) : null;
     }
 
     @Override
     public void async(final Runnable runnable) {
         getProxy().getScheduler().runAsync(plugin, runnable);
-    }
-
-    @Override
-    public void cancelTask() {
-        getProxy().getScheduler().cancel(taskId);
-        runnable = null;
-        taskId = 0;
-    }
-
-    public void cancelSingleTask(final ServerInfo server) {
-        final Integer task = serverTaskIds.remove(server.getName());
-        if (task != null)
-            getProxy().getScheduler().cancel(task);
     }
 
     @Override
@@ -206,7 +166,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
         click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
         tc1.addExtra(tc2);
         tc1.addExtra(click);
-        ((ProxiedSenderInfo) sender).sendMessage(tc1);
+        ((BungeeSenderInfo) sender).sendMessage(tc1);
     }
 
     @Override
@@ -222,11 +182,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceModePlugin impleme
     @Override
     public File getPluginFile() {
         return plugin.getPluginFile();
-    }
-
-    @Override
-    protected String getPluginFolder() {
-        return "plugins/";
     }
 
     @Override

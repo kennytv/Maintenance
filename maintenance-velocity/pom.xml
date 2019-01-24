@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.kennytv</groupId>
-            <artifactId>maintenance-core</artifactId>
+            <artifactId>maintenance-core-proxy</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -30,12 +30,6 @@
             <artifactId>ServerListPlus</artifactId>
             <version>3.4.8</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.2.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

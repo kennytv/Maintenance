@@ -20,7 +20,8 @@ package eu.kennytv.maintenance.bungee.command;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.SettingsBungee;
-import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
+import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
+import eu.kennytv.maintenance.bungee.util.BungeeServer;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -51,7 +52,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        whitelistAddMessage(new ProxiedSenderInfo(selected));
+        whitelistAddMessage(new BungeeSenderInfo(selected));
     }
 
     @Override
@@ -65,7 +66,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             return;
         }
 
-        whitelistRemoveMessage(new ProxiedSenderInfo(selected));
+        whitelistRemoveMessage(new BungeeSenderInfo(selected));
     }
 
     @Override
@@ -79,7 +80,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to update the plugin")));
             tc.addExtra(" §8< §7Or use the command §c/maintenance forceupdate");
 
-            ((ProxiedSenderInfo) sender).sendMessage(tc);
+            ((BungeeSenderInfo) sender).sendMessage(tc);
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
@@ -93,7 +94,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
         }
 
         final boolean maintenance = args[0].equalsIgnoreCase("on");
-        if (plugin.setMaintenanceToServer(server, maintenance)) {
+        if (plugin.setMaintenanceToServer(new BungeeServer(server), maintenance)) {
             if (!sender.isPlayer() || !plugin.getProxy().getPlayer(sender.getUuid()).getServer().getInfo().equals(server))
                 sender.sendMessage(settings.getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
         } else
@@ -112,7 +113,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
                 return;
             }
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(new BungeeServer(server), Integer.parseInt(args[2]), false);
             sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", runnable.getTime()));
         } else if (args[0].equalsIgnoreCase("starttimer")) {
             if (checkPermission(sender, "servertimer")) return;
@@ -125,7 +126,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), true);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(new BungeeServer(server), Integer.parseInt(args[2]), true);
             sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
         } else if (args[0].equalsIgnoreCase("timer")) {
             if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
@@ -135,12 +136,12 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
                     sender.sendMessage(settings.getMessage("serverNotFound"));
                     return;
                 }
-                if (!plugin.isServerTaskRunning(server)) {
+                if (!plugin.isServerTaskRunning(new BungeeServer(server))) {
                     sender.sendMessage(settings.getMessage("timerNotRunning"));
                     return;
                 }
 
-                plugin.cancelSingleTask(server);
+                plugin.cancelSingleTask(new BungeeServer(server));
                 sender.sendMessage(settings.getMessage("timerCancelled"));
             } else
                 sendUsage(sender);
@@ -174,7 +175,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceCommand {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return null;
         }
-        if (plugin.isServerTaskRunning(server)) {
+        if (plugin.isServerTaskRunning(new BungeeServer(server))) {
             sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
             return null;
         }

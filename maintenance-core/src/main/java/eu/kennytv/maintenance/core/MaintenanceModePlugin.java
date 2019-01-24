@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
+import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 
 import java.io.*;
@@ -35,10 +36,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     protected final Version version;
     protected ServerListPlusHook serverListPlusHook;
     protected MaintenanceRunnable runnable;
-    protected int taskId;
     private final String prefix;
     private final ServerType serverType;
     private Version newestVersion;
+    private Task task;
 
     protected MaintenanceModePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
@@ -57,7 +58,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public void startMaintenanceRunnable(final int minutes, final boolean enable) {
         runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
-        taskId = startMaintenanceRunnable(runnable);
+        task = startMaintenanceRunnable(runnable);
     }
 
     public boolean updateAvailable() {
@@ -124,6 +125,12 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         }
     }
 
+    public void cancelTask() {
+        task.cancel();
+        runnable = null;
+        task = null;
+    }
+
     @Override
     public boolean isMaintenance() {
         return getSettings().isMaintenance();
@@ -131,7 +138,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     @Override
     public boolean isTaskRunning() {
-        return taskId != 0 && runnable != null;
+        return task != null && runnable != null;
     }
 
     @Override
@@ -155,11 +162,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return serverType;
     }
 
-    protected abstract int startMaintenanceRunnable(Runnable runnable);
-
     public abstract void async(Runnable runnable);
-
-    public abstract void cancelTask();
 
     public abstract void broadcast(String message);
 
@@ -167,11 +170,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract File getDataFolder();
 
-    protected abstract File getPluginFile();
-
-    protected abstract String getPluginFolder();
-
     public abstract InputStream getResource(String name);
 
     public abstract Logger getLogger();
+
+    protected abstract Task startMaintenanceRunnable(Runnable runnable);
+
+    protected abstract File getPluginFile();
+
+    protected abstract String getPluginFolder();
 }

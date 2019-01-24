@@ -18,7 +18,7 @@
 
 package eu.kennytv.maintenance.bungee.listener;
 
-import eu.kennytv.maintenance.bungee.util.ProxiedSenderInfo;
+import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
@@ -37,7 +37,8 @@ public final class PostLoginListener extends JoinListenerBase implements Listene
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void postLogin(final PostLoginEvent event) {
-        if (handleLogin(new ProxiedSenderInfo(event.getPlayer())))
+        //TODO LoginEvent?
+        if (handleLogin(new BungeeSenderInfo(event.getPlayer())))
             event.getPlayer().disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n"));
     }
 

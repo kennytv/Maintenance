@@ -16,25 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee.runnable;
+package eu.kennytv.maintenance.core.proxy.runnable;
 
-import eu.kennytv.maintenance.api.bungee.IMaintenanceBungee;
+import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
-import net.md_5.bungee.api.config.ServerInfo;
 
 public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
-    private final ServerInfo server;
+    private final Server server;
 
-    public SingleMaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable, final ServerInfo server) {
+    public SingleMaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable, final Server server) {
         super(plugin, settings, minutes, enable);
         this.server = server;
     }
 
     @Override
     protected void finish() {
-        ((IMaintenanceBungee) this.plugin).setMaintenanceToServer(server, enable);
+        ((IMaintenanceProxy) plugin).setMaintenanceToServer(server, enable);
     }
 
     @Override

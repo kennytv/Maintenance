@@ -16,30 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee.util;
+package eu.kennytv.maintenance.velocity.util;
 
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.kyori.text.TextComponent;
 
 import java.util.UUID;
 
-public final class ProxiedSenderInfo implements SenderInfo {
-    private final CommandSender sender;
+public final class VelocitySenderInfo implements SenderInfo {
+    private final CommandSource sender;
 
-    public ProxiedSenderInfo(final CommandSender sender) {
+    public VelocitySenderInfo(final CommandSource sender) {
         this.sender = sender;
     }
 
     @Override
     public UUID getUuid() {
-        return sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : null;
+        return sender instanceof Player ? ((Player) sender).getUniqueId() : null;
     }
 
     @Override
     public String getName() {
-        return sender.getName();
+        return sender instanceof Player ? ((Player) sender).getUsername() : null;
     }
 
     @Override
@@ -49,12 +49,12 @@ public final class ProxiedSenderInfo implements SenderInfo {
 
     @Override
     public void sendMessage(final String message) {
-        sender.sendMessage(message);
+        sender.sendMessage(TextComponent.of(message));
     }
 
     @Override
     public boolean isPlayer() {
-        return sender instanceof ProxiedPlayer;
+        return sender instanceof Player;
     }
 
     public void sendMessage(final TextComponent textComponent) {

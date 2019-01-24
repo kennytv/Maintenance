@@ -16,21 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.bungee.util;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
-import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.api.proxy.Server;
+import net.md_5.bungee.api.config.ServerInfo;
 
-public final class SettingsBungee extends SettingsProxy {
+public final class BungeeServer implements Server {
+    private final ServerInfo server;
 
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
+    public BungeeServer(final ServerInfo server) {
+        this.server = server;
+    }
 
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
-        pingListener = listener;
+    @Override
+    public String getName() {
+        return server.getName();
+    }
 
-        reloadConfigs();
-        setupMySQL();
+    public ServerInfo getServer() {
+        return server;
     }
 }

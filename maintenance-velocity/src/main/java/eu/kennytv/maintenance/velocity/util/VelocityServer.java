@@ -16,21 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.velocity.util;
 
-import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
-import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import eu.kennytv.maintenance.api.proxy.Server;
 
-public final class SettingsBungee extends SettingsProxy {
+public final class VelocityServer implements Server {
+    private final RegisteredServer server;
 
-    SettingsBungee(final MaintenanceBungeePlugin maintenancePlugin, final MaintenanceBungeeBase plugin) {
-        super(maintenancePlugin);
+    public VelocityServer(final RegisteredServer server) {
+        this.server = server;
+    }
 
-        final ProxyPingListener listener = new ProxyPingListener(plugin, this);
-        plugin.getProxy().getPluginManager().registerListener(plugin, listener);
-        pingListener = listener;
+    @Override
+    public String getName() {
+        return server.getServerInfo().getName();
+    }
 
-        reloadConfigs();
-        setupMySQL();
+    public RegisteredServer getServer() {
+        return server;
     }
 }
