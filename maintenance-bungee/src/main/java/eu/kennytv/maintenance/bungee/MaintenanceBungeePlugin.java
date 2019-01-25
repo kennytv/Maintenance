@@ -42,11 +42,13 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -126,36 +128,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             serverInfo.getPlayers().forEach(p -> p.sendMessage(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
     }
 
-    public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settings.getMaintenanceServers().contains(serverInfo.getName());
-    }
-
-    @Override
-    protected Task startMaintenanceRunnable(final Runnable runnable) {
-        return new BungeeTask(getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
-    }
-
-    @Override
-    protected SettingsProxy getSettingsProxy() {
-        return settings;
-    }
-
-    @Override
-    public Server getServer(final String server) {
-        final ServerInfo serverInfo = getProxy().getServerInfo(server);
-        return serverInfo != null ? new BungeeServer(serverInfo) : null;
-    }
-
-    @Override
-    public void async(final Runnable runnable) {
-        getProxy().getScheduler().runAsync(plugin, runnable);
-    }
-
-    @Override
-    public void broadcast(final String message) {
-        getProxy().broadcast(message);
-    }
-
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
@@ -167,6 +139,43 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         tc1.addExtra(tc2);
         tc1.addExtra(click);
         ((BungeeSenderInfo) sender).sendMessage(tc1);
+    }
+
+    public boolean isMaintenance(final ServerInfo serverInfo) {
+        return settings.getMaintenanceServers().contains(serverInfo.getName());
+    }
+
+    @Override
+    protected Task startMaintenanceRunnable(final Runnable runnable) {
+        return new BungeeTask(getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
+    }
+
+    @Override
+    public Server getServer(final String server) {
+        final ServerInfo serverInfo = getProxy().getServerInfo(server);
+        return serverInfo != null ? new BungeeServer(serverInfo) : null;
+    }
+
+    @Override
+    public SenderInfo getPlayer(final String name) {
+        final ProxiedPlayer player = getProxy().getPlayer(name);
+        return player != null ? new BungeeSenderInfo(player) : null;
+    }
+
+    @Override
+    public SenderInfo getPlayer(final UUID uuid) {
+        final ProxiedPlayer player = getProxy().getPlayer(uuid);
+        return player != null ? new BungeeSenderInfo(player) : null;
+    }
+
+    @Override
+    public void async(final Runnable runnable) {
+        getProxy().getScheduler().runAsync(plugin, runnable);
+    }
+
+    @Override
+    public void broadcast(final String message) {
+        getProxy().broadcast(message);
     }
 
     @Override
@@ -192,6 +201,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
+    }
+
+    @Override
+    protected SettingsProxy getSettingsProxy() {
+        return settings;
     }
 
     public ProxyServer getProxy() {

@@ -20,19 +20,27 @@ package eu.kennytv.maintenance.velocity.command;
 
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
-import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.command.MaintenanceCommand;
+import com.velocitypowered.api.proxy.Player;
+import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
+import eu.kennytv.maintenance.velocity.SettingsVelocity;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
+import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public final class MaintenanceVelocityCommand extends MaintenanceCommand implements Command {
+public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements Command {
+    private final MaintenanceVelocityPlugin plugin;
 
-    public MaintenanceVelocityCommand(final MaintenanceModePlugin plugin, final Settings settings) {
+    public MaintenanceVelocityCommand(final MaintenanceVelocityPlugin plugin, final SettingsVelocity settings) {
         super(plugin, settings);
+        this.plugin = plugin;
     }
 
     @Override
@@ -51,12 +59,29 @@ public final class MaintenanceVelocityCommand extends MaintenanceCommand impleme
     }
 
     @Override
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-
+    protected void checkForUpdate(final SenderInfo sender) {
+        if (plugin.updateAvailable()) {
+            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
+            sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the proxy to prevent further issues and to complete the update!" +
+                    " If you can't do that, don't update!");
+            final TextComponent tc = TextComponent.of("§6× §8[§aUpdate§8]");
+            tc.clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"));
+            tc.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("§aClick here to update the plugin")));
+            tc.append(TextComponent.of(" §8< §7Or use the command §c/maintenance forceupdate"));
+            ((VelocitySenderInfo) sender).sendMessage(tc);
+        } else
+            sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
 
     @Override
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
+    protected List<String> getServersCompletion(final String s) {
+        return plugin.getServer().getAllServers().stream().filter(server -> server.getServerInfo().getName().toLowerCase().startsWith(s))
+                .filter(server -> !plugin.isMaintenance(server.getServerInfo())).map(server -> server.getServerInfo().getName()).collect(Collectors.toList());
+    }
 
+    @Override
+    protected String getServer(final SenderInfo sender) {
+        final Optional<Player> player = plugin.getServer().getPlayer(sender.getUuid());
+        return player.map(p -> p.getCurrentServer().get().getServerInfo().getName()).orElse("");
     }
 }

@@ -27,6 +27,7 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
@@ -54,6 +55,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -148,25 +150,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             serverInfo.getPlayersConnected().forEach(p -> p.sendMessage(TextComponent.of(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()))));
     }
 
-    public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settings.getMaintenanceServers().contains(serverInfo.getName());
-    }
-
-    @Override
-    public Task startMaintenanceRunnable(final Runnable runnable) {
-        return new VelocityTask(server.getScheduler().buildTask(this, runnable).repeat(1, TimeUnit.SECONDS).schedule());
-    }
-
-    @Override
-    public void async(final Runnable runnable) {
-        server.getScheduler().buildTask(this, runnable).schedule();
-    }
-
-    @Override
-    public void broadcast(final String message) {
-        server.broadcast(TextComponent.of(message));
-    }
-
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
@@ -178,6 +161,43 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         tc1.append(tc2);
         tc1.append(click);
         ((VelocitySenderInfo) sender).sendMessage(tc1);
+    }
+
+    public boolean isMaintenance(final ServerInfo serverInfo) {
+        return settings.getMaintenanceServers().contains(serverInfo.getName());
+    }
+
+    @Override
+    public Task startMaintenanceRunnable(final Runnable runnable) {
+        return new VelocityTask(server.getScheduler().buildTask(this, runnable).repeat(1, TimeUnit.SECONDS).schedule());
+    }
+
+    @Override
+    public Server getServer(final String server) {
+        final Optional<RegisteredServer> serverInfo = this.server.getServer(server);
+        return serverInfo.map(VelocityServer::new).orElse(null);
+    }
+
+    @Override
+    public SenderInfo getPlayer(final String name) {
+        final Optional<Player> player = server.getPlayer(name);
+        return player.map(VelocitySenderInfo::new).orElse(null);
+    }
+
+    @Override
+    public SenderInfo getPlayer(final UUID uuid) {
+        final Optional<Player> player = server.getPlayer(uuid);
+        return player.map(VelocitySenderInfo::new).orElse(null);
+    }
+
+    @Override
+    public void async(final Runnable runnable) {
+        server.getScheduler().buildTask(this, runnable).schedule();
+    }
+
+    @Override
+    public void broadcast(final String message) {
+        server.broadcast(TextComponent.of(message));
     }
 
     @Override
@@ -210,12 +230,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public Logger getLogger() {
         return logger;
-    }
-
-    @Override
-    public Server getServer(final String server) {
-        final Optional<RegisteredServer> serverInfo = this.server.getServer(server);
-        return serverInfo.map(VelocityServer::new).orElse(null);
     }
 
     public ProxyServer getServer() {

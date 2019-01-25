@@ -77,9 +77,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
-    //TODO dump command?
-    //TODO check protocollib ping for some versions
-
     //TODO To test:
     //everything in ping
     //join blocked+screen message
