@@ -50,7 +50,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            whitelistAddMessage(new BukkitSenderInfo(selected));
+            whitelistAddMessage(sender, new BukkitSenderInfo(selected));
             return;
         }
 
@@ -60,14 +60,14 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
             return;
         }
 
-        whitelistAddMessage(new BukkitOfflinePlayerInfo(offlinePlayer));
+        whitelistAddMessage(sender, new BukkitOfflinePlayerInfo(offlinePlayer));
     }
 
     @Override
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
-            whitelistRemoveMessage(new BukkitSenderInfo(selected));
+            whitelistRemoveMessage(sender, new BukkitSenderInfo(selected));
             return;
         }
 
@@ -77,7 +77,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
             return;
         }
 
-        whitelistRemoveMessage(new BukkitOfflinePlayerInfo(offlinePlayer));
+        whitelistRemoveMessage(sender, new BukkitOfflinePlayerInfo(offlinePlayer));
     }
 
     @Override

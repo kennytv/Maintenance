@@ -75,10 +75,10 @@ public abstract class MaintenanceCommand {
 
         // whitelist, add, remove
         tabCompleters.put("whitelist", addCommandInfo("whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)"));
-        addCommandInfoWithTabCompleter("add", args -> args.length == 2 ? null : Collections.emptyList(), "whitelist.add", "§6/maintenance add <player> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        addCommandInfoWithTabCompleter("add", args -> args.length == 2 ? null : Collections.emptyList(), "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
         addCommandInfoWithTabCompleter("remove", args -> args.length == 2 ?
                         settings.getWhitelistedPlayers().values().stream().filter(name -> name.toLowerCase().startsWith(args[1])).collect(Collectors.toList()) : Collections.emptyList(),
-                "whitelist.remove", "§6/maintenance remove <player> §7(Removes the player from the maintenance whitelist)");
+                "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
 
         // setmotd, motd
         addCommandInfoWithTabCompleter("setmotd", args -> {
@@ -220,13 +220,13 @@ public abstract class MaintenanceCommand {
                     sendUsage(sender);
             } else if (firstArg.equals("add")) {
                 if (checkPermission(sender, "whitelist.add")) return;
-                if (firstArg.length() == 36)
+                if (args[1].length() == 36)
                     addPlayerToWhitelist(sender, UUID.fromString(args[1]));
                 else
                     addPlayerToWhitelist(sender, args[1]);
             } else if (firstArg.equals("remove")) {
                 if (checkPermission(sender, "whitelist.remove")) return;
-                if (firstArg.length() == 36)
+                if (args[1].length() == 36)
                     removePlayerFromWhitelist(sender, UUID.fromString(args[1]));
                 else
                     removePlayerFromWhitelist(sender, args[1]);
@@ -399,7 +399,7 @@ public abstract class MaintenanceCommand {
             return;
         }
 
-        whitelistAddMessage(selected);
+        whitelistAddMessage(sender, selected);
     }
 
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
@@ -412,17 +412,17 @@ public abstract class MaintenanceCommand {
             return;
         }
 
-        whitelistRemoveMessage(selected);
+        whitelistRemoveMessage(sender, selected);
     }
 
     protected void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
         final SenderInfo selected = plugin.getOfflinePlayer(uuid);
         if (selected == null) {
-            sender.sendMessage(settings.getMessage("playerNotFound"));
+            sender.sendMessage(settings.getMessage("playerNotFoundUuid"));
             return;
         }
 
-        whitelistAddMessage(selected);
+        whitelistAddMessage(sender, selected);
     }
 
     protected void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
@@ -435,19 +435,19 @@ public abstract class MaintenanceCommand {
             return;
         }
 
-        whitelistRemoveMessage(selected);
+        whitelistRemoveMessage(sender, selected);
     }
 
-    protected void whitelistAddMessage(final SenderInfo sender) {
-        if (settings.addWhitelistedPlayer(sender.getUuid(), sender.getName()))
-            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", sender.getName()));
+    protected void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
+        if (settings.addWhitelistedPlayer(selected.getUuid(), selected.getName()))
+            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
         else
-            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", sender.getName()));
+            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
     }
 
-    protected void whitelistRemoveMessage(final SenderInfo sender) {
-        if (settings.removeWhitelistedPlayer(sender.getUuid()))
-            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", sender.getName()));
+    protected void whitelistRemoveMessage(final SenderInfo sender, final SenderInfo selected) {
+        if (settings.removeWhitelistedPlayer(selected.getUuid()))
+            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
         else
             sender.sendMessage(settings.getMessage("whitelistNotFound"));
     }

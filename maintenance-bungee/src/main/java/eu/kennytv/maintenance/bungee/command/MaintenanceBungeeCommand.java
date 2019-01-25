@@ -29,7 +29,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
@@ -54,17 +53,6 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
             ((BungeeSenderInfo) sender).sendMessage(tc);
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
-    }
-
-    @Override
-    protected void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
-        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null) {
-            sender.sendMessage(settings.getMessage("playerNotOnline"));
-            return;
-        }
-
-        whitelistAddMessage(selected);
     }
 
     @Override

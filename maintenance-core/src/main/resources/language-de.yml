@@ -40,6 +40,7 @@ whitelistNotFound: "&8[&eMaintenance&8] &cDieser Spieler ist nicht in der Mainte
 whitelistEmtpy: "&8[&eMaintenance&8] &cDie Maintenance Whitelist ist leer! Nutze '/maintenance add <Spieler>', um jemanden hinzuzufügen!"
 whitelistEmptyDefault: "&8[&eMaintenance&8] &cNutze '/maintenance add <player>', um jemanden hinzuzufügen. Ansonsten kannst auch die UUID des Spielers in die WhitelistedPlayers.yml einsetzen, wie es im dortigen Beispiel schon drinsteht!"
 playerNotFound: "&8[&eMaintenance&8] &cBisher hat kein Spieler mit diesem Namen jemals auf diesem Server gespielt."
+playerNotFoundUuid: "&8[&eMaintenance&8] &cEs konnte kein Spieler mit dieser UUID gefunden werden."
 playerNotOnline: "&8[&eMaintenance&8] &cEs ist momentan kein Spieler mit diesem Namen online."
 
 second: "Sekunde"

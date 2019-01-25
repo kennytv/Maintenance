@@ -141,7 +141,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
-        return player != null && player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
+        return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override

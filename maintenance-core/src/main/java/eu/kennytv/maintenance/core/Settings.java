@@ -202,7 +202,7 @@ public abstract class Settings implements ISettings {
     public String getConfigString(final String path) {
         if (!config.contains(path)) {
             plugin.getLogger().warning("The config is missing the following string: " + path);
-            return "";
+            return "null";
         }
         return config.getString(path);
     }
@@ -210,7 +210,7 @@ public abstract class Settings implements ISettings {
     public String getMessage(final String path) {
         if (!language.contains(path)) {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
-            return "";
+            return "null";
         }
         return getColoredString(language.getString(path));
     }
