@@ -67,6 +67,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent>, IP
 
         if (settings.hasCustomIcon() && favicon != null)
             builder.favicon(favicon);
+        event.setPing(builder.build());
     }
 
 

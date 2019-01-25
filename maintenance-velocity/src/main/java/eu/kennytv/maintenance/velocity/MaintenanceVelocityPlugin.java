@@ -21,8 +21,10 @@ package eu.kennytv.maintenance.velocity;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
+import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -69,8 +71,8 @@ import java.util.logging.Logger;
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
     private final Logger logger;
-    private final SettingsVelocity settings;
     private final File dataFolder;
+    private SettingsVelocity settings;
 
     //TODO Setup Velocity server to test serverconnect
     //TODO getPluginFile
@@ -85,8 +87,12 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         this.server = server;
         this.logger = new LoggerWrapper(logger);
         this.dataFolder = folder.toFile();
+    }
+
+    @Subscribe
+    public void onEnable(final ProxyInitializeEvent event) {
         sendEnableMessage();
-        logger.warn("§4The Maintenance plugin under Velocity might still be unstable! Use it with caution and update as soon as a new release is available!");
+        logger.warning("§4The Maintenance plugin under Velocity might still be unstable! Use it with caution and update as soon as a new release is available!");
 
         settings = new SettingsVelocity(this);
 
@@ -198,6 +204,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public void broadcast(final String message) {
         server.broadcast(TextComponent.of(message));
+        logger.info(message);
     }
 
     @Override
