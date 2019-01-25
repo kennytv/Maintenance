@@ -69,21 +69,11 @@ import java.util.logging.Logger;
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     private SettingsSponge settings;
     private Logger logger;
-    @Inject
-    private Game game;
-    @Inject
-    private PluginContainer container;
-    @Inject
-    private Metrics2 metrics;
-    @Inject
-    @ConfigDir(sharedRoot = false)
+    @Inject private Game game;
+    @Inject private PluginContainer container;
+    @Inject private Metrics2 metrics;
+    @Inject @ConfigDir(sharedRoot = false)
     private File dataFolder;
-
-    //TODO To test:
-    //everything in ping
-    //join blocked+screen message
-    //whitelist
-    //timer
 
     @Inject
     public MaintenanceSpongePlugin() {
@@ -94,7 +84,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
         sendEnableMessage();
-        logger.warning("§4The Maintenance plugin under Sponge might still be unstable! Use it with caution and update as soon as a new release is available!");
 
         settings = new SettingsSponge(this);
 

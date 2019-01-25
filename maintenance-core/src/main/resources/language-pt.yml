@@ -42,6 +42,7 @@ whitelistEmptyDefault: "&8[&cManutencao&8] &cUsa '/maintenance add <player>' par
 playerNotFound: "&8[&cManutencao&8] &cNinguem com esse nome se registou no servidor."
 playerNotFoundUuid: "&8[&cManutencao&8] &cNinguem com esse uuid se registou no servidor."
 playerNotOnline: "&8[&cManutencao&8] &cNao esta ninguem online com esse nome"
+invalidUuid: "&8[&eMaintenance&8] &cUuid inválido!"
 
 second: "segundo"
 seconds: "segundos"

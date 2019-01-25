@@ -22,10 +22,12 @@ import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.SettingsSponge;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.Location;
@@ -34,6 +36,7 @@ import org.spongepowered.api.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @NonnullByDefault
 public final class MaintenanceSpongeCommand extends MaintenanceCommand implements CommandCallable {
@@ -45,13 +48,13 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
 
     @Override
     public CommandResult process(final CommandSource source, final String arguments) throws CommandException {
-        execute(new SpongeSenderInfo(source), getArgs(arguments));
+        execute(new SpongeSenderInfo(source), getArgs(arguments, 0));
         return CommandResult.success();
     }
 
     @Override
     public List<String> getSuggestions(final CommandSource source, final String arguments, @Nullable final Location<World> targetPosition) throws CommandException {
-        return getSuggestions(new SpongeSenderInfo(source), getArgs(arguments));
+        return getSuggestions(new SpongeSenderInfo(source), getArgs(arguments, -1));
     }
 
     @Override
@@ -74,7 +77,12 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
         return null;
     }
 
-    private String[] getArgs(final String arguments) {
-        return arguments.isEmpty() ? EMPTY : arguments.split(" ");
+    @Override
+    protected List<String> getPlayersCompletion() {
+        return Sponge.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+    }
+
+    private String[] getArgs(final String arguments, final int limit) {
+        return arguments.isEmpty() ? EMPTY : arguments.split(" ", limit);
     }
 }

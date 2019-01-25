@@ -75,7 +75,7 @@ public abstract class MaintenanceCommand {
 
         // whitelist, add, remove
         tabCompleters.put("whitelist", addCommandInfo("whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)"));
-        addCommandInfoWithTabCompleter("add", args -> args.length == 2 ? null : Collections.emptyList(), "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        addCommandInfoWithTabCompleter("add", args -> args.length == 2 ? getPlayersCompletion() : Collections.emptyList(), "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
         addCommandInfoWithTabCompleter("remove", args -> args.length == 2 ?
                         settings.getWhitelistedPlayers().values().stream().filter(name -> name.toLowerCase().startsWith(args[1])).collect(Collectors.toList()) : Collections.emptyList(),
                 "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
@@ -220,15 +220,19 @@ public abstract class MaintenanceCommand {
                     sendUsage(sender);
             } else if (firstArg.equals("add")) {
                 if (checkPermission(sender, "whitelist.add")) return;
-                if (args[1].length() == 36)
-                    addPlayerToWhitelist(sender, UUID.fromString(args[1]));
-                else
+                if (args[1].length() == 36) {
+                    final UUID uuid = checkUuid(sender, args[1]);
+                    if (uuid != null)
+                        addPlayerToWhitelist(sender, uuid);
+                } else
                     addPlayerToWhitelist(sender, args[1]);
             } else if (firstArg.equals("remove")) {
                 if (checkPermission(sender, "whitelist.remove")) return;
-                if (args[1].length() == 36)
-                    removePlayerFromWhitelist(sender, UUID.fromString(args[1]));
-                else
+                if (args[1].length() == 36) {
+                    final UUID uuid = checkUuid(sender, args[1]);
+                    if (uuid != null)
+                        removePlayerFromWhitelist(sender, uuid);
+                } else
                     removePlayerFromWhitelist(sender, args[1]);
             } else if (firstArg.equals("removemotd")) {
                 if (checkPermission(sender, "setmotd")) return;
@@ -309,7 +313,7 @@ public abstract class MaintenanceCommand {
         if (args.length == 1)
             return tabCompleters.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
         final CommandInfo info = tabCompleters.get(args[0]);
-        return info == null ? Collections.emptyList() : info.getTabCompletion(args);
+        return info != null && info.hasPermission(sender) ? info.getTabCompletion(args) : Collections.emptyList();
     }
 
     private static final int COMMANDS_PER_PAGE = 8;
@@ -456,6 +460,17 @@ public abstract class MaintenanceCommand {
         return string.matches("[0-9]+");
     }
 
+    private UUID checkUuid(final SenderInfo sender, final String s) {
+        final UUID uuid;
+        try {
+            uuid = UUID.fromString(s);
+        } catch (final Exception e) {
+            sender.sendMessage(settings.getMessage("invalidUuid"));
+            return null;
+        }
+        return uuid;
+    }
+
     protected void showMaintenanceStatus(SenderInfo sender) {
     }
 
@@ -470,6 +485,10 @@ public abstract class MaintenanceCommand {
     }
 
     protected List<String> getMaintenanceServersCompletion(String s) {
+        return null;
+    }
+
+    protected List<String> getPlayersCompletion() {
         return null;
     }
 }

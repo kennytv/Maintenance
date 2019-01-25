@@ -32,6 +32,9 @@ public final class SettingsSponge extends Settings {
         pingListener = listener;
 
         reloadConfigs();
+
+        if (hasCustomPlayerCountMessage())
+            plugin.getLogger().info("Sadly, the custom playercount message doesn't (yet) work on Sponge. Disabled it again.");
     }
 
     @Override

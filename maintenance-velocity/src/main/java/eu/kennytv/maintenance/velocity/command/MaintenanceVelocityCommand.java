@@ -80,6 +80,11 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
+    protected List<String> getPlayersCompletion() {
+        return plugin.getServer().getAllPlayers().stream().map(Player::getUsername).collect(Collectors.toList());
+    }
+
+    @Override
     protected String getServer(final SenderInfo sender) {
         final Optional<Player> player = plugin.getServer().getPlayer(sender.getUuid());
         return player.map(p -> p.getCurrentServer().get().getServerInfo().getName()).orElse("");

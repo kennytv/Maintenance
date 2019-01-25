@@ -43,8 +43,8 @@ public abstract class JoinListenerBase {
      * @param sender wrapper of the joining player
      * @return true if the sender should be kicked
      */
-    public boolean handleLogin(final SenderInfo sender) {
-        if (sender.getUuid().equals(notifyUuid))
+    protected boolean handleLogin(final SenderInfo sender, final boolean notification) {
+        if (notification && sender.getUuid().equals(notifyUuid))
             sender.sendMessage("§6Maintenance §aVersion " + plugin.getVersion());
         else if (settings.isMaintenance()) {
             if (!sender.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(sender.getUuid())) {
@@ -62,6 +62,10 @@ public abstract class JoinListenerBase {
             plugin.sendUpdateNotification(sender);
         });
         return false;
+    }
+
+    protected boolean handleLogin(final SenderInfo sender) {
+        return handleLogin(sender, true);
     }
 
     protected abstract void broadcastJoinNotification(SenderInfo sender);

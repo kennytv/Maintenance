@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.bungee.SettingsBungee;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -59,6 +60,11 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     protected List<String> getServersCompletion(final String s) {
         return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
                 .filter(entry -> !plugin.isMaintenance(entry.getValue())).map(entry -> entry.getValue().getName()).collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<String> getPlayersCompletion() {
+        return plugin.getProxy().getPlayers().stream().map(CommandSender::getName).collect(Collectors.toList());
     }
 
     @Override

@@ -42,6 +42,7 @@ whitelistEmptyDefault: "&8[&eMaintenance&8] &cUtilisation '/maintenance add <jou
 playerNotFound: "&8[&eMaintenance&8] &cAucun joueur avec ce nom n'a joué sur ce serveur auparavant."
 playerNotFoundUuid: "&8[&eMaintenance&8] &cIl n'y a pas de joueur en ligne avec cette uuid."
 playerNotOnline: "&8[&eMaintenance&8] &cIl n'y a pas de joueur en ligne avec ce nom."
+invalidUuid: "&8[&eMaintenance&8] &cC'est un uuid invalide!"
 
 second: "second"
 seconds: "seconds"
