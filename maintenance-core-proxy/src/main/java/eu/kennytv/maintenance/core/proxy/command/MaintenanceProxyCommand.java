@@ -39,31 +39,6 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
     }
 
     @Override
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
-        if (selected == null) {
-            sender.sendMessage(settings.getMessage("playerNotOnline"));
-            return;
-        }
-
-        whitelistAddMessage(selected);
-    }
-
-    @Override
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
-        if (selected == null) {
-            if (settings.removeWhitelistedPlayer(name))
-                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name));
-            else
-                sender.sendMessage(settings.getMessage("whitelistNotFound"));
-            return;
-        }
-
-        whitelistRemoveMessage(selected);
-    }
-
-    @Override
     protected void handleToggleServerCommand(final SenderInfo sender, final String[] args) {
         final Server server = plugin.getServer(args[1]);
         if (server == null) {

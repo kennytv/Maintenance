@@ -24,13 +24,11 @@ import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author KennyTV
@@ -96,10 +94,6 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         serverTasks.put(server.getName(), startMaintenanceRunnable(runnable));
         return runnable;
     }
-
-    public abstract SenderInfo getPlayer(String name);
-
-    public abstract SenderInfo getPlayer(UUID uuid);
 
     protected abstract void serverActions(boolean maintenance);
 

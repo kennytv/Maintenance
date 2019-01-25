@@ -19,16 +19,13 @@
 package eu.kennytv.maintenance.sponge.command;
 
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.SettingsSponge;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.Location;
@@ -75,36 +72,6 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     @Override
     public Text getUsage(final CommandSource source) {
         return null;
-    }
-
-    @Override
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(name);
-        if (!optionalPlayer.isPresent()) {
-            sender.sendMessage(settings.getMessage("playerNotFound"));
-            return;
-        }
-
-        final Player player = optionalPlayer.get();
-        if (settings.addWhitelistedPlayer(player.getUniqueId(), player.getName()))
-            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", player.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", player.getName()));
-    }
-
-    @Override
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(name);
-        if (!optionalPlayer.isPresent()) {
-            sender.sendMessage(settings.getMessage("playerNotFound"));
-            return;
-        }
-
-        final Player player = optionalPlayer.get();
-        if (settings.removeWhitelistedPlayer(player.getUniqueId()))
-            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", player.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistNotFound"));
     }
 
     private String[] getArgs(final String arguments) {

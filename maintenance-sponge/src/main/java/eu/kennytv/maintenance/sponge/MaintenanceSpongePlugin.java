@@ -39,6 +39,7 @@ import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -54,6 +55,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -163,6 +165,18 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
             e.printStackTrace();
         }
         ((SpongeSenderInfo) sender).sendMessage(text);
+    }
+
+    @Override
+    public SenderInfo getPlayer(final String name) {
+        final Optional<Player> player = getServer().getPlayer(name);
+        return player.map(SpongeSenderInfo::new).orElse(null);
+    }
+
+    @Override
+    public SenderInfo getOfflinePlayer(final UUID uuid) {
+        final Optional<Player> player = getServer().getPlayer(uuid);
+        return player.map(SpongeSenderInfo::new).orElse(null);
     }
 
     @Override

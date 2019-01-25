@@ -220,10 +220,16 @@ public abstract class MaintenanceCommand {
                     sendUsage(sender);
             } else if (firstArg.equals("add")) {
                 if (checkPermission(sender, "whitelist.add")) return;
-                addPlayerToWhitelist(sender, args[1]);
+                if (firstArg.length() == 36)
+                    addPlayerToWhitelist(sender, UUID.fromString(args[1]));
+                else
+                    addPlayerToWhitelist(sender, args[1]);
             } else if (firstArg.equals("remove")) {
                 if (checkPermission(sender, "whitelist.remove")) return;
-                removePlayerFromWhitelist(sender, args[1]);
+                if (firstArg.length() == 36)
+                    removePlayerFromWhitelist(sender, UUID.fromString(args[1]));
+                else
+                    removePlayerFromWhitelist(sender, args[1]);
             } else if (firstArg.equals("removemotd")) {
                 if (checkPermission(sender, "setmotd")) return;
                 if (!isNumeric(args[1])) {
@@ -386,6 +392,52 @@ public abstract class MaintenanceCommand {
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
 
+    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
+        final SenderInfo selected = plugin.getPlayer(name);
+        if (selected == null) {
+            sender.sendMessage(settings.getMessage("playerNotOnline"));
+            return;
+        }
+
+        whitelistAddMessage(selected);
+    }
+
+    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
+        final SenderInfo selected = plugin.getPlayer(name);
+        if (selected == null) {
+            if (settings.removeWhitelistedPlayer(name))
+                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name));
+            else
+                sender.sendMessage(settings.getMessage("whitelistNotFound"));
+            return;
+        }
+
+        whitelistRemoveMessage(selected);
+    }
+
+    protected void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
+        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
+        if (selected == null) {
+            sender.sendMessage(settings.getMessage("playerNotFound"));
+            return;
+        }
+
+        whitelistAddMessage(selected);
+    }
+
+    protected void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
+        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
+        if (selected == null) {
+            if (settings.removeWhitelistedPlayer(uuid))
+                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", uuid.toString()));
+            else
+                sender.sendMessage(settings.getMessage("whitelistNotFound"));
+            return;
+        }
+
+        whitelistRemoveMessage(selected);
+    }
+
     protected void whitelistAddMessage(final SenderInfo sender) {
         if (settings.addWhitelistedPlayer(sender.getUuid(), sender.getName()))
             sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", sender.getName()));
@@ -420,8 +472,4 @@ public abstract class MaintenanceCommand {
     protected List<String> getMaintenanceServersCompletion(String s) {
         return null;
     }
-
-    protected abstract void addPlayerToWhitelist(SenderInfo sender, String name);
-
-    protected abstract void removePlayerFromWhitelist(SenderInfo sender, String name);
 }

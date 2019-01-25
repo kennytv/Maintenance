@@ -30,6 +30,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
@@ -167,6 +168,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public abstract void broadcast(String message);
 
     public abstract void sendUpdateNotification(SenderInfo sender);
+
+    public abstract SenderInfo getPlayer(String name);
+
+    public abstract SenderInfo getOfflinePlayer(UUID uuid);
 
     public abstract File getDataFolder();
 

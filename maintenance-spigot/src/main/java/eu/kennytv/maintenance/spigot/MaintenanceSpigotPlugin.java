@@ -29,18 +29,22 @@ import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
+import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitTask;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -126,6 +130,18 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         tc1.addExtra(tc2);
         tc1.addExtra(click);
         ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+    }
+
+    @Override
+    public SenderInfo getPlayer(final String name) {
+        final Player player = getServer().getPlayer(name);
+        return player != null ? new BukkitSenderInfo(player) : null;
+    }
+
+    @Override
+    public SenderInfo getOfflinePlayer(final UUID uuid) {
+        final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
+        return player != null && player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override

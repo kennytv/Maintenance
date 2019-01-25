@@ -185,7 +185,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public SenderInfo getPlayer(final UUID uuid) {
+    public SenderInfo getOfflinePlayer(final UUID uuid) {
         final Optional<Player> player = server.getPlayer(uuid);
         return player.map(VelocitySenderInfo::new).orElse(null);
     }

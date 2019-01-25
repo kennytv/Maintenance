@@ -163,7 +163,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public SenderInfo getPlayer(final UUID uuid) {
+    public SenderInfo getOfflinePlayer(final UUID uuid) {
         final ProxiedPlayer player = getProxy().getPlayer(uuid);
         return player != null ? new BungeeSenderInfo(player) : null;
     }
