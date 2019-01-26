@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public final class SpongeSenderInfo implements SenderInfo {
 
     @Override
     public void sendMessage(final String message) {
-        sender.sendMessage(Text.of(message));
+        sender.sendMessage(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
     }
 
     @Override
