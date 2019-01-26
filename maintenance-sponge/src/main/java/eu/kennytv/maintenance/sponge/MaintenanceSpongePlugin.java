@@ -31,7 +31,6 @@ import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
-import eu.kennytv.maintenance.sponge.listener.GameReloadListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
@@ -42,6 +41,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -91,7 +91,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         final EventManager em = game.getEventManager();
         em.registerListeners(this, new ClientConnectionListener(this, settings));
         em.registerListeners(this, new ClientPingServerListener(this, settings));
-        em.registerListeners(this, new GameReloadListener(this));
 
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
@@ -99,6 +98,12 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             logger.info("Enabled ServerListPlus integration!");
         }));
+    }
+
+    @Listener
+    public void reload(final GameReloadEvent event) {
+        settings.reloadConfigs();
+        logger.info("Reloaded config files!");
     }
 
     @Deprecated
