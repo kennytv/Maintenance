@@ -32,6 +32,7 @@ import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
+import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import org.bstats.sponge.Metrics2;
@@ -46,6 +47,7 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 
@@ -169,8 +171,8 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public SenderInfo getOfflinePlayer(final UUID uuid) {
-        final Optional<Player> player = getServer().getPlayer(uuid);
-        return player.map(SpongeSenderInfo::new).orElse(null);
+        final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
+        return userStorage.get(uuid).map(SpongeOfflinePlayerInfo::new).orElse(null);
     }
 
     @Override
