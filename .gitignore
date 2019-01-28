@@ -92,4 +92,4 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
-!Maintenance-API.jar
+!MaintenanceAPI.jar
