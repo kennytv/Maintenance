@@ -173,6 +173,8 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
 
+    public abstract void loadMaintenanceIcon();
+
     public abstract File getDataFolder();
 
     public abstract InputStream getResource(String name);

@@ -22,15 +22,15 @@ import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import eu.kennytv.maintenance.velocity.SettingsVelocity;
 import net.kyori.text.TextComponent;
 
 public final class ServerConnectListener implements EventHandler<ServerPreConnectEvent> {
     private final MaintenanceVelocityPlugin plugin;
-    private final SettingsVelocity settings;
+    private final SettingsProxy settings;
 
-    public ServerConnectListener(final MaintenanceVelocityPlugin plugin, final SettingsVelocity settings) {
+    public ServerConnectListener(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

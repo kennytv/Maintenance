@@ -18,30 +18,23 @@
 
 package eu.kennytv.maintenance.sponge.listener;
 
-import eu.kennytv.maintenance.core.listener.IPingListener;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import eu.kennytv.maintenance.sponge.SettingsSponge;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
-import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public final class ClientPingServerListener implements IPingListener {
-    private final MaintenanceSpongePlugin plugin;
-    private final SettingsSponge settings;
+public final class ClientPingServerListener {
     private final UUID uuid = new UUID(0, 0);
-    private Favicon favicon;
+    private final MaintenanceSpongePlugin plugin;
+    private final Settings settings;
 
-    public ClientPingServerListener(final MaintenanceSpongePlugin plugin, final SettingsSponge settings) {
+    public ClientPingServerListener(final MaintenanceSpongePlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
     }
@@ -63,20 +56,7 @@ public final class ClientPingServerListener implements IPingListener {
                 profiles.add(GameProfile.of(uuid, string));
         });
 
-        if (settings.hasCustomIcon() && favicon != null)
-            response.setFavicon(favicon);
-    }
-
-    @Override
-    public boolean loadIcon() {
-        try {
-            favicon = Sponge.getGame().getRegistry().loadFavicon(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final IOException | IllegalArgumentException e) {
-            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Sponge folder (not the plugins folder)?");
-            if (settings.debugEnabled())
-                e.printStackTrace();
-            return false;
-        }
-        return true;
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+            response.setFavicon(plugin.getFavicon());
     }
 }

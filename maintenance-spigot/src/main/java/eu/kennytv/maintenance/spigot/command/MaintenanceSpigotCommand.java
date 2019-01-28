@@ -18,10 +18,10 @@
 
 package eu.kennytv.maintenance.spigot.command;
 
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.SettingsSpigot;
 import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ import java.util.List;
 
 public final class MaintenanceSpigotCommand extends MaintenanceCommand implements CommandExecutor, TabCompleter {
 
-    public MaintenanceSpigotCommand(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
+    public MaintenanceSpigotCommand(final MaintenanceSpigotPlugin plugin, final Settings settings) {
         super(plugin, settings);
     }
 

@@ -36,6 +36,7 @@ import java.util.Map;
  */
 public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin implements IMaintenanceProxy {
     private final Map<String, Task> serverTasks = new HashMap<>();
+    protected SettingsProxy settings;
 
     protected MaintenanceProxyPlugin(final String version, final ServerType serverType) {
         super(version, serverType);
@@ -43,12 +44,12 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (getSettingsProxy().getMySQL() != null) {
-            getSettingsProxy().setMaintenanceToSQL(maintenance);
+        if (settings.getMySQL() != null) {
+            settings.setMaintenanceToSQL(maintenance);
         } else {
-            getSettingsProxy().setMaintenance(maintenance);
-            getSettingsProxy().getConfig().set("enable-maintenance-mode", maintenance);
-            getSettingsProxy().saveConfig();
+            settings.setMaintenance(maintenance);
+            settings.getConfig().set("enable-maintenance-mode", maintenance);
+            settings.saveConfig();
         }
 
         serverActions(maintenance);
@@ -58,15 +59,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     @Override
     public boolean isMaintenance(final Server server) {
-        return getSettingsProxy().isMaintenance(server);
+        return settings.isMaintenance(server);
     }
 
     @Override
     public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
         if (maintenance) {
-            if (!getSettingsProxy().addMaintenanceServer(server.getName())) return false;
+            if (!settings.addMaintenanceServer(server.getName())) return false;
         } else {
-            if (!getSettingsProxy().removeMaintenanceServer(server.getName())) return false;
+            if (!settings.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
         cancelSingleTask(server);
@@ -98,6 +99,4 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
     protected abstract void serverActions(boolean maintenance);
 
     protected abstract void serverActions(Server server, boolean maintenance);
-
-    protected abstract SettingsProxy getSettingsProxy();
 }

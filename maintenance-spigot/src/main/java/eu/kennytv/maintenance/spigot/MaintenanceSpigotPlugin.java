@@ -22,12 +22,15 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
+import eu.kennytv.maintenance.spigot.listener.ServerInfoPacketListener;
+import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
 import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
 import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
@@ -41,7 +44,9 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.CachedServerIcon;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.InputStream;
 import java.util.UUID;
@@ -53,19 +58,26 @@ import java.util.logging.Logger;
  */
 public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final MaintenanceSpigotBase plugin;
-    private final SettingsSpigot settings;
+    private final Settings settings;
+    private CachedServerIcon favicon;
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
         this.plugin = plugin;
         sendEnableMessage();
 
-        settings = new SettingsSpigot(this, plugin);
+        settings = new Settings(this, "spigot-config.yml");
 
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
+        if (pm.isPluginEnabled("ProtocolLib")) {
+            pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
+        } else {
+            pm.registerEvents(new ServerListPingListener(this, settings), plugin);
+            getLogger().info("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
+        }
 
         new MetricsLite(plugin);
 
@@ -145,6 +157,17 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void loadMaintenanceIcon() {
+        try {
+            favicon = plugin.getServer().loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final Exception e) {
+            plugin.getLogger().warning("Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
+            if (settings.debugEnabled())
+                e.printStackTrace();
+        }
+    }
+
+    @Override
     public File getDataFolder() {
         return plugin.getDataFolder();
     }
@@ -176,5 +199,9 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
 
     public Server getServer() {
         return plugin.getServer();
+    }
+
+    public CachedServerIcon getFavicon() {
+        return favicon;
     }
 }

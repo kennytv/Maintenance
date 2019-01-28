@@ -18,9 +18,9 @@
 
 package eu.kennytv.maintenance.sponge.command;
 
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import eu.kennytv.maintenance.sponge.SettingsSponge;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCallable;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public final class MaintenanceSpongeCommand extends MaintenanceCommand implements CommandCallable {
     private static final String[] EMPTY = new String[0];
 
-    public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final SettingsSponge settings) {
+    public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final Settings settings) {
         super(plugin, settings);
     }
 

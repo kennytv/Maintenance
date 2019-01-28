@@ -19,8 +19,8 @@
 package eu.kennytv.maintenance.bungee.command;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
-import eu.kennytv.maintenance.bungee.SettingsBungee;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import net.md_5.bungee.api.CommandSender;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     private final MaintenanceBungeePlugin plugin;
 
-    public MaintenanceBungeeCommand(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
+    public MaintenanceBungeeCommand(final MaintenanceBungeePlugin plugin, final SettingsProxy settings) {
         super(plugin, settings);
         this.plugin = plugin;
     }

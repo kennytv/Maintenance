@@ -21,24 +21,18 @@ package eu.kennytv.maintenance.velocity.listener;
 import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
-import com.velocitypowered.api.util.Favicon;
-import eu.kennytv.maintenance.core.listener.IPingListener;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import eu.kennytv.maintenance.velocity.SettingsVelocity;
 import net.kyori.text.TextComponent;
 
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
-public final class ProxyPingListener implements EventHandler<ProxyPingEvent>, IPingListener {
+public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
     private final MaintenanceVelocityPlugin plugin;
-    private final SettingsVelocity settings;
+    private final SettingsProxy settings;
     private final UUID uuid = new UUID(0, 0);
-    private Favicon favicon;
 
-    public ProxyPingListener(final MaintenanceVelocityPlugin plugin, final SettingsVelocity settings) {
+    public ProxyPingListener(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
         this.plugin = plugin;
         this.settings = settings;
     }
@@ -65,22 +59,8 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent>, IP
                 .maximumPlayers(0)
                 .samplePlayers(samplePlayers);
 
-        if (settings.hasCustomIcon() && favicon != null)
-            builder.favicon(favicon);
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+            builder.favicon(plugin.getFavicon());
         event.setPing(builder.build());
-    }
-
-
-    @Override
-    public boolean loadIcon() {
-        try {
-            favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final IOException | IllegalArgumentException e) {
-            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
-            if (settings.debugEnabled())
-                e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 }

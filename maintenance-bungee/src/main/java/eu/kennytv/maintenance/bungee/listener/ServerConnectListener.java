@@ -19,7 +19,7 @@
 package eu.kennytv.maintenance.bungee.listener;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
-import eu.kennytv.maintenance.bungee.SettingsBungee;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -31,10 +31,10 @@ import net.md_5.bungee.event.EventPriority;
 
 public final class ServerConnectListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
-    private final SettingsBungee settings;
+    private final SettingsProxy settings;
     private boolean warned;
 
-    public ServerConnectListener(final MaintenanceBungeePlugin plugin, final SettingsBungee settings) {
+    public ServerConnectListener(final MaintenanceBungeePlugin plugin, final SettingsProxy settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

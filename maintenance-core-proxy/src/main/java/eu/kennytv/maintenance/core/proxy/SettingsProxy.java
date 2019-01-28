@@ -32,11 +32,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class SettingsProxy extends Settings {
+public final class SettingsProxy extends Settings {
     private final MaintenanceProxyPlugin plugin;
+    private Configuration spigotServers;
     private Set<String> maintenanceServers;
     private String fallbackServer;
-    private Configuration spigotServers;
 
     private String mySQLTable;
     private String serverTable;
@@ -48,12 +48,13 @@ public abstract class SettingsProxy extends Settings {
     private long lastMySQLCheck;
     private long lastServerCheck;
 
-    protected SettingsProxy(final MaintenanceProxyPlugin plugin) {
-        super(plugin);
+    public SettingsProxy(final MaintenanceProxyPlugin plugin) {
+        super(plugin, "bungee-config.yml");
         this.plugin = plugin;
+        setupMySQL();
     }
 
-    protected void setupMySQL() {
+    private void setupMySQL() {
         final Configuration mySQLSection = config.getSection("mysql");
         if (!mySQLSection.getBoolean("use-mysql", false)) return;
 
@@ -83,11 +84,6 @@ public abstract class SettingsProxy extends Settings {
     @Override
     protected void createExtraFiles() {
         createFile("SpigotServers.yml");
-    }
-
-    @Override
-    protected String getConfigName() {
-        return "bungee-config.yml";
     }
 
     @Override

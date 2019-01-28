@@ -18,16 +18,20 @@
 
 package eu.kennytv.maintenance.spigot.listener;
 
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
-import eu.kennytv.maintenance.spigot.SettingsSpigot;
+import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-public final class ServerListPingListener extends PingListenerBase {
+public final class ServerListPingListener implements Listener {
+    private final MaintenanceSpigotPlugin plugin;
+    private final Settings settings;
 
-    public ServerListPingListener(final MaintenanceSpigotBase plugin, final SettingsSpigot settings) {
-        super(plugin, settings);
+    public ServerListPingListener(final MaintenanceSpigotPlugin plugin, final Settings settings) {
+        this.plugin = plugin;
+        this.settings = settings;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -37,7 +41,7 @@ public final class ServerListPingListener extends PingListenerBase {
         event.setMaxPlayers(0);
         event.setMotd(settings.getRandomPingMessage());
 
-        if (settings.hasCustomIcon() && serverIcon != null)
-            event.setServerIcon(serverIcon);
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+            event.setServerIcon(plugin.getFavicon());
     }
 }

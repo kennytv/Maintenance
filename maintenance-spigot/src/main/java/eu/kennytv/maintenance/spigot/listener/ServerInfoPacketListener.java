@@ -25,22 +25,27 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
-import eu.kennytv.maintenance.spigot.SettingsSpigot;
+import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class ServerInfoPacketListener extends PingListenerBase {
+public final class ServerInfoPacketListener implements Listener {
     private final UUID uuid = new UUID(0, 0);
+    private final MaintenanceSpigotPlugin plugin;
+    private final Settings settings;
     //private WrappedServerPing.CompressedImage image;
 
-    public ServerInfoPacketListener(final MaintenanceSpigotBase base, final SettingsSpigot settings) {
-        super(base, settings);
+    public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
+        this.plugin = plugin;
+        this.settings = settings;
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST,
                 PacketType.Status.Server.SERVER_INFO) {
             @Override
@@ -68,8 +73,8 @@ public final class ServerInfoPacketListener extends PingListenerBase {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        if (settings.isMaintenance() && settings.hasCustomIcon() && serverIcon != null)
-            event.setServerIcon(serverIcon);
+        if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null)
+            event.setServerIcon(plugin.getFavicon());
     }
 
     /*@Override

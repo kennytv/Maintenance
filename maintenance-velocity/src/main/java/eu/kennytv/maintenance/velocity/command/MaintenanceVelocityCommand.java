@@ -21,10 +21,10 @@ package eu.kennytv.maintenance.velocity.command;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
+import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import eu.kennytv.maintenance.velocity.SettingsVelocity;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements Command {
     private final MaintenanceVelocityPlugin plugin;
 
-    public MaintenanceVelocityCommand(final MaintenanceVelocityPlugin plugin, final SettingsVelocity settings) {
+    public MaintenanceVelocityCommand(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
         super(plugin, settings);
         this.plugin = plugin;
     }

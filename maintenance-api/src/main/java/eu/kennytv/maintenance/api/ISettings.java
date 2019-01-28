@@ -81,14 +81,7 @@ public interface ISettings {
     boolean addWhitelistedPlayer(UUID uuid, String name);
 
     /**
-     * Reloads the maintenance-icon.png image from the server folder.
-     *
-     * @return true if loading the image was successful
-     */
-    boolean reloadMaintenanceIcon();
-
-    /**
-     * Reloads config, language file, WhitelistedPlayers (and if on Bungee/Velocity the SpigotServers file).
+     * Reloads maintenance-icon, config, language file, WhitelistedPlayers (and if on Bungee/Velocity the SpigotServers file).
      */
     void reloadConfigs();
 

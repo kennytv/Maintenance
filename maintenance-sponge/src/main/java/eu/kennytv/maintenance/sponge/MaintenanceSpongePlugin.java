@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -44,6 +45,7 @@ import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -51,7 +53,9 @@ import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -69,8 +73,9 @@ import java.util.logging.Logger;
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenancemode.40699/",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
-    private SettingsSponge settings;
+    private Settings settings;
     private Logger logger;
+    private Favicon favicon;
     @Inject private Game game;
     @Inject private PluginContainer container;
     @Inject private Metrics2 metrics;
@@ -87,10 +92,11 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         logger = new LoggerWrapper(container.getLogger());
         sendEnableMessage();
 
-        settings = new SettingsSponge(this);
+        settings = new Settings(this, "spigot-config.yml");
 
         game.getCommandManager().register(this, new MaintenanceSpongeCommand(this, settings), "maintenance", "maintenancesponge");
         final EventManager em = game.getEventManager();
+        em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));
         em.registerListeners(this, new ClientPingServerListener(this, settings));
 
@@ -176,6 +182,17 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     }
 
     @Override
+    public void loadMaintenanceIcon() {
+        try {
+            favicon = game.getRegistry().loadFavicon(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final IOException | IllegalArgumentException e) {
+            logger.warning("§4Could not load 'maintenance-icon.png' - did you create one in your Sponge folder (not the plugins folder)?");
+            if (settings.debugEnabled())
+                e.printStackTrace();
+        }
+    }
+
+    @Override
     public File getDataFolder() {
         return dataFolder;
     }
@@ -208,5 +225,9 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     public Server getServer() {
         return game.getServer();
+    }
+
+    public Favicon getFavicon() {
+        return favicon;
     }
 }

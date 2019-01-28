@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
 import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
+import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
@@ -36,6 +37,7 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -46,7 +48,9 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -58,20 +62,21 @@ import java.util.logging.Logger;
  */
 public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     private final MaintenanceBungeeBase plugin;
-    private final SettingsBungee settings;
+    private final SettingsProxy settings;
+    private Favicon favicon;
 
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.BUNGEE);
         this.plugin = plugin;
         sendEnableMessage();
 
-        settings = new SettingsBungee(this, plugin);
+        settings = new SettingsProxy(this);
 
         final PluginManager pm = getProxy().getPluginManager();
         pm.registerListener(plugin, new PostLoginListener(this, settings));
+        pm.registerListener(plugin, new ProxyPingListener(this, settings));
         pm.registerListener(plugin, new ServerConnectListener(this, settings));
-        final MaintenanceBungeeCommand maintenanceCommand = new MaintenanceBungeeCommand(this, settings);
-        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(maintenanceCommand));
+        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(new MaintenanceBungeeCommand(this, settings)));
 
         new MetricsLite(plugin);
 
@@ -169,6 +174,17 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    public void loadMaintenanceIcon() {
+        try {
+            favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final IOException | IllegalArgumentException e) {
+            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
+            if (settings.debugEnabled())
+                e.printStackTrace();
+        }
+    }
+
+    @Override
     public void async(final Runnable runnable) {
         getProxy().getScheduler().runAsync(plugin, runnable);
     }
@@ -203,12 +219,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         return plugin.getLogger();
     }
 
-    @Override
-    protected SettingsProxy getSettingsProxy() {
-        return settings;
-    }
-
     public ProxyServer getProxy() {
         return plugin.getProxy();
+    }
+
+    public Favicon getFavicon() {
+        return favicon;
     }
 }

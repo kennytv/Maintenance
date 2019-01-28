@@ -21,19 +21,18 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.lib.config.Configuration;
 import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.api.ISettings;
-import eu.kennytv.maintenance.core.listener.IPingListener;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
-public abstract class Settings implements ISettings {
+public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final MaintenanceModePlugin plugin;
+    private final String configName;
     protected boolean maintenance;
-    protected IPingListener pingListener;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
     private String playerCountMessage;
@@ -49,21 +48,24 @@ public abstract class Settings implements ISettings {
     protected Configuration language;
     protected Configuration whitelist;
 
-    protected Settings(final MaintenanceModePlugin plugin) {
+    public Settings(final MaintenanceModePlugin plugin, final String configName) {
         this.plugin = plugin;
+        this.configName = configName;
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
 
-        createFile(getConfigName());
+        createFile(configName);
         createFile("WhitelistedPlayers.yml");
         createExtraFiles();
+
+        reloadConfigs();
     }
 
     @Override
     public void reloadConfigs() {
         try {
             config = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), getConfigName())), StandardCharsets.UTF_8));
+                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), configName)), StandardCharsets.UTF_8));
             whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
             reloadExtraConfigs();
         } catch (final IOException e) {
@@ -81,11 +83,11 @@ public abstract class Settings implements ISettings {
     }
 
     public void saveConfig() {
-        final File file = new File(plugin.getDataFolder(), getConfigName());
+        final File file = new File(plugin.getDataFolder(), configName);
         try {
             YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to save " + getConfigName() + "!", e);
+            throw new RuntimeException("Unable to save " + configName + "!", e);
         }
     }
 
@@ -144,7 +146,7 @@ public abstract class Settings implements ISettings {
         languageName = getConfigString("language").toLowerCase();
         debug = config.getBoolean("debug");
         if (customMaintenanceIcon) {
-            reloadMaintenanceIcon();
+            plugin.loadMaintenanceIcon();
         }
 
         whitelistedPlayers.clear();
@@ -219,11 +221,6 @@ public abstract class Settings implements ISettings {
         if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
         return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
-    }
-
-    @Override
-    public boolean reloadMaintenanceIcon() {
-        return pingListener.loadIcon();
     }
 
     @Override
@@ -334,6 +331,4 @@ public abstract class Settings implements ISettings {
 
     protected void loadExtraSettings() {
     }
-
-    protected abstract String getConfigName();
 }

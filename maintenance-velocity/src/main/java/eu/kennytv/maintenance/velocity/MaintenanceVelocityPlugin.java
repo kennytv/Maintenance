@@ -25,6 +25,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
@@ -34,6 +35,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.util.Favicon;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -45,6 +47,7 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.velocity.command.MaintenanceVelocityCommand;
 import eu.kennytv.maintenance.velocity.listener.PostLoginListener;
+import eu.kennytv.maintenance.velocity.listener.ProxyPingListener;
 import eu.kennytv.maintenance.velocity.listener.ServerConnectListener;
 import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
@@ -54,7 +57,9 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -73,7 +78,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
     private final Logger logger;
     private final File dataFolder;
-    private SettingsVelocity settings;
+    private Favicon favicon;
 
     //TODO Setup Velocity server to test serverconnect
     //TODO getPluginFile
@@ -95,10 +100,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         sendEnableMessage();
         logger.warning("§4The Maintenance plugin under Velocity might still be unstable! Use it with caution and update as soon as a new release is available!");
 
-        settings = new SettingsVelocity(this);
+        settings = new SettingsProxy(this);
 
         server.getCommandManager().register(new MaintenanceVelocityCommand(this, settings), "maintenance", "maintenancevelocity");
         final EventManager em = server.getEventManager();
+        em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settings));
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settings));
         em.register(this, LoginEvent.class, PostOrder.LAST, new PostLoginListener(this, settings));
 
@@ -204,6 +210,17 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    public void loadMaintenanceIcon() {
+        try {
+            favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
+        } catch (final IOException | IllegalArgumentException e) {
+            logger.warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
+            if (settings.debugEnabled())
+                e.printStackTrace();
+        }
+    }
+
+    @Override
     public void async(final Runnable runnable) {
         server.getScheduler().buildTask(this, runnable).schedule();
     }
@@ -232,11 +249,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    protected SettingsProxy getSettingsProxy() {
-        return settings;
-    }
-
-    @Override
     public InputStream getResource(final String name) {
         return this.getClass().getClassLoader().getResourceAsStream(name);
     }
@@ -248,5 +260,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     public ProxyServer getServer() {
         return server;
+    }
+
+    public Favicon getFavicon() {
+        return favicon;
     }
 }
