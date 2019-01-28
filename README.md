@@ -16,7 +16,7 @@ Its features include:
 To get a full list of features (commands, permissions, configuration), visit the **[plugin page](https://www.spigotmc.org/resources/maintenance.40699/)** on the Spigot forums.
 
 This repository is mainly for reporting bugs in the issues section.
-You may only copy the code on a public repository while keeping the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).
+You may only copy the code on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).
 
 ## Issues
 When creating an issue, please include the following information.
