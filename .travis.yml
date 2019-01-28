@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+
+before_install:
+  - ./installServerListPlus.sh
+
+cache:
+  directories:
+    - '$HOME/.m2'

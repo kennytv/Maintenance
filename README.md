@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=v3-travis-integration)](https://travis-ci.org/KennyTV/Maintenance)
+
 This repository is mainly for reporting bugs in the issues section.
 
 To be able to compile the project, you first have to run the `installServerListPlus.sh` in the main directory after pulling.
