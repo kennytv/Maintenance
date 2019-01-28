@@ -53,7 +53,7 @@ public class SuperFantasticClass {
 
     public void doAwesomeStuff() {
         IMaintenance api = MaintenanceBungeeAPI.getAPI();
-        if (api.isMaintenance() && api.isTaskRunning()) {
+        if (!api.isMaintenance() && !api.isTaskRunning()) {
             api.setMaintenance(true);
             System.out.println("No task was running, enabled maintenance mode!");
         }
@@ -76,7 +76,7 @@ public class SuperFantasticClass {
     public void doAwesomestestStuff() {
         IMaintenanceProxy api = MaintenanceBungeeAPI.getAPI();
         Server lobby = api.getServer("Lobby1");
-        if (api.isMaintenance(lobby)) {
+        if (!api.isMaintenance(lobby)) {
             boolean changed = api.setMaintenanceToServer(lobby, true);
             if (changed) {
                 System.out.println("Maintenance on Lobby1 has been enabled!");
