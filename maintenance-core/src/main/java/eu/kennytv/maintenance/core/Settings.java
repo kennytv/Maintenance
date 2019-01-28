@@ -29,8 +29,8 @@ import java.util.*;
 
 public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
+    protected final MaintenanceModePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
-    private final MaintenanceModePlugin plugin;
     private final String configName;
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;

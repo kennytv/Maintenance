@@ -28,23 +28,23 @@ import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import net.kyori.text.TextComponent;
 
-public final class PostLoginListener extends JoinListenerBase implements EventHandler<LoginEvent> {
+public final class LoginListener extends JoinListenerBase implements EventHandler<LoginEvent> {
     private final MaintenanceVelocityPlugin plugin;
 
-    public PostLoginListener(final MaintenanceVelocityPlugin plugin, final Settings settings) {
+    public LoginListener(final MaintenanceVelocityPlugin plugin, final Settings settings) {
         super(plugin, settings);
         this.plugin = plugin;
     }
 
     @Override
     public void execute(final LoginEvent event) {
-        if (handleLogin(new VelocitySenderInfo(event.getPlayer())))
-            event.setResult(ResultedEvent.ComponentResult.denied(TextComponent.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
+        if (handleLogin(new VelocitySenderInfo(event.getPlayer()), false))
+            event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
     }
 
     @Override
     protected void broadcastJoinNotification(final SenderInfo sender) {
-        final TextComponent s = TextComponent.of(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
+        final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
         plugin.getServer().getAllPlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
     }
 }

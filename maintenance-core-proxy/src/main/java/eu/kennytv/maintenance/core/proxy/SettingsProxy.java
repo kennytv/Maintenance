@@ -78,7 +78,7 @@ public final class SettingsProxy extends Settings {
 
     @Override
     protected void reloadExtraConfigs() throws IOException {
-        spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "SpigotServers.yml"));
+        spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(super.plugin.getDataFolder(), "SpigotServers.yml"));
     }
 
     @Override

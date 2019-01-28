@@ -52,6 +52,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -149,7 +150,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     @Override
     public void broadcast(final String message) {
-        getServer().getBroadcastChannel().send(Text.of(message));
+        getServer().getBroadcastChannel().send(translate(message));
     }
 
     @Override
@@ -158,12 +159,12 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         Text text;
         try {
             text = Text.builder(getPrefix())
-                    .append(Text.of("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/ "))
+                    .append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/ "))
                     .append(Text.builder("§7§l§o(CLICK ME)")
                             .onClick(TextActions.openUrl(new URL("https://www.spigotmc.org/resources/maintenancemode.40699/")))
-                            .onHover(TextActions.showText(Text.of("§aDownload the latest version"))).build()).build();
+                            .onHover(TextActions.showText(translate("§7§l§o(CLICK ME)"))).build()).build();
         } catch (final MalformedURLException e) {
-            text = Text.of("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+            text = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
             e.printStackTrace();
         }
         ((SpongeSenderInfo) sender).sendMessage(text);
@@ -229,5 +230,9 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
 
     public Favicon getFavicon() {
         return favicon;
+    }
+
+    public Text translate(final String s) {
+        return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(s);
     }
 }

@@ -55,7 +55,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
 
     @Override
     public boolean hasPermission(final CommandSource source, final @NonNull String[] args) {
-        return source.hasPermission("maintenance.command");
+        return true;
     }
 
     @Override
@@ -64,10 +64,10 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the proxy to prevent further issues and to complete the update!" +
                     " If you can't do that, don't update!");
-            final TextComponent tc = TextComponent.of("§6× §8[§aUpdate§8]");
+            final TextComponent tc = plugin.translate("§6× §8[§aUpdate§8]");
             tc.clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"));
-            tc.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("§aClick here to update the plugin")));
-            tc.append(TextComponent.of(" §8< §7Or use the command §c/maintenance forceupdate"));
+            tc.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to update the plugin")));
+            tc.append(plugin.translate(" §8< §7Or use the command §c/maintenance forceupdate"));
             ((VelocitySenderInfo) sender).sendMessage(tc);
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");

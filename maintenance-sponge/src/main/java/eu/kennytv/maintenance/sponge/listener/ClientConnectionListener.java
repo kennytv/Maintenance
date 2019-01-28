@@ -26,8 +26,8 @@ import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 public final class ClientConnectionListener extends JoinListenerBase {
 
@@ -45,7 +45,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
 
     @Override
     protected void broadcastJoinNotification(final SenderInfo sender) {
-        final LiteralText s = Text.of(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
-        Sponge.getServer().getOnlinePlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
+        final Text text = TextSerializers.LEGACY_FORMATTING_CODE.deserialize(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
+        Sponge.getServer().getOnlinePlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(text));
     }
 }

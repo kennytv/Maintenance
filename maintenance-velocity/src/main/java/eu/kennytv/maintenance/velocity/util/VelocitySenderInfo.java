@@ -22,6 +22,7 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import net.kyori.text.TextComponent;
+import net.kyori.text.serializer.ComponentSerializers;
 
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public final class VelocitySenderInfo implements SenderInfo {
 
     @Override
     public void sendMessage(final String message) {
-        sender.sendMessage(TextComponent.of(message));
+        sender.sendMessage(ComponentSerializers.LEGACY.deserialize(message));
     }
 
     @Override

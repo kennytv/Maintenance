@@ -46,7 +46,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.velocity.command.MaintenanceVelocityCommand;
-import eu.kennytv.maintenance.velocity.listener.PostLoginListener;
+import eu.kennytv.maintenance.velocity.listener.LoginListener;
 import eu.kennytv.maintenance.velocity.listener.ProxyPingListener;
 import eu.kennytv.maintenance.velocity.listener.ServerConnectListener;
 import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
@@ -56,6 +56,7 @@ import eu.kennytv.maintenance.velocity.util.VelocityTask;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.serializer.ComponentSerializers;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -106,7 +107,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settings));
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settings));
-        em.register(this, LoginEvent.class, PostOrder.LAST, new PostLoginListener(this, settings));
+        em.register(this, LoginEvent.class, PostOrder.LAST, new LoginListener(this, settings));
 
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
@@ -154,7 +155,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             serverInfo.getPlayersConnected().forEach(p -> {
                 if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                     if (fallback.isPresent()) {
-                        p.sendMessage(TextComponent.of(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
+                        p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
                         // Kick the player if fallback server is not reachable
                         p.createConnectionRequest(fallback.get()).connect().whenComplete((result, e) -> {
                             if (result.getStatus() != ConnectionRequestBuilder.Status.SUCCESS)
@@ -162,19 +163,19 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                         });
                     }
                 } else {
-                    p.sendMessage(TextComponent.of(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
+                    p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
                 }
             });
         } else
-            serverInfo.getPlayersConnected().forEach(p -> p.sendMessage(TextComponent.of(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()))));
+            serverInfo.getPlayersConnected().forEach(p -> p.sendMessage(translate(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()))));
     }
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
-        final TextComponent tc1 = TextComponent.of(getPrefix());
-        final TextComponent tc2 = TextComponent.of("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
-        final TextComponent click = TextComponent.of(" §7§l§o(CLICK ME)");
+        final TextComponent tc1 = translate(getPrefix());
+        final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+        final TextComponent click = translate(" §7§l§o(CLICK ME)");
         click.clickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
         click.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("§aDownload the latest version")));
         tc1.append(tc2);
@@ -227,7 +228,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void broadcast(final String message) {
-        server.broadcast(TextComponent.of(message));
+        server.broadcast(translate(message));
         logger.info(message);
     }
 
@@ -264,5 +265,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     public Favicon getFavicon() {
         return favicon;
+    }
+
+    public TextComponent translate(final String s) {
+        return ComponentSerializers.LEGACY.deserialize(s);
     }
 }
