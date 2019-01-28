@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 
 before_install:
-  - ./installServerListPlus.sh
+  - ./installServerListPlus.sh skip-input
 
 cache:
   directories:
