@@ -11,7 +11,7 @@ Its features include:
 * A '%TIMER%' variable usable in the pingmessage, to show the time until a running endtimer finishes (other variables and tricks are explained in the configuration file's comments)
 * A maintenance whitelist, to grant specific players the ability to join while you're working on your server
 * Nearly all messages are editable via the language file, given in a multitude of different languages, and the maintenance motd can be edited via ingame commands, so you won't have to go to the config every time
-* Running on BungeeCord/Velocity but only want to enable maintenance on a single server? You can also do so by using the '/maintenance <on/off> <servername>' command
+* Running on BungeeCord/Velocity but only want to enable maintenance on a single server? You can also do so by using the '/maintenance <on/off> \<servername>' command
 
 To get a full list of features (commands, permissions, configuration), visit the **[plugin page](https://www.spigotmc.org/resources/maintenance.40699/)** on the Spigot forums.
 
@@ -34,9 +34,9 @@ To be able to compile the project, you first have to run the `installServerListP
 Then compile the project with maven (by using `mvn clean package` in your IDE console).
 
 ## API
-There's maven repo, yet, but you can manually add the Maintenance-API.jar to your library (it can be downloaded **[here](https://github.com/KennyTV/Maintenance/raw/master/Maintenance-API.jar)**).
+There's maven repo, yet, but you can manually add the MaintenanceAPI.jar to your library (it can be downloaded **[here](https://github.com/KennyTV/Maintenance/raw/master/MaintenanceAPI.jar)**).
 
-A rough documentation can be found **[in the api directory](https://github.com/KennyTV/Maintenance/tree/master/Maintenance-API/src/main/java/eu/kennytv/maintenance/api)**.
+A rough documentation can be found **[in the api directory](https://github.com/KennyTV/Maintenance/tree/master/maintenance-api/src/main/java/eu/kennytv/maintenance/api)**.
 Examples could be:
 ```
 package eu.kennytv.fantasticplugin;
@@ -77,6 +77,7 @@ public class SuperFantasticClass {
         IMaintenanceProxy api = MaintenanceBungeeAPI.getAPI();
         Server lobby = api.getServer("Lobby1");
         if (!api.isMaintenance(lobby)) {
+            // The 'changed' boolean obviously always be true, see the check one line above.
             boolean changed = api.setMaintenanceToServer(lobby, true);
             if (changed) {
                 System.out.println("Maintenance on Lobby1 has been enabled!");
