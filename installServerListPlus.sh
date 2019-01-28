@@ -10,7 +10,6 @@ exit 1
 }
 
 echo -e "\e[32mServerListPlus version ${VERSION}\e[0m"
-read -p $'\e[32mpress \e[5m[Enter] \e[25mto start Downloading...\e[0m'
 echo -e $'\e[32mDownloading...\e[0m'
 wget -O $FILENAME $URL
 
