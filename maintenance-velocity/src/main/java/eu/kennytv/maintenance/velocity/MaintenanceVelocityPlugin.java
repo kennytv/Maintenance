@@ -81,13 +81,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final File dataFolder;
     private Favicon favicon;
 
-    //TODO Setup Velocity server to test serverconnect
-    //TODO getPluginFile
-    //TODO TEST EVERYTHIIIING
-    //ping, kickmessage, icon
-    //timer
-    //what if no fallback is set
-
     @Inject
     public MaintenanceVelocityPlugin(final ProxyServer server, final org.slf4j.Logger logger, @DataDirectory final Path folder) {
         super(MaintenanceVersion.VERSION, ServerType.VELOCITY);
@@ -99,7 +92,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Subscribe
     public void onEnable(final ProxyInitializeEvent event) {
         sendEnableMessage();
-        logger.warning("§4The Maintenance plugin under Velocity might still be unstable! Use it with caution and update as soon as a new release is available!");
 
         settings = new SettingsProxy(this);
 
@@ -122,11 +114,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         settings.reloadConfigs();
         logger.info("Reloaded config files!");
     }
-
-    /*@Deprecated
-    public static IMaintenanceProxy getAPI() {
-        return MaintenanceVelocityAPI.getAPI();
-    }*/
 
     @Override
     protected void serverActions(final boolean maintenance) {
@@ -158,7 +145,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                         p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
                         // Kick the player if fallback server is not reachable
                         p.createConnectionRequest(fallback.get()).connect().whenComplete((result, e) -> {
-                            if (result.getStatus() != ConnectionRequestBuilder.Status.SUCCESS)
+                            if (!result.isSuccessful())
                                 p.disconnect(TextComponent.of(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", serverInfo.getServerInfo().getName())));
                         });
                     }
@@ -215,7 +202,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         try {
             favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
         } catch (final IOException | IllegalArgumentException e) {
-            logger.warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
+            logger.warning("§4Could not load 'maintenance-icon.png' - did you create one in your Velocity folder (not the plugins folder)?");
             if (settings.debugEnabled())
                 e.printStackTrace();
         }
@@ -244,9 +231,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public File getPluginFile() {
-        //final Optional<Path> source = container.getSource();
-        //return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));
-        return null;
+        return server.getPluginManager().getPlugin("maintenancevelocity")
+                .orElseThrow(() -> new IllegalArgumentException("Couldn't get Maintenance instance. Custom/broken build?")).getDescription().getSource()
+                .orElseThrow(IllegalArgumentException::new).toFile();
     }
 
     @Override

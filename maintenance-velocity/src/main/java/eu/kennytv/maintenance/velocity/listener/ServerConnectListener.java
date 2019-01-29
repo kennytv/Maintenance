@@ -68,8 +68,9 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
                 warned = true;
             }
         } else {
-            if (player.createConnectionRequest(fallback.get()).connect().isCompletedExceptionally())
-                disconnect(player, target);
+            player.createConnectionRequest(fallback.get()).connect().whenComplete((result, throwable) -> {
+                if (!result.isSuccessful()) disconnect(player, target);
+            });
         }
     }
 
