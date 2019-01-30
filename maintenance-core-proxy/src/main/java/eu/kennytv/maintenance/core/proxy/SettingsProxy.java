@@ -51,14 +51,11 @@ public final class SettingsProxy extends Settings {
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
         super(plugin, "bungee-config.yml");
         this.plugin = plugin;
-        setupMySQL();
     }
 
-    private void setupMySQL() {
-        final Configuration mySQLSection = config.getSection("mysql");
-        if (!mySQLSection.getBoolean("use-mysql", false)) return;
-
+    private void setupMySQL() throws Exception {
         plugin.getLogger().info("Trying to open database connection...");
+        final Configuration mySQLSection = config.getSection("mysql");
         mySQL = new MySQL(mySQLSection.getString("host"),
                 mySQLSection.getInt("port"),
                 mySQLSection.getString("username"),
@@ -72,7 +69,6 @@ public final class SettingsProxy extends Settings {
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
         maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
         serverQuery = "SELECT * FROM " + serverTable;
-        maintenance = loadMaintenance();
         plugin.getLogger().info("Done!");
     }
 
@@ -98,14 +94,27 @@ public final class SettingsProxy extends Settings {
 
     @Override
     protected void loadExtraSettings() {
+        // Open database connection if enabledand not already done
+        if (mySQL == null && config.getBoolean("mysql.use-mysql")) {
+            try {
+                setupMySQL();
+            } catch (final Exception e) {
+                mySQL = null;
+                plugin.getLogger().warning("Error while trying do open database connection!");
+                e.printStackTrace();
+            }
+        }
+
         fallbackServer = spigotServers.getString("fallback", "hub");
         if (mySQL != null) {
+            maintenanceServers = loadMaintenanceServersFromSQL();
+            maintenance = loadMaintenance();
+
             final long configValue = config.getInt("mysql.update-interval");
             // Even if set to 0, only check every 500 millis
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : 500;
             lastMySQLCheck = 0;
             lastServerCheck = 0;
-            maintenanceServers = loadMaintenanceServersFromSQL();
         } else {
             final List<String> list = spigotServers.getStringList("maintenance-on");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
