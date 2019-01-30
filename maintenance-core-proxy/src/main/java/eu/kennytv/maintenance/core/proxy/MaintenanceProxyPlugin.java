@@ -48,7 +48,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
             settings.setMaintenanceToSQL(maintenance);
         } else {
             settings.setMaintenance(maintenance);
-            settings.getConfig().set("enable-maintenance-mode", maintenance);
+            settings.getConfig().set("maintenance-enabled", maintenance);
             settings.saveConfig();
         }
 

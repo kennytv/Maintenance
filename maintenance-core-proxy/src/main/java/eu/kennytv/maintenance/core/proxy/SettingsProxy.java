@@ -94,7 +94,7 @@ public final class SettingsProxy extends Settings {
 
     @Override
     protected void loadExtraSettings() {
-        // Open database connection if enabledand not already done
+        // Open database connection if enabled and not already done
         if (mySQL == null && config.getBoolean("mysql.use-mysql")) {
             try {
                 setupMySQL();
@@ -107,8 +107,8 @@ public final class SettingsProxy extends Settings {
 
         fallbackServer = spigotServers.getString("fallback", "hub");
         if (mySQL != null) {
-            maintenanceServers = loadMaintenanceServersFromSQL();
             maintenance = loadMaintenance();
+            maintenanceServers = loadMaintenanceServersFromSQL();
 
             final long configValue = config.getInt("mysql.update-interval");
             // Even if set to 0, only check every 500 millis

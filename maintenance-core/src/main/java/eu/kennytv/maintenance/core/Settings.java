@@ -135,7 +135,7 @@ public class Settings implements ISettings {
         updateConfig();
 
         pingMessages = config.getStringList("pingmessages");
-        maintenance = config.getBoolean("enable-maintenance-mode");
+        maintenance = config.getBoolean("maintenance-enabled");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");

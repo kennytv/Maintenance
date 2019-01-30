@@ -98,7 +98,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.getConfig().set("enable-maintenance-mode", maintenance);
+        settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
 
         if (isTaskRunning())
@@ -157,17 +157,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void loadMaintenanceIcon() {
-        try {
-            favicon = plugin.getServer().loadServerIcon(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final Exception e) {
-            plugin.getLogger().warning("Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
-            if (settings.debugEnabled())
-                e.printStackTrace();
-        }
-    }
-
-    @Override
     public File getDataFolder() {
         return plugin.getDataFolder();
     }
@@ -195,6 +184,11 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
+    }
+
+    @Override
+    protected void loadIcon(final File file) throws Exception {
+        favicon = plugin.getServer().loadServerIcon(ImageIO.read(file));
     }
 
     public Server getServer() {

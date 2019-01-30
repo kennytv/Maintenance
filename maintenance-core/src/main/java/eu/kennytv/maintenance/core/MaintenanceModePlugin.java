@@ -126,6 +126,21 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         }
     }
 
+    public void loadMaintenanceIcon() {
+        final File file = new File(getDataFolder(), "maintenance-icon.png");
+        if (!file.exists()) {
+            getLogger().warning("§4Could not find a 'maintenance-icon.png' file - did you create one in the plugin's folder?");
+            return;
+        }
+
+        try {
+            loadIcon(file);
+        } catch (final Exception e) {
+            getLogger().warning("§4Could not load the 'maintenance-icon.png' file!");
+            e.printStackTrace();
+        }
+    }
+
     public void cancelTask() {
         task.cancel();
         runnable = null;
@@ -173,13 +188,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
 
-    public abstract void loadMaintenanceIcon();
-
     public abstract File getDataFolder();
 
     public abstract InputStream getResource(String name);
 
     public abstract Logger getLogger();
+
+    protected abstract void loadIcon(File file) throws Exception;
 
     protected abstract Task startMaintenanceRunnable(Runnable runnable);
 

@@ -3,19 +3,21 @@
 # Also, configs are cool, which means after the first plugin save, all comments will vanish.
 # To still know what each field is for, check https://gist.github.com/KennyTV/a73f2aed1e278d4c927f9f6a3ef9fde2#file-spigot-config-yml
 
-# Enables maintenance-mode.
-enable-maintenance-mode: false
+# Enables maintenance mode.
+maintenance-enabled: false
 
 # The message shown in the multiplayer server list motd.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
+# If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage.
 pingmessages:
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
  #- "Another entry"
 
-# If set to true, the message below will be shown at the top right corner of the server in the serverlist,
-# where the playercount would normally be displayed.
+# If set to true, the message below will be shown at the top right corner of the server in the serverlist,where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.
-# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message (e.g. '&cMaintenance &7%ONLINE%&8/&7%MAX%').
+#
+# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message.
+# (E.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
 enable-playercountmessage: true
 playercountmessage: "&4Maintenance"
 
@@ -33,7 +35,7 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 # that a player tried to join the server while maintenance is enabled.
 send-join-notification: false
 
-# If set to true, the server icon will be changed to maintenance-icon.png in the Bungee main/base-folder.
+# If set to true, the server icon will be changed to maintenance-icon.png in the plugin's folder.
 custom-maintenance-icon: false
 
 # Changes the language of command feedback/messages.

@@ -123,7 +123,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.getConfig().set("enable-maintenance-mode", maintenance);
+        settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
         if (serverListPlusHook != null)
             serverListPlusHook.setEnabled(!maintenance);
@@ -183,17 +183,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void loadMaintenanceIcon() {
-        try {
-            favicon = game.getRegistry().loadFavicon(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final IOException | IllegalArgumentException e) {
-            logger.warning("§4Could not load 'maintenance-icon.png' - did you create one in your Sponge folder (not the plugins folder)?");
-            if (settings.debugEnabled())
-                e.printStackTrace();
-        }
-    }
-
-    @Override
     public File getDataFolder() {
         return dataFolder;
     }
@@ -222,6 +211,11 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    protected void loadIcon(final File file) throws IOException {
+        favicon = game.getRegistry().loadFavicon(ImageIO.read(file));
     }
 
     public Server getServer() {

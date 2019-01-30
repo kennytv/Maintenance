@@ -174,17 +174,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public void loadMaintenanceIcon() {
-        try {
-            favicon = Favicon.create(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final IOException | IllegalArgumentException e) {
-            plugin.getLogger().warning("§4Could not load 'maintenance-icon.png' - did you create one in your Bungee folder (not the plugins folder)?");
-            if (settings.debugEnabled())
-                e.printStackTrace();
-        }
-    }
-
-    @Override
     public void async(final Runnable runnable) {
         getProxy().getScheduler().runAsync(plugin, runnable);
     }
@@ -217,6 +206,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
+    }
+
+    @Override
+    protected void loadIcon(final File file) throws IOException {
+        favicon = Favicon.create(ImageIO.read(file));
     }
 
     public ProxyServer getProxy() {
