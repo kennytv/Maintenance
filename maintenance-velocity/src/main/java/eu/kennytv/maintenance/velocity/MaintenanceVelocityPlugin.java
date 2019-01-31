@@ -115,48 +115,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    protected void serverActions(final boolean maintenance) {
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
-
-        if (maintenance) {
-            server.getAllPlayers().stream()
-                    .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                    .forEach(p -> p.disconnect(TextComponent.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
-            broadcast(settings.getMessage("maintenanceDeactivated"));
-    }
-
-    @Override
-    protected void serverActions(final Server server, final boolean maintenance) {
-        final RegisteredServer serverInfo = ((VelocityServer) server).getServer();
-        if (maintenance) {
-            final Optional<RegisteredServer> fallback = this.server.getServer(settings.getFallbackServer());
-            if (!fallback.isPresent()) {
-                if (!serverInfo.getPlayersConnected().isEmpty())
-                    logger.warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
-            } else if (fallback.get().getServerInfo().equals(serverInfo.getServerInfo()))
-                logger.warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
-            serverInfo.getPlayersConnected().forEach(p -> {
-                if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    if (fallback.isPresent()) {
-                        p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
-                        // Kick the player if fallback server is not reachable
-                        p.createConnectionRequest(fallback.get()).connect().whenComplete((result, e) -> {
-                            if (!result.isSuccessful())
-                                p.disconnect(TextComponent.of(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", serverInfo.getServerInfo().getName())));
-                        });
-                    }
-                } else {
-                    p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getServerInfo().getName())));
-                }
-            });
-        } else
-            serverInfo.getPlayersConnected().forEach(p -> p.sendMessage(translate(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()))));
-    }
-
-    @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = translate(getPrefix());
@@ -171,6 +129,32 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
         return settings.getMaintenanceServers().contains(serverInfo.getName());
+    }
+
+    @Override
+    protected void kickPlayers() {
+        server.getAllPlayers().stream()
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.disconnect(TextComponent.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
+    }
+
+    @Override
+    protected void kickPlayers(final Server server, final Server fallback) {
+        final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
+        ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
+            if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                if (fallbackServer != null) {
+                    p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+                    // Kick the player if fallback server is not reachable
+                    p.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
+                        if (!result.isSuccessful())
+                            p.disconnect(TextComponent.of(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                    });
+                }
+            } else {
+                p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+            }
+        });
     }
 
     @Override

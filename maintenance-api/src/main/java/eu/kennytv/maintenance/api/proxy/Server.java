@@ -19,7 +19,7 @@
 package eu.kennytv.maintenance.api.proxy;
 
 /**
- * Wrapper class for a proxied server.
+ * Wrapper for a proxied server.
  * Use {@link IMaintenanceProxy#getServer(String)} to get a server instance.
  *
  * @author KennyTV
@@ -31,4 +31,16 @@ public interface Server {
      * @return name of the server
      */
     String getName();
+
+    /**
+     * @return true if there are players on the server
+     */
+    boolean hasPlayers();
+
+    /**
+     * Sends a message to all players on the server.
+     *
+     * @param message message to be broadcasted
+     */
+    void broadcast(String message);
 }

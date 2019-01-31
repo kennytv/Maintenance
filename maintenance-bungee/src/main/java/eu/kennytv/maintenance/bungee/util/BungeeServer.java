@@ -19,6 +19,8 @@
 package eu.kennytv.maintenance.bungee.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public final class BungeeServer implements Server {
@@ -31,6 +33,17 @@ public final class BungeeServer implements Server {
     @Override
     public String getName() {
         return server.getName();
+    }
+
+    @Override
+    public boolean hasPlayers() {
+        return !server.getPlayers().isEmpty();
+    }
+
+    @Override
+    public void broadcast(final String message) {
+        final BaseComponent[] s = TextComponent.fromLegacyText(message);
+        server.getPlayers().forEach(p -> p.sendMessage(s));
     }
 
     public ServerInfo getServer() {

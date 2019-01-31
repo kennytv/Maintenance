@@ -196,6 +196,8 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     protected abstract void loadIcon(File file) throws Exception;
 
+    protected abstract void kickPlayers();
+
     protected abstract Task startMaintenanceRunnable(Runnable runnable);
 
     protected abstract File getPluginFile();

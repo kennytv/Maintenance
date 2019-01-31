@@ -95,45 +95,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    protected void serverActions(final boolean maintenance) {
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
-
-        if (maintenance) {
-            getProxy().getPlayers().stream()
-                    .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                    .forEach(p -> p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n")));
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
-            broadcast(settings.getMessage("maintenanceDeactivated"));
-    }
-
-    @Override
-    protected void serverActions(final Server server, final boolean maintenance) {
-        final ServerInfo serverInfo = ((BungeeServer) server).getServer();
-        if (maintenance) {
-            final ServerInfo fallback = getProxy().getServerInfo(settings.getFallbackServer());
-            if (fallback == null) {
-                if (!serverInfo.getPlayers().isEmpty())
-                    plugin.getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
-            } else if (fallback.equals(serverInfo))
-                plugin.getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
-            serverInfo.getPlayers().forEach(p -> {
-                if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                    if (fallback != null && fallback.canAccess(p)) {
-                        p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getName()));
-                        p.connect(fallback);
-                    } else
-                        p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", serverInfo.getName()));
-                } else {
-                    p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", serverInfo.getName()));
-                }
-            });
-        } else
-            serverInfo.getPlayers().forEach(p -> p.sendMessage(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName())));
-    }
-
-    @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
@@ -148,6 +109,29 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
         return settings.getMaintenanceServers().contains(serverInfo.getName());
+    }
+
+    @Override
+    protected void kickPlayers() {
+        getProxy().getPlayers().stream()
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n")));
+    }
+
+    @Override
+    protected void kickPlayers(final Server server, final Server fallback) {
+        final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
+        ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
+            if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                if (fallbackServer != null && fallbackServer.canAccess(p)) {
+                    p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+                    p.connect(fallbackServer);
+                } else
+                    p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
+            } else {
+                p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+            }
+        });
     }
 
     @Override

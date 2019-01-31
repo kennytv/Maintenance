@@ -53,8 +53,19 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         }
 
         serverActions(maintenance);
+    }
+
+    public void serverActions(final boolean maintenance) {
         if (isTaskRunning())
             cancelTask();
+        if (serverListPlusHook != null)
+            serverListPlusHook.setEnabled(!maintenance);
+
+        if (maintenance) {
+            kickPlayers();
+            broadcast(settings.getMessage("maintenanceActivated"));
+        } else
+            broadcast(settings.getMessage("maintenanceDeactivated"));
     }
 
     @Override
@@ -70,8 +81,21 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
             if (!settings.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
-        cancelSingleTask(server);
         return true;
+    }
+
+    public void serverActions(final Server server, final boolean maintenance) {
+        if (maintenance) {
+            final Server fallback = getServer(settings.getFallbackServer());
+            if (fallback == null) {
+                if (!server.hasPlayers())
+                    getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
+            } else if (fallback.getName().equals(server.getName()))
+                getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
+            kickPlayers(server, fallback);
+        } else
+            server.broadcast(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+        cancelSingleTask(server);
     }
 
     @Override
@@ -96,7 +120,5 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         return runnable;
     }
 
-    protected abstract void serverActions(boolean maintenance);
-
-    protected abstract void serverActions(Server server, boolean maintenance);
+    protected abstract void kickPlayers(Server server, Server fallback);
 }
