@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
-import eu.kennytv.maintenance.core.util.PlayerInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -69,7 +68,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     }
 
     @Override
-    protected String getServer(final PlayerInfo sender) {
+    protected String getServer(final SenderInfo sender) {
         final ProxiedPlayer player = plugin.getProxy().getPlayer(sender.getUuid());
         return player != null ? player.getServer().getInfo().getName() : "";
     }
