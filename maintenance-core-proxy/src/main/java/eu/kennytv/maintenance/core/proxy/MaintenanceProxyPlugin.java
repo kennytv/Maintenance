@@ -90,11 +90,6 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         return serverTasks.containsKey(server.getName());
     }
 
-    @Override
-    protected String getPluginFolder() {
-        return "plugins/";
-    }
-
     public void cancelSingleTask(final Server server) {
         final Task task = serverTasks.remove(server.getName());
         if (task != null)

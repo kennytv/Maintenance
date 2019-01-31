@@ -199,6 +199,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         return serverType;
     }
 
+    protected String getPluginFolder() {
+        return "plugins/";
+    }
+
     public abstract void async(Runnable runnable);
 
     public abstract void broadcast(String message);
@@ -222,6 +226,4 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     protected abstract Task startMaintenanceRunnable(Runnable runnable);
 
     protected abstract File getPluginFile();
-
-    protected abstract String getPluginFolder();
 }
