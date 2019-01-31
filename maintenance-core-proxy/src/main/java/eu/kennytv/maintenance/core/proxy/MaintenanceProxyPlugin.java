@@ -55,19 +55,6 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         serverActions(maintenance);
     }
 
-    public void serverActions(final boolean maintenance) {
-        if (isTaskRunning())
-            cancelTask();
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
-
-        if (maintenance) {
-            kickPlayers();
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
-            broadcast(settings.getMessage("maintenanceDeactivated"));
-    }
-
     @Override
     public boolean isMaintenance(final Server server) {
         return settings.isMaintenance(server);

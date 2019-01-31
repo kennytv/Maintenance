@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
     protected final Version version;
+    protected Settings settings;
     protected ServerListPlusHook serverListPlusHook;
     protected MaintenanceRunnable runnable;
     private final String prefix;
@@ -49,6 +50,26 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         checkNewestVersion();
     }
 
+    public void setMaintenance(final boolean maintenance) {
+        settings.setMaintenance(maintenance);
+        settings.getConfig().set("maintenance-enabled", maintenance);
+        settings.saveConfig();
+        serverActions(maintenance);
+    }
+
+    public void serverActions(final boolean maintenance) {
+        if (isTaskRunning())
+            cancelTask();
+        if (serverListPlusHook != null)
+            serverListPlusHook.setEnabled(!maintenance);
+
+        if (maintenance) {
+            kickPlayers();
+            broadcast(settings.getMessage("maintenanceActivated"));
+        } else
+            broadcast(settings.getMessage("maintenanceDeactivated"));
+    }
+
     public String formatedTimer() {
         if (!isTaskRunning()) return "-";
         final int preHours = runnable.getSecondsLeft() / 60;
@@ -58,7 +79,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     }
 
     public void startMaintenanceRunnable(final int minutes, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, (Settings) getSettings(), minutes, enable);
+        runnable = new MaintenanceRunnable(this, settings, minutes, enable);
         task = startMaintenanceRunnable(runnable);
     }
 
@@ -149,7 +170,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
 
     @Override
     public boolean isMaintenance() {
-        return getSettings().isMaintenance();
+        return settings.isMaintenance();
     }
 
     @Override

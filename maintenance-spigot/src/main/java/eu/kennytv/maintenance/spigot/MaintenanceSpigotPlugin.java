@@ -58,7 +58,6 @@ import java.util.logging.Logger;
  */
 public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     private final MaintenanceSpigotBase plugin;
-    private final Settings settings;
     private CachedServerIcon favicon;
 
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
@@ -93,27 +92,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Deprecated
     public static IMaintenance getAPI() {
         return MaintenanceSpigotAPI.getAPI();
-    }
-
-    @Override
-    public void setMaintenance(final boolean maintenance) {
-        settings.setMaintenance(maintenance);
-        settings.getConfig().set("maintenance-enabled", maintenance);
-        settings.saveConfig();
-
-        if (isTaskRunning())
-            cancelTask();
-
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
-
-        if (maintenance) {
-            getServer().getOnlinePlayers().stream()
-                    .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                    .forEach(p -> p.kickPlayer(settings.getKickMessage().replace("%NEWLINE%", "\n")));
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
-            broadcast(settings.getMessage("maintenanceDeactivated"));
     }
 
     @Override
@@ -154,6 +132,13 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
         return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
+    }
+
+    @Override
+    protected void kickPlayers() {
+        getServer().getOnlinePlayers().stream()
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.kickPlayer(settings.getKickMessage().replace("%NEWLINE%", "\n")));
     }
 
     @Override

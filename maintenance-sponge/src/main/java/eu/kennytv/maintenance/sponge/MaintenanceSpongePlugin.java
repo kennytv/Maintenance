@@ -74,7 +74,6 @@ import java.util.logging.Logger;
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenancemode.40699/",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
-    private Settings settings;
     private Logger logger;
     private Favicon favicon;
     @Inject private Game game;
@@ -121,24 +120,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     }
 
     @Override
-    public void setMaintenance(final boolean maintenance) {
-        settings.setMaintenance(maintenance);
-        settings.getConfig().set("maintenance-enabled", maintenance);
-        settings.saveConfig();
-        if (serverListPlusHook != null)
-            serverListPlusHook.setEnabled(!maintenance);
-        if (isTaskRunning())
-            cancelTask();
-        if (maintenance) {
-            getServer().getOnlinePlayers().stream()
-                    .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                    .forEach(p -> p.kick(Text.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
-            broadcast(settings.getMessage("maintenanceDeactivated"));
-    }
-
-    @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
         return new SpongeTask(game.getScheduler().createTaskBuilder().execute(runnable).interval(1, TimeUnit.SECONDS).submit(this));
     }
@@ -180,6 +161,13 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
         return userStorage.get(uuid).map(SpongeOfflinePlayerInfo::new).orElse(null);
+    }
+
+    @Override
+    protected void kickPlayers() {
+        getServer().getOnlinePlayers().stream()
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.kick(Text.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
     }
 
     @Override
