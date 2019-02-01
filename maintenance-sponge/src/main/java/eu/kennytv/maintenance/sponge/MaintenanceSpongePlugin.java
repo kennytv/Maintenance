@@ -20,7 +20,6 @@ package eu.kennytv.maintenance.sponge;
 
 import com.google.inject.Inject;
 import eu.kennytv.maintenance.api.IMaintenance;
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -176,11 +175,6 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public File getDataFolder() {
         return dataFolder;
-    }
-
-    @Override
-    public ISettings getSettings() {
-        return settings;
     }
 
     @Override

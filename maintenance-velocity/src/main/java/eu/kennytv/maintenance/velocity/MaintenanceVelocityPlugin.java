@@ -35,7 +35,6 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.util.Favicon;
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -198,11 +197,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public File getDataFolder() {
         return dataFolder;
-    }
-
-    @Override
-    public ISettings getSettings() {
-        return settingsProxy;
     }
 
     @Override

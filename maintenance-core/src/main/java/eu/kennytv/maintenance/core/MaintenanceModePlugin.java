@@ -22,6 +22,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.dump.MaintenanceDump;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -228,6 +229,11 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     @Override
     public boolean isTaskRunning() {
         return task != null && runnable != null;
+    }
+
+    @Override
+    public ISettings getSettings() {
+        return settings;
     }
 
     @Override

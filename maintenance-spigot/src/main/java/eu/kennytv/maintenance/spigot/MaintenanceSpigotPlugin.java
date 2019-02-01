@@ -19,7 +19,6 @@
 package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -148,11 +147,6 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public File getDataFolder() {
         return plugin.getDataFolder();
-    }
-
-    @Override
-    public ISettings getSettings() {
-        return settings;
     }
 
     @Override

@@ -18,7 +18,6 @@
 
 package eu.kennytv.maintenance.bungee;
 
-import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.bungee.MaintenanceBungeeAPI;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
@@ -174,11 +173,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public File getDataFolder() {
         return plugin.getDataFolder();
-    }
-
-    @Override
-    public ISettings getSettings() {
-        return settingsProxy;
     }
 
     @Override

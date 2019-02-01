@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public abstract class MaintenanceCommand {
@@ -30,6 +31,7 @@ public abstract class MaintenanceCommand {
     protected final Settings settings;
     private final List<CommandInfo> commandInfos = new ArrayList<>();
     private final Map<String, CommandInfo> tabCompleters = new LinkedHashMap<>();
+    private long lastDump;
 
     protected MaintenanceCommand(final MaintenanceModePlugin plugin, final Settings settings) {
         this.plugin = plugin;
@@ -177,7 +179,14 @@ public abstract class MaintenanceCommand {
                 showMaintenanceStatus(sender);
             } else if (firstArg.equals("dump")) {
                 if (checkPermission(sender, "admin")) return;
+                if (System.currentTimeMillis() - lastDump < TimeUnit.MINUTES.toMillis(5)) {
+                    sender.sendMessage(plugin.getPrefix() + "§cYou can only create a dump every 5 minutes!");
+                    return;
+                }
+
+                lastDump = System.currentTimeMillis();
                 plugin.async(() -> {
+                    sender.sendMessage(plugin.getPrefix() + "§7The dump is being created, this might take a moment.");
                     final String key = plugin.pasteDump();
                     if (key == null) {
                         if (sender.isPlayer())
