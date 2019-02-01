@@ -74,6 +74,17 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
+    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+        sender.sendMessage(plugin.getPrefix() + "§c" + url);
+        if (sender.isPlayer()) {
+            final TextComponent clickText = plugin.translate(plugin.getPrefix() + "§7Click here to copy the link)");
+            clickText.clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
+            clickText.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to copy the link")));
+            ((VelocitySenderInfo) sender).sendMessage(clickText);
+        }
+    }
+
+    @Override
     protected List<String> getServersCompletion(final String s) {
         return plugin.getServer().getAllServers().stream().filter(server -> server.getServerInfo().getName().toLowerCase().startsWith(s))
                 .filter(server -> !plugin.isMaintenance(server.getServerInfo())).map(server -> server.getServerInfo().getName()).collect(Collectors.toList());

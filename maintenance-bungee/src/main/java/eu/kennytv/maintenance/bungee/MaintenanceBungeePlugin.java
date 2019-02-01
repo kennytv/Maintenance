@@ -31,6 +31,7 @@ import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.bungee.util.BungeeServer;
 import eu.kennytv.maintenance.bungee.util.BungeeTask;
+import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
@@ -52,9 +53,12 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author KennyTV
@@ -62,7 +66,6 @@ import java.util.logging.Logger;
  */
 public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     private final MaintenanceBungeeBase plugin;
-    private final SettingsProxy settings;
     private Favicon favicon;
 
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
@@ -70,13 +73,14 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         this.plugin = plugin;
         sendEnableMessage();
 
-        settings = new SettingsProxy(this);
+        settingsProxy = new SettingsProxy(this);
+        settings = settingsProxy;
 
         final PluginManager pm = getProxy().getPluginManager();
-        pm.registerListener(plugin, new PostLoginListener(this, settings));
-        pm.registerListener(plugin, new ProxyPingListener(this, settings));
-        pm.registerListener(plugin, new ServerConnectListener(this, settings));
-        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(new MaintenanceBungeeCommand(this, settings)));
+        pm.registerListener(plugin, new PostLoginListener(this, settingsProxy));
+        pm.registerListener(plugin, new ProxyPingListener(this, settingsProxy));
+        pm.registerListener(plugin, new ServerConnectListener(this, settingsProxy));
+        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(new MaintenanceBungeeCommand(this, settingsProxy)));
 
         new MetricsLite(plugin);
 
@@ -84,7 +88,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }
@@ -108,28 +112,28 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settings.getMaintenanceServers().contains(serverInfo.getName());
+        return settingsProxy.getMaintenanceServers().contains(serverInfo.getName());
     }
 
     @Override
     protected void kickPlayers() {
         getProxy().getPlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n")));
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.disconnect(settingsProxy.getKickMessage().replace("%NEWLINE%", "\n")));
     }
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
         ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
-            if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null && fallbackServer.canAccess(p)) {
-                    p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+                    p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     p.connect(fallbackServer);
                 } else
-                    p.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
+                    p.disconnect(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
             } else {
-                p.sendMessage(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
+                p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
         });
     }
@@ -174,7 +178,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     public ISettings getSettings() {
-        return settings;
+        return settingsProxy;
     }
 
     @Override
@@ -190,6 +194,17 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
+    }
+
+    @Override
+    public String getServerVersion() {
+        return getProxy().getVersion();
+    }
+
+    @Override
+    public List<PluginDump> getPlugins() {
+        return getProxy().getPluginManager().getPlugins().stream().map(plugin ->
+                new PluginDump(plugin.getDescription().getName(), plugin.getDescription().getVersion(), Arrays.asList(plugin.getDescription().getAuthor()))).collect(Collectors.toList());
     }
 
     @Override

@@ -57,6 +57,17 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     }
 
     @Override
+    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+        final BungeeSenderInfo bungeeSender = ((BungeeSenderInfo) sender);
+        bungeeSender.sendMessage(plugin.getPrefix() + "§c" + url);
+        if (bungeeSender.isPlayer()) {
+            final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link");
+            clickText.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
+            clickText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to copy the link")));
+        }
+    }
+
+    @Override
     protected List<String> getServersCompletion(final String s) {
         return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
                 .filter(entry -> !plugin.isMaintenance(entry.getValue())).map(entry -> entry.getValue().getName()).collect(Collectors.toList());

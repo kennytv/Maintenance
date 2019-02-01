@@ -175,6 +175,18 @@ public abstract class MaintenanceCommand {
             } else if (firstArg.equals("status") && plugin.getServerType().isProxy()) {
                 if (checkPermission(sender, "status")) return;
                 showMaintenanceStatus(sender);
+            } else if (firstArg.equals("dump")) {
+                if (checkPermission(sender, "admin")) return;
+                plugin.async(() -> {
+                    final String key = plugin.pasteDump();
+                    if (key == null) {
+                        if (sender.isPlayer())
+                            sender.sendMessage(plugin.getPrefix() + "§cCould not paste dump (see the console for details)");
+                        return;
+                    }
+
+                    sendDumpMessage(sender, "https://hastebin.com/" + key);
+                });
             } else
                 sendUsage(sender);
         } else if (args.length == 2) {
@@ -470,6 +482,8 @@ public abstract class MaintenanceCommand {
         }
         return uuid;
     }
+
+    protected abstract void sendDumpMessage(SenderInfo sender, String url);
 
     protected void showMaintenanceStatus(SenderInfo sender) {
     }

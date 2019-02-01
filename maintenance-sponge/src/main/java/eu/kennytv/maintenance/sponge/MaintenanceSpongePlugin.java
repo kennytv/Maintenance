@@ -24,6 +24,7 @@ import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -61,10 +62,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author KennyTV
@@ -199,6 +202,17 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String getServerVersion() {
+        return game.getPlatform().getImplementation().getName();
+    }
+
+    @Override
+    public List<PluginDump> getPlugins() {
+        return game.getPluginManager().getPlugins().stream().map(plugin ->
+                new PluginDump(plugin.getId() + "/" + plugin.getName(), plugin.getVersion().orElse("-"), plugin.getAuthors())).collect(Collectors.toList());
     }
 
     @Override

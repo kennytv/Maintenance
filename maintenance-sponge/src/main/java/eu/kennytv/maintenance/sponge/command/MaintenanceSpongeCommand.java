@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.sponge.command;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.spongepowered.api.Sponge;
@@ -29,6 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -40,10 +42,12 @@ import java.util.stream.Collectors;
 
 @NonnullByDefault
 public final class MaintenanceSpongeCommand extends MaintenanceCommand implements CommandCallable {
+    private final MaintenanceSpongePlugin plugin;
     private static final String[] EMPTY = new String[0];
 
     public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final Settings settings) {
         super(plugin, settings);
+        this.plugin = plugin;
     }
 
     @Override
@@ -75,6 +79,16 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     @Override
     public Text getUsage(final CommandSource source) {
         return null;
+    }
+
+    @Override
+    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+        final SpongeSenderInfo spongeSender = ((SpongeSenderInfo) sender);
+        spongeSender.sendMessage(plugin.translate(plugin.getPrefix() + "§c" + url));
+        if (spongeSender.isPlayer()) {
+            spongeSender.sendMessage(Text.builder(plugin.getPrefix() + "§7Click here to copy the link").onClick(TextActions.suggestCommand(url))
+                    .onHover(TextActions.showText(plugin.translate("§aClick here to copy the link"))).build());
+        }
     }
 
     @Override

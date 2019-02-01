@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -49,8 +50,11 @@ import org.bukkit.util.CachedServerIcon;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author KennyTV
@@ -164,6 +168,17 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
+    }
+
+    @Override
+    public String getServerVersion() {
+        return getServer().getVersion();
+    }
+
+    @Override
+    public List<PluginDump> getPlugins() {
+        return Arrays.stream(getServer().getPluginManager().getPlugins()).map(plugin ->
+                new PluginDump(plugin.getDescription().getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAuthors())).collect(Collectors.toList());
     }
 
     @Override

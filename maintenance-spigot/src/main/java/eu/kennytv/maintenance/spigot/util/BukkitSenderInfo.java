@@ -61,7 +61,8 @@ public final class BukkitSenderInfo implements SenderInfo {
         try {
             sender.spigot().sendMessage(textComponent);
         } catch (final NoSuchMethodError e) {
-            sender.sendMessage(backup);
+            if (backup != null)
+                sender.sendMessage(backup);
         }
     }
 }

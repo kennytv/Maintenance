@@ -27,7 +27,9 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +38,7 @@ import java.util.Map;
  */
 public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin implements IMaintenanceProxy {
     private final Map<String, Task> serverTasks = new HashMap<>();
-    protected SettingsProxy settings;
+    protected SettingsProxy settingsProxy;
 
     protected MaintenanceProxyPlugin(final String version, final ServerType serverType) {
         super(version, serverType);
@@ -44,12 +46,12 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settings.getMySQL() != null) {
-            settings.setMaintenanceToSQL(maintenance);
+        if (settingsProxy.getMySQL() != null) {
+            settingsProxy.setMaintenanceToSQL(maintenance);
         } else {
-            settings.setMaintenance(maintenance);
-            settings.getConfig().set("maintenance-enabled", maintenance);
-            settings.saveConfig();
+            settingsProxy.setMaintenance(maintenance);
+            settingsProxy.getConfig().set("maintenance-enabled", maintenance);
+            settingsProxy.saveConfig();
         }
 
         serverActions(maintenance);
@@ -57,15 +59,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     @Override
     public boolean isMaintenance(final Server server) {
-        return settings.isMaintenance(server);
+        return settingsProxy.isMaintenance(server);
     }
 
     @Override
     public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
         if (maintenance) {
-            if (!settings.addMaintenanceServer(server.getName())) return false;
+            if (!settingsProxy.addMaintenanceServer(server.getName())) return false;
         } else {
-            if (!settings.removeMaintenanceServer(server.getName())) return false;
+            if (!settingsProxy.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
         return true;
@@ -73,15 +75,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     public void serverActions(final Server server, final boolean maintenance) {
         if (maintenance) {
-            final Server fallback = getServer(settings.getFallbackServer());
+            final Server fallback = getServer(settingsProxy.getFallbackServer());
             if (fallback == null) {
-                if (!server.hasPlayers())
+                if (server.hasPlayers())
                     getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
             } else if (fallback.getName().equals(server.getName()))
                 getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             kickPlayers(server, fallback);
         } else
-            server.broadcast(settings.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+            server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
         cancelSingleTask(server);
     }
 
@@ -100,6 +102,14 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
         final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, (Settings) getSettings(), minutes, enable, server);
         serverTasks.put(server.getName(), startMaintenanceRunnable(runnable));
         return runnable;
+    }
+
+    @Override
+    public List<String> getMaintenanceServers() {
+        final List<String> list = new ArrayList<>();
+        if (isMaintenance()) list.add("\"global\"");
+        list.addAll(settingsProxy.getMaintenanceServers());
+        return list.isEmpty() ? null : list;
     }
 
     protected abstract void kickPlayers(Server server, Server fallback);

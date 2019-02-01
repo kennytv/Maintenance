@@ -37,6 +37,7 @@ import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.util.Favicon;
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
@@ -62,10 +63,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author KennyTV
@@ -92,25 +95,26 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     public void onEnable(final ProxyInitializeEvent event) {
         sendEnableMessage();
 
-        settings = new SettingsProxy(this);
+        settingsProxy = new SettingsProxy(this);
+        settings = settingsProxy;
 
-        server.getCommandManager().register(new MaintenanceVelocityCommand(this, settings), "maintenance", "maintenancevelocity");
+        server.getCommandManager().register(new MaintenanceVelocityCommand(this, settingsProxy), "maintenance", "maintenancevelocity");
         final EventManager em = server.getEventManager();
-        em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settings));
-        em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settings));
-        em.register(this, LoginEvent.class, PostOrder.LAST, new LoginListener(this, settings));
+        em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
+        em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
+        em.register(this, LoginEvent.class, PostOrder.LAST, new LoginListener(this, settingsProxy));
 
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
             logger.info("Enabled ServerListPlus integration!");
         }));
     }
 
     @Subscribe
     public void proxyReload(final ProxyReloadEvent event) {
-        settings.reloadConfigs();
+        settingsProxy.reloadConfigs();
         logger.info("Reloaded config files!");
     }
 
@@ -128,31 +132,31 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settings.getMaintenanceServers().contains(serverInfo.getName());
+        return settingsProxy.getMaintenanceServers().contains(serverInfo.getName());
     }
 
     @Override
     protected void kickPlayers() {
         server.getAllPlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(TextComponent.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
+                .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .forEach(p -> p.disconnect(TextComponent.of(settingsProxy.getKickMessage().replace("%NEWLINE%", "\n"))));
     }
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
         ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
-            if (!p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null) {
-                    p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+                    p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
                     p.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful())
-                            p.disconnect(TextComponent.of(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                            p.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
                     });
                 }
             } else {
-                p.sendMessage(translate(settings.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+                p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
             }
         });
     }
@@ -198,7 +202,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public ISettings getSettings() {
-        return settings;
+        return settingsProxy;
     }
 
     @Override
@@ -216,6 +220,18 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String getServerVersion() {
+        return server.getVersion().getVersion();
+    }
+
+    @Override
+    public List<PluginDump> getPlugins() {
+        return server.getPluginManager().getPlugins().stream().map(plugin ->
+                new PluginDump(plugin.getDescription().getId() + "/" + plugin.getDescription().getName().orElse("-"),
+                        plugin.getDescription().getVersion().orElse("-"), plugin.getDescription().getAuthors())).collect(Collectors.toList());
     }
 
     @Override

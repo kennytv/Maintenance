@@ -24,6 +24,9 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -83,5 +86,16 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
         return getSuggestions(new BukkitSenderInfo(sender), args);
+    }
+
+    @Override
+    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+        sender.sendMessage(plugin.getPrefix() + "§c" + url);
+        if (sender.isPlayer()) {
+            final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link)");
+            clickText.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
+            clickText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to copy the link")));
+            ((BukkitSenderInfo) sender).sendMessage(clickText, null);
+        }
     }
 }

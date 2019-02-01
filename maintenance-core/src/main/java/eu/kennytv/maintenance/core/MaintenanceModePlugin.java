@@ -18,7 +18,12 @@
 
 package eu.kennytv.maintenance.core;
 
+import com.google.common.io.CharStreams;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.core.dump.MaintenanceDump;
+import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -30,7 +35,11 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class MaintenanceModePlugin implements IMaintenance {
@@ -147,6 +156,45 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         }
     }
 
+    public String pasteDump() {
+        final MaintenanceDump dump = new MaintenanceDump(this);
+        try {
+            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hastebin.com/documents").openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
+            connection.setRequestProperty("Content-Type", "text/plain");
+
+            final GsonBuilder gsonBuilder = new GsonBuilder();
+            final byte[] bytes = gsonBuilder.setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8);
+            connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
+
+            final OutputStream out = connection.getOutputStream();
+            out.write(bytes);
+            out.close();
+
+            if (connection.getResponseCode() == 503) {
+                getLogger().warning("Could not paste dump, Hastebin services are probably down (?)");
+                return null;
+            }
+
+            final InputStream in = connection.getInputStream();
+            final String output = CharStreams.toString(new InputStreamReader(in));
+            in.close();
+
+            final JsonObject jsonOutput = gsonBuilder.create().fromJson(output, JsonObject.class);
+            if (!jsonOutput.has("key")) {
+                getLogger().log(Level.WARNING, "Could not paste dump, there was no key returned :(");
+                return null;
+            }
+
+            return jsonOutput.get("key").getAsString();
+        } catch (final IOException e) {
+            getLogger().log(Level.WARNING, "Could not paste dump :(", e);
+            return null;
+        }
+    }
+
     public void loadMaintenanceIcon() {
         final File file = new File(getDataFolder(), "maintenance-icon.png");
         if (!file.exists()) {
@@ -166,6 +214,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
         task.cancel();
         runnable = null;
         task = null;
+    }
+
+    public List<String> getMaintenanceServers() {
+        return isMaintenance() ? Arrays.asList("\"global\"") : null;
     }
 
     @Override
@@ -218,6 +270,10 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public abstract InputStream getResource(String name);
 
     public abstract Logger getLogger();
+
+    public abstract String getServerVersion();
+
+    public abstract List<PluginDump> getPlugins();
 
     protected abstract void loadIcon(File file) throws Exception;
 
