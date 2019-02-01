@@ -143,7 +143,7 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("reload"));
             } else if (firstArg.equals("update")) {
                 if (checkPermission(sender, "update")) return;
-                checkForUpdate(sender);
+                plugin.async(() -> checkForUpdate(sender));
             } else if (firstArg.equals("forceupdate")) {
                 if (checkPermission(sender, "update")) return;
                 sender.sendMessage(settings.getMessage("updateDownloading"));
