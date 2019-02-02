@@ -9,7 +9,6 @@
 # You can report bugs here: https://github.com/KennyTV/Maintenance/issues
 # If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq
 
-
 # Enables maintenance mode.
 maintenance-enabled: false
 
@@ -17,6 +16,7 @@ maintenance-enabled: false
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
 # If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage.
 pingmessages:
+# - "Other entry"
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
 
 # If set to true, the message below will be shown at the top right corner of the server in the serverlist,where the playercount would normally be displayed.

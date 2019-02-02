@@ -42,7 +42,7 @@ public final class ConfigSerializer {
     public static String serialize(final String header, final Map<String, Object> data, final Map<String, String[]> comments, final Yaml yaml) {
         if (data.isEmpty()) return yaml.dump(null);
 
-        final String rawYaml = header != null && !header.isEmpty() ? header + yaml.dump(data) : yaml.dump(data);
+        final String rawYaml = yaml.dump(data);
         final StringBuilder fileData = new StringBuilder();
         int currentIndents = 0;
         String key = "";
@@ -68,64 +68,59 @@ public final class ConfigSerializer {
             final String[] strings = comments.get(key);
             if (strings != null) {
                 for (final String comment : strings) {
-                    fileData.append(indentText).append(comment).append('\n');
+                    if (comment.isEmpty())
+                        fileData.append('\n');
+                    else
+                        fileData.append(indentText).append(comment).append('\n');
                 }
             }
 
             fileData.append(line).append('\n');
         }
-        return fileData.toString();
+        return header != null && !header.isEmpty() ? header + fileData : fileData.toString();
     }
 
     public static Map<String, String[]> deserializeComments(final String data) {
         final Map<String, String[]> comments = new HashMap<>();
         final List<String> currentComments = new ArrayList<>();
-        final String[] split = data.split("\n");
-
         boolean header = true;
         int currentIndents = 0;
         String key = "";
-        for (int i = 0; i < split.length; i++) {
-            final String line = split[i];
+        for (final String line : data.split("\n")) {
             final String s = line.trim();
             if (s.startsWith("#")) {
                 currentComments.add(s);
-            } else {
-                if (!s.contains(":")) {
-                    if (header) {
-                        if (!currentComments.isEmpty()) {
-                            currentComments.add("\n");
-                            comments.put(".header", currentComments.toArray(EMPTY));
-                        }
-                        header = false;
-                    }
-                    currentComments.clear();
-                    continue;
-                }
-
-                header = false;
-                final int back = i - currentComments.size() - 1;
-                if (back >= 0 && split[back].trim().isEmpty()) {
-                    currentComments.add(0, "");
-                }
-
-                final int indent = getIndents(line);
-                final int indents = indent / INDENT_UNIT;
-                if (indents <= currentIndents) {
-                    final String[] array = key.split(PATH_SEPERATOR_QUOTED);
-                    final int backspace = currentIndents - indents + 1;
-                    key = join(array, array.length - backspace);
-                }
-
-                final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
-                final String lineKey = line.contains(":") ? line.split(Pattern.quote(":"))[0] : line;
-                key += separator + lineKey.substring(indent);
-                currentIndents = indents;
-
+                continue;
+            }
+            if (header) {
                 if (!currentComments.isEmpty()) {
-                    comments.put(key, currentComments.toArray(EMPTY));
+                    currentComments.add("");
+                    comments.put(".header", currentComments.toArray(EMPTY));
                     currentComments.clear();
                 }
+                header = false;
+            }
+            if (s.isEmpty()) {
+                currentComments.add(s);
+                continue;
+            }
+
+            final int indent = getIndents(line);
+            final int indents = indent / INDENT_UNIT;
+            if (indents <= currentIndents) {
+                final String[] array = key.split(PATH_SEPERATOR_QUOTED);
+                final int backspace = currentIndents - indents + 1;
+                key = join(array, array.length - backspace);
+            }
+
+            final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
+            final String lineKey = line.contains(":") ? line.split(Pattern.quote(":"))[0] : line;
+            key += separator + lineKey.substring(indent);
+            currentIndents = indents;
+
+            if (!currentComments.isEmpty()) {
+                comments.put(key, currentComments.toArray(EMPTY));
+                currentComments.clear();
             }
         }
         return comments;

@@ -20,8 +20,8 @@ package eu.kennytv.maintenance.core.proxy;
 
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,16 +79,6 @@ public final class SettingsProxy extends Settings {
     @Override
     protected void createExtraFiles() {
         createFile("SpigotServers.yml");
-    }
-
-    @Override
-    protected boolean updateExtraConfig() {
-        // 2.3.1 mysql.update-interval
-        if (!config.contains("mysql.update-interval")) {
-            config.set("mysql.update-interval", 15);
-            return true;
-        }
-        return false;
     }
 
     @Override

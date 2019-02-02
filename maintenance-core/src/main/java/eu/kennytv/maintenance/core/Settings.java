@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.logging.Level;
 
 public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
@@ -151,36 +152,55 @@ public class Settings implements ISettings {
     }
 
     private void updateConfig() {
-        boolean fileChanged = false;
+        boolean changed = false;
 
-        // 2.3 pingmessage -> pingmessages
-        if (config.contains("pingmessage")) {
-            final List<String> list = new ArrayList<>();
-            list.add(getConfigString("pingmessage"));
-            config.set("pingmessages", list);
-            config.set("pingmessage", null);
-            fileChanged = true;
+        // 3.0 - update config format from 2.5
+        if (migrateConfig(new File(plugin.getDataFolder(), "bungee-config.yml"))
+                || migrateConfig(new File(plugin.getDataFolder(), "spigot-config.yml"))) {
+            changed = true;
         }
-        // 2.4 enable-playercountmessage
-        if (!config.contains("enable-playercountmessage")) {
-            config.set("enable-playercountmessage", true);
-            fileChanged = true;
-        }
-        // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
-        if (config.contains("timer-broadcasts-for-minutes") || !config.contains("timer-broadcast-for-seconds")) {
-            config.set("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
-            config.set("timer-broadcasts-for-minutes", null);
-            fileChanged = true;
-        }
-        // 2.5 language
-        if (!config.contains("language")) {
-            config.set("language", "en");
+        // 3.0 - move maintenace-icon from server to plugin directory
+        final File icon = new File("maintenance-icon.png");
+        if (icon.exists()) {
+            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png")))
+                plugin.getLogger().info("Moved maintenance-icon from server directory to the plugin's directory!");
+            else
+                plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
         }
 
-        if (updateExtraConfig() || fileChanged) {
+        // ...
+
+        if (changed) {
             plugin.getLogger().info("Updated config to the latest version!");
             saveConfig();
         }
+    }
+
+    private boolean migrateConfig(final File file) {
+        if (!file.exists()) return false;
+
+        plugin.getLogger().info("Migrating old config to new format...");
+        final Config oldConfig = new Config(file);
+        try {
+            oldConfig.load();
+        } catch (final IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file", e);
+            return false;
+        }
+
+        if (oldConfig.contains("pingmessage"))
+            config.set("pingmessages", Arrays.asList(oldConfig.getString("pingmessage")));
+        if (oldConfig.contains("enable-maintenance-mode"))
+            config.set("maintenance-enabled", oldConfig.getBoolean("enable-maintenance-mode"));
+        config.getValues().entrySet().forEach(entry -> {
+            if (!oldConfig.contains(entry.getKey())) return;
+            entry.setValue(oldConfig.get(entry.getKey()));
+        });
+
+        oldConfig.clear();
+        if (!file.delete())
+            plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
+        return true;
     }
 
     private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
@@ -309,10 +329,6 @@ public class Settings implements ISettings {
 
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
-    }
-
-    protected boolean updateExtraConfig() {
-        return false;
     }
 
     protected void reloadExtraConfigs() throws IOException {

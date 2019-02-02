@@ -79,6 +79,13 @@ public final class Config {
         }
     }
 
+    public void save() throws IOException {
+        final byte[] bytes = this.saveConfigToString().getBytes(StandardCharsets.UTF_8);
+        this.file.getParentFile().mkdirs();
+        this.file.createNewFile();
+        Files.write(this.file.toPath(), bytes);
+    }
+
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -97,18 +104,25 @@ public final class Config {
         this.header = null;
     }
 
-    public void save() throws IOException {
-        final byte[] bytes = this.saveConfigToString().getBytes(StandardCharsets.UTF_8);
-        this.file.getParentFile().mkdirs();
-        this.file.createNewFile();
-        Files.write(this.file.toPath(), bytes);
+    public void set(final String key, final Object value) {
+        if (value == null) {
+            remove(key);
+        } else
+            this.values.put(key, value);
     }
 
-    public void set(final String key, final Object value) {
-        if (value == null)
-            this.values.remove(key);
-        else
+    public void set(final String key, final Object value, final String... comments) {
+        if (value == null) {
+            remove(key);
+        } else {
             this.values.put(key, value);
+            this.comments.put(key, comments);
+        }
+    }
+
+    public void remove(final String key) {
+        this.values.remove(key);
+        this.comments.remove(key);
     }
 
     public Map<String, Object> getValues() {

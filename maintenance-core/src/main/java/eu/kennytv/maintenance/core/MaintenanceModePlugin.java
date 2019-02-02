@@ -201,14 +201,14 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     public void loadMaintenanceIcon() {
         final File file = new File(getDataFolder(), "maintenance-icon.png");
         if (!file.exists()) {
-            getLogger().warning("§4Could not find a 'maintenance-icon.png' file - did you create one in the plugin's folder?");
+            getLogger().warning("Could not find a 'maintenance-icon.png' file - did you create one in the plugin's folder?");
             return;
         }
 
         try {
             loadIcon(file);
         } catch (final Exception e) {
-            getLogger().warning("§4Could not load the 'maintenance-icon.png' file!");
+            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!", e);
             e.printStackTrace();
         }
     }
