@@ -46,14 +46,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.getMySQL() != null) {
+        if (settingsProxy.getMySQL() != null)
             settingsProxy.setMaintenanceToSQL(maintenance);
-        } else {
-            settingsProxy.setMaintenance(maintenance);
-            settingsProxy.getConfig().set("maintenance-enabled", maintenance);
-            settingsProxy.saveConfig();
-        }
-
+        settingsProxy.setMaintenance(maintenance);
+        settingsProxy.getConfig().set("maintenance-enabled", maintenance);
+        settingsProxy.saveConfig();
         serverActions(maintenance);
     }
 

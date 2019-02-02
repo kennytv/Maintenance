@@ -39,7 +39,7 @@ public final class LoginListener extends JoinListenerBase implements EventHandle
     @Override
     public void execute(final LoginEvent event) {
         if (handleLogin(new VelocitySenderInfo(event.getPlayer()), false))
-            event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
+            event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage())));
     }
 
     @Override

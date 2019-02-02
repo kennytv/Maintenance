@@ -118,7 +118,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     protected void kickPlayers() {
         getProxy().getPlayers().stream()
                 .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(settingsProxy.getKickMessage().replace("%NEWLINE%", "\n")));
+                .forEach(p -> p.disconnect(settingsProxy.getKickMessage()));
     }
 
     @Override

@@ -41,7 +41,7 @@ public final class PostLoginListener extends JoinListenerBase implements Listene
     public void postLogin(final PostLoginEvent event) {
         //TODO LoginEvent?
         if (handleLogin(new BungeeSenderInfo(event.getPlayer())))
-            event.getPlayer().disconnect(settings.getKickMessage().replace("%NEWLINE%", "\n"));
+            event.getPlayer().disconnect(settings.getKickMessage());
     }
 
     @Override

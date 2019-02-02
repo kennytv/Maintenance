@@ -39,7 +39,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
     public void login(final ClientConnectionEvent.Login event) {
         if (handleLogin(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
             event.setCancelled(true);
-            event.setMessage(Text.of(settings.getKickMessage().replace("%NEWLINE%", "\n")));
+            event.setMessage(Text.of(settings.getKickMessage()));
         }
     }
 

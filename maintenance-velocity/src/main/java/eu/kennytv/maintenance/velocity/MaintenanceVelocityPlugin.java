@@ -138,7 +138,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayers() {
         server.getAllPlayers().stream()
                 .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(TextComponent.of(settingsProxy.getKickMessage().replace("%NEWLINE%", "\n"))));
+                .forEach(p -> p.disconnect(TextComponent.of(settingsProxy.getKickMessage())));
     }
 
     @Override

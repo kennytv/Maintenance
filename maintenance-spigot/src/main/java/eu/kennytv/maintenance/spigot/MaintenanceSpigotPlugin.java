@@ -68,7 +68,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
         this.plugin = plugin;
         sendEnableMessage();
 
-        settings = new Settings(this, "spigot-config.yml");
+        settings = new Settings(this, "mysql");
 
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 
@@ -141,7 +141,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     protected void kickPlayers() {
         getServer().getOnlinePlayers().stream()
                 .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.kickPlayer(settings.getKickMessage().replace("%NEWLINE%", "\n")));
+                .forEach(p -> p.kickPlayer(settings.getKickMessage()));
     }
 
     @Override

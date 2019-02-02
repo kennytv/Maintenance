@@ -94,7 +94,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         logger = new LoggerWrapper(container.getLogger());
         sendEnableMessage();
 
-        settings = new Settings(this, "spigot-config.yml");
+        settings = new Settings(this, "mysql", "playercountmessage", "enable-playercountmessage");
 
         game.getCommandManager().register(this, new MaintenanceSpongeCommand(this, settings), "maintenance", "maintenancesponge");
         final EventManager em = game.getEventManager();
@@ -169,7 +169,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     protected void kickPlayers() {
         getServer().getOnlinePlayers().stream()
                 .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.kick(Text.of(settings.getKickMessage().replace("%NEWLINE%", "\n"))));
+                .forEach(p -> p.kick(Text.of(settings.getKickMessage())));
     }
 
     @Override

@@ -21,7 +21,9 @@ package eu.kennytv.maintenance.core.dump;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.Settings;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class MaintenanceDump {
@@ -29,12 +31,9 @@ public final class MaintenanceDump {
     private final Map<String, Object> configuration;
     private final JsonObject plugins;
 
-    public MaintenanceDump(final MaintenanceModePlugin plugin) {
+    public MaintenanceDump(final MaintenanceModePlugin plugin, final Settings settings) {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServers());
-
-        // TODO when changing to simpleconfig (?)
-        configuration = null;
-
+        configuration = new HashMap<>(settings.getConfig().getValues());
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("plugins", new GsonBuilder().create().toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;

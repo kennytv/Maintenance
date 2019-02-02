@@ -53,11 +53,13 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     private Version newestVersion;
     private Task task;
 
+    // TODO starttimer -> start, endtimer -> end, timer abort -> cancel (?)
+
     protected MaintenanceModePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;
         this.prefix = "§8[§eMaintenance" + serverType + "§8] ";
-        async(this::checkNewestVersion);
+        checkNewestVersion();
     }
 
     public void setMaintenance(final boolean maintenance) {
@@ -158,7 +160,7 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     }
 
     public String pasteDump() {
-        final MaintenanceDump dump = new MaintenanceDump(this);
+        final MaintenanceDump dump = new MaintenanceDump(this, settings);
         try {
             final HttpURLConnection connection = (HttpURLConnection) new URL("https://hastebin.com/documents").openConnection();
             connection.setDoOutput(true);

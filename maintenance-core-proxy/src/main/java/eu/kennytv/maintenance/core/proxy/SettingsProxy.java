@@ -18,11 +18,10 @@
 
 package eu.kennytv.maintenance.core.proxy;
 
-import eu.kennytv.lib.config.Configuration;
-import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
+import eu.kennytv.maintenance.core.config.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +33,7 @@ import java.util.Set;
 
 public final class SettingsProxy extends Settings {
     private final MaintenanceProxyPlugin plugin;
-    private Configuration spigotServers;
+    private Config spigotServers;
     private Set<String> maintenanceServers;
     private String fallbackServer;
 
@@ -49,22 +48,21 @@ public final class SettingsProxy extends Settings {
     private long lastServerCheck;
 
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
-        super(plugin, "bungee-config.yml");
+        super(plugin);
         this.plugin = plugin;
     }
 
     private void setupMySQL() throws Exception {
         plugin.getLogger().info("Trying to open database connection...");
-        final Configuration mySQLSection = config.getSection("mysql");
-        mySQL = new MySQL(mySQLSection.getString("host"),
-                mySQLSection.getInt("port"),
-                mySQLSection.getString("username"),
-                mySQLSection.getString("password"),
-                mySQLSection.getString("database"));
+        mySQL = new MySQL(spigotServers.getString("mysql.host"),
+                spigotServers.getInt("mysql.port"),
+                spigotServers.getString("mysql.username"),
+                spigotServers.getString("mysql.password"),
+                spigotServers.getString("mysql.database"));
 
         // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
-        mySQLTable = mySQLSection.getString("table", "maintenance_settings");
-        serverTable = mySQLSection.getString("servertable", "maintenance_servers");
+        mySQLTable = spigotServers.getString("mysql.table", "maintenance_settings");
+        serverTable = spigotServers.getString("mysql.servertable", "maintenance_servers");
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
         maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
@@ -74,7 +72,8 @@ public final class SettingsProxy extends Settings {
 
     @Override
     protected void reloadExtraConfigs() throws IOException {
-        spigotServers = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(super.plugin.getDataFolder(), "SpigotServers.yml"));
+        spigotServers = new Config(new File(super.plugin.getDataFolder(), "SpigotServers.yml"));
+        spigotServers.load();
     }
 
     @Override
@@ -152,7 +151,6 @@ public final class SettingsProxy extends Settings {
             mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
             lastMySQLCheck = System.currentTimeMillis();
         });
-        this.maintenance = maintenance;
     }
 
     MySQL getMySQL() {
@@ -220,7 +218,11 @@ public final class SettingsProxy extends Settings {
     }
 
     private void saveSpigotServers() {
-        saveFile(spigotServers, "SpigotServers.yml");
+        try {
+            spigotServers.save();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Set<String> getMaintenanceServers() {

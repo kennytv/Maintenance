@@ -18,12 +18,12 @@
 
 package eu.kennytv.maintenance.core;
 
-import eu.kennytv.lib.config.Configuration;
-import eu.kennytv.lib.config.YamlConfiguration;
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.core.config.Config;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -31,7 +31,7 @@ public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
     protected final MaintenanceModePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
-    private final String configName;
+    private final String[] unsupportedFields;
     protected boolean maintenance;
     private Set<Integer> broadcastIntervalls;
     private List<String> pingMessages;
@@ -44,17 +44,17 @@ public class Settings implements ISettings {
     private boolean joinNotifications;
     private boolean debug;
 
-    protected Configuration config;
-    protected Configuration language;
-    protected Configuration whitelist;
+    protected Config config;
+    protected Config language;
+    protected Config whitelist;
 
-    public Settings(final MaintenanceModePlugin plugin, final String configName) {
+    public Settings(final MaintenanceModePlugin plugin, final String... unsupportedFields) {
         this.plugin = plugin;
-        this.configName = configName;
+        this.unsupportedFields = unsupportedFields;
         if (!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
 
-        createFile(configName);
+        createFile("config.yml");
         createFile("WhitelistedPlayers.yml");
         createExtraFiles();
 
@@ -64,9 +64,10 @@ public class Settings implements ISettings {
     @Override
     public void reloadConfigs() {
         try {
-            config = YamlConfiguration.getProvider(YamlConfiguration.class)
-                    .load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), configName)), StandardCharsets.UTF_8));
-            whitelist = YamlConfiguration.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            config = new Config(new File(plugin.getDataFolder(), "config.yml"), unsupportedFields);
+            config.load();
+            whitelist = new Config(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            whitelist.load();
             reloadExtraConfigs();
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
@@ -76,27 +77,18 @@ public class Settings implements ISettings {
         createLanguageFile();
 
         try {
-            language = YamlConfiguration.getProvider(YamlConfiguration.class).load(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "language-" + languageName + ".yml")), StandardCharsets.UTF_8));
+            language = new Config(new File(plugin.getDataFolder(), "language-" + languageName + ".yml"));
+            language.load();
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
     }
 
     public void saveConfig() {
-        final File file = new File(plugin.getDataFolder(), configName);
         try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
+            config.save();
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to save " + configName + "!", e);
-        }
-    }
-
-    protected void saveFile(final Configuration config, final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        try {
-            YamlConfiguration.getProvider(YamlConfiguration.class).save(config, file);
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to save " + name + "!", e);
+            e.printStackTrace();
         }
     }
 
@@ -112,7 +104,11 @@ public class Settings implements ISettings {
     }
 
     private void saveWhitelistedPlayers() {
-        saveFile(whitelist, "WhitelistedPlayers.yml");
+        try {
+            whitelist.save();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createLanguageFile() {
@@ -283,12 +279,8 @@ public class Settings implements ISettings {
         return debug;
     }
 
-    public Configuration getConfig() {
+    public Config getConfig() {
         return config;
-    }
-
-    public Configuration getWhitelist() {
-        return whitelist;
     }
 
     public List<String> getPingMessages() {
@@ -300,15 +292,15 @@ public class Settings implements ISettings {
     }
 
     public String getPlayerCountMessage() {
-        return playerCountMessage;
+        return playerCountMessage.replace("%TIMER%", plugin.formatedTimer());
     }
 
     public String getPlayerCountHoverMessage() {
-        return playerCountHoverMessage;
+        return playerCountHoverMessage.replace("%TIMER%", plugin.formatedTimer());
     }
 
     public String getKickMessage() {
-        return kickMessage;
+        return kickMessage.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
     }
 
     public String getLanguage() {

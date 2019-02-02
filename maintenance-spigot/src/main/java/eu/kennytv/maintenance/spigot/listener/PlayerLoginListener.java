@@ -39,7 +39,7 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
     public void postLogin(final PlayerLoginEvent event) {
         if (handleLogin(new BukkitSenderInfo(event.getPlayer()))) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-            event.setKickMessage(settings.getKickMessage().replace("%NEWLINE%", "\n"));
+            event.setKickMessage(settings.getKickMessage());
         }
     }
 
