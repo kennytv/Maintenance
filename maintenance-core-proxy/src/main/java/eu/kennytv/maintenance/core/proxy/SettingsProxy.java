@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.core.proxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 
 import java.io.File;
@@ -54,15 +55,21 @@ public final class SettingsProxy extends Settings {
 
     private void setupMySQL() throws Exception {
         plugin.getLogger().info("Trying to open database connection...");
-        mySQL = new MySQL(spigotServers.getString("mysql.host"),
-                spigotServers.getInt("mysql.port"),
-                spigotServers.getString("mysql.username"),
-                spigotServers.getString("mysql.password"),
-                spigotServers.getString("mysql.database"));
+        final ConfigSection section = config.getSection("mysql");
+        if (section == null) {
+            plugin.getLogger().warning("Section missing: mysql");
+            return;
+        }
+
+        mySQL = new MySQL(section.getString("host"),
+                section.getInt("port"),
+                section.getString("username"),
+                section.getString("password"),
+                section.getString("database"));
 
         // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
-        mySQLTable = spigotServers.getString("mysql.table", "maintenance_settings");
-        serverTable = spigotServers.getString("mysql.servertable", "maintenance_servers");
+        mySQLTable = section.getString("table", "maintenance_settings");
+        serverTable = section.getString("servertable", "maintenance_servers");
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
         maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
@@ -84,7 +91,7 @@ public final class SettingsProxy extends Settings {
     @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
-        if (mySQL == null && config.getBoolean("mysql.use-mysql")) {
+        if (mySQL == null && (boolean) config.getDeep("mysql.use-mysql")) {
             try {
                 setupMySQL();
             } catch (final Exception e) {

@@ -23,7 +23,8 @@ import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
-import java.util.HashMap;
+import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class MaintenanceDump {
@@ -33,8 +34,17 @@ public final class MaintenanceDump {
 
     public MaintenanceDump(final MaintenanceModePlugin plugin, final Settings settings) {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServers());
-        configuration = new HashMap<>(settings.getConfig().getValues());
-        configuration.keySet().removeIf(key -> key.startsWith("mysql") && !(key.endsWith("use-mysql") || key.endsWith("update-interval")));
+
+        configuration = new LinkedHashMap<>(settings.getConfig().getValues());
+        final Object o = configuration.get("mysql");
+        if (o instanceof Map) {
+            final Map<String, Object> map = new LinkedHashMap<>(((Map<String, Object>) o));
+            map.keySet().removeIf(key -> !key.equals("use-mysql") && !key.equals("update-interval"));
+            configuration.put("mysql", map);
+        }
+        configuration.put("whitelisted-players", settings.getWhitelistedPlayers());
+        configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());
+
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("plugins", new GsonBuilder().create().toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;

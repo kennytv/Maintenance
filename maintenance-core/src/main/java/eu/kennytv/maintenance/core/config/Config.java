@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Further modified version of the SimpleConfig project of PSandro (https://github.com/PSandro/SimpleConfig).
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  * @author PSandro on 26.01.19
  * @author KennyTV
  */
-public final class Config {
+public final class Config extends ConfigSection {
 
     private static final String AWESOME_HEADER =
             "#######################################################################################################################\n" +
@@ -51,7 +50,6 @@ public final class Config {
     private final File file;
     private final Set<String> unsupportedFields;
     private Map<String, String[]> comments = new HashMap<>();
-    private Map<String, Object> values = new HashMap<>();
     private String header;
 
     public Config(final File file, final String... unsupportedFields) {
@@ -97,6 +95,45 @@ public final class Config {
         Files.write(this.file.toPath(), bytes);
     }
 
+    @Override
+    public void set(final String key, final Object value, final String... comments) {
+        if (value == null) {
+            remove(key);
+        } else {
+            this.values.put(key, value);
+            this.comments.put(key, comments);
+        }
+    }
+
+    @Override
+    public void remove(final String key) {
+        this.values.remove(key);
+        this.comments.remove(key);
+    }
+
+    /**
+     * Convenience method, not furthe established as currently not necessary.
+     *
+     * @see #getSection(String)
+     * @deprecated this config is only made for a quite simple use, only goes one level deeper
+     */
+    @Deprecated
+    public Object getDeep(final String key) {
+        final String[] split = key.split("\\.", 2);
+        if (split.length != 2) return get(key);
+
+        final Object o = getObject(split[0]);
+        if (!(o instanceof Map)) return null;
+
+        final Map<String, Object> map = (Map<String, Object>) o;
+        return map.get(split[1]);
+    }
+
+    public ConfigSection getSection(final String key) {
+        final Object o = getObject(key);
+        return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
+    }
+
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -115,58 +152,8 @@ public final class Config {
         this.header = null;
     }
 
-    public void set(final String key, final Object value) {
-        if (value == null) {
-            remove(key);
-        } else
-            this.values.put(key, value);
-    }
-
-    public void set(final String key, final Object value, final String... comments) {
-        if (value == null) {
-            remove(key);
-        } else {
-            this.values.put(key, value);
-            this.comments.put(key, comments);
-        }
-    }
-
-    public void remove(final String key) {
-        this.values.remove(key);
-        this.comments.remove(key);
-    }
-
-    public Map<String, Object> getValues() {
-        return this.values;
-    }
-
-    public <E> E get(final String key) {
-        return (E) this.values.get(key);
-    }
-
-    public <E> E getOrSet(final String key, final E def) {
-        if (this.values.containsKey(key)) {
-            return (E) this.values.get(key);
-        } else {
-            this.set(key, def);
-            return def;
-        }
-    }
-
-    public boolean contains(final String key) {
-        return this.values.containsKey(key);
-    }
-
     public Map<String, String[]> getComments() {
         return comments;
-    }
-
-    public Set<String> getKeys() {
-        return getKeys(false);
-    }
-
-    public Set<String> getKeys(final boolean deep) {
-        return deep ? this.values.keySet() : this.values.keySet().stream().filter(s -> !s.contains(".")).collect(Collectors.toSet());
     }
 
     public Set<String> getUnsupportedFields() {
@@ -181,54 +168,5 @@ public final class Config {
         this.header = AWESOME_HEADER;
     }
 
-    public boolean getBoolean(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Boolean && (boolean) o;
-    }
 
-    public boolean getBoolean(final String key, final boolean def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
-
-    public String getString(final String key) {
-        return get(key);
-    }
-
-    public String getString(final String key, final String def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
-
-    public int getInt(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).intValue() : 0;
-    }
-
-    public int getInt(final String key, final int def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
-
-    public double getDouble(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).doubleValue() : 0;
-    }
-
-    public double getDouble(final String key, final double def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
-
-    public List<String> getStringList(final String key) {
-        return get(key);
-    }
-
-    public List<String> getStringList(final String key, final List<String> def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
-
-    public List<Integer> getIntList(final String key) {
-        return get(key);
-    }
-
-    public List<Integer> getIntList(final String key, final List<Integer> def) {
-        return values.containsKey(key) ? get(key) : def;
-    }
 }
