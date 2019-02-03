@@ -2,6 +2,7 @@
 # Ne supprime pas des mots entre les '%' si tu ne sait pas pourqoi exactement
 
 noPermission: "&cVous n'avez pas la permission d'exécuter cette commande."
+kickmessage: "&cLe serveur est actuellement en maintenance!%NEWLINE%&cRéessayez plus tard!"
 maintenanceActivated: "&8[&eMaintenance&8] &6Le mode maintenance est maintenant activé."
 maintenanceDeactivated: "&8[&eMaintenance&8] &6Le mode maintenance est maintenant désactivé."
 alreadyEnabled: "&8[&eMaintenance&8] &cLa maintenance est déjà activée!"
@@ -40,9 +41,9 @@ whitelistNotFound: "&8[&eMaintenance&8] &cCe joueur n'est pas dans la liste blan
 whitelistEmtpy: "&8[&eMaintenance&8] &cLa liste blanche de maintenance est vide! Utilisation '/maintenance add <joueur>' ajouter quelqu'un!"
 whitelistEmptyDefault: "&8[&eMaintenance&8] &cUtilisation '/maintenance add <joueur>' ajouter quelqu'un. Alternativement, vous pouvez ajouter le uuid d'un joueur à la WhitelistedPlayers.yml comme on le voit dans l'exemple du fichier!"
 playerNotFound: "&8[&eMaintenance&8] &cAucun joueur avec ce nom n'a joué sur ce serveur auparavant."
-playerNotFoundUuid: "&8[&eMaintenance&8] &cIl n'y a pas de joueur en ligne avec cette uuid."
+playerNotFoundUuid: "&8[&eMaintenance&8] &cAucun joueur avec cet uuid n'a pu être trouvé."
 playerNotOnline: "&8[&eMaintenance&8] &cIl n'y a pas de joueur en ligne avec ce nom."
-invalidUuid: "&8[&eMaintenance&8] &cC'est un uuid invalide!"
+invalidUuid: "&8[&eMaintenance&8] &cLe format de l'uuid est invalide!"
 
 second: "second"
 seconds: "seconds"

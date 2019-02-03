@@ -12,18 +12,17 @@
 # Enables maintenance mode.
 maintenance-enabled: false
 
-# The message shown in the multiplayer server list motd.
+# The message shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
-# If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage.
+# If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
 pingmessages:
 # - "Other entry"
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
 
-# If set to true, the message below will be shown at the top right corner of the server in the serverlist,where the playercount would normally be displayed.
+# If set to true, the message below will be shown at the top right corner of the server in the serverlist, where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.
 #
-# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message.
-# (E.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
+# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message (e.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
 enable-playercountmessage: true
 playercountmessage: "&4Maintenance"
 
@@ -31,14 +30,11 @@ playercountmessage: "&4Maintenance"
 # where the playercount would normally be displayed.
 playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
 
-# Is shown when a player tries to join while maintenance is enabled and they don't have the permission to bypass it.
-kickmessage: "&cThe server is currently under maintenance!%NEWLINE%Try again later!"
-
-# If set to true, players with the maintenance.joinnotification permission will receive a message,
+# If set to true, players with the 'maintenance.joinnotification' permission will receive a message,
 # that a player tried to join the server while maintenance is enabled.
 send-join-notification: false
 
-# If set to true, the server icon will be changed to maintenance-icon.png in the plugin's folder.
+# If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder.
 custom-maintenance-icon: false
 
 # Changes the language of command feedback/messages.

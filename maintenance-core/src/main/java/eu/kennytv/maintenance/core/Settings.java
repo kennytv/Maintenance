@@ -38,7 +38,6 @@ public class Settings implements ISettings {
     private List<String> pingMessages;
     private String playerCountMessage;
     private String playerCountHoverMessage;
-    private String kickMessage;
     private String languageName;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
@@ -67,6 +66,7 @@ public class Settings implements ISettings {
         try {
             config = new Config(new File(plugin.getDataFolder(), "config.yml"), unsupportedFields);
             config.load();
+            config.resetAwesomeHeader();
             whitelist = new Config(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
             whitelist.load();
             reloadExtraConfigs();
@@ -82,6 +82,12 @@ public class Settings implements ISettings {
             language.load();
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
+
+        // Directly save colored messages
+        for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
+            if (!(entry.getValue() instanceof String)) continue;
+            entry.setValue(getColoredString((String) entry.getValue()));
         }
     }
 
@@ -139,7 +145,6 @@ public class Settings implements ISettings {
         broadcastIntervalls = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
         playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
-        kickMessage = getColoredString(getConfigString("kickmessage"));
         languageName = getConfigString("language").toLowerCase();
         debug = config.getBoolean("debug");
         if (customMaintenanceIcon) {
@@ -226,11 +231,15 @@ public class Settings implements ISettings {
     }
 
     public String getMessage(final String path) {
+        return getMessage(path, "null");
+    }
+
+    public String getMessage(final String path, final String def) {
         if (!language.contains(path)) {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
-            return "null";
+            return def;
         }
-        return getColoredString(language.getString(path));
+        return language.getString(path);
     }
 
     public String getRandomPingMessage() {
@@ -320,7 +329,8 @@ public class Settings implements ISettings {
     }
 
     public String getKickMessage() {
-        return kickMessage.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
+        return getMessage("kickmessage", "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!")
+                .replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
     }
 
     public String getLanguage() {

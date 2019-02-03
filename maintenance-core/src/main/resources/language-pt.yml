@@ -2,6 +2,7 @@
 # Nao removas o '%' se nao souberes exatamente o que estas a fazer
 
 noPermission: "&cNao tens permissao para executar este comando."
+kickmessage: "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!"
 maintenanceActivated: "&8[&cManutencao&8] &6Manutencao esta agora ativada!"
 maintenanceDeactivated: "&8[&cManutencao&8] &6Manutencao esta agora desativada!"
 alreadyEnabled: "&8[&cManutencao&8] &cManutencao ja esta ativada!"

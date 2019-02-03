@@ -36,6 +36,17 @@ import java.util.stream.Collectors;
  */
 public final class Config {
 
+    private static final String AWESOME_HEADER =
+            "#######################################################################################################################\n" +
+                    "#   __  __       _       _                                    _             _  __                     _______     __  #\n" +
+                    "#  |  \\/  | __ _(_)_ __ | |_ ___ _ __   __ _ _ __   ___ ___  | |__  _   _  | |/ /___ _ __  _ __  _   |_   _\\ \\   / /  #\n" +
+                    "#  | |\\/| |/ _` | | '_ \\| __/ _ \\ '_ \\ / _` | '_ \\ / __/ _ \\ | '_ \\| | | | | ' // _ \\ '_ \\| '_ \\| | | || |  \\ \\ / /   #\n" +
+                    "#  | |  | | (_| | | | | | ||  __/ | | | (_| | | | | (_|  __/ | |_) | |_| | | . \\  __/ | | | | | | |_| || |   \\ V /    #\n" +
+                    "#  |_|  |_|\\__,_|_|_| |_|\\__\\___|_| |_|\\__,_|_| |_|\\___\\___| |_.__/ \\__, | |_|\\_\\___|_| |_|_| |_|\\__, ||_|    \\_/     #\n" +
+                    "#                                                                   |___/                        |___/                #\n" +
+                    "#######################################################################################################################\n" +
+                    "# You can report bugs here: https://github.com/KennyTV/Maintenance/issues\n" +
+                    "# If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq\n";
     private final Yaml yaml = createYaml();
     private final File file;
     private final Set<String> unsupportedFields;
@@ -166,8 +177,8 @@ public final class Config {
         return header;
     }
 
-    public void setHeader(final String header) {
-        this.header = header;
+    public void resetAwesomeHeader() {
+        this.header = AWESOME_HEADER;
     }
 
     public boolean getBoolean(final String key) {

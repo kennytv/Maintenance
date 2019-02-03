@@ -156,8 +156,6 @@ public abstract class MaintenanceCommand {
                 final Map<UUID, String> players = settings.getWhitelistedPlayers();
                 if (players.isEmpty()) {
                     sender.sendMessage(settings.getMessage("whitelistEmtpy"));
-                } else if (players.size() == 1 && players.containsKey(UUID.fromString("a8179ff3-c201-4a75-bdaa-9d14aca6f83f"))) {
-                    sender.sendMessage(settings.getMessage("whitelistEmptyDefault"));
                 } else {
                     sender.sendMessage(settings.getMessage("whitelistedPlayers"));
                     final String format = settings.getMessage("whitelistedPlayersFormat");
@@ -361,14 +359,15 @@ public abstract class MaintenanceCommand {
         else
             filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
 
+        final String header = "§8========[ §eMaintenance" + plugin.getServerType() + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========";
         sender.sendMessage("");
-        sender.sendMessage("§8========[ §eMaintenance" + plugin.getServerType() + " §8| §eVersion: §e" + plugin.getVersion() + " §8]========");
+        sender.sendMessage(header);
         filteredCommands.forEach(sender::sendMessage);
-        if (page * 10 < commands.size())
+        if (page * COMMANDS_PER_PAGE < commands.size())
             sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
         else
-            sender.sendMessage("§8× §7Created by §bKennyTV");
-        sender.sendMessage("§8========[ §eMaintenance" + plugin.getServerType() + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========");
+            sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bKennyTV");
+        sender.sendMessage(header);
         sender.sendMessage("");
     }
 
