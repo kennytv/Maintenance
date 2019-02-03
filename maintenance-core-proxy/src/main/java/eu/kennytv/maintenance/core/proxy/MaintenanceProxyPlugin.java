@@ -104,7 +104,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin imple
     @Override
     public List<String> getMaintenanceServers() {
         final List<String> list = new ArrayList<>();
-        if (isMaintenance()) list.add("\"global\"");
+        if (isMaintenance()) list.add("global");
         list.addAll(settingsProxy.getMaintenanceServers());
         return list.isEmpty() ? null : list;
     }

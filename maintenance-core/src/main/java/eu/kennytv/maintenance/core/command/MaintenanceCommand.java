@@ -192,7 +192,7 @@ public abstract class MaintenanceCommand {
                         return;
                     }
 
-                    sendDumpMessage(sender, "https://hastebin.com/" + key);
+                    sendDumpMessage(sender, "https://hasteb.in/" + key);
                 });
             } else
                 sendUsage(sender);

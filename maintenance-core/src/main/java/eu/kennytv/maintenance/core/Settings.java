@@ -152,7 +152,13 @@ public class Settings implements ISettings {
         }
 
         whitelistedPlayers.clear();
-        whitelist.getKeys().forEach(key -> whitelistedPlayers.put(UUID.fromString(key), whitelist.getString(key)));
+        whitelist.getValues().forEach((key, value) -> {
+            try {
+                whitelistedPlayers.put(UUID.fromString(key), (String) value);
+            } catch (final Exception e) {
+                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + key);
+            }
+        });
         loadExtraSettings();
     }
 
