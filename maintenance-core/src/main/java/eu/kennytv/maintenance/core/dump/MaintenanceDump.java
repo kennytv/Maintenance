@@ -34,6 +34,7 @@ public final class MaintenanceDump {
     public MaintenanceDump(final MaintenanceModePlugin plugin, final Settings settings) {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServers());
         configuration = new HashMap<>(settings.getConfig().getValues());
+        configuration.keySet().removeIf(key -> key.startsWith("mysql") && !(key.endsWith("use-mysql") || key.endsWith("update-interval")));
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("plugins", new GsonBuilder().create().toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;
