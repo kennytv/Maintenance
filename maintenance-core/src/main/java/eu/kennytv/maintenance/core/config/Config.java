@@ -112,7 +112,7 @@ public final class Config extends ConfigSection {
     }
 
     /**
-     * Convenience method, not furthe established as currently not necessary.
+     * Convenience method, not further established as currently not necessary.
      *
      * @see #getSection(String)
      * @deprecated this config is only made for a quite simple use, only goes one level deeper
