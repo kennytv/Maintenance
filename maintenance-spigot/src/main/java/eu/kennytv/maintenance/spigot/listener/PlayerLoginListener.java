@@ -18,21 +18,22 @@
 
 package eu.kennytv.maintenance.spigot.listener;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 public final class PlayerLoginListener extends JoinListenerBase implements Listener {
+    private final MaintenanceSpigotPlugin plugin;
 
-    public PlayerLoginListener(final MaintenanceModePlugin plugin, final Settings settings) {
+    public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final Settings settings) {
         super(plugin, settings);
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -45,7 +46,7 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
 
     @Override
     protected void broadcastJoinNotification(final SenderInfo sender) {
-        Bukkit.getOnlinePlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification"))
+        plugin.getServer().getOnlinePlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification"))
                 .forEach(p -> p.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName())));
     }
 }

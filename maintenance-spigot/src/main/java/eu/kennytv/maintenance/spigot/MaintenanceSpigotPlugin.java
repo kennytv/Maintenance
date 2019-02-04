@@ -41,6 +41,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -140,7 +141,7 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     protected void kickPlayers() {
         getServer().getOnlinePlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .filter(p -> !hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                 .forEach(p -> p.kickPlayer(settings.getKickMessage()));
     }
 
@@ -178,6 +179,10 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     @Override
     protected void loadIcon(final File file) throws Exception {
         favicon = plugin.getServer().loadServerIcon(ImageIO.read(file));
+    }
+
+    public boolean hasPermission(final CommandSender sender, final String permission) {
+        return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
     public Server getServer() {

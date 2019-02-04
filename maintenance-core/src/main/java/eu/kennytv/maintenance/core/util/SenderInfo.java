@@ -28,6 +28,10 @@ public interface SenderInfo {
 
     boolean hasPermission(String permission);
 
+    default boolean hasMaintenancePermission(final String permission) {
+        return hasPermission("maintenance.admin") || hasPermission("maintenance." + permission);
+    }
+
     void sendMessage(String message);
 
     boolean isPlayer();

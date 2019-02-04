@@ -44,12 +44,12 @@ public final class ServerConnectListener implements Listener {
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo target = event.getTarget();
         if (!plugin.isMaintenance(target)) return;
-        if (player.hasPermission("maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
+        if (plugin.hasPermission(player, "maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
 
         event.setCancelled(true);
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
-            target.getPlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
+            target.getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
         }
         // Normal serverconnect
         if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT

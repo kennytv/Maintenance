@@ -39,6 +39,7 @@ import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventManager;
@@ -168,7 +169,7 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     protected void kickPlayers() {
         getServer().getOnlinePlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .filter(p -> !hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                 .forEach(p -> p.kick(Text.of(settings.getKickMessage())));
     }
 
@@ -212,6 +213,10 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
     @Override
     protected void loadIcon(final File file) throws IOException {
         favicon = game.getRegistry().loadFavicon(ImageIO.read(file));
+    }
+
+    public boolean hasPermission(final CommandSource sender, final String permission) {
+        return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
     public Server getServer() {

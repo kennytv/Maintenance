@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.velocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -137,7 +138,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     protected void kickPlayers() {
         server.getAllPlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .filter(p -> !hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                 .forEach(p -> p.disconnect(TextComponent.of(settingsProxy.getKickMessage())));
     }
 
@@ -145,7 +146,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayers(final Server server, final Server fallback) {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
         ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
-            if (!p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null) {
                     p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
@@ -231,6 +232,10 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     protected void loadIcon(final File file) throws IOException {
         favicon = Favicon.create(ImageIO.read(file));
+    }
+
+    public boolean hasPermission(final CommandSource sender, final String permission) {
+        return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
     public ProxyServer getServer() {

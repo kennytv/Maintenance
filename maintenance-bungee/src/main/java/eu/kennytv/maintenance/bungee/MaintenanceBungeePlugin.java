@@ -37,6 +37,7 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -117,7 +118,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     protected void kickPlayers() {
         getProxy().getPlayers().stream()
-                .filter(p -> !p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
+                .filter(p -> !hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
                 .forEach(p -> p.disconnect(settingsProxy.getKickMessage()));
     }
 
@@ -125,7 +126,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     protected void kickPlayers(final Server server, final Server fallback) {
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
         ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
-            if (!p.hasPermission("maintenance.bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null && fallbackServer.canAccess(p)) {
                     p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     p.connect(fallbackServer);
@@ -204,6 +205,10 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     protected void loadIcon(final File file) throws IOException {
         favicon = Favicon.create(ImageIO.read(file));
+    }
+
+    public boolean hasPermission(final CommandSender sender, final String permission) {
+        return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
     public ProxyServer getProxy() {

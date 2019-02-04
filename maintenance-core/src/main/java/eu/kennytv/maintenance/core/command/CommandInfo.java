@@ -31,7 +31,7 @@ public final class CommandInfo {
     CommandInfo(final String permission, final TabCompleteCallback tabCompleteCallback, final String... messages) {
         this.messages = messages;
         this.tabCompleteCallback = tabCompleteCallback;
-        this.permission = "maintenance." + permission;
+        this.permission = permission;
     }
 
     CommandInfo(final String permission, final String... messages) {
@@ -39,7 +39,7 @@ public final class CommandInfo {
     }
 
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasPermission(permission);
+        return sender.hasMaintenancePermission(permission);
     }
 
     public String[] getMessages() {

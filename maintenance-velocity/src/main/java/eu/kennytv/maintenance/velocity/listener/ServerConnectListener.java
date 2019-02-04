@@ -45,12 +45,13 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
         final Player player = event.getPlayer();
         final RegisteredServer target = event.getResult().getServer().get();
         if (!plugin.isMaintenance(target.getServerInfo())) return;
-        if (player.hasPermission("maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
+        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId()))
+            return;
 
         event.setResult(ServerPreConnectEvent.ServerResult.denied());
         if (settings.isJoinNotifications()) {
             final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", player.getUsername()));
-            target.getPlayersConnected().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
+            target.getPlayersConnected().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
         }
 
         // Normal serverconnect

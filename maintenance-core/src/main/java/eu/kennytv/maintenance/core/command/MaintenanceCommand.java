@@ -333,7 +333,7 @@ public abstract class MaintenanceCommand {
     }
 
     public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
-        if (!sender.hasPermission("maintenance.command") || args.length == 0) return Collections.emptyList();
+        if (!sender.hasMaintenancePermission("command") || args.length == 0) return Collections.emptyList();
         final String s = args[0].toLowerCase();
         if (args.length == 1)
             return tabCompleters.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
@@ -405,7 +405,7 @@ public abstract class MaintenanceCommand {
     }
 
     protected boolean checkPermission(final SenderInfo sender, final String permission) {
-        if (!sender.hasPermission("maintenance." + permission)) {
+        if (!sender.hasMaintenancePermission(permission)) {
             sender.sendMessage(settings.getMessage("noPermission"));
             return true;
         }

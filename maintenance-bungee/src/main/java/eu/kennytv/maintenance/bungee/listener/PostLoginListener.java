@@ -18,8 +18,8 @@
 
 package eu.kennytv.maintenance.bungee.listener;
 
+import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -32,9 +32,11 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
 public final class PostLoginListener extends JoinListenerBase implements Listener {
+    private final MaintenanceBungeePlugin plugin;
 
-    public PostLoginListener(final MaintenanceModePlugin plugin, final Settings settings) {
+    public PostLoginListener(final MaintenanceBungeePlugin plugin, final Settings settings) {
         super(plugin, settings);
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -47,6 +49,6 @@ public final class PostLoginListener extends JoinListenerBase implements Listene
     @Override
     protected void broadcastJoinNotification(final SenderInfo sender) {
         final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
-        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
+        ProxyServer.getInstance().getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
     }
 }

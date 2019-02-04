@@ -45,6 +45,6 @@ public final class LoginListener extends JoinListenerBase implements EventHandle
     @Override
     protected void broadcastJoinNotification(final SenderInfo sender) {
         final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
-        plugin.getServer().getAllPlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification")).forEach(p -> p.sendMessage(s));
+        plugin.getServer().getAllPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
     }
 }
