@@ -53,8 +53,6 @@ public abstract class MaintenanceModePlugin implements IMaintenance {
     private Version newestVersion;
     private Task task;
 
-    // TODO starttimer -> start, endtimer -> end, timer abort -> cancel (?)
-
     protected MaintenanceModePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;

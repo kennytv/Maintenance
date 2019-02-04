@@ -175,6 +175,8 @@ public abstract class MaintenanceCommand {
             } else if (firstArg.equals("status") && plugin.getServerType().isProxy()) {
                 if (checkPermission(sender, "status")) return;
                 showMaintenanceStatus(sender);
+            } else if (firstArg.equals("abort")) {
+                cancelTask(sender);
             } else if (firstArg.equals("dump")) {
                 if (checkPermission(sender, "admin")) return;
                 if (System.currentTimeMillis() - lastDump < TimeUnit.MINUTES.toMillis(5)) {
@@ -206,7 +208,7 @@ public abstract class MaintenanceCommand {
             } else if ((firstArg.equals("on") || firstArg.equals("off")) && plugin.getServerType().isProxy()) {
                 if (checkPermission(sender, "toggleserver")) return;
                 handleToggleServerCommand(sender, args);
-            } else if (firstArg.equals("endtimer")) {
+            } else if (firstArg.equals("endtimer") || firstArg.equals("end")) {
                 if (checkPermission(sender, "timer")) return;
                 if (checkTimerArgs(sender, args[1], "endtimerUsage")) return;
                 if (!plugin.isMaintenance()) {
@@ -215,7 +217,7 @@ public abstract class MaintenanceCommand {
                 }
                 plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
                 sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-            } else if (firstArg.equals("starttimer")) {
+            } else if (firstArg.equals("starttimer") || firstArg.equals("start")) {
                 if (checkPermission(sender, "timer")) return;
                 if (checkTimerArgs(sender, args[1], "starttimerUsage")) return;
                 if (plugin.isMaintenance()) {
@@ -227,14 +229,7 @@ public abstract class MaintenanceCommand {
                 sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
             } else if (firstArg.equals("timer")) {
                 if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
-                    if (checkPermission(sender, "timer")) return;
-                    if (!plugin.isTaskRunning()) {
-                        sender.sendMessage(settings.getMessage("timerNotRunning"));
-                        return;
-                    }
-
-                    plugin.cancelTask();
-                    sender.sendMessage(settings.getMessage("timerCancelled"));
+                    cancelTask(sender);
                 } else
                     sendUsage(sender);
             } else if (firstArg.equals("add")) {
@@ -324,6 +319,17 @@ public abstract class MaintenanceCommand {
                     .replace("%MOTD%", "§f" + settings.getColoredString(message)));
         } else
             sendUsage(sender);
+    }
+
+    private void cancelTask(SenderInfo sender) {
+        if (checkPermission(sender, "timer")) return;
+        if (!plugin.isTaskRunning()) {
+            sender.sendMessage(settings.getMessage("timerNotRunning"));
+            return;
+        }
+
+        plugin.cancelTask();
+        sender.sendMessage(settings.getMessage("timerCancelled"));
     }
 
     public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
