@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * @author KennyTV
  * @since 2.0
  */
-public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
+public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     private final MaintenanceSpigotBase plugin;
     private CachedServerIcon favicon;
 
@@ -117,13 +117,13 @@ public final class MaintenanceSpigotPlugin extends MaintenanceModePlugin {
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
-        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
         final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenance.40699/"));
         click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
         tc1.addExtra(tc2);
         tc1.addExtra(click);
-        ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+        ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
     }
 
     @Override

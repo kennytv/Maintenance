@@ -18,12 +18,12 @@
 
 package eu.kennytv.maintenance.core.runnable;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
 public final class MaintenanceRunnable extends MaintenanceRunnableBase {
 
-    public MaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
+    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
         super(plugin, settings, minutes, enable);
     }
 

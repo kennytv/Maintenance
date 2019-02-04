@@ -18,7 +18,7 @@
 
 package eu.kennytv.maintenance.core.listener;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
@@ -27,12 +27,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class JoinListenerBase {
-    protected final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
     protected final Settings settings;
     private final Set<UUID> notifiedPlayers = new HashSet<>();
     private final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
 
-    protected JoinListenerBase(final MaintenanceModePlugin plugin, final Settings settings) {
+    protected JoinListenerBase(final MaintenancePlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

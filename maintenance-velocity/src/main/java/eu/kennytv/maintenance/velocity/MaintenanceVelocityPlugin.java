@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
  * @since 3.0
  */
 @Plugin(id = "maintenancevelocity", name = "MaintenanceVelocity", version = MaintenanceVersion.VERSION, authors = "KennyTV",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenancemode.40699/",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenance.40699/",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
@@ -122,9 +122,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     public void sendUpdateNotification(final SenderInfo sender) {
         sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = translate(getPrefix());
-        final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+        final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
         final TextComponent click = translate(" §7§l§o(CLICK ME)");
-        click.clickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
+        click.clickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenance.40699/"));
         click.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("§aDownload the latest version")));
         tc1.append(tc2);
         tc1.append(click);

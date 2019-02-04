@@ -21,7 +21,7 @@ package eu.kennytv.maintenance.sponge;
 import com.google.inject.Inject;
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -74,9 +74,9 @@ import java.util.stream.Collectors;
  * @since 3.0
  */
 @Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenancemode.40699/",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenance.40699/",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
-public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
+public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     private Logger logger;
     private Favicon favicon;
     @Inject private Game game;
@@ -143,12 +143,12 @@ public final class MaintenanceSpongePlugin extends MaintenanceModePlugin {
         Text text;
         try {
             text = Text.builder(getPrefix())
-                    .append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/ "))
+                    .append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/ "))
                     .append(Text.builder("§7§l§o(CLICK ME)")
-                            .onClick(TextActions.openUrl(new URL("https://www.spigotmc.org/resources/maintenancemode.40699/")))
+                            .onClick(TextActions.openUrl(new URL("https://www.spigotmc.org/resources/maintenance.40699/")))
                             .onHover(TextActions.showText(translate("§7§l§o(CLICK ME)"))).build()).build();
         } catch (final MalformedURLException e) {
-            text = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
+            text = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
             e.printStackTrace();
         }
         ((SpongeSenderInfo) sender).sendMessage(text);

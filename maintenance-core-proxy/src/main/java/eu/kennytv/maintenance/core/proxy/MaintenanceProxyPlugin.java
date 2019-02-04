@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.proxy;
 
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
@@ -36,7 +36,7 @@ import java.util.Map;
  * @author KennyTV
  * @since 3.0
  */
-public abstract class MaintenanceProxyPlugin extends MaintenanceModePlugin implements IMaintenanceProxy {
+public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implements IMaintenanceProxy {
     private final Map<String, Task> serverTasks = new HashMap<>();
     protected SettingsProxy settingsProxy;
 

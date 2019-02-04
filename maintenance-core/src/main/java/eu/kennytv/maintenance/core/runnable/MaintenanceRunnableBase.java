@@ -18,16 +18,16 @@
 
 package eu.kennytv.maintenance.core.runnable;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
 public abstract class MaintenanceRunnableBase implements Runnable {
-    protected final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
     protected final Settings settings;
     protected final boolean enable;
     protected int seconds;
 
-    protected MaintenanceRunnableBase(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
+    protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
         this.plugin = plugin;
         this.settings = settings;
         this.seconds = minutes * 60;

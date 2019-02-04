@@ -30,7 +30,7 @@ import java.util.logging.Level;
 
 public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
-    protected final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final String[] unsupportedFields;
     protected boolean maintenance;
@@ -48,7 +48,7 @@ public class Settings implements ISettings {
     protected Config language;
     protected Config whitelist;
 
-    public Settings(final MaintenanceModePlugin plugin, final String... unsupportedFields) {
+    public Settings(final MaintenancePlugin plugin, final String... unsupportedFields) {
         this.plugin = plugin;
         this.unsupportedFields = unsupportedFields;
         if (!plugin.getDataFolder().exists())

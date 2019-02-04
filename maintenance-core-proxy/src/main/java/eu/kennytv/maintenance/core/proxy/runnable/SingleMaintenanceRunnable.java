@@ -20,14 +20,14 @@ package eu.kennytv.maintenance.core.proxy.runnable;
 
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 
 public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     private final Server server;
 
-    public SingleMaintenanceRunnable(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable, final Server server) {
+    public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable, final Server server) {
         super(plugin, settings, minutes, enable);
         this.server = server;
     }

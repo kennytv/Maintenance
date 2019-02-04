@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.dump;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public final class MaintenanceDump {
     private final Map<String, Object> configuration;
     private final JsonObject plugins;
 
-    public MaintenanceDump(final MaintenanceModePlugin plugin, final Settings settings) {
+    public MaintenanceDump(final MaintenancePlugin plugin, final Settings settings) {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServers());
 
         configuration = new LinkedHashMap<>(settings.getConfig().getValues());

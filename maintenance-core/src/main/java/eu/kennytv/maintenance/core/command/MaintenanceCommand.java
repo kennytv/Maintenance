@@ -18,7 +18,7 @@
 
 package eu.kennytv.maintenance.core.command;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
@@ -27,13 +27,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public abstract class MaintenanceCommand {
-    protected final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
     protected final Settings settings;
     private final List<CommandInfo> commandInfos = new ArrayList<>();
     private final Map<String, CommandInfo> tabCompleters = new LinkedHashMap<>();
     private long lastDump;
 
-    protected MaintenanceCommand(final MaintenanceModePlugin plugin, final Settings settings) {
+    protected MaintenanceCommand(final MaintenancePlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
 
