@@ -109,8 +109,8 @@ public final class SettingsProxy extends Settings {
             final long configValue = config.getInt("mysql.update-interval");
             // Even if set to 0, only check every 500 millis
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : 500;
-            lastMySQLCheck = 0;
-            lastServerCheck = 0;
+            lastMySQLCheck = System.currentTimeMillis();
+            lastServerCheck = System.currentTimeMillis();
         } else {
             final List<String> list = spigotServers.getStringList("maintenance-on");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
