@@ -57,9 +57,9 @@ public abstract class MaintenancePlugin implements IMaintenance {
         this.version = new Version(version);
         this.serverType = serverType;
         this.prefix = "§8[§eMaintenance" + serverType + "§8] ";
-        checkNewestVersion();
     }
 
+    @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
         settings.getConfig().set("maintenance-enabled", maintenance);
@@ -99,19 +99,22 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     protected void sendEnableMessage() {
-        final String updateMessage;
-        if (version.compareTo(newestVersion) == -1) {
-            updateMessage = "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
-        } else if (version.compareTo(newestVersion) != 0) {
-            if (version.getTag().equalsIgnoreCase("snapshot")) {
-                updateMessage = "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub issue tracker (https://kennytv.eu/maintenance/issues)";
-            } else {
-                updateMessage = "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
-            }
-        } else
-            updateMessage = "You have the latest version of the plugin installed.";
         getLogger().info("Plugin by KennyTV");
-        getLogger().info(updateMessage);
+        async(() -> {
+            checkNewestVersion();
+            final String updateMessage;
+            if (version.compareTo(newestVersion) == -1) {
+                updateMessage = "§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version;
+            } else if (version.compareTo(newestVersion) != 0) {
+                if (version.getTag().equalsIgnoreCase("snapshot")) {
+                    updateMessage = "§cYou're running a development version, please report bugs on the Discord server (https://kennytv.eu/discord) or the GitHub issue tracker (https://kennytv.eu/maintenance/issues)";
+                } else {
+                    updateMessage = "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
+                }
+            } else
+                updateMessage = "You have the latest version of the plugin installed.";
+            getLogger().info(updateMessage);
+        });
     }
 
     public boolean installUpdate() {
