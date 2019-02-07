@@ -127,7 +127,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
         ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                if (fallbackServer != null && fallbackServer.canAccess(p)) {
+                if (fallbackServer != null && fallbackServer.canAccess(p) && !isMaintenance(fallbackServer)) {
                     p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     p.connect(fallbackServer);
                 } else

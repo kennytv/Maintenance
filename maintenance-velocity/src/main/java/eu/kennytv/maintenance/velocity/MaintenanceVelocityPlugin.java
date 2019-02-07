@@ -147,7 +147,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
         ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                if (fallbackServer != null) {
+                if (fallbackServer != null && !isMaintenance(fallbackServer.getServerInfo())) {
                     p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
                     p.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {

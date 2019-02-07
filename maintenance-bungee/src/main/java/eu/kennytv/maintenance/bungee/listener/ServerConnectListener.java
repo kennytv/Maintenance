@@ -66,7 +66,8 @@ public final class ServerConnectListener implements Listener {
                 plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
                 warned = true;
             }
-        } else
-            player.connect(fallback);
+        } else {
+            event.setTarget(fallback);
+        }
     }
 }
