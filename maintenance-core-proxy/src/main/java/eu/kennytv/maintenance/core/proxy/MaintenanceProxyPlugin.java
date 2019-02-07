@@ -75,7 +75,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             final Server fallback = getServer(settingsProxy.getFallbackServer());
             if (fallback == null) {
                 if (server.hasPlayers())
-                    getLogger().warning("The fallback server set in the SpigotServers.yml could not be found! Instead kicking players from that server off the network!");
+                    getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
             } else if (fallback.getName().equals(server.getName()))
                 getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             kickPlayers(server, fallback);

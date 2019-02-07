@@ -81,7 +81,7 @@ public interface ISettings {
     boolean addWhitelistedPlayer(UUID uuid, String name);
 
     /**
-     * Reloads maintenance-icon, config, language file, WhitelistedPlayers (and if on Bungee/Velocity the SpigotServers file).
+     * Reloads maintenance-icon, config, language file and WhitelistedPlayers.
      */
     void reloadConfigs();
 

@@ -63,7 +63,7 @@ public final class ServerConnectListener implements Listener {
         if (fallback == null || !fallback.canAccess(player) || plugin.isMaintenance(fallback)) {
             player.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
             if (!warned) {
-                plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
+                plugin.getLogger().warning("Could not send player to the set fallback server! Instead kicking player off the network!");
                 warned = true;
             }
         } else {

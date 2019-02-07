@@ -57,7 +57,6 @@ public class Settings implements ISettings {
 
         createFile("config.yml");
         createFile("WhitelistedPlayers.yml");
-        createExtraFiles();
 
         reloadConfigs();
     }
@@ -70,7 +69,6 @@ public class Settings implements ISettings {
             config.resetAwesomeHeader();
             whitelist = new Config(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
             whitelist.load();
-            reloadExtraConfigs();
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance files!", e);
         }
@@ -170,6 +168,9 @@ public class Settings implements ISettings {
         // 3.0 - update config format from 2.5
         if (migrateConfig(new File(plugin.getDataFolder(), "bungee-config.yml"))
                 || migrateConfig(new File(plugin.getDataFolder(), "spigot-config.yml"))) {
+            // also move fields from SpigotServers.yml to config
+            if (plugin.getServerType() == ServerType.BUNGEE)
+                migrateSpigotServersFile();
             changed = true;
         }
         // 3.0 - move maintenace-icon from server to plugin directory
@@ -214,6 +215,28 @@ public class Settings implements ISettings {
         if (!file.delete())
             plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
         return true;
+    }
+
+    private void migrateSpigotServersFile() {
+        final File file = new File(plugin.getDataFolder(), "SpigotServers.yml");
+        if (!file.exists()) return;
+
+        final Config oldFile = new Config(file);
+        try {
+            oldFile.load();
+        } catch (final IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file", e);
+            return;
+        }
+
+        if (oldFile.contains("maintenance-on"))
+            config.set("proxied-maintenance-servers", oldFile.getStringList("maintenance-on"));
+        if (oldFile.contains("fallback"))
+            config.set("fallback", oldFile.getString("fallback"));
+
+        oldFile.clear();
+        if (!file.delete())
+            plugin.getLogger().warning("Could not delete old SpigotServers.yml file! Please delete it as soon as possible.");
     }
 
     private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
@@ -347,12 +370,6 @@ public class Settings implements ISettings {
 
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
-    }
-
-    protected void reloadExtraConfigs() throws IOException {
-    }
-
-    protected void createExtraFiles() {
     }
 
     protected void loadExtraSettings() {

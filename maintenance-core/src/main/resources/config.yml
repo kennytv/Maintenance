@@ -12,12 +12,22 @@
 # Enables maintenance mode.
 maintenance-enabled: false
 
+# Enables maintenance on certain servers managed by your Bungee instance(s).
+proxied-maintenance-servers:
+#- SpigotServer1
+#- AnotherServer
+
+# If maintenance is enabled on a proxied server with players on it,
+# they will be sent to the fallback server instead of being kicked off the network.
+# If the fallback server is not reachable/not set, they will just be kicked off the network.
+fallback: lobby
+
 # The message shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
 # If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
 pingmessages:
-# - "Other entry"
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
+# - "Other entry"
 
 # If set to true, the message below will be shown at the top right corner of the server in the serverlist, where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.

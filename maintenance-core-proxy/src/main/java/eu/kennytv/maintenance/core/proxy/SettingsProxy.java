@@ -20,12 +20,9 @@ package eu.kennytv.maintenance.core.proxy;
 
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +31,6 @@ import java.util.Set;
 
 public final class SettingsProxy extends Settings {
     private final MaintenanceProxyPlugin plugin;
-    private Config spigotServers;
     private Set<String> maintenanceServers;
     private String fallbackServer;
 
@@ -78,17 +74,6 @@ public final class SettingsProxy extends Settings {
     }
 
     @Override
-    protected void reloadExtraConfigs() throws IOException {
-        spigotServers = new Config(new File(super.plugin.getDataFolder(), "SpigotServers.yml"));
-        spigotServers.load();
-    }
-
-    @Override
-    protected void createExtraFiles() {
-        createFile("SpigotServers.yml");
-    }
-
-    @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
         if (mySQL == null && (boolean) config.getDeep("mysql.use-mysql")) {
@@ -101,7 +86,7 @@ public final class SettingsProxy extends Settings {
             }
         }
 
-        fallbackServer = spigotServers.getString("fallback", "hub");
+        fallbackServer = config.getString("fallback", "lobby");
         if (mySQL != null) {
             maintenance = loadMaintenance();
             maintenanceServers = loadMaintenanceServersFromSQL();
@@ -112,7 +97,7 @@ public final class SettingsProxy extends Settings {
             lastMySQLCheck = System.currentTimeMillis();
             lastServerCheck = System.currentTimeMillis();
         } else {
-            final List<String> list = spigotServers.getStringList("maintenance-on");
+            final List<String> list = config.getStringList("proxied-maintenance-servers");
             maintenanceServers = list == null ? new HashSet<>() : new HashSet<>(list);
         }
     }
@@ -210,16 +195,8 @@ public final class SettingsProxy extends Settings {
     }
 
     private void saveServersToConfig() {
-        spigotServers.set("maintenance-on", new ArrayList<>(maintenanceServers));
-        saveSpigotServers();
-    }
-
-    private void saveSpigotServers() {
-        try {
-            spigotServers.save();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        config.set("proxied-maintenance-servers", new ArrayList<>(maintenanceServers));
+        saveConfig();
     }
 
     public Set<String> getMaintenanceServers() {

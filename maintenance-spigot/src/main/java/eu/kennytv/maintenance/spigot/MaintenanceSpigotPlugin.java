@@ -69,7 +69,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         this.plugin = plugin;
         sendEnableMessage();
 
-        settings = new Settings(this, "mysql");
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback");
 
         plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
 

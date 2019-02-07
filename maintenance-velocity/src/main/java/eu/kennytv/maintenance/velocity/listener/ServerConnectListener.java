@@ -64,7 +64,7 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
         if (!fallback.isPresent() || plugin.isMaintenance(fallback.get().getServerInfo())) {
             disconnect(player, target);
             if (!warned) {
-                plugin.getLogger().warning("Could not send player to the fallback server set in the SpigotServers.yml! Instead kicking player off the network!");
+                plugin.getLogger().warning("Could not send player to the set fallback server! Instead kicking player off the network!");
                 warned = true;
             }
         } else {
