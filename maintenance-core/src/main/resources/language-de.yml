@@ -64,5 +64,5 @@ singleMaintenanceActivated: "&8[&eMaintenance&8] &6Der Wartungsmodus wurde auf &
 singleMaintenanceDeactivated: "&8[&eMaintenance&8] &6Der Wartungsmodus wurde auf &e%SERVER% &6deaktiviert."
 singleServerAlreadyEnabled: "&8[&eMaintenance&8] &cDer Wartungsmodus ist bereits an auf &e%SERVER%&c!"
 singleServerAlreadyDisabled: "&8[&eMaintenance&8] &cDer Wartungsmodus ist bereits aus auf &e%SERVER%&c!"
-singleServerMaintenanceList: "&8[&eMaintenance&8] &7Unterserverserver, die im Wartungsmodus sind:"
+singleServerMaintenanceList: "&8[&eMaintenance&8] &7Unterserver, die im Wartungsmodus sind:"
 singleServerMaintenanceListEmpty: "&8[&eMaintenance&8] &7Es befindet sich momentan kein Unterserver im Wartungsmodus."
