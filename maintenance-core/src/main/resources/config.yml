@@ -51,7 +51,8 @@ custom-maintenance-icon: false
 # Currently available are: en (English), de (German), fr (French), pt (Portuguese)
 language: en
 
-# Only enable MySQL if you know why you would want to.
+# If you have 2 or more proxy instances, the database connection will make sure all proxies
+# have the same maintenance status, so you won't have to enable/disable it on every proxy by hand.
 mysql:
   use-mysql: false
   host: host
