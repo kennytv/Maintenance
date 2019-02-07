@@ -92,12 +92,14 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Subscribe
     public void onEnable(final ProxyInitializeEvent event) {
-        sendEnableMessage();
-
         settingsProxy = new SettingsProxy(this);
         settings = settingsProxy;
 
-        server.getCommandManager().register(new MaintenanceVelocityCommand(this, settingsProxy), "maintenance", "maintenancevelocity");
+        sendEnableMessage();
+
+        final MaintenanceVelocityCommand command = new MaintenanceVelocityCommand(this, settingsProxy);
+        commandManager = command;
+        server.getCommandManager().register(command, "maintenance", "maintenancevelocity");
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
@@ -182,6 +184,12 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final Optional<Player> player = server.getPlayer(uuid);
         return player.map(VelocitySenderInfo::new).orElse(null);
+    }
+
+    @Override
+    public String getServer(final SenderInfo sender) {
+        final Optional<Player> player = server.getPlayer(sender.getUuid());
+        return player.map(p -> p.getCurrentServer().get().getServerInfo().getName()).orElse("");
     }
 
     @Override

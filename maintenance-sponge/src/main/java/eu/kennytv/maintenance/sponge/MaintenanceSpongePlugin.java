@@ -93,11 +93,14 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Listener
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
-        sendEnableMessage();
 
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "playercountmessage", "enable-playercountmessage");
 
-        game.getCommandManager().register(this, new MaintenanceSpongeCommand(this, settings), "maintenance", "maintenancesponge");
+        sendEnableMessage();
+
+        final MaintenanceSpongeCommand command = new MaintenanceSpongeCommand(this, settings);
+        commandManager = command;
+        game.getCommandManager().register(this, command, "maintenance", "maintenancesponge");
         final EventManager em = game.getEventManager();
         em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));

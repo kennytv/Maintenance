@@ -19,14 +19,15 @@
 package eu.kennytv.maintenance.bungee.command;
 
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
+import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 public final class MaintenanceBungeeCommandBase extends Command implements TabExecutor {
-    private final MaintenanceBungeeCommand command;
+    private final MaintenanceCommand command;
 
-    public MaintenanceBungeeCommandBase(final MaintenanceBungeeCommand command) {
+    public MaintenanceBungeeCommandBase(final MaintenanceCommand command) {
         super("maintenance", "", "maintenancebungee");
         this.command = command;
     }

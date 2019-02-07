@@ -71,16 +71,18 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     MaintenanceBungeePlugin(final MaintenanceBungeeBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.BUNGEE);
         this.plugin = plugin;
-        sendEnableMessage();
 
         settingsProxy = new SettingsProxy(this);
         settings = settingsProxy;
+
+        sendEnableMessage();
 
         final PluginManager pm = getProxy().getPluginManager();
         pm.registerListener(plugin, new PostLoginListener(this, settingsProxy));
         pm.registerListener(plugin, new ProxyPingListener(this, settingsProxy));
         pm.registerListener(plugin, new ServerConnectListener(this, settingsProxy));
-        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(new MaintenanceBungeeCommand(this, settingsProxy)));
+        commandManager = new MaintenanceBungeeCommand(this, settingsProxy);
+        pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(commandManager));
 
         new MetricsLite(plugin);
 
@@ -159,6 +161,12 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final ProxiedPlayer player = getProxy().getPlayer(uuid);
         return player != null ? new BungeeSenderInfo(player) : null;
+    }
+
+    @Override
+    public String getServer(final SenderInfo sender) {
+        final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
+        return player != null ? player.getServer().getInfo().getName() : "";
     }
 
     @Override

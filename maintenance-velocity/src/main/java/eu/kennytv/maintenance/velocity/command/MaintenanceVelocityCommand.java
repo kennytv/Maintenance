@@ -32,7 +32,6 @@ import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements Command {
@@ -41,6 +40,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     public MaintenanceVelocityCommand(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
         super(plugin, settings);
         this.plugin = plugin;
+        registerCommands();
     }
 
     @Override
@@ -59,7 +59,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
-    protected void checkForUpdate(final SenderInfo sender) {
+    public void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the proxy to prevent further issues and to complete the update!" +
@@ -74,7 +74,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
-    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+    public void sendDumpMessage(final SenderInfo sender, final String url) {
         sender.sendMessage(plugin.getPrefix() + "§c" + url);
         if (sender.isPlayer()) {
             final TextComponent clickText = plugin.translate(plugin.getPrefix() + "§7Click here to copy the link)");
@@ -85,20 +85,14 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
-    protected List<String> getServersCompletion(final String s) {
+    public List<String> getServersCompletion(final String s) {
         return plugin.getServer().getAllServers().stream().filter(server -> server.getServerInfo().getName().toLowerCase().startsWith(s))
                 .filter(server -> !plugin.getSettingsProxy().getFallbackServer().contains(server.getServerInfo().getName()))
                 .map(server -> server.getServerInfo().getName()).collect(Collectors.toList());
     }
 
     @Override
-    protected List<String> getPlayersCompletion() {
+    public List<String> getPlayersCompletion() {
         return plugin.getServer().getAllPlayers().stream().map(Player::getUsername).collect(Collectors.toList());
-    }
-
-    @Override
-    protected String getServer(final SenderInfo sender) {
-        final Optional<Player> player = plugin.getServer().getPlayer(sender.getUuid());
-        return player.map(p -> p.getCurrentServer().get().getServerInfo().getName()).orElse("");
     }
 }

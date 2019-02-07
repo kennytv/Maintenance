@@ -18,41 +18,83 @@
 
 package eu.kennytv.maintenance.core.command;
 
+import eu.kennytv.maintenance.core.MaintenancePlugin;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
 import java.util.List;
 
-public final class CommandInfo {
+public abstract class CommandInfo {
+    protected final MaintenancePlugin plugin;
     private final String[] messages;
     private final String permission;
-    private final TabCompleteCallback tabCompleteCallback;
 
-    CommandInfo(final String permission, final TabCompleteCallback tabCompleteCallback, final String... messages) {
-        this.messages = messages;
-        this.tabCompleteCallback = tabCompleteCallback;
+    protected CommandInfo(final MaintenancePlugin plugin, final String permission) {
+        this.plugin = plugin;
         this.permission = permission;
+        this.messages = helpMessage();
     }
 
-    CommandInfo(final String permission, final String... messages) {
-        this(permission, null, messages);
+    protected CommandInfo(final MaintenancePlugin plugin) {
+        this(plugin, null);
     }
 
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission(permission);
+        return permission == null || sender.hasMaintenancePermission(permission);
     }
 
-    public String[] getMessages() {
+    public String getPermission() {
+        return permission;
+    }
+
+    public String[] getHelpMessage() {
         return messages;
     }
 
     public List<String> getTabCompletion(final String[] args) {
-        return tabCompleteCallback == null ? Collections.emptyList() : tabCompleteCallback.tabComplete(args);
+        return Collections.emptyList();
     }
 
-    @FunctionalInterface
-    public interface TabCompleteCallback {
+    public abstract void execute(SenderInfo sender, String[] args);
 
-        List<String> tabComplete(String[] args);
+    protected void sendHelp(final SenderInfo sender) {
+        for (final String message : messages) {
+            sender.sendMessage(message);
+        }
     }
+
+    protected boolean checkPermission(final SenderInfo sender, final String permission) {
+        if (!sender.hasMaintenancePermission(permission)) {
+            sender.sendMessage(getMessage("noPermission"));
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean checkArgs(final SenderInfo sender, final String[] args, final int length) {
+        if (args.length != length) {
+            sendHelp(sender);
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean isNumeric(final String string) {
+        return string.matches("[0-9]+");
+    }
+
+    protected String[] fromStrings(final String... s) {
+        return s;
+    }
+
+    protected String getMessage(final String s) {
+        return plugin.getSettings().getMessage(s);
+    }
+
+    protected Settings getSettings() {
+        return plugin.getSettings();
+    }
+
+    protected abstract String[] helpMessage();
 }

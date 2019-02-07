@@ -22,18 +22,14 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -41,6 +37,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
 
     public MaintenanceSpigotCommand(final MaintenanceSpigotPlugin plugin, final Settings settings) {
         super(plugin, settings);
+        registerCommands();
     }
 
     @Override
@@ -49,7 +46,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         return true;
     }
 
-    @Override
+    /*@Override
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final Player selected = Bukkit.getPlayer(name);
         if (selected != null) {
@@ -81,7 +78,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         }
 
         whitelistRemoveMessage(sender, new BukkitOfflinePlayerInfo(offlinePlayer));
-    }
+    }*/
 
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
@@ -89,7 +86,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
     }
 
     @Override
-    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+    public void sendDumpMessage(final SenderInfo sender, final String url) {
         sender.sendMessage(plugin.getPrefix() + "§c" + url);
         if (sender.isPlayer()) {
             final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link)");

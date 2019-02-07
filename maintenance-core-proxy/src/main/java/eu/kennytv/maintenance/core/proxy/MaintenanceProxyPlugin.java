@@ -21,8 +21,10 @@ package eu.kennytv.maintenance.core.proxy;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
+import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 
@@ -108,9 +110,16 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return list.isEmpty() ? null : list;
     }
 
+    @Override
+    public MaintenanceProxyCommand getCommandManager() {
+        return (MaintenanceProxyCommand) commandManager;
+    }
+
     public SettingsProxy getSettingsProxy() {
         return settingsProxy;
     }
+
+    public abstract String getServer(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);
 }

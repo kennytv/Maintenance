@@ -48,6 +48,7 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final Settings settings) {
         super(plugin, settings);
         this.plugin = plugin;
+        registerCommands();
     }
 
     @Override
@@ -82,7 +83,7 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     }
 
     @Override
-    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+    public void sendDumpMessage(final SenderInfo sender, final String url) {
         final SpongeSenderInfo spongeSender = ((SpongeSenderInfo) sender);
         spongeSender.sendMessage(plugin.translate(plugin.getPrefix() + "§c" + url));
         if (spongeSender.isPlayer()) {
@@ -92,7 +93,7 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     }
 
     @Override
-    protected List<String> getPlayersCompletion() {
+    public List<String> getPlayersCompletion() {
         return Sponge.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
     }
 

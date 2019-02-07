@@ -20,379 +20,94 @@ package eu.kennytv.maintenance.core.command;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.command.subcommand.*;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public abstract class MaintenanceCommand {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
-    private final List<CommandInfo> commandInfos = new ArrayList<>();
-    private final Map<String, CommandInfo> tabCompleters = new LinkedHashMap<>();
-    private long lastDump;
-
-    //TODO proper subcommand system
-    //TODO addmotd command
+    private final Map<String, CommandInfo> commandExecutors = new LinkedHashMap<>();
+    private final List<CommandInfo> commands = new ArrayList<>();
+    private final HelpCommand help;
 
     protected MaintenanceCommand(final MaintenancePlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
+        help = new HelpCommand(plugin);
+    }
 
-        // reload
-        addCommandInfoWithTabCompleter("reload", "§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
+    protected void registerCommands() {
+        add(help, "help");
+        add(new ReloadCommand(plugin), "reload");
 
-        // on, off, status
-        final CommandInfo toggle = addCommandInfo("toggle", "§6/maintenance on §7(Enables maintenance mode)", "§6/maintenance off §7(Disables maintenance mode)");
-        if (plugin.getServerType().isProxy()) {
-            final CommandInfo toggleServer = new CommandInfo("toggleserver", args -> args.length == 2 ? getServersCompletion(args[1].toLowerCase()) : Collections.emptyList(),
-                    "§6/maintenance on <server> §7(Enables maintenance mode on a specific proxied server)",
-                    "§6/maintenance off <server> §7(Disables maintenance mode on a specific proxied server)");
-            addCommandInfoWithTabCompleter("status", "§6/maintenance status §7(Lists all proxied servers, that are currently under maintenance)");
-            commandInfos.add(toggleServer);
-            tabCompleters.put("on", toggleServer);
-            tabCompleters.put("off", new CommandInfo("toggleserver", args -> args.length == 2 ? getMaintenanceServersCompletion(args[1].toLowerCase()) : Collections.emptyList(), (String[]) null));
-        } else {
-            tabCompleters.put("on", toggle);
-            tabCompleters.put("off", toggle);
+        addToggleAndTimerCommands();
+
+        add(new WhitelistCommand(plugin), "whitelist");
+        add(new WhitelistAddCommand(plugin), "add");
+        add(new WhitelistRemoveCommand(plugin), "remove");
+
+        add(new SetMotdCommand(plugin), "setmotd");
+        add(new RemoveMotdCommand(plugin), "removemotd");
+        add(new MotdCommand(plugin), "motd");
+
+        add(new UpdateCommand(plugin), "update", "forceupdate");
+        add(new DumpCommand(plugin), "dump");
+    }
+
+    protected void add(final CommandInfo command, final String... aliases) {
+        commands.add(command);
+        for (final String alias : aliases) {
+            commandExecutors.put(alias, command);
         }
-
-        // starttimer, endtimer, timer abort
-        final CommandInfo timer = new CommandInfo("timer", args -> args[0].equalsIgnoreCase("timer") && args.length == 2 ? Collections.singletonList("abort") : Collections.emptyList(), "§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)",
-                "§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)",
-                "§6/maintenance timer abort §7(If running, the current timer will be aborted)");
-        commandInfos.add(timer);
-        if (plugin.getServerType().isProxy()) {
-            final CommandInfo servertimer = new CommandInfo("servertimer", args -> args.length == 2 ? getServersCompletion(args[1]) : Collections.emptyList(),
-                    "§6/maintenance starttimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be enabled on the given server)",
-                    "§6/maintenance endtimer <server> <minutes> §7(After the given time in minutes, maintenance mode will be disabled on the given server)",
-                    "§6/maintenance timer abort <server> §7(If running, the timer running for that server will be aborted)");
-            commandInfos.add(servertimer);
-            tabCompleters.put("starttimer", servertimer);
-            tabCompleters.put("endtimer", servertimer);
-            tabCompleters.put("timer", servertimer);
-        } else {
-            tabCompleters.put("starttimer", timer);
-            tabCompleters.put("endtimer", timer);
-            tabCompleters.put("timer", timer);
-        }
-
-        // whitelist, add, remove
-        tabCompleters.put("whitelist", addCommandInfo("whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)"));
-        addCommandInfoWithTabCompleter("add", args -> args.length == 2 ? getPlayersCompletion() : Collections.emptyList(), "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
-        addCommandInfoWithTabCompleter("remove", args -> args.length == 2 ?
-                        settings.getWhitelistedPlayers().values().stream().filter(name -> name.toLowerCase().startsWith(args[1])).collect(Collectors.toList()) : Collections.emptyList(),
-                "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
-
-        // setmotd, motd
-        addCommandInfoWithTabCompleter("setmotd", args -> {
-            if (args.length == 3) return Arrays.asList("1", "2");
-            if (args.length == 2) {
-                final List<String> list = new ArrayList<>();
-                for (int i = 1; i <= settings.getPingMessages().size() + 1; i++) {
-                    list.add(String.valueOf(i));
-                }
-                return list;
-            }
-            return Collections.emptyList();
-        }, "setmotd", "§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)", "§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
-        addCommandInfoWithTabCompleter("motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
-
-        // update, forceupdate
-        final CommandInfo update = addCommandInfo("update", "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
-        tabCompleters.put("update", update);
-        tabCompleters.put("forceupdate", update);
-    }
-
-    // Adds the commandinfo without adding the tabcompleter.
-    private CommandInfo addCommandInfo(final String permission, final String... messages) {
-        final CommandInfo info = new CommandInfo(permission, messages);
-        commandInfos.add(info);
-        return info;
-    }
-
-    // Adds the commandinfo with an empty tabcompleter.
-    private void addCommandInfoWithTabCompleter(final String command, final String... messages) {
-        final CommandInfo info = new CommandInfo(command, messages);
-        commandInfos.add(info);
-        tabCompleters.put(command, info);
-    }
-
-    // Adds the commandinfo with a custom tabcompleter.
-    private void addCommandInfoWithTabCompleter(final String command, final CommandInfo.TabCompleteCallback tabCompleteCallback, final String permission, final String... messages) {
-        final CommandInfo info = new CommandInfo(permission, tabCompleteCallback, messages);
-        commandInfos.add(info);
-        tabCompleters.put(command, info);
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkPermission(sender, "command")) return;
-        final String firstArg = args.length > 0 ? args[0] : null;
-        if (args.length == 1) {
-            if (firstArg.equals("on") || firstArg.equals("off")) {
-                if (checkPermission(sender, "toggle")) return;
-
-                final boolean maintenance = firstArg.equals("on");
-                if (maintenance == plugin.isMaintenance()) {
-                    sender.sendMessage(settings.getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
-                    return;
-                }
-
-                plugin.setMaintenance(maintenance);
-            } else if (firstArg.equals("reload")) {
-                if (checkPermission(sender, "reload")) return;
-                settings.reloadConfigs();
-                sender.sendMessage(settings.getMessage("reload"));
-            } else if (firstArg.equals("update")) {
-                if (checkPermission(sender, "update")) return;
-                plugin.async(() -> checkForUpdate(sender));
-            } else if (firstArg.equals("forceupdate")) {
-                if (checkPermission(sender, "update")) return;
-                sender.sendMessage(settings.getMessage("updateDownloading"));
-                if (plugin.installUpdate())
-                    sender.sendMessage(settings.getMessage("updateFinished"));
-                else
-                    sender.sendMessage(settings.getMessage("updateFailed"));
-            } else if (firstArg.equals("whitelist")) {
-                if (checkPermission(sender, "whitelist.list")) return;
-                final Map<UUID, String> players = settings.getWhitelistedPlayers();
-                if (players.isEmpty()) {
-                    sender.sendMessage(settings.getMessage("whitelistEmtpy"));
-                } else {
-                    sender.sendMessage(settings.getMessage("whitelistedPlayers"));
-                    final String format = settings.getMessage("whitelistedPlayersFormat");
-                    players.forEach((key, value) -> sender.sendMessage(format.replace("%NAME%", value).replace("%UUID%", key.toString())));
-                    sender.sendMessage("");
-                }
-            } else if (firstArg.equals("motd")) {
-                if (checkPermission(sender, "motd")) return;
-                sender.sendMessage(settings.getMessage("motdList"));
-                for (int i = 0; i < settings.getPingMessages().size(); i++) {
-                    sender.sendMessage("§b" + (i + 1) + "§8§m---------");
-                    for (final String motd : settings.getColoredString(settings.getPingMessages().get(i)).split("%NEWLINE%")) {
-                        sender.sendMessage(motd);
-                    }
-                }
-                sender.sendMessage("§8§m----------");
-            } else if (firstArg.equals("status") && plugin.getServerType().isProxy()) {
-                if (checkPermission(sender, "status")) return;
-                showMaintenanceStatus(sender);
-            } else if (firstArg.equals("abort")) {
-                cancelTask(sender);
-            } else if (firstArg.equals("dump")) {
-                if (checkPermission(sender, "admin")) return;
-                if (System.currentTimeMillis() - lastDump < TimeUnit.MINUTES.toMillis(5)) {
-                    sender.sendMessage(plugin.getPrefix() + "§cYou can only create a dump every 5 minutes!");
-                    return;
-                }
-
-                lastDump = System.currentTimeMillis();
-                plugin.async(() -> {
-                    sender.sendMessage(plugin.getPrefix() + "§7The dump is being created, this might take a moment.");
-                    final String key = plugin.pasteDump();
-                    if (key == null) {
-                        if (sender.isPlayer())
-                            sender.sendMessage(plugin.getPrefix() + "§cCould not paste dump (see the console for details)");
-                        return;
-                    }
-
-                    sendDumpMessage(sender, "https://hasteb.in/" + key);
-                });
-            } else
-                sendUsage(sender);
-        } else if (args.length == 2) {
-            if (firstArg.equals("help")) {
-                if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("helpUsage"));
-                    return;
-                }
-                sendUsage(sender, Integer.parseInt(args[1]));
-            } else if ((firstArg.equals("on") || firstArg.equals("off")) && plugin.getServerType().isProxy()) {
-                if (checkPermission(sender, "toggleserver")) return;
-                handleToggleServerCommand(sender, args);
-            } else if (firstArg.equals("endtimer") || firstArg.equals("end")) {
-                if (checkPermission(sender, "timer")) return;
-                if (checkTimerArgs(sender, args[1], "endtimerUsage")) return;
-                if (!plugin.isMaintenance()) {
-                    sender.sendMessage(settings.getMessage("alreadyDisabled"));
-                    return;
-                }
-                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
-                sender.sendMessage(settings.getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-            } else if (firstArg.equals("starttimer") || firstArg.equals("start")) {
-                if (checkPermission(sender, "timer")) return;
-                if (checkTimerArgs(sender, args[1], "starttimerUsage")) return;
-                if (plugin.isMaintenance()) {
-                    sender.sendMessage(settings.getMessage("alreadyEnabled"));
-                    return;
-                }
-
-                plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), true);
-                sender.sendMessage(settings.getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-            } else if (firstArg.equals("timer")) {
-                if (args[1].equalsIgnoreCase("abort") || args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("cancel")) {
-                    cancelTask(sender);
-                } else
-                    sendUsage(sender);
-            } else if (firstArg.equals("add")) {
-                if (checkPermission(sender, "whitelist.add")) return;
-                if (args[1].length() == 36) {
-                    final UUID uuid = checkUuid(sender, args[1]);
-                    if (uuid != null)
-                        addPlayerToWhitelist(sender, uuid);
-                } else
-                    addPlayerToWhitelist(sender, args[1]);
-            } else if (firstArg.equals("remove")) {
-                if (checkPermission(sender, "whitelist.remove")) return;
-                if (args[1].length() == 36) {
-                    final UUID uuid = checkUuid(sender, args[1]);
-                    if (uuid != null)
-                        removePlayerFromWhitelist(sender, uuid);
-                } else
-                    removePlayerFromWhitelist(sender, args[1]);
-            } else if (firstArg.equals("removemotd")) {
-                if (checkPermission(sender, "setmotd")) return;
-                if (!isNumeric(args[1])) {
-                    sender.sendMessage(settings.getMessage("removeMotdUsage"));
-                    return;
-                }
-                if (settings.getPingMessages().size() < 2) {
-                    sender.sendMessage(settings.getMessage("removeMotdError"));
-                    return;
-                }
-
-                final int index = Integer.parseInt(args[1]);
-                if (index > settings.getPingMessages().size()) {
-                    sender.sendMessage(settings.getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
-                            .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size())));
-                    return;
-                }
-
-                settings.getPingMessages().remove(index - 1);
-                settings.getConfig().set("pingmessages", settings.getPingMessages());
-                settings.saveConfig();
-                sender.sendMessage(settings.getMessage("removedMotd").replace("%INDEX%", args[1]));
-            } else
-                sendUsage(sender);
-        } else if (args.length == 3 && plugin.getServerType().isProxy()) {
-            handleTimerServerCommands(sender, args);
-        } else if (args.length > 3 && firstArg.equals("setmotd")) {
-            if (checkPermission(sender, "setmotd")) return;
-            if (!isNumeric(args[1])) {
-                sender.sendMessage(settings.getMessage("setMotdUsage"));
-                return;
-            }
-
-            final int index = Integer.parseInt(args[1]);
-            if (index < 1 || index > settings.getPingMessages().size() + 1) {
-                sender.sendMessage(settings.getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
-                        .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size() + 1)));
-                return;
-            }
-
-            if (!isNumeric(args[2])) {
-                sender.sendMessage(settings.getMessage("setMotdLineError"));
-                return;
-            }
-
-            final int line = Integer.parseInt(args[2]);
-            if (line != 1 && line != 2) {
-                sender.sendMessage(settings.getMessage("setMotdLineError"));
-                return;
-            }
-
-            final String message = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
-            final String oldMessage = index > settings.getPingMessages().size() ? "" : settings.getPingMessages().get(index - 1);
-            final String newMessage;
-            if (line == 1)
-                newMessage = oldMessage.contains("%NEWLINE%") ?
-                        message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
-            else
-                newMessage = oldMessage.contains("%NEWLINE%") ?
-                        oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
-
-            if (index > settings.getPingMessages().size())
-                settings.getPingMessages().add(newMessage);
-            else
-                settings.getPingMessages().set(index - 1, newMessage);
-            settings.getConfig().set("pingmessages", settings.getPingMessages());
-            settings.saveConfig();
-            sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
-                    .replace("%MOTD%", "§f" + settings.getColoredString(message)));
-        } else
-            sendUsage(sender);
-    }
-
-    private void cancelTask(SenderInfo sender) {
-        if (checkPermission(sender, "timer")) return;
-        if (!plugin.isTaskRunning()) {
-            sender.sendMessage(settings.getMessage("timerNotRunning"));
+        if (args.length == 0) {
+            help.sendUsage(sender);
             return;
         }
 
-        plugin.cancelTask();
-        sender.sendMessage(settings.getMessage("timerCancelled"));
+        final CommandInfo command = commandExecutors.get(args[0].toLowerCase());
+        if (command == null) {
+            help.sendUsage(sender);
+            return;
+        }
+
+        if (command.getPermission() != null && checkPermission(sender, command.getPermission())) return;
+        command.execute(sender, args);
     }
 
     public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
         if (!sender.hasMaintenancePermission("command") || args.length == 0) return Collections.emptyList();
         final String s = args[0].toLowerCase();
         if (args.length == 1)
-            return tabCompleters.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
-        final CommandInfo info = tabCompleters.get(args[0]);
+            return commandExecutors.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
+        final CommandInfo info = commandExecutors.get(args[0]);
         return info != null && info.hasPermission(sender) ? info.getTabCompletion(args) : Collections.emptyList();
     }
 
-    private static final int COMMANDS_PER_PAGE = 8;
-
-    protected void sendUsage(final SenderInfo sender) {
-        sendUsage(sender, 1);
-    }
-
-    protected void sendUsage(final SenderInfo sender, final int page) {
-        final List<String> commands = new ArrayList<>();
-        commandInfos.stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
-            for (final String message : cmd.getMessages()) {
-                commands.add(message);
-            }
-        });
-        if ((page - 1) * COMMANDS_PER_PAGE > commands.size()) {
-            sender.sendMessage(settings.getMessage("helpPageNotFound"));
-            return;
+    private boolean checkPermission(final SenderInfo sender, final String permission) {
+        if (!sender.hasMaintenancePermission(permission)) {
+            sender.sendMessage(settings.getMessage("noPermission"));
+            return true;
         }
-
-        final List<String> filteredCommands;
-        if (page * COMMANDS_PER_PAGE >= commands.size())
-            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, commands.size());
-        else
-            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
-
-        final String header = "§8========[ §eMaintenance" + plugin.getServerType() + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========";
-        sender.sendMessage("");
-        sender.sendMessage(header);
-        filteredCommands.forEach(sender::sendMessage);
-        if (page * COMMANDS_PER_PAGE < commands.size())
-            sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
-        else
-            sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bKennyTV");
-        sender.sendMessage(header);
-        sender.sendMessage("");
+        return false;
     }
 
-    private int getDivide(final int size) {
-        final int commandSize = size % COMMANDS_PER_PAGE;
-        return commandSize > 0 ? COMMANDS_PER_PAGE - commandSize : 0;
-    }
-
-    protected boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
-        if (!isNumeric(time)) {
+    public boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey, final boolean taskCheck) {
+        if (!plugin.isNumeric(time)) {
             sender.sendMessage(settings.getMessage(usageKey));
             return true;
         }
-        if (plugin.isTaskRunning()) {
-            sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
-            return true;
+        if (taskCheck) {
+            if (plugin.isTaskRunning()) {
+                sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+                return true;
+            }
         }
 
         final int minutes = Integer.parseInt(time);
@@ -407,15 +122,19 @@ public abstract class MaintenanceCommand {
         return false;
     }
 
-    protected boolean checkPermission(final SenderInfo sender, final String permission) {
-        if (!sender.hasMaintenancePermission(permission)) {
-            sender.sendMessage(settings.getMessage("noPermission"));
-            return true;
-        }
-        return false;
+    public boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
+        return checkTimerArgs(sender, time, usageKey, true);
     }
 
-    protected void checkForUpdate(final SenderInfo sender) {
+    protected void addToggleAndTimerCommands() {
+        add(new ToggleCommand(plugin), "on", "off");
+
+        add(new StarttimerCommand(plugin), "starttimer", "start");
+        add(new EndtimerCommand(plugin), "endtimer", "end");
+        add(new AbortTimerCommand(plugin), "aborttimer", "abort");
+    }
+
+    public void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update!" +
@@ -425,101 +144,21 @@ public abstract class MaintenanceCommand {
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
 
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
-        if (selected == null) {
-            sender.sendMessage(settings.getMessage("playerNotOnline"));
-            return;
-        }
-
-        whitelistAddMessage(sender, selected);
-    }
-
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
-        if (selected == null) {
-            if (settings.removeWhitelistedPlayer(name))
-                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", name));
-            else
-                sender.sendMessage(settings.getMessage("whitelistNotFound"));
-            return;
-        }
-
-        whitelistRemoveMessage(sender, selected);
-    }
-
-    protected void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
-        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null) {
-            sender.sendMessage(settings.getMessage("playerNotFoundUuid"));
-            return;
-        }
-
-        whitelistAddMessage(sender, selected);
-    }
-
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
-        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null) {
-            if (settings.removeWhitelistedPlayer(uuid))
-                sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", uuid.toString()));
-            else
-                sender.sendMessage(settings.getMessage("whitelistNotFound"));
-            return;
-        }
-
-        whitelistRemoveMessage(sender, selected);
-    }
-
-    protected void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
-        if (settings.addWhitelistedPlayer(selected.getUuid(), selected.getName()))
-            sender.sendMessage(settings.getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
-    }
-
-    protected void whitelistRemoveMessage(final SenderInfo sender, final SenderInfo selected) {
-        if (settings.removeWhitelistedPlayer(selected.getUuid()))
-            sender.sendMessage(settings.getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
-        else
-            sender.sendMessage(settings.getMessage("whitelistNotFound"));
-    }
-
-    private boolean isNumeric(final String string) {
-        return string.matches("[0-9]+");
-    }
-
-    private UUID checkUuid(final SenderInfo sender, final String s) {
-        final UUID uuid;
-        try {
-            uuid = UUID.fromString(s);
-        } catch (final Exception e) {
-            sender.sendMessage(settings.getMessage("invalidUuid"));
-            return null;
-        }
-        return uuid;
-    }
-
-    protected abstract void sendDumpMessage(SenderInfo sender, String url);
-
-    protected void showMaintenanceStatus(SenderInfo sender) {
-    }
-
-    protected void handleToggleServerCommand(SenderInfo sender, String[] args) {
-    }
-
-    protected void handleTimerServerCommands(SenderInfo sender, String[] args) {
-    }
-
-    protected List<String> getServersCompletion(String s) {
+    public List<String> getServersCompletion(final String s) {
         return null;
     }
 
-    protected List<String> getMaintenanceServersCompletion(String s) {
+    public List<String> getMaintenanceServersCompletion(final String s) {
         return null;
     }
 
-    protected List<String> getPlayersCompletion() {
+    public List<String> getPlayersCompletion() {
         return null;
+    }
+
+    public abstract void sendDumpMessage(final SenderInfo sender, final String url);
+
+    public List<CommandInfo> getCommands() {
+        return commands;
     }
 }

@@ -27,7 +27,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,10 +37,11 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     public MaintenanceBungeeCommand(final MaintenanceBungeePlugin plugin, final SettingsProxy settings) {
         super(plugin, settings);
         this.plugin = plugin;
+        registerCommands();
     }
 
     @Override
-    protected void checkForUpdate(final SenderInfo sender) {
+    public void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
             sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the proxy to prevent further issues and to complete the update!" +
@@ -57,7 +57,14 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     }
 
     @Override
-    protected void sendDumpMessage(final SenderInfo sender, final String url) {
+    public List<String> getServersCompletion(final String s) {
+        return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
+                .filter(entry -> !plugin.getSettingsProxy().getMaintenanceServers().contains(entry.getValue().getName()))
+                .map(entry -> entry.getValue().getName()).collect(Collectors.toList());
+    }
+
+    @Override
+    public void sendDumpMessage(final SenderInfo sender, final String url) {
         final BungeeSenderInfo bungeeSender = ((BungeeSenderInfo) sender);
         bungeeSender.sendMessage(plugin.getPrefix() + "§c" + url);
         if (bungeeSender.isPlayer()) {
@@ -68,20 +75,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     }
 
     @Override
-    protected List<String> getServersCompletion(final String s) {
-        return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
-                .filter(entry -> !plugin.getSettingsProxy().getMaintenanceServers().contains(entry.getValue().getName()))
-                .map(entry -> entry.getValue().getName()).collect(Collectors.toList());
-    }
-
-    @Override
-    protected List<String> getPlayersCompletion() {
+    public List<String> getPlayersCompletion() {
         return plugin.getProxy().getPlayers().stream().map(CommandSender::getName).collect(Collectors.toList());
-    }
-
-    @Override
-    protected String getServer(final SenderInfo sender) {
-        final ProxiedPlayer player = plugin.getProxy().getPlayer(sender.getUuid());
-        return player != null ? player.getServer().getInfo().getName() : "";
     }
 }

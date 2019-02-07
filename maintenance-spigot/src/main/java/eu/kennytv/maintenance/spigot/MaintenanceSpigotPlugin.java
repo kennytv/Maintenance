@@ -67,11 +67,14 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
         this.plugin = plugin;
-        sendEnableMessage();
 
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback");
 
-        plugin.getCommand("maintenancespigot").setExecutor(new MaintenanceSpigotCommand(this, settings));
+        sendEnableMessage();
+
+        final MaintenanceSpigotCommand command = new MaintenanceSpigotCommand(this, settings);
+        commandManager = command;
+        plugin.getCommand("maintenancespigot").setExecutor(command);
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);

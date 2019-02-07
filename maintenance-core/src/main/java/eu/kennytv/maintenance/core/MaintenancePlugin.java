@@ -22,7 +22,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
-import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.dump.MaintenanceDump;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
@@ -48,6 +48,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     protected Settings settings;
     protected ServerListPlusHook serverListPlusHook;
     protected MaintenanceRunnable runnable;
+    protected MaintenanceCommand commandManager;
     private final String prefix;
     private final ServerType serverType;
     private Version newestVersion;
@@ -221,6 +222,21 @@ public abstract class MaintenancePlugin implements IMaintenance {
         task = null;
     }
 
+    public UUID checkUUID(final SenderInfo sender, final String s) {
+        final UUID uuid;
+        try {
+            uuid = UUID.fromString(s);
+        } catch (final Exception e) {
+            sender.sendMessage(settings.getMessage("invalidUuid"));
+            return null;
+        }
+        return uuid;
+    }
+
+    public boolean isNumeric(final String string) {
+        return string.matches("[0-9]+");
+    }
+
     public List<String> getMaintenanceServers() {
         return isMaintenance() ? Arrays.asList("global") : null;
     }
@@ -236,7 +252,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     @Override
-    public ISettings getSettings() {
+    public Settings getSettings() {
         return settings;
     }
 
@@ -255,6 +271,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public MaintenanceRunnable getRunnable() {
         return runnable;
+    }
+
+    public MaintenanceCommand getCommandManager() {
+        return commandManager;
     }
 
     public ServerType getServerType() {
