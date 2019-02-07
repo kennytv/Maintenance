@@ -100,6 +100,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     protected void sendEnableMessage() {
         getLogger().info("Plugin by KennyTV");
+        if (!settings.hasUpdateChecks()) return;
         async(() -> {
             checkNewestVersion();
             final String updateMessage;
@@ -112,7 +113,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
                     updateMessage = "§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!";
                 }
             } else
-                updateMessage = "You have the latest version of the plugin installed.";
+                return;
             getLogger().info(updateMessage);
         });
     }

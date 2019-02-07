@@ -43,6 +43,7 @@ public class Settings implements ISettings {
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
+    private boolean updateChecks;
     private boolean debug;
 
     protected Config config;
@@ -146,6 +147,7 @@ public class Settings implements ISettings {
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         languageName = getConfigString("language").toLowerCase();
+        updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
         if (customMaintenanceIcon) {
             plugin.loadMaintenanceIcon();
@@ -337,6 +339,10 @@ public class Settings implements ISettings {
     @Override
     public boolean debugEnabled() {
         return debug;
+    }
+
+    public boolean hasUpdateChecks() {
+        return updateChecks;
     }
 
     public Config getConfig() {

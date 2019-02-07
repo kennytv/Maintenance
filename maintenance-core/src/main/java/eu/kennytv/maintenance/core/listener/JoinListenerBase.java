@@ -54,6 +54,7 @@ public abstract class JoinListenerBase {
             }
         }
 
+        if (!settings.hasUpdateChecks()) return true;
         if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return false;
 
         plugin.async(() -> {

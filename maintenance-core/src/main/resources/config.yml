@@ -44,7 +44,7 @@ playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
 # that a player tried to join the server while maintenance is enabled.
 send-join-notification: false
 
-# If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder.
+# If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
 custom-maintenance-icon: false
 
 # Changes the language of command feedback/messages.
@@ -69,3 +69,8 @@ mysql:
 
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
+
+# If disabled, you will no longer receive any messages if there is an update.
+# Not recommended to disable, as new versions generally tend to run better and with less bugs.
+# However, you can always check for updates manually using the '/maintenance update' command.
+update-checks: true
