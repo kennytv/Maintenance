@@ -33,6 +33,9 @@ public abstract class MaintenanceCommand {
     private final Map<String, CommandInfo> tabCompleters = new LinkedHashMap<>();
     private long lastDump;
 
+    //TODO proper subcommand system
+    //TODO addmotd command
+
     protected MaintenanceCommand(final MaintenancePlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
