@@ -46,7 +46,6 @@ public final class ServerConnectListener implements Listener {
         if (!plugin.isMaintenance(target)) return;
         if (plugin.hasPermission(player, "maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
 
-        event.setCancelled(true);
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
             target.getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
@@ -55,6 +54,7 @@ public final class ServerConnectListener implements Listener {
         if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
                 && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT) {
             player.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
+            event.setCancelled(true);
             return;
         }
 
