@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.io.File;
 import java.io.IOException;
@@ -143,7 +144,8 @@ public class Settings implements ISettings {
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
         broadcastIntervalls = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
-        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        if (plugin.getServerType() != ServerType.SPONGE)
+            playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         languageName = getConfigString("language").toLowerCase();
         debug = config.getBoolean("debug");
@@ -335,7 +337,7 @@ public class Settings implements ISettings {
     }
 
     public String getKickMessage() {
-        return getMessage("kickmessage", "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!")
+        return getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!")
                 .replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
     }
 

@@ -154,7 +154,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                         if (!result.isSuccessful())
                             p.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
                     });
-                }
+                } else
+                    p.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
             } else {
                 p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
             }
