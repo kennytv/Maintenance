@@ -21,7 +21,6 @@ package eu.kennytv.maintenance.core.proxy;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
-import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -96,7 +95,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, (Settings) getSettings(), minutes, enable, server);
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes, enable, server);
         serverTasks.put(server.getName(), startMaintenanceRunnable(runnable));
         return runnable;
     }
@@ -107,6 +106,10 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         if (isMaintenance()) list.add("global");
         list.addAll(settingsProxy.getMaintenanceServers());
         return list.isEmpty() ? null : list;
+    }
+
+    public SettingsProxy getSettingsProxy() {
+        return settingsProxy;
     }
 
     protected abstract void kickPlayers(Server server, Server fallback);

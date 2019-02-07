@@ -70,7 +70,8 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     @Override
     protected List<String> getServersCompletion(final String s) {
         return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
-                .filter(entry -> !plugin.isMaintenance(entry.getValue())).map(entry -> entry.getValue().getName()).collect(Collectors.toList());
+                .filter(entry -> !plugin.getSettingsProxy().getMaintenanceServers().contains(entry.getValue().getName()))
+                .map(entry -> entry.getValue().getName()).collect(Collectors.toList());
     }
 
     @Override

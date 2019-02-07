@@ -34,7 +34,6 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.util.Favicon;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.dump.PluginDump;
@@ -131,8 +130,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         ((VelocitySenderInfo) sender).sendMessage(tc1);
     }
 
-    public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settingsProxy.getMaintenanceServers().contains(serverInfo.getName());
+    public boolean isMaintenance(final RegisteredServer serverInfo) {
+        return settingsProxy.isMaintenance(new VelocityServer(serverInfo));
     }
 
     @Override
@@ -147,7 +146,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
         ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                if (fallbackServer != null && !isMaintenance(fallbackServer.getServerInfo())) {
+                if (fallbackServer != null && !isMaintenance(fallback)) {
                     p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
                     p.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {

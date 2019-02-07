@@ -44,7 +44,7 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
 
         final Player player = event.getPlayer();
         final RegisteredServer target = event.getResult().getServer().get();
-        if (!plugin.isMaintenance(target.getServerInfo())) return;
+        if (!plugin.isMaintenance(target)) return;
         if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
 
         event.setResult(ServerPreConnectEvent.ServerResult.denied());
@@ -61,7 +61,7 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
 
         // If it's the initial proxy join or a kick from another server, go back to fallback server
         final Optional<RegisteredServer> fallback = plugin.getServer().getServer(settings.getFallbackServer());
-        if (!fallback.isPresent() || plugin.isMaintenance(fallback.get().getServerInfo())) {
+        if (!fallback.isPresent() || plugin.isMaintenance(fallback.get())) {
             disconnect(player, target);
             if (!warned) {
                 plugin.getLogger().warning("Could not send player to the set fallback server! Instead kicking player off the network!");

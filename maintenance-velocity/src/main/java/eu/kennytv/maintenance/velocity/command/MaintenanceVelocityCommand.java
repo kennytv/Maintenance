@@ -87,7 +87,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     @Override
     protected List<String> getServersCompletion(final String s) {
         return plugin.getServer().getAllServers().stream().filter(server -> server.getServerInfo().getName().toLowerCase().startsWith(s))
-                .filter(server -> !plugin.isMaintenance(server.getServerInfo())).map(server -> server.getServerInfo().getName()).collect(Collectors.toList());
+                .filter(server -> !plugin.getSettingsProxy().getFallbackServer().contains(server.getServerInfo().getName()))
+                .map(server -> server.getServerInfo().getName()).collect(Collectors.toList());
     }
 
     @Override

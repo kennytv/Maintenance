@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public final class SettingsProxy extends Settings {
     private final MaintenanceProxyPlugin plugin;
@@ -50,7 +51,7 @@ public final class SettingsProxy extends Settings {
     }
 
     private void setupMySQL() throws Exception {
-        plugin.getLogger().info("Trying to open database connection...");
+        super.plugin.getLogger().info("Trying to open database connection...");
         final ConfigSection section = config.getSection("mysql");
         if (section == null) {
             plugin.getLogger().warning("Section missing: mysql");
@@ -70,7 +71,7 @@ public final class SettingsProxy extends Settings {
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
         maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
         serverQuery = "SELECT * FROM " + serverTable;
-        plugin.getLogger().info("Done!");
+        super.plugin.getLogger().info("Done!");
     }
 
     @Override
@@ -81,8 +82,7 @@ public final class SettingsProxy extends Settings {
                 setupMySQL();
             } catch (final Exception e) {
                 mySQL = null;
-                plugin.getLogger().warning("Error while trying do open database connection!");
-                e.printStackTrace();
+                super.plugin.getLogger().log(Level.WARNING, "Error while trying do open database connection!", e);
             }
         }
 
