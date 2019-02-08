@@ -79,6 +79,10 @@ public abstract class MaintenanceCommand {
             help.sendUsage(sender);
             return;
         }
+        if (!command.hasPermission(sender)) {
+            sender.sendMessage(settings.getMessage("noPermission"));
+            return;
+        }
 
         command.execute(sender, args);
     }
