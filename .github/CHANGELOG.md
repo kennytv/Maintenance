@@ -35,7 +35,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Fixed an error while setting maintenance to single servers, when the executor is something other than a player
 * Fixed the maintenance-icon not loading on 1.13+ Spigot servers with ProtocolLib
 * Some other general improvements and a small message fix
-
+---
 ## 2.5.1 - November 17th 2018
 ### Fixed
 * Fixed an occasional file loading error on startup

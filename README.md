@@ -15,6 +15,8 @@ Its features include:
 
 To get a full list of features (commands, permissions, configuration), visit the **[plugin page](https://www.spigotmc.org/resources/maintenance.40699/)** on the Spigot forums.
 
+A full list of changelogs can be found **[here](.github/CHANGELOG.md)**.
+
 This repository is mainly for reporting bugs in the issues section.
 You may only copy the code on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).
 
@@ -36,7 +38,7 @@ Then compile the project with maven (by using `mvn clean package` in your IDE co
 ## API
 There's no maven repo, yet, but you can manually add the MaintenanceAPI.jar to your library (it can be downloaded **[here](https://github.com/KennyTV/Maintenance/raw/master/MaintenanceAPI.jar)**).
 
-A rough documentation can be found **[in the api directory](https://github.com/KennyTV/Maintenance/tree/master/maintenance-api/src/main/java/eu/kennytv/maintenance/api)**.
+A rough documentation can be found **[in the api directory](maintenance-api/src/main/java/eu/kennytv/maintenance/api)**.
 Examples could be:
 ```
 package eu.kennytv.fantasticplugin;
