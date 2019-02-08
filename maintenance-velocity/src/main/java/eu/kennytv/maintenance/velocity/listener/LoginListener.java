@@ -18,17 +18,18 @@
 
 package eu.kennytv.maintenance.velocity.listener;
 
-import com.velocitypowered.api.event.EventHandler;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.ResultedEvent;
+import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
+import com.velocitypowered.api.event.connection.PostLoginEvent;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import net.kyori.text.TextComponent;
 
-public final class LoginListener extends JoinListenerBase implements EventHandler<LoginEvent> {
+public final class LoginListener extends JoinListenerBase {
     private final MaintenanceVelocityPlugin plugin;
 
     public LoginListener(final MaintenanceVelocityPlugin plugin, final Settings settings) {
@@ -36,15 +37,21 @@ public final class LoginListener extends JoinListenerBase implements EventHandle
         this.plugin = plugin;
     }
 
-    @Override
-    public void execute(final LoginEvent event) {
-        if (handleLogin(new VelocitySenderInfo(event.getPlayer()), false))
+    @Subscribe(order = PostOrder.LATE)
+    public void login(final LoginEvent event) {
+        if (!event.getResult().isAllowed()) return;
+        if (kickPlayer(new VelocitySenderInfo(event.getPlayer()), false))
             event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage())));
     }
 
+    @Subscribe
+    public void postLogin(final PostLoginEvent event) {
+        updateCheck(new VelocitySenderInfo(event.getPlayer()));
+    }
+
     @Override
-    protected void broadcastJoinNotification(final SenderInfo sender) {
-        final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
+    protected void broadcastJoinNotification(final String name) {
+        final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", name));
         plugin.getServer().getAllPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
     }
 }

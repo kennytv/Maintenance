@@ -23,7 +23,6 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
@@ -103,7 +102,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
-        em.register(this, LoginEvent.class, PostOrder.LAST, new LoginListener(this, settingsProxy));
+        em.register(this, new LoginListener(this, settingsProxy));
 
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {

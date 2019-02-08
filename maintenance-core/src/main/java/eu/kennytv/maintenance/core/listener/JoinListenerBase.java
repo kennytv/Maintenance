@@ -29,8 +29,8 @@ import java.util.UUID;
 public abstract class JoinListenerBase {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
+    protected final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
     private final Set<UUID> notifiedPlayers = new HashSet<>();
-    private final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
 
     protected JoinListenerBase(final MaintenancePlugin plugin, final Settings settings) {
         this.plugin = plugin;
@@ -43,31 +43,36 @@ public abstract class JoinListenerBase {
      * @param sender wrapper of the joining player
      * @return true if the sender should be kicked
      */
-    protected boolean handleLogin(final SenderInfo sender, final boolean notification) {
-        if (notification && sender.getUuid().equals(notifyUuid))
-            sender.sendMessage("§6Maintenance §aVersion " + plugin.getVersion());
-        else if (settings.isMaintenance()) {
+    protected boolean kickPlayer(final SenderInfo sender, final boolean updateCheck) {
+        if (settings.isMaintenance() && !sender.getUuid().equals(notifyUuid)) {
             if (!sender.hasMaintenancePermission("bypass") && !settings.getWhitelistedPlayers().containsKey(sender.getUuid())) {
                 if (settings.isJoinNotifications())
-                    broadcastJoinNotification(sender);
+                    broadcastJoinNotification(sender.getName());
                 return true;
             }
         }
+        if (updateCheck)
+            updateCheck(sender);
+        return false;
+    }
 
-        if (!settings.hasUpdateChecks()) return true;
-        if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return false;
+    protected boolean kickPlayer(final SenderInfo sender) {
+        return kickPlayer(sender, true);
+    }
 
+    protected void updateCheck(final SenderInfo sender) {
+        if (sender.getUuid().equals(notifyUuid)) {
+            sender.sendMessage("§6Maintenance §aVersion " + plugin.getVersion());
+            return;
+        }
+        if (!settings.hasUpdateChecks()) return;
+        if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return;
         plugin.async(() -> {
             if (!plugin.updateAvailable()) return;
             notifiedPlayers.add(sender.getUuid());
             plugin.sendUpdateNotification(sender);
         });
-        return false;
     }
 
-    protected boolean handleLogin(final SenderInfo sender) {
-        return handleLogin(sender, true);
-    }
-
-    protected abstract void broadcastJoinNotification(SenderInfo sender);
+    protected abstract void broadcastJoinNotification(String name);
 }

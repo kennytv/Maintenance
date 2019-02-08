@@ -20,11 +20,11 @@ package eu.kennytv.maintenance.sponge.listener;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -37,17 +37,22 @@ public final class ClientConnectionListener extends JoinListenerBase {
         this.plugin = plugin;
     }
 
-    @Listener
+    @Listener(order = Order.LATE)
     public void login(final ClientConnectionEvent.Login event) {
-        if (handleLogin(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
+        if (kickPlayer(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
             event.setCancelled(true);
             event.setMessage(Text.of(settings.getKickMessage()));
         }
     }
 
+    @Listener
+    public void join(final ClientConnectionEvent.Join event) {
+        updateCheck(new SpongeSenderInfo(event.getTargetEntity()));
+    }
+
     @Override
-    protected void broadcastJoinNotification(final SenderInfo sender) {
-        final Text text = TextSerializers.LEGACY_FORMATTING_CODE.deserialize(settings.getMessage("joinNotification").replace("%PLAYER%", sender.getName()));
+    protected void broadcastJoinNotification(final String name) {
+        final Text text = TextSerializers.LEGACY_FORMATTING_CODE.deserialize(settings.getMessage("joinNotification").replace("%PLAYER%", name));
         Sponge.getServer().getOnlinePlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(text));
     }
 }
