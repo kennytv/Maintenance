@@ -29,12 +29,12 @@ import java.util.List;
 public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
     public AbortSingleTimerCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin);
+        super(plugin, null, "§6/maintenance aborttimer [server] §7(If running, the current timer will be aborted)");
     }
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("timer");
+        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.servertimer");
     }
 
     @Override
@@ -63,16 +63,11 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
             plugin.cancelSingleTask(server);
             sender.sendMessage(getMessage("timerCancelled"));
         } else
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance aborttimer [server] §7(If running, the current timer will be aborted)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
-        return args.length == 2 ? plugin.getCommandManager().getServersCompletion(args[1]) : Collections.emptyList();
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        return args.length == 2 && sender.hasMaintenancePermission("servertimer") ? plugin.getCommandManager().getServersCompletion(args[1]) : Collections.emptyList();
     }
 }

@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class ReloadCommand extends CommandInfo {
 
     public ReloadCommand(final MaintenancePlugin plugin) {
-        super(plugin, "reload");
+        super(plugin, "reload", "§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
     }
 
     @Override
@@ -33,10 +33,5 @@ public final class ReloadCommand extends CommandInfo {
         if (checkArgs(sender, args, 1)) return;
         getSettings().reloadConfigs();
         sender.sendMessage(getMessage("reload"));
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)");
     }
 }

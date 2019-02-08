@@ -27,42 +27,28 @@ import java.util.List;
 
 public abstract class CommandInfo {
     protected final MaintenancePlugin plugin;
-    private final String[] messages;
+    protected final String helpMessage;
     private final String permission;
 
-    protected CommandInfo(final MaintenancePlugin plugin, final String permission) {
+    protected CommandInfo(final MaintenancePlugin plugin, final String permission, final String helpMessage) {
         this.plugin = plugin;
         this.permission = permission;
-        this.messages = helpMessage();
-    }
-
-    protected CommandInfo(final MaintenancePlugin plugin) {
-        this(plugin, null);
+        this.helpMessage = helpMessage;
     }
 
     public boolean hasPermission(final SenderInfo sender) {
-        return permission == null || sender.hasMaintenancePermission(permission);
+        return sender.hasMaintenancePermission(permission);
     }
 
-    public String getPermission() {
-        return permission;
+    public String getHelpMessage() {
+        return helpMessage;
     }
 
-    public String[] getHelpMessage() {
-        return messages;
-    }
-
-    public List<String> getTabCompletion(final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         return Collections.emptyList();
     }
 
     public abstract void execute(SenderInfo sender, String[] args);
-
-    protected void sendHelp(final SenderInfo sender) {
-        for (final String message : messages) {
-            sender.sendMessage(message);
-        }
-    }
 
     protected boolean checkPermission(final SenderInfo sender, final String permission) {
         if (!sender.hasMaintenancePermission(permission)) {
@@ -74,18 +60,10 @@ public abstract class CommandInfo {
 
     protected boolean checkArgs(final SenderInfo sender, final String[] args, final int length) {
         if (args.length != length) {
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
             return true;
         }
         return false;
-    }
-
-    protected boolean isNumeric(final String string) {
-        return string.matches("[0-9]+");
-    }
-
-    protected String[] fromStrings(final String... s) {
-        return s;
     }
 
     protected String getMessage(final String s) {
@@ -95,6 +73,4 @@ public abstract class CommandInfo {
     protected Settings getSettings() {
         return plugin.getSettings();
     }
-
-    protected abstract String[] helpMessage();
 }

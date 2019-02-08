@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class UpdateCommand extends CommandInfo {
 
     public UpdateCommand(final MaintenancePlugin plugin) {
-        super(plugin, "update");
+        super(plugin, "update", "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
     }
 
     @Override
@@ -34,16 +34,16 @@ public final class UpdateCommand extends CommandInfo {
         if (args[0].equalsIgnoreCase("update")) {
             plugin.async(() -> plugin.getCommandManager().checkForUpdate(sender));
         } else {
+            if (!plugin.updateAvailable()) {
+                sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+                return;
+            }
+
             sender.sendMessage(getMessage("updateDownloading"));
             if (plugin.installUpdate())
                 sender.sendMessage(getMessage("updateFinished"));
             else
                 sender.sendMessage(getMessage("updateFailed"));
         }
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
     }
 }

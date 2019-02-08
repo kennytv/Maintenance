@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class EndtimerCommand extends CommandInfo {
 
     public EndtimerCommand(final MaintenancePlugin plugin) {
-        super(plugin, "timer");
+        super(plugin, "timer", "§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)");
     }
 
     @Override
@@ -39,10 +39,5 @@ public final class EndtimerCommand extends CommandInfo {
 
         plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
         sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)");
     }
 }

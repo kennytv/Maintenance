@@ -30,13 +30,13 @@ import java.util.List;
 public final class RemoveMotdCommand extends CommandInfo {
 
     public RemoveMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd");
+        super(plugin, "setmotd", "§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 2)) return;
-        if (!isNumeric(args[1])) {
+        if (!plugin.isNumeric(args[1])) {
             sender.sendMessage(getMessage("removeMotdUsage"));
             return;
         }
@@ -61,12 +61,7 @@ public final class RemoveMotdCommand extends CommandInfo {
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         if (args.length != 2) return Collections.emptyList();
         final int size = plugin.getSettings().getPingMessages().size();
         final List<String> list = new ArrayList<>(size);

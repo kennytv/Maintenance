@@ -65,7 +65,10 @@ public abstract class MaintenanceCommand {
     }
 
     public void execute(final SenderInfo sender, final String[] args) {
-        if (checkPermission(sender, "command")) return;
+        if (!sender.hasMaintenancePermission("command")) {
+            sender.sendMessage(settings.getMessage("noPermission"));
+            return;
+        }
         if (args.length == 0) {
             help.sendUsage(sender);
             return;
@@ -77,7 +80,6 @@ public abstract class MaintenanceCommand {
             return;
         }
 
-        if (command.getPermission() != null && checkPermission(sender, command.getPermission())) return;
         command.execute(sender, args);
     }
 
@@ -87,15 +89,7 @@ public abstract class MaintenanceCommand {
         if (args.length == 1)
             return commandExecutors.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
         final CommandInfo info = commandExecutors.get(args[0]);
-        return info != null && info.hasPermission(sender) ? info.getTabCompletion(args) : Collections.emptyList();
-    }
-
-    private boolean checkPermission(final SenderInfo sender, final String permission) {
-        if (!sender.hasMaintenancePermission(permission)) {
-            sender.sendMessage(settings.getMessage("noPermission"));
-            return true;
-        }
-        return false;
+        return info != null && info.hasPermission(sender) ? info.getTabCompletion(sender, args) : Collections.emptyList();
     }
 
     public boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey, final boolean taskCheck) {

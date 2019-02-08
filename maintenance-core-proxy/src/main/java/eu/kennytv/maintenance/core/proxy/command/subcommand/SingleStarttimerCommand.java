@@ -30,12 +30,12 @@ import java.util.List;
 public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     public SingleStarttimerCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin);
+        super(plugin, null, "§6/maintenance starttimer [server] <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
     }
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("timer");
+        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.servertimer");
     }
 
     @Override
@@ -64,16 +64,11 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), true);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
         } else
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance starttimer [server] <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
-        return args.length == 2 ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase()) : Collections.emptyList();
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        return args.length == 2 && sender.hasMaintenancePermission("servertimer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase()) : Collections.emptyList();
     }
 }

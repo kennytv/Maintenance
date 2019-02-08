@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class MotdCommand extends CommandInfo {
 
     public MotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "motd");
+        super(plugin, "motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
     }
 
     @Override
@@ -39,10 +39,5 @@ public final class MotdCommand extends CommandInfo {
             }
         }
         sender.sendMessage("§8§m----------");
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance motd §7(Lists the currently set maintenance motds)");
     }
 }

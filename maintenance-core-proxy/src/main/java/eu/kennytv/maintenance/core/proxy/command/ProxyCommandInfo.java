@@ -25,13 +25,9 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 public abstract class ProxyCommandInfo extends CommandInfo {
     protected final MaintenanceProxyPlugin plugin;
 
-    protected ProxyCommandInfo(final MaintenanceProxyPlugin plugin, final String permission) {
-        super(plugin, permission);
+    protected ProxyCommandInfo(final MaintenanceProxyPlugin plugin, final String permission, final String helpMessage) {
+        super(plugin, permission, helpMessage);
         this.plugin = plugin;
-    }
-
-    protected ProxyCommandInfo(final MaintenanceProxyPlugin plugin) {
-        this(plugin, null);
     }
 
     @Override

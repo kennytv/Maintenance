@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public final class WhitelistRemoveCommand extends CommandInfo {
 
     public WhitelistRemoveCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.remove");
+        super(plugin, "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
     }
 
     @Override
@@ -45,17 +45,12 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         return args.length == 2 ? getSettings().getWhitelistedPlayers().values().stream()
                 .filter(name -> name.toLowerCase().startsWith(args[1])).collect(Collectors.toList()) : Collections.emptyList();
     }
 
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
+    private void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final SenderInfo selected = plugin.getPlayer(name);
         if (selected == null) {
             if (getSettings().removeWhitelistedPlayer(name))
@@ -65,25 +60,20 @@ public final class WhitelistRemoveCommand extends CommandInfo {
             return;
         }
 
-        whitelistRemoveMessage(sender, selected);
+        whitelistRemoveMessage(sender, selected.getUuid(), selected.getName());
     }
 
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
+    private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
         final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null) {
-            if (getSettings().removeWhitelistedPlayer(uuid))
-                sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", uuid.toString()));
-            else
-                sender.sendMessage(getMessage("whitelistNotFound"));
-            return;
-        }
-
-        whitelistRemoveMessage(sender, selected);
+        if (selected == null)
+            whitelistRemoveMessage(sender, uuid, uuid.toString());
+        else
+            whitelistRemoveMessage(sender, selected.getUuid(), selected.getName());
     }
 
-    protected void whitelistRemoveMessage(final SenderInfo sender, final SenderInfo selected) {
-        if (getSettings().removeWhitelistedPlayer(selected.getUuid()))
-            sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", selected.getName()));
+    private void whitelistRemoveMessage(final SenderInfo sender, final UUID uuid, final String toReplace) {
+        if (getSettings().removeWhitelistedPlayer(uuid))
+            sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", toReplace));
         else
             sender.sendMessage(getMessage("whitelistNotFound"));
     }

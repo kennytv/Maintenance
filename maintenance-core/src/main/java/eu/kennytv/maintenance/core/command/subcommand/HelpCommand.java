@@ -22,37 +22,32 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class HelpCommand extends CommandInfo {
     private static final int COMMANDS_PER_PAGE = 8;
 
     public HelpCommand(final MaintenancePlugin plugin) {
-        super(plugin);
+        super(plugin, null, "§6/maintenance help [page] §7(Shows this beautiful help window)");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length > 2) {
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
             return;
         }
 
         if (args.length == 1) {
             sendUsage(sender);
         } else {
-            if (!isNumeric(args[1])) {
-                sendHelp(sender);
+            if (!plugin.isNumeric(args[1])) {
+                sender.sendMessage(helpMessage);
                 return;
             }
             sendUsage(sender, Integer.parseInt(args[1]));
         }
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance help [page] §7(Shows this beautiful help window)");
     }
 
     public void sendUsage(final SenderInfo sender) {
@@ -60,12 +55,7 @@ public final class HelpCommand extends CommandInfo {
     }
 
     public void sendUsage(final SenderInfo sender, final int page) {
-        final List<String> commands = new ArrayList<>();
-        plugin.getCommandManager().getCommands().stream().filter(cmd -> cmd.hasPermission(sender)).forEach(cmd -> {
-            for (final String message : cmd.getHelpMessage()) {
-                commands.add(message);
-            }
-        });
+        final List<String> commands = plugin.getCommandManager().getCommands().stream().filter(cmd -> cmd.hasPermission(sender)).map(CommandInfo::getHelpMessage).collect(Collectors.toList());
         if ((page - 1) * COMMANDS_PER_PAGE >= commands.size()) {
             sender.sendMessage(getMessage("helpPageNotFound"));
             return;

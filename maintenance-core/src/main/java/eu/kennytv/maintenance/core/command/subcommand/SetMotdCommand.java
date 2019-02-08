@@ -31,16 +31,16 @@ import java.util.List;
 public final class SetMotdCommand extends CommandInfo {
 
     public SetMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd");
+        super(plugin, "setmotd", "§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length < 4) {
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
             return;
         }
-        if (!isNumeric(args[1])) {
+        if (!plugin.isNumeric(args[1])) {
             sender.sendMessage(getMessage("setMotdUsage"));
             return;
         }
@@ -53,7 +53,7 @@ public final class SetMotdCommand extends CommandInfo {
             return;
         }
 
-        if (!isNumeric(args[2])) {
+        if (!plugin.isNumeric(args[2])) {
             sender.sendMessage(getMessage("setMotdLineError"));
             return;
         }
@@ -85,12 +85,7 @@ public final class SetMotdCommand extends CommandInfo {
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         if (args.length == 3) return Arrays.asList("1", "2");
         if (args.length == 2) {
             final List<String> list = new ArrayList<>();

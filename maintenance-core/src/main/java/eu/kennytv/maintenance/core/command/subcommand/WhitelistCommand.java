@@ -28,7 +28,7 @@ import java.util.UUID;
 public final class WhitelistCommand extends CommandInfo {
 
     public WhitelistCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.list");
+        super(plugin, "whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
     }
 
     @Override
@@ -44,10 +44,5 @@ public final class WhitelistCommand extends CommandInfo {
             players.forEach((key, value) -> sender.sendMessage(format.replace("%NAME%", value).replace("%UUID%", key.toString())));
             sender.sendMessage("");
         }
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
     }
 }

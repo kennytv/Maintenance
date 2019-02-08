@@ -237,10 +237,6 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return string.matches("[0-9]+");
     }
 
-    public List<String> getMaintenanceServers() {
-        return isMaintenance() ? Arrays.asList("global") : null;
-    }
-
     @Override
     public boolean isMaintenance() {
         return settings.isMaintenance();
@@ -259,6 +255,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
     @Override
     public String getVersion() {
         return version.toString();
+    }
+
+    public List<String> getMaintenanceServers() {
+        return isMaintenance() ? Arrays.asList("global") : null;
     }
 
     public Version getNewestVersion() {

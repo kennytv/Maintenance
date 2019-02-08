@@ -29,12 +29,12 @@ import java.util.List;
 public final class SingleToggleCommand extends ProxyCommandInfo {
 
     public SingleToggleCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin);
+        super(plugin, null, "§6/maintenance <on/off> [server] §7(Enables/disables maintenance mode)");
     }
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("toggle");
+        return sender.hasMaintenancePermission("toggle") || sender.hasPermission("maintenance.toggleserver");
     }
 
     @Override
@@ -63,17 +63,12 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             } else
                 sender.sendMessage(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
         } else
-            sendHelp(sender);
+            sender.sendMessage(helpMessage);
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance on [server] §7(Enables maintenance mode)", "§6/maintenance off [server] §7(Disables maintenance mode)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
-        if (args.length != 2) return Collections.emptyList();
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        if (args.length != 2 || !sender.hasMaintenancePermission("toggleserver")) return Collections.emptyList();
         return args[0].equalsIgnoreCase("off") ? plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase())
                 : plugin.getCommandManager().getServersCompletion(args[1].toLowerCase());
     }

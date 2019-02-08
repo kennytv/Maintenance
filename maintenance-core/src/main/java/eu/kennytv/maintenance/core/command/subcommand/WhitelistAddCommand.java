@@ -29,7 +29,7 @@ import java.util.UUID;
 public final class WhitelistAddCommand extends CommandInfo {
 
     public WhitelistAddCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.add");
+        super(plugin, "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
     }
 
     @Override
@@ -44,16 +44,11 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
-    }
-
-    @Override
-    public List<String> getTabCompletion(final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         return args.length == 2 ? plugin.getCommandManager().getPlayersCompletion() : Collections.emptyList();
     }
 
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
+    private void addPlayerToWhitelist(final SenderInfo sender, final String name) {
         final SenderInfo selected = plugin.getPlayer(name);
         if (selected == null) {
             sender.sendMessage(getMessage("playerNotOnline"));
@@ -63,7 +58,7 @@ public final class WhitelistAddCommand extends CommandInfo {
         whitelistAddMessage(sender, selected);
     }
 
-    protected void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
+    private void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
         final SenderInfo selected = plugin.getOfflinePlayer(uuid);
         if (selected == null) {
             sender.sendMessage(getMessage("playerNotFoundUuid"));
@@ -73,7 +68,7 @@ public final class WhitelistAddCommand extends CommandInfo {
         whitelistAddMessage(sender, selected);
     }
 
-    protected void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
+    private void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
         if (getSettings().addWhitelistedPlayer(selected.getUuid(), selected.getName()))
             sender.sendMessage(getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
         else

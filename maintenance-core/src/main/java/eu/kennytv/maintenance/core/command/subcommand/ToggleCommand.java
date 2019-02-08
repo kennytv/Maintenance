@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class ToggleCommand extends CommandInfo {
 
     public ToggleCommand(final MaintenancePlugin plugin) {
-        super(plugin, "toggle");
+        super(plugin, "toggle", "§6/maintenance <on/off> §7(Enables/disables maintenance mode)");
     }
 
     @Override
@@ -39,10 +39,5 @@ public final class ToggleCommand extends CommandInfo {
         }
 
         plugin.setMaintenance(maintenance);
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance on §7(Enables maintenance mode)", "§6/maintenance off §7(Disables maintenance mode)");
     }
 }

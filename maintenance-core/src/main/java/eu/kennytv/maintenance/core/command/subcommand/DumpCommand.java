@@ -28,7 +28,7 @@ public final class DumpCommand extends CommandInfo {
     private long lastDump;
 
     public DumpCommand(final MaintenancePlugin plugin) {
-        super(plugin, "admin");
+        super(plugin, "admin", "§6/maintenance dump §7(Dumps some server information, used for bug reports)");
     }
 
     @Override
@@ -51,10 +51,5 @@ public final class DumpCommand extends CommandInfo {
 
             plugin.getCommandManager().sendDumpMessage(sender, "https://hasteb.in/" + key);
         });
-    }
-
-    @Override
-    protected String[] helpMessage() {
-        return fromStrings("§6/maintenance dump §7(Dumps some server information, used for bug reports)");
     }
 }

@@ -285,7 +285,7 @@ public class Settings implements ISettings {
     public boolean removeWhitelistedPlayer(final UUID uuid) {
         if (!whitelistedPlayers.containsKey(uuid)) return false;
         whitelistedPlayers.remove(uuid);
-        whitelist.set(uuid.toString(), null);
+        whitelist.remove(uuid.toString());
         saveWhitelistedPlayers();
         return true;
     }
@@ -298,7 +298,7 @@ public class Settings implements ISettings {
 
         final UUID uuid = entry.getKey();
         whitelistedPlayers.remove(uuid);
-        whitelist.set(uuid.toString(), null);
+        whitelist.remove(uuid.toString());
         saveWhitelistedPlayers();
         return true;
     }
