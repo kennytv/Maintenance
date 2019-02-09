@@ -7,23 +7,23 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * This plugin now also supports the platforms Sponge and Velocity!
 * Added tabcompletion for maintenance commands on all platforms
 * This plugin now uses a custom config system, which means comments won't vanish after saving them and the different configs have been unified
-* You can now also add and remove (offline) players to/from the maintenance whitelist by using their uuid (i.e. /maintenance add <uuid>)
+* You can now also add and remove (offline) players to/from the maintenance whitelist by using their uuid (i.e. `/maintenance add <uuid>`)
 * The %TIMER% variable can now also be used in the playercount-, playercounthover- and kickmessages
-* To make life easier for people running on Bungee without an extra permission plugin: the 'maintenance.admin' permission gives access to all subcommands
+* To make life easier for people running on Bungee without an extra permission plugin: the `maintenance.admin` permission gives access to all subcommands
 * Made bug reports a little easier with the new `/maintenance dump` command
 * Added a config option to disable update checks (not recommended)
-* Moved 'kickmessage' field from config to language file and added its default translations
-* The command '/maintenance timer abort' has been renamed to '/maintenance aborttimer'
-* Added additional aliases: '/maintenance end' for '/maintenance endtimer', 'start' for 'starttimer', 'abort' for 'aborttimer'
+* Moved `kickmessage` field from config to language file and added its default translations
+* The command `/maintenance timer abort` has been renamed to `/maintenance aborttimer`
+* Added additional aliases: `/maintenance end` for `/maintenance endtimer`, `start` for `starttimer`, `abort` for `aborttimer`
 * On false command syntax usage, the reply will be the specific help message for that command, not the entire help window as it was before
 * Improved update checks and updater
 * Many many other runtime improvements and some major internal refactoring
 ### Fixed
-* Fixed an error on Bungee when single servers are set to maintenance with no fallbackserver set
-* Fixed the `/maintenance status` not appearing in the help overview
-* Fixed a rare problem with adding and removing players to/from the maintenance whitelist
 * Fixed a startup issue with other plugins using the same MySQL library on Bungee (for example some versions of LuckPerms)
+* Fixed an error on Bungee when single servers are set to maintenance with no fallbackserver set
+* Fixed a rare problem with adding and removing players to/from the maintenance whitelist
 * Fixed an issue with starting server timers while also running a global maintenance timer
+* Fixed the `/maintenance status` not appearing in the help overview
 ---
 ## 2.5.2 - December 17th 2018
 ### Changed
@@ -48,7 +48,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
   * `/maintenance status` shows proxied servers that have maintenance enabled
   * new permissions are `maintenance.toggleserver`, `maintenance.servertimer` and `maintenance.status`
 * Added a multiple-language-support system! It's currently not that big tho, with the only language added being de/German
-* If you like this plugin, know French or Spanish (or any other language that isn't yet supported by the plugin) and want to contribute a bit to it, translations of the default language.yml are greatly appreciated!
+  * If you like this plugin, know French or Spanish (or any other language that isn't yet supported by the plugin) and want to contribute a bit to it, translations of the default language.yml are greatly appreciated!
   * Note: There will be a new 'language-en.yml' file created, so if you changed any messages before, you have to do it again in the new file
 * Made the help message a little fancier
 * Some API changes
@@ -107,7 +107,6 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Added `/maintenance setmotd <1/2> <message>` command to edit the maintenance mode motd via a command
 * The Bungee version of the plugin will now automatically create a MySQL table if it is enabled, so you won't have to manually create one anymore
-* Some internal code cleanup
 ### Fixed
 * Fixed the ServerListPlus motd only changing on using the command, but not on the server startup
 * Fixed an error with canceling the start-/endtimer in the Bungee version
