@@ -34,7 +34,7 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.servertimer");
+        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.singleserver.timer");
     }
 
     @Override
@@ -49,7 +49,7 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
             plugin.cancelTask();
             sender.sendMessage(getMessage("timerCancelled"));
         } else if (args.length == 2) {
-            if (checkPermission(sender, "servertimer")) return;
+            if (checkPermission(sender, "singleserver.timer")) return;
             final Server server = plugin.getServer(args[2]);
             if (server == null) {
                 sender.sendMessage(getMessage("serverNotFound"));
@@ -68,6 +68,6 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("servertimer") ? plugin.getCommandManager().getServersCompletion(args[1]) : Collections.emptyList();
+        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1]) : Collections.emptyList();
     }
 }

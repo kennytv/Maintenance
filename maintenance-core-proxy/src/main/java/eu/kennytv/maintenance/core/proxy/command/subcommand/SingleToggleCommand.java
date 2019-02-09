@@ -34,7 +34,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("toggle") || sender.hasPermission("maintenance.toggleserver");
+        return sender.hasMaintenancePermission("toggle") || sender.hasPermission("maintenance.singleserver.toggle");
     }
 
     @Override
@@ -49,7 +49,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
 
             plugin.setMaintenance(maintenance);
         } else if (args.length == 2) {
-            if (checkPermission(sender, "toggleserver")) return;
+            if (checkPermission(sender, "singleserver.toggle")) return;
             final Server server = plugin.getServer(args[1]);
             if (server == null) {
                 sender.sendMessage(getMessage("serverNotFound"));
@@ -68,7 +68,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        if (args.length != 2 || !sender.hasMaintenancePermission("toggleserver")) return Collections.emptyList();
+        if (args.length != 2 || !sender.hasMaintenancePermission("singleserver.toggle")) return Collections.emptyList();
         return args[0].equalsIgnoreCase("off") ? plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase())
                 : plugin.getCommandManager().getServersCompletion(args[1].toLowerCase());
     }

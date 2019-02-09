@@ -13,6 +13,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Made bug reports a little easier with the new `/maintenance dump` command
 * Added a config option to disable update checks (not recommended)
 * Moved `kickmessage` field from config to language file and added its default translations
+* Changed permissions nodes (`from: to`):
+  * `maintenance.toggleserver`: `maintenance.singleserver.toggle`
+  * `maintenance.servertimer`: `maintenance.singleserver.timer`
+  * `maintenance.status`:  `maintenance.singleserver.status`
 * The command `/maintenance timer abort` has been renamed to `/maintenance aborttimer`
 * Added additional aliases: `/maintenance end` for `/maintenance endtimer`, `start` for `starttimer`, `abort` for `aborttimer`
 * On false command syntax usage, the reply will be the specific help message for that command, not the entire help window as it was before

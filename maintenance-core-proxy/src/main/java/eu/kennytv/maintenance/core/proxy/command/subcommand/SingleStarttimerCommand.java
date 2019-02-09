@@ -35,7 +35,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     @Override
     public boolean hasPermission(final SenderInfo sender) {
-        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.servertimer");
+        return sender.hasMaintenancePermission("timer") || sender.hasPermission("maintenance.singleserver.timer");
     }
 
     @Override
@@ -51,7 +51,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), true);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
-            if (checkPermission(sender, "servertimer")) return;
+            if (checkPermission(sender, "singleserver.timer")) return;
             if (plugin.getCommandManager().checkTimerArgs(sender, args[2], "singleStarttimerUsage", false)) return;
 
             final Server server = plugin.getCommandManager().checkSingleTimerArgs(sender, args);
@@ -69,6 +69,6 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("servertimer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase()) : Collections.emptyList();
+        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase()) : Collections.emptyList();
     }
 }
