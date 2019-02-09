@@ -50,7 +50,7 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
             sender.sendMessage(getMessage("timerCancelled"));
         } else if (args.length == 2) {
             if (checkPermission(sender, "singleserver.timer")) return;
-            final Server server = plugin.getServer(args[2]);
+            final Server server = plugin.getServer(args[1]);
             if (server == null) {
                 sender.sendMessage(getMessage("serverNotFound"));
                 return;
