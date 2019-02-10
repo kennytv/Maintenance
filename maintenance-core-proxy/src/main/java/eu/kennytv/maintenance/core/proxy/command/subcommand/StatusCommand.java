@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class StatusCommand extends ProxyCommandInfo {
 
     public StatusCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, "status", "§6/maintenance status §7(Lists all proxied servers, that are currently under maintenance)");
+        super(plugin, "singleserver.status", "§6/maintenance status §7(Lists all proxied servers, that are currently under maintenance)");
     }
 
     @Override

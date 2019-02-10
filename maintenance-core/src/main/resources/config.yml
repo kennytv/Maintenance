@@ -40,12 +40,12 @@ playercountmessage: "&4Maintenance"
 # where the playercount would normally be displayed.
 playercounthovermessage: "&cCurrently under%NEWLINE%&cmaintenance"
 
+# If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
+custom-maintenance-icon: false
+
 # If set to true, players with the 'maintenance.joinnotification' permission will receive a message,
 # that a player tried to join the server while maintenance is enabled.
 send-join-notification: false
-
-# If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
-custom-maintenance-icon: false
 
 # Changes the language of command feedback/messages.
 # Currently available are: en (English), de (German), fr (French), pt (Portuguese)
