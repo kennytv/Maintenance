@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.core.proxy.command.subcommand;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
+import eu.kennytv.maintenance.core.proxy.server.DummyServer;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
@@ -50,13 +51,21 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             plugin.setMaintenance(maintenance);
         } else if (args.length == 2) {
             if (checkPermission(sender, "singleserver.toggle")) return;
-            final Server server = plugin.getServer(args[1]);
+            final boolean maintenance = args[0].equalsIgnoreCase("on");
+            Server server = plugin.getServer(args[1]);
             if (server == null) {
-                sender.sendMessage(getMessage("serverNotFound"));
-                return;
+                if (maintenance) {
+                    sender.sendMessage(getMessage("serverNotFound"));
+                    return;
+                }
+                // Let servers be removed from the maintenance list, even if they don't exist on the proxy
+                server = new DummyServer(args[1]);
+                if (!plugin.isMaintenance(server)) {
+                    sender.sendMessage(getMessage("serverNotFound"));
+                    return;
+                }
             }
 
-            final boolean maintenance = args[0].equalsIgnoreCase("on");
             if (plugin.setMaintenanceToServer(server, maintenance)) {
                 if (!sender.isPlayer() || !plugin.getServer(sender).equals(server.getName()))
                     sender.sendMessage(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
