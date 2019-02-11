@@ -25,11 +25,5 @@
             <version>1.13-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.minecrell</groupId>
-            <artifactId>ServerListPlus</artifactId>
-            <version>3.4.8</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

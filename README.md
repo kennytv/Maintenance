@@ -28,8 +28,7 @@ Forums / other download sources
 * [Velocity forums]()
 
 ## Compiling
-To be able to compile the project, you first have to run the `installServerListPlus.sh` in the main directory after pulling.
-Then compile the project with maven (by using `mvn clean package` in your IDE console).
+To create a working jar yourself, simply clone the project and compile it with maven (by using `mvn clean package` in your IDE console).
 
 ## Licence
 You may only copy the code on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).

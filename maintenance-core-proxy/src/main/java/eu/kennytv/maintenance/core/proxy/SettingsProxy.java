@@ -77,7 +77,7 @@ public final class SettingsProxy extends Settings {
     @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
-        if (mySQL == null && (boolean) config.getDeep("mysql.use-mysql")) {
+        if (!hasMySQL() && (boolean) config.getDeep("mysql.use-mysql")) {
             try {
                 setupMySQL();
             } catch (final Exception e) {
@@ -87,7 +87,7 @@ public final class SettingsProxy extends Settings {
         }
 
         fallbackServer = config.getString("fallback", "lobby");
-        if (mySQL != null) {
+        if (hasMySQL()) {
             maintenance = loadMaintenance();
             maintenanceServers = loadMaintenanceServersFromSQL();
 
@@ -104,7 +104,7 @@ public final class SettingsProxy extends Settings {
 
     @Override
     public boolean isMaintenance() {
-        if (mySQL != null && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
+        if (hasMySQL() && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
             final boolean databaseValue = loadMaintenance();
             if (databaseValue != maintenance) {
                 plugin.serverActions(maintenance);
@@ -116,7 +116,7 @@ public final class SettingsProxy extends Settings {
     }
 
     public boolean isMaintenance(final Server server) {
-        if (mySQL != null && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
+        if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
             if (!databaseValue.equals(maintenanceServers)) {
                 plugin.serverActions(server, maintenance);
@@ -127,6 +127,10 @@ public final class SettingsProxy extends Settings {
         return maintenanceServers.contains(server.getName());
     }
 
+    public boolean hasMySQL() {
+        return mySQL != null;
+    }
+
     void setMaintenanceToSQL(final boolean maintenance) {
         plugin.async(() -> {
             final String s = String.valueOf(maintenance);
@@ -135,12 +139,8 @@ public final class SettingsProxy extends Settings {
         });
     }
 
-    MySQL getMySQL() {
-        return mySQL;
-    }
-
     boolean addMaintenanceServer(final String server) {
-        if (mySQL != null) {
+        if (hasMySQL()) {
             maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.add(server)) return false;
             plugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
@@ -153,7 +153,7 @@ public final class SettingsProxy extends Settings {
     }
 
     boolean removeMaintenanceServer(final String server) {
-        if (mySQL != null) {
+        if (hasMySQL()) {
             maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.remove(server)) return false;
             plugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));

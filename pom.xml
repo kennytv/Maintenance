@@ -63,6 +63,10 @@
             <id>bstats-repo</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
+        <repository>
+            <id>minecrell</id>
+            <url>https://repo.minecrell.net/snapshots</url>
+        </repository>
     </repositories>
 
     <build>

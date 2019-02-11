@@ -48,7 +48,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.getMySQL() != null)
+        if (settingsProxy.hasMySQL())
             settingsProxy.setMaintenanceToSQL(maintenance);
         settingsProxy.setMaintenance(maintenance);
         settingsProxy.getConfig().set("maintenance-enabled", maintenance);

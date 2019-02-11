@@ -26,12 +26,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.minecrell</groupId>
-            <artifactId>ServerListPlus</artifactId>
-            <version>3.4.8</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib-API</artifactId>
             <version>4.4.0</version>
