@@ -37,7 +37,7 @@ public final class WhitelistCommand extends CommandInfo {
 
         final Map<UUID, String> players = getSettings().getWhitelistedPlayers();
         if (players.isEmpty()) {
-            sender.sendMessage(getMessage("whitelistEmtpy"));
+            sender.sendMessage(getMessage("whitelistEmpty"));
         } else {
             sender.sendMessage(getMessage("whitelistedPlayers"));
             final String format = getMessage("whitelistedPlayersFormat");

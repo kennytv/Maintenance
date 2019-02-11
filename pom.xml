@@ -92,6 +92,7 @@
                                     <pattern>org.yaml.snakeyaml</pattern>
                                     <shadedPattern>eu.kennytv.lib.snakeyaml</shadedPattern>
                                 </relocation>
+                                <!-- Relocate slf4j to prevent issues on Bungee (except Logger class to prevent false relocation of injected Sponge/Velocity logger) -->
                                 <relocation>
                                     <pattern>org.slf4j</pattern>
                                     <shadedPattern>org.slf4j.other</shadedPattern>

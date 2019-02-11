@@ -60,7 +60,7 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
             return null;
         }
         if (plugin.isServerTaskRunning(server)) {
-            sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
+            sender.sendMessage(settings.getMessage("singleTimerAlreadyRunning"));
             return null;
         }
         return server;

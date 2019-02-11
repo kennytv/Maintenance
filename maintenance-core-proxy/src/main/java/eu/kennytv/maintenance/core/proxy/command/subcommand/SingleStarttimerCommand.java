@@ -42,7 +42,10 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length == 2) {
             if (checkPermission(sender, "timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[1], "starttimerUsage")) return;
+            if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
+                sender.sendMessage(helpMessage);
+                return;
+            }
             if (plugin.isMaintenance()) {
                 sender.sendMessage(getMessage("alreadyEnabled"));
                 return;
@@ -52,7 +55,10 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[2], "singleStarttimerUsage", false)) return;
+            if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
+                sender.sendMessage(helpMessage);
+                return;
+            }
 
             final Server server = plugin.getCommandManager().checkSingleTimerArgs(sender, args);
             if (server == null) return;

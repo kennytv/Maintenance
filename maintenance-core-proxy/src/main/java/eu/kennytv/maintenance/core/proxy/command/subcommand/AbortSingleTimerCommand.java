@@ -56,12 +56,12 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
                 return;
             }
             if (!plugin.isServerTaskRunning(server)) {
-                sender.sendMessage(getMessage("timerNotRunning"));
+                sender.sendMessage(getMessage("singleTimerNotRunning"));
                 return;
             }
 
             plugin.cancelSingleTask(server);
-            sender.sendMessage(getMessage("timerCancelled"));
+            sender.sendMessage(getMessage("singleTimerCancelled"));
         } else
             sender.sendMessage(helpMessage);
     }

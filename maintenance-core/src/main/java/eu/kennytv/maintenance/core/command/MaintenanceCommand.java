@@ -96,11 +96,8 @@ public abstract class MaintenanceCommand {
         return info != null && info.hasPermission(sender) ? info.getTabCompletion(sender, args) : Collections.emptyList();
     }
 
-    public boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey, final boolean taskCheck) {
-        if (!plugin.isNumeric(time)) {
-            sender.sendMessage(settings.getMessage(usageKey));
-            return true;
-        }
+    public boolean checkTimerArgs(final SenderInfo sender, final String time, final boolean taskCheck) {
+        if (!plugin.isNumeric(time)) return true;
         if (taskCheck) {
             if (plugin.isTaskRunning()) {
                 sender.sendMessage(settings.getMessage("timerAlreadyRunning"));
@@ -114,14 +111,14 @@ public abstract class MaintenanceCommand {
             return true;
         }
         if (minutes < 1) {
-            sender.sendMessage("§8§o[KennyTV whispers to you] §c§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §c§owell.");
+            sender.sendMessage("§8§o[KennyTV whispers to you] §7§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §7§owell.");
             return true;
         }
         return false;
     }
 
-    public boolean checkTimerArgs(final SenderInfo sender, final String time, final String usageKey) {
-        return checkTimerArgs(sender, time, usageKey, true);
+    public boolean checkTimerArgs(final SenderInfo sender, final String time) {
+        return checkTimerArgs(sender, time, true);
     }
 
     protected void addToggleAndTimerCommands() {

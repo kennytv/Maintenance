@@ -31,7 +31,10 @@ public final class StarttimerCommand extends CommandInfo {
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 2)) return;
-        if (plugin.getCommandManager().checkTimerArgs(sender, args[1], "starttimerUsage")) return;
+        if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
+            sender.sendMessage(helpMessage);
+            return;
+        }
         if (plugin.isMaintenance()) {
             sender.sendMessage(getMessage("alreadyEnabled"));
             return;

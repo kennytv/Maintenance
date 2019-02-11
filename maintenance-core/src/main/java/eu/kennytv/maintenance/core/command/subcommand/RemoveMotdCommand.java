@@ -37,7 +37,7 @@ public final class RemoveMotdCommand extends CommandInfo {
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 2)) return;
         if (!plugin.isNumeric(args[1])) {
-            sender.sendMessage(getMessage("removeMotdUsage"));
+            sender.sendMessage(helpMessage);
             return;
         }
 
@@ -48,7 +48,7 @@ public final class RemoveMotdCommand extends CommandInfo {
         }
 
         final int index = Integer.parseInt(args[1]);
-        if (index > settings.getPingMessages().size()) {
+        if (index == 0 || index > settings.getPingMessages().size()) {
             sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
                     .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size())));
             return;

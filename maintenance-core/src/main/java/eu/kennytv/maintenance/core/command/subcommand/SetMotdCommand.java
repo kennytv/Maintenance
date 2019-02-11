@@ -36,18 +36,14 @@ public final class SetMotdCommand extends CommandInfo {
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (args.length < 4) {
+        if (args.length < 4 || !plugin.isNumeric(args[1])) {
             sender.sendMessage(helpMessage);
-            return;
-        }
-        if (!plugin.isNumeric(args[1])) {
-            sender.sendMessage(getMessage("setMotdUsage"));
             return;
         }
 
         final Settings settings = getSettings();
         final int index = Integer.parseInt(args[1]);
-        if (index < 1 || index > settings.getPingMessages().size() + 1) {
+        if (index == 0 || index > settings.getPingMessages().size() + 1) {
             sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
                     .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size() + 1)));
             return;

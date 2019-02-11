@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.core.command.subcommand;
 
+import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -46,7 +47,9 @@ public final class HelpCommand extends CommandInfo {
                 sender.sendMessage(helpMessage);
                 return;
             }
-            sendUsage(sender, Integer.parseInt(args[1]));
+
+            final int page = Integer.parseInt(args[1]);
+            sendUsage(sender, page == 0 ? 1 : page);
         }
     }
 
@@ -55,6 +58,7 @@ public final class HelpCommand extends CommandInfo {
     }
 
     public void sendUsage(final SenderInfo sender, final int page) {
+        Preconditions.checkArgument(page > 0);
         final List<String> commands = plugin.getCommandManager().getCommands().stream().filter(cmd -> cmd.hasPermission(sender)).map(CommandInfo::getHelpMessage).collect(Collectors.toList());
         if ((page - 1) * COMMANDS_PER_PAGE >= commands.size()) {
             sender.sendMessage(getMessage("helpPageNotFound"));
