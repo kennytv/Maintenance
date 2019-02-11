@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
+import eu.kennytv.maintenance.core.proxy.server.DummyServer;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -72,6 +73,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
+        if (server instanceof DummyServer) return;
         if (maintenance) {
             final Server fallback = getServer(settingsProxy.getFallbackServer());
             if (fallback == null) {
