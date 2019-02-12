@@ -33,7 +33,7 @@ whitelistAdded: "&8[&eMaintenance&8] &b%PLAYER% &awurde zur Maintenance Whitelis
 whitelistAlreadyAdded: "&8[&eMaintenance&8] &b%PLAYER% &cist bereits in der Maintenance Whitelist!"
 whitelistRemoved: "&8[&eMaintenance&8] &b%PLAYER% &awurde von der Maintenance Whitelist entfernt!"
 whitelistNotFound: "&8[&eMaintenance&8] &cDieser Spieler ist nicht in der Maintenance Whitelist!"
-whitelistEmtpy: "&8[&eMaintenance&8] &cDie Maintenance Whitelist ist leer! Nutze '/maintenance add <Spieler/UUID>', um jemanden hinzuzufügen!"
+whitelistEmtpy: "&8[&eMaintenance&8] &cDie Maintenance Whitelist ist leer! Nutze &e/maintenance add <Spieler/UUID>&c, um jemanden hinzuzufügen!"
 playerNotFound: "&8[&eMaintenance&8] &cBisher hat kein Spieler mit diesem Namen jemals auf diesem Server gespielt."
 playerNotFoundUuid: "&8[&eMaintenance&8] &cEs konnte kein Spieler mit dieser UUID gefunden werden."
 playerNotOnline: "&8[&eMaintenance&8] &cEs ist momentan kein Spieler mit diesem Namen online."

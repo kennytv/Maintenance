@@ -142,7 +142,6 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         Text text;
         try {
             text = Text.builder(getPrefix())

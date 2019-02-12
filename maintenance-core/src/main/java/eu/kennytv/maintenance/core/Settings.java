@@ -170,9 +170,19 @@ public class Settings implements ISettings {
         // 3.0 - update config format from 2.5
         if (migrateConfig(new File(plugin.getDataFolder(), "bungee-config.yml"))
                 || migrateConfig(new File(plugin.getDataFolder(), "spigot-config.yml"))) {
-            // also move fields from SpigotServers.yml to config
-            if (plugin.getServerType() == ServerType.BUNGEE)
-                migrateSpigotServersFile();
+            // Also rename old language file
+            final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
+            if (file.exists()) {
+                if (file.renameTo(new File(plugin.getDataFolder(), "language-" + languageName + ".old")))
+                    plugin.getLogger().info("Renamed old language file!");
+                else
+                    plugin.getLogger().warning("Could not rename old language file! Please rename/delete it yourself as soon as possible!");
+            }
+
+            changed = true;
+        }
+        // 3.0 - move SpigotServer.yml fields to config
+        if (plugin.getServerType() == ServerType.BUNGEE && migrateSpigotServersFile()) {
             changed = true;
         }
         // 3.0 - move maintenace-icon from server to plugin directory
@@ -184,11 +194,9 @@ public class Settings implements ISettings {
                 plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
         }
 
-        // ...
-
         if (changed) {
-            plugin.getLogger().info("Updated config to the latest version!");
             saveConfig();
+            plugin.getLogger().info("Done! Updated all configs to the new format!");
         }
     }
 
@@ -216,19 +224,21 @@ public class Settings implements ISettings {
         oldConfig.clear();
         if (!file.delete())
             plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
+        else
+            plugin.getLogger().info("Updated to new config file!");
         return true;
     }
 
-    private void migrateSpigotServersFile() {
+    private boolean migrateSpigotServersFile() {
         final File file = new File(plugin.getDataFolder(), "SpigotServers.yml");
-        if (!file.exists()) return;
+        if (!file.exists()) return false;
 
         final Config oldFile = new Config(file);
         try {
             oldFile.load();
         } catch (final IOException e) {
             plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file", e);
-            return;
+            return false;
         }
 
         if (oldFile.contains("maintenance-on"))
@@ -239,6 +249,9 @@ public class Settings implements ISettings {
         oldFile.clear();
         if (!file.delete())
             plugin.getLogger().warning("Could not delete old SpigotServers.yml file! Please delete it as soon as possible.");
+        else
+            plugin.getLogger().info("Deleted old SpigotServers.yml file!");
+        return true;
     }
 
     private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";

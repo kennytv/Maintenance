@@ -120,7 +120,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = translate(getPrefix());
         final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
         final TextComponent click = translate(" §7§l§o(CLICK ME)");

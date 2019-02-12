@@ -118,7 +118,6 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        sender.sendMessage(getPrefix() + "§cThere is a newer version available: §aVersion " + getNewestVersion() + "§c, you're on §a" + getVersion());
         final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
         final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
         final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
