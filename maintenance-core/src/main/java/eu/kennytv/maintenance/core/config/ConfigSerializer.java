@@ -37,7 +37,7 @@ public final class ConfigSerializer {
     private static final String[] EMPTY = new String[0];
     private static final int INDENT_UNIT = 2;
     private static final String PATH_SEPARATOR_STRING = ".";
-    private static final String PATH_SEPERATOR_QUOTED = Pattern.quote(PATH_SEPARATOR_STRING);
+    private static final String PATH_SEPARATOR_QUOTED = Pattern.quote(PATH_SEPARATOR_STRING);
 
     public static String serialize(final String header, final Map<String, Object> data, final Map<String, String[]> comments, final Yaml yaml) {
         if (data.isEmpty()) return yaml.dump(null);
@@ -54,7 +54,7 @@ public final class ConfigSerializer {
 
             final String indentText = indent > 0 ? line.substring(0, indent) : "";
             if (indents <= currentIndents) {
-                final String[] array = key.split(PATH_SEPERATOR_QUOTED);
+                final String[] array = key.split(PATH_SEPARATOR_QUOTED);
                 final int backspace = currentIndents - indents + 1;
                 key = join(array, array.length - backspace);
             }
@@ -108,7 +108,7 @@ public final class ConfigSerializer {
             final int indent = getIndents(line);
             final int indents = indent / INDENT_UNIT;
             if (indents <= currentIndents) {
-                final String[] array = key.split(PATH_SEPERATOR_QUOTED);
+                final String[] array = key.split(PATH_SEPARATOR_QUOTED);
                 final int backspace = currentIndents - indents + 1;
                 key = join(array, array.length - backspace);
             }
