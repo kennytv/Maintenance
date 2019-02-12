@@ -35,7 +35,7 @@ public class Settings implements ISettings {
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final String[] unsupportedFields;
     protected boolean maintenance;
-    private Set<Integer> broadcastIntervalls;
+    private Set<Integer> broadcastIntervals;
     private List<String> pingMessages;
     private String playerCountMessage;
     private String playerCountHoverMessage;
@@ -142,7 +142,7 @@ public class Settings implements ISettings {
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
-        broadcastIntervalls = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
+        broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
         if (plugin.getServerType() != ServerType.SPONGE)
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
@@ -366,8 +366,8 @@ public class Settings implements ISettings {
         return pingMessages;
     }
 
-    public Set<Integer> getBroadcastIntervalls() {
-        return broadcastIntervalls;
+    public Set<Integer> getBroadcastIntervals() {
+        return broadcastIntervals;
     }
 
     public String getPlayerCountMessage() {

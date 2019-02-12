@@ -38,7 +38,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
     public void run() {
         if (seconds == 0) {
             finish();
-        } else if (settings.getBroadcastIntervalls().contains(seconds)) {
+        } else if (settings.getBroadcastIntervals().contains(seconds)) {
             if (enable)
                 plugin.broadcast(startMessageKey());
             else
