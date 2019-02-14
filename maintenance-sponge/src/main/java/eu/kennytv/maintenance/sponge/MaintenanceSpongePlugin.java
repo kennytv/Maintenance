@@ -41,7 +41,6 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
@@ -79,10 +78,14 @@ import java.util.stream.Collectors;
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     private Logger logger;
     private Favicon favicon;
-    @Inject private Game game;
-    @Inject private PluginContainer container;
-    @Inject private Metrics2 metrics;
-    @Inject @ConfigDir(sharedRoot = false)
+    @Inject
+    private Game game;
+    @Inject
+    private PluginContainer container;
+    @Inject
+    private Metrics2 metrics;
+    @Inject
+    @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
     @Inject
@@ -157,9 +160,9 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
-    public SenderInfo getPlayer(final String name) {
-        final Optional<Player> player = getServer().getPlayer(name);
-        return player.map(SpongeSenderInfo::new).orElse(null);
+    public SenderInfo getOfflinePlayer(final String name) {
+        final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
+        return userStorage.get(name).map(SpongeOfflinePlayerInfo::new).orElse(null);
     }
 
     @Override

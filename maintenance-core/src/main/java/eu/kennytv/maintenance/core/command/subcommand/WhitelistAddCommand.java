@@ -49,7 +49,7 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
+        final SenderInfo selected = plugin.getOfflinePlayer(name);
         if (selected == null) {
             sender.sendMessage(getMessage("playerNotOnline"));
             return;

@@ -51,7 +51,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     }
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getPlayer(name);
+        final SenderInfo selected = plugin.getOfflinePlayer(name);
         if (selected == null) {
             if (getSettings().removeWhitelistedPlayer(name))
                 sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", name));

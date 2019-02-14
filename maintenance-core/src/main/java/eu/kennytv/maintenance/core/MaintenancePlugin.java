@@ -289,7 +289,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract void sendUpdateNotification(SenderInfo sender);
 
-    public abstract SenderInfo getPlayer(String name);
+    public abstract SenderInfo getOfflinePlayer(String name);
 
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
 

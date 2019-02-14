@@ -28,7 +28,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
 
 public final class PostLoginListener extends JoinListenerBase implements Listener {
     private final MaintenanceBungeePlugin plugin;
@@ -38,7 +37,7 @@ public final class PostLoginListener extends JoinListenerBase implements Listene
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void postLogin(final PostLoginEvent event) {
         if (kickPlayer(new BungeeSenderInfo(event.getPlayer())))
             event.getPlayer().disconnect(settings.getKickMessage());

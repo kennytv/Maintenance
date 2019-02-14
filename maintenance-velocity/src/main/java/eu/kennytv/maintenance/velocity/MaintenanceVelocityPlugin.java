@@ -173,7 +173,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public SenderInfo getPlayer(final String name) {
+    public SenderInfo getOfflinePlayer(final String name) {
         final Optional<Player> player = server.getPlayer(name);
         return player.map(VelocitySenderInfo::new).orElse(null);
     }

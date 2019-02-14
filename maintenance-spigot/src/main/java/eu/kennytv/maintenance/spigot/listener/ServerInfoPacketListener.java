@@ -46,8 +46,7 @@ public final class ServerInfoPacketListener implements Listener {
     public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST,
-                PacketType.Status.Server.SERVER_INFO) {
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST, PacketType.Status.Server.SERVER_INFO) {
             @Override
             public void onPacketSending(final PacketEvent event) {
                 if (!settings.isMaintenance()) return;

@@ -23,7 +23,6 @@ import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -35,7 +34,7 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void postLogin(final PlayerLoginEvent event) {
         final BukkitSenderInfo sender = new BukkitSenderInfo(event.getPlayer());
         if (kickPlayer(sender)) {

@@ -44,9 +44,10 @@ public final class ClientPingServerListener {
         if (!settings.isMaintenance()) return;
 
         final ClientPingServerEvent.Response response = event.getResponse();
-        if (settings.hasCustomPlayerCountMessage()) {
+        /*if (settings.hasCustomPlayerCountMessage()) {
             //TODO versionmessage possible without much trouble?
-        }
+            // (spoiler: no, it isn't)
+        }*/
 
         response.setDescription(Text.of(settings.getRandomPingMessage()));
         response.getPlayers().ifPresent(players -> {

@@ -27,7 +27,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
 
 public final class ServerConnectListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
@@ -39,12 +38,12 @@ public final class ServerConnectListener implements Listener {
         this.settings = settings;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void serverConnect(final ServerConnectEvent event) {
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo target = event.getTarget();
         if (!plugin.isMaintenance(target)) return;
-        if (plugin.hasPermission(player, "maintenance.bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
+        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
 
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));

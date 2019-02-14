@@ -69,13 +69,10 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
 
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
-        sender.sendMessage(plugin.getPrefix() + "§c" + url);
-        if (sender.isPlayer()) {
-            final TextComponent clickText = TextComponent.builder("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
-                    .clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url))
-                    .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to copy the link"))).build();
-            ((VelocitySenderInfo) sender).sendMessage(clickText);
-        }
+        final TextComponent clickText = TextComponent.builder("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
+                .clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url))
+                .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to copy the link"))).build();
+        ((VelocitySenderInfo) sender).sendMessage(clickText);
     }
 
     @Override

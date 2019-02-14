@@ -18,7 +18,6 @@
 
 package eu.kennytv.maintenance.velocity.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
@@ -37,7 +36,7 @@ public final class LoginListener extends JoinListenerBase {
         this.plugin = plugin;
     }
 
-    @Subscribe(order = PostOrder.LATE)
+    @Subscribe
     public void login(final LoginEvent event) {
         if (!event.getResult().isAllowed()) return;
         if (kickPlayer(new VelocitySenderInfo(event.getPlayer()), false))

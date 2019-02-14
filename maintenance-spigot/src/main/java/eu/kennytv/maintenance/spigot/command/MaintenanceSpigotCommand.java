@@ -48,7 +48,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
 
     /*@Override
     protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final Player selected = Bukkit.getPlayer(name);
+        final Player selected = Bukkit.getOfflinePlayer(name);
         if (selected != null) {
             whitelistAddMessage(sender, new BukkitSenderInfo(selected));
             return;
@@ -65,7 +65,7 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
 
     @Override
     protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final Player selected = Bukkit.getPlayer(name);
+        final Player selected = Bukkit.getOfflinePlayer(name);
         if (selected != null) {
             whitelistRemoveMessage(sender, new BukkitSenderInfo(selected));
             return;
@@ -87,12 +87,9 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
 
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
-        sender.sendMessage(plugin.getPrefix() + "§c" + url);
-        if (sender.isPlayer()) {
-            final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link)");
-            clickText.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
-            clickText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to copy the link")));
-            ((BukkitSenderInfo) sender).sendMessage(clickText, null);
-        }
+        final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link)");
+        clickText.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
+        clickText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to copy the link")));
+        ((BukkitSenderInfo) sender).sendMessage(clickText, null);
     }
 }

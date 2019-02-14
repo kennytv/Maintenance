@@ -24,10 +24,8 @@ import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public final class ClientConnectionListener extends JoinListenerBase {
     private final MaintenanceSpongePlugin plugin;
@@ -37,7 +35,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
         this.plugin = plugin;
     }
 
-    @Listener(order = Order.LATE)
+    @Listener
     public void login(final ClientConnectionEvent.Login event) {
         if (kickPlayer(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
             event.setCancelled(true);
@@ -52,7 +50,8 @@ public final class ClientConnectionListener extends JoinListenerBase {
 
     @Override
     protected void broadcastJoinNotification(final String name) {
-        final Text text = TextSerializers.LEGACY_FORMATTING_CODE.deserialize(settings.getMessage("joinNotification").replace("%PLAYER%", name));
+
+        final Text text = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", name));
         Sponge.getServer().getOnlinePlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(text));
     }
 }

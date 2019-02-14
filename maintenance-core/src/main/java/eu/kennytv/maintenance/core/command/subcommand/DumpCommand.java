@@ -40,8 +40,8 @@ public final class DumpCommand extends CommandInfo {
         }
 
         lastDump = System.currentTimeMillis();
+        sender.sendMessage(plugin.getPrefix() + "§7The dump is being created, this might take a moment.");
         plugin.async(() -> {
-            sender.sendMessage(plugin.getPrefix() + "§7The dump is being created, this might take a moment.");
             final String key = plugin.pasteDump();
             if (key == null) {
                 if (sender.isPlayer())
@@ -49,7 +49,10 @@ public final class DumpCommand extends CommandInfo {
                 return;
             }
 
-            plugin.getCommandManager().sendDumpMessage(sender, "https://hasteb.in/" + key);
+            final String url = "https://hasteb.in/" + key;
+            sender.sendMessage(plugin.getPrefix() + "§c" + url);
+            if (sender.isPlayer())
+                plugin.getCommandManager().sendDumpMessage(sender, url);
         });
     }
 }

@@ -64,7 +64,7 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
 
     @Override
     public boolean testPermission(final CommandSource source) {
-        return source.hasPermission("maintenance.command");
+        return plugin.hasPermission(source, "command");
     }
 
     @Override
@@ -85,11 +85,8 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
         final SpongeSenderInfo spongeSender = ((SpongeSenderInfo) sender);
-        spongeSender.sendMessage(plugin.translate(plugin.getPrefix() + "§c" + url));
-        if (spongeSender.isPlayer()) {
-            spongeSender.sendMessage(Text.builder(plugin.getPrefix() + "§7Click here to copy the link").onClick(TextActions.suggestCommand(url))
-                    .onHover(TextActions.showText(plugin.translate("§aClick here to copy the link"))).build());
-        }
+        spongeSender.sendMessage(Text.builder(plugin.getPrefix() + "§7Click here to copy the link").onClick(TextActions.suggestCommand(url))
+                .onHover(TextActions.showText(plugin.translate("§aClick here to copy the link"))).build());
     }
 
     @Override

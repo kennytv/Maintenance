@@ -42,7 +42,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
@@ -129,9 +128,9 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
-    public SenderInfo getPlayer(final String name) {
-        final Player player = getServer().getPlayer(name);
-        return player != null ? new BukkitSenderInfo(player) : null;
+    public SenderInfo getOfflinePlayer(final String name) {
+        final OfflinePlayer player = getServer().getOfflinePlayer(name);
+        return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override
