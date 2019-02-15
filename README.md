@@ -17,12 +17,13 @@ Its features include:
 
 A full list of commands, permissions and configuration options can be found in the wiki listed below.
 * [Wiki](https://github.com/KennyTV/Maintenance/wiki)
-* [Downloads (GitHub)](https://github.com/KennyTV/Maintenance/releases)
+* [Downloads](https://github.com/KennyTV/Maintenance/releases) (GitHub)
+* [Development builds](https://kennytv.eu/maintenance/snapshot/) (might be unstable)
 * [Changelogs](https://github.com/KennyTV/Maintenance/blob/master/.github/CHANGELOG.md)
 * [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)
 
-Forums / other download sources
+Other forums
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
 * [Sponge forums]()
 * [Velocity forums]()
