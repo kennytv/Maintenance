@@ -48,7 +48,7 @@ custom-maintenance-icon: false
 send-join-notification: false
 
 # Changes the language of command feedback/messages.
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese)
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish)
 language: en
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies
