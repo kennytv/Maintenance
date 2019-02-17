@@ -1,8 +1,7 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
-## Unreleased
-#### Scheduled for the 17th of February
+## 3.0 - February 17th 2019
 ### Changed
 * This plugin now also supports the platforms Sponge and Velocity!
 * Added tabcompletion for maintenance commands on all platforms

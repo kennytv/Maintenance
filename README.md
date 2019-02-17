@@ -25,8 +25,8 @@ A full list of commands, permissions and configuration options can be found in t
 
 Other forums
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
-* [Sponge forums]()
-* [Velocity forums]()
+* [Sponge forums](https://forums.spongepowered.org/t/maintenance/27421)
+* [Velocity forums](https://forums.velocitypowered.com/t/maintenance/129)
 
 ## Compiling
 To create a working jar yourself, simply clone the project and compile it with maven (by using `mvn clean package` in your IDE console).
