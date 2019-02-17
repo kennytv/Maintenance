@@ -1,22 +1,35 @@
-This repository is mainly for reporting bugs in the issues section.
+# Maintenance
+[![Version](https://img.shields.io/github/release/KennyTV/Maintenance.svg)](https://github.com/KennyTV/Maintenance/releases)
+[![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=master)](https://travis-ci.org/KennyTV/Maintenance)
+[![Discord](https://img.shields.io/badge/discord-online-green.svg)](https://discord.gg/vGCUzHq)
 
-To be able to compile the project, you first have to run the `installServerListPlus.sh` in the main directory after pulling.
+Maintenance is probably the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Bukkit/Spigot, BungeeCord, Sponge as well as Velocity.
 
-You may not copy the code or distribute it as your own.
+Its features include:
+* A custom motd as well as server icon, that will be shown during maintenance
+* Start- and endtimers, which will enable/disable maintenance mode after the time is up
+* A '%TIMER%' variable usable in the pingmessage, to show the time until a running endtimer finishes (other variables and tricks are explained in the configuration file's comments)
+* A maintenance whitelist, to grant specific players the ability to join while you're working on your server
+* Nearly all messages are editable via the language file, given in a multitude of different languages
+* Features specifically for Bungee/Velocity
+  * Only want to enable maintenance on a single server? You can also do so by using the `/maintenance <on/off> <servername>` command
+  * Link multiple proxy instances through a MySQL database connection, so you don't have to change maintenance on each proxy by hand
 
-# MaintenanceMode-Issues
+A full list of commands, permissions and configuration options can be found in the wiki listed below.
+* [Wiki](https://github.com/KennyTV/Maintenance/wiki)
+* [Downloads](https://github.com/KennyTV/Maintenance/releases) (GitHub)
+* [Development builds](https://kennytv.eu/maintenance/snapshot/) (might be unstable)
+* [Changelogs](https://github.com/KennyTV/Maintenance/blob/master/.github/CHANGELOG.md)
+* [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
+* [Discord](https://discord.gg/vGCUzHq)
 
-When creating an issue, please include the following information.
-- MaintenanceMode version
-- Whether you are using the plugin on a Spigot or a BungeeCord server
-- Explanation of how to reproduce the issue
-- The entire error message (!) if present
+Other forums
+* [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
+* [Sponge forums](https://forums.spongepowered.org/t/maintenance/27421)
+* [Velocity forums](https://forums.velocitypowered.com/t/maintenance/129)
 
-**Issues can be created [here (click me)](https://github.com/KennyTV/Maintenance/issues).**
+## Compiling
+To create a working jar yourself, simply clone the project and compile it with maven (by using `mvn clean package` in your IDE console).
 
-### MaintenanceMode API
-
-There's no official maven repo, yet, but you can manually add the Maintenance-API.jar file to your library (it can be downloaded **[here](https://github.com/KennyTV/Maintenance/raw/master/Maintenance-API.jar)**).
-
-By using MaintenanceBungeeAPI#getAPI or MaintenanceSpigotAPI#getAPI (depending on what server you are using the plugin) you can get some base methods.
-A rough documentation can be found **[in the api directory](https://github.com/KennyTV/Maintenance/tree/master/Maintenance-API/src/main/java/eu/kennytv/maintenance/api)**.
+## Licence
+You may only copy the code on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).

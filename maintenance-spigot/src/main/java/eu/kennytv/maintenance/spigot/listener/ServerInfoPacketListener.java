@@ -1,3 +1,21 @@
+/*
+ * Maintenance - https://git.io/maintenancemode
+ * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.kennytv.maintenance.spigot.listener;
 
 import com.comphenix.protocol.PacketType;
@@ -7,27 +25,28 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
-import eu.kennytv.maintenance.core.listener.IPingListener;
+import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
-import eu.kennytv.maintenance.spigot.SettingsSpigot;
+import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class ServerInfoPacketListener extends PingListenerBase {
+public final class ServerInfoPacketListener implements Listener {
+    private final UUID uuid = new UUID(0, 0);
+    private final MaintenanceSpigotPlugin plugin;
+    private final Settings settings;
     //private WrappedServerPing.CompressedImage image;
 
-    public ServerInfoPacketListener(final MaintenanceSpigotBase base, final SettingsSpigot settings) {
-        super(base, settings);
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST,
-                PacketType.Status.Server.SERVER_INFO) {
+    public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
+        this.plugin = plugin;
+        this.settings = settings;
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST, PacketType.Status.Server.SERVER_INFO) {
             @Override
             public void onPacketSending(final PacketEvent event) {
                 if (!settings.isMaintenance()) return;
@@ -44,7 +63,7 @@ public final class ServerInfoPacketListener extends PingListenerBase {
 
                 final List<WrappedGameProfile> players = new ArrayList<>();
                 for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
-                    players.add(new WrappedGameProfile(UUID.randomUUID(), string));
+                    players.add(new WrappedGameProfile(uuid, string));
                 ping.setPlayers(players);
                 //if (settings.hasCustomIcon() && image != null) ping.setFavicon(image);
             }
@@ -53,8 +72,8 @@ public final class ServerInfoPacketListener extends PingListenerBase {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        if (settings.isMaintenance() && settings.hasCustomIcon() && serverIcon != null)
-            event.setServerIcon(serverIcon);
+        if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null)
+            event.setServerIcon(plugin.getFavicon());
     }
 
     /*@Override

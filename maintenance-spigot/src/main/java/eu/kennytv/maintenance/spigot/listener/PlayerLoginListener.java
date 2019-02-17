@@ -1,69 +1,51 @@
+/*
+ * Maintenance - https://git.io/maintenancemode
+ * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.kennytv.maintenance.spigot.listener;
 
+import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.SettingsSpigot;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.entity.Player;
+import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-public final class PlayerLoginListener implements Listener {
+public final class PlayerLoginListener extends JoinListenerBase implements Listener {
     private final MaintenanceSpigotPlugin plugin;
-    private final SettingsSpigot settings;
-    private final Set<UUID> notifiedPlayers = new HashSet<>();
-    private final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
 
-    public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final SettingsSpigot settings) {
+    public PlayerLoginListener(final MaintenanceSpigotPlugin plugin, final Settings settings) {
+        super(plugin, settings);
         this.plugin = plugin;
-        this.settings = settings;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void postLogin(final PlayerLoginEvent event) {
-        final Player player = event.getPlayer();
-        if (player.getUniqueId().equals(notifyUuid))
-            player.sendMessage("§6MaintenanceSpigot §aVersion " + plugin.getVersion());
-        else if (settings.isMaintenance()) {
-            if (!player.hasPermission("maintenance.bypass") && !settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) {
-                event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-                event.setKickMessage(settings.getKickMessage().replace("%NEWLINE%", "\n"));
-
-                if (settings.isJoinNotifications())
-                    plugin.getServer().getOnlinePlayers().stream().filter(p -> p.hasPermission("maintenance.joinnotification"))
-                            .forEach(p -> p.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName())));
-                return;
-            }
+        final BukkitSenderInfo sender = new BukkitSenderInfo(event.getPlayer());
+        if (kickPlayer(sender)) {
+            event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
+            event.setKickMessage(settings.getKickMessage());
         }
+    }
 
-        if (!player.hasPermission("maintenance.admin") || notifiedPlayers.contains(player.getUniqueId())) return;
-
-        plugin.async(() -> {
-            if (!plugin.updateAvailable()) return;
-            player.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
-            notifiedPlayers.add(player.getUniqueId());
-
-            try {
-                final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(plugin.getPrefix()));
-                final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/"));
-                final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-                click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenancemode.40699/"));
-                click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
-                tc1.addExtra(tc2);
-                tc1.addExtra(click);
-
-                player.spigot().sendMessage(tc1);
-            } catch (final Exception e) {
-                player.sendMessage(plugin.getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenancemode.40699/");
-            }
-        });
+    @Override
+    protected void broadcastJoinNotification(final String name) {
+        plugin.getServer().getOnlinePlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification"))
+                .forEach(p -> p.sendMessage(settings.getMessage("joinNotification").replace("%PLAYER%", name)));
     }
 }

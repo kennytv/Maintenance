@@ -1,151 +1,291 @@
+/*
+ * Maintenance - https://git.io/maintenancemode
+ * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.util.ServerType;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.*;
+import java.util.logging.Level;
 
-public abstract class Settings implements ISettings {
+public class Settings implements ISettings {
     private static final Random RANDOM = new Random();
-    protected final Map<UUID, String> whitelistedPlayers = new HashMap<>();
-    private final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
+    private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
+    private final String[] unsupportedFields;
     protected boolean maintenance;
-    private Set<Integer> broadcastIntervalls;
+    private Set<Integer> broadcastIntervals;
     private List<String> pingMessages;
     private String playerCountMessage;
     private String playerCountHoverMessage;
-    private String kickMessage;
-    protected String languageName;
+    private String languageName;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
+    private boolean updateChecks;
     private boolean debug;
 
-    protected Settings(final MaintenanceModePlugin plugin) {
+    protected Config config;
+    protected Config language;
+    protected Config whitelist;
+
+    public Settings(final MaintenancePlugin plugin, final String... unsupportedFields) {
         this.plugin = plugin;
+        this.unsupportedFields = unsupportedFields;
+        if (!plugin.getDataFolder().exists())
+            plugin.getDataFolder().mkdirs();
+
+        createFile("config.yml");
+        createFile("WhitelistedPlayers.yml");
+
+        reloadConfigs();
     }
 
-    protected void loadSettings() {
+    @Override
+    public void reloadConfigs() {
+        try {
+            config = new Config(new File(plugin.getDataFolder(), "config.yml"), unsupportedFields);
+            config.load();
+            config.resetAwesomeHeader();
+            whitelist = new Config(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
+            whitelist.load();
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance files!", e);
+        }
+
+        loadSettings();
+        createLanguageFile();
+
+        try {
+            language = new Config(new File(plugin.getDataFolder(), "language-" + languageName + ".yml"));
+            language.load();
+        } catch (final IOException e) {
+            throw new RuntimeException("Unable to load Maintenance language file!", e);
+        }
+
+        // Directly save colored messages
+        for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
+            if (!(entry.getValue() instanceof String)) continue;
+            entry.setValue(getColoredString((String) entry.getValue()));
+        }
+    }
+
+    public void saveConfig() {
+        try {
+            config.save();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void createFile(final String name) {
+        final File file = new File(plugin.getDataFolder(), name);
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource(name)) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
+            }
+        }
+    }
+
+    private void saveWhitelistedPlayers() {
+        try {
+            whitelist.save();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createLanguageFile() {
+        final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
+        if (!file.exists()) {
+            try (final InputStream in = plugin.getResource("language-" + languageName + ".yml")) {
+                Files.copy(in, file.toPath());
+            } catch (final IOException e) {
+                plugin.getLogger().warning("Unable to provide language " + languageName);
+                if (!languageName.equals("en")) {
+                    plugin.getLogger().warning("Falling back to default language: en");
+                    languageName = "en";
+                    createLanguageFile();
+                }
+            }
+        }
+    }
+
+    private void loadSettings() {
         updateConfig();
 
-        pingMessages = getConfigList("pingmessages");
-        maintenance = getConfigBoolean("enable-maintenance-mode");
-        customPlayerCountMessage = getConfigBoolean("enable-playercountmessage");
-        customMaintenanceIcon = getConfigBoolean("custom-maintenance-icon");
-        joinNotifications = getConfigBoolean("send-join-notification");
-        broadcastIntervalls = new HashSet<>(getConfigIntList("timer-broadcast-for-seconds"));
-        playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        pingMessages = config.getStringList("pingmessages");
+        maintenance = config.getBoolean("maintenance-enabled");
+        customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
+        customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
+        joinNotifications = config.getBoolean("send-join-notification");
+        broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
+        if (plugin.getServerType() != ServerType.SPONGE)
+            playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
-        kickMessage = getColoredString(getConfigString("kickmessage"));
         languageName = getConfigString("language").toLowerCase();
-        debug = getConfigBoolean("debug");
+        updateChecks = config.getBoolean("update-checks", true);
+        debug = config.getBoolean("debug");
         if (customMaintenanceIcon) {
-            reloadMaintenanceIcon();
+            plugin.loadMaintenanceIcon();
         }
 
+        whitelistedPlayers.clear();
+        whitelist.getValues().forEach((key, value) -> {
+            try {
+                whitelistedPlayers.put(UUID.fromString(key), (String) value);
+            } catch (final Exception e) {
+                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + key);
+            }
+        });
         loadExtraSettings();
-        if (debug) {
-            plugin.getLogger().info("enable-maintenance-mode:" + maintenance);
-            plugin.getLogger().info("whitelistedPlayers:" + whitelistedPlayers);
-            plugin.getLogger().info("timer-broadcast-for-seconds:" + broadcastIntervalls);
-            plugin.getLogger().info("pingmessages:" + pingMessages);
-            plugin.getLogger().info("playercountmessage:" + playerCountMessage);
-            plugin.getLogger().info("playercounthovermessage:" + playerCountHoverMessage);
-            plugin.getLogger().info("kickmessage:" + kickMessage);
-            plugin.getLogger().info("language:" + languageName);
-            plugin.getLogger().info("enable-playercountmessage:" + customPlayerCountMessage);
-            plugin.getLogger().info("custom-maintenance-icon:" + customMaintenanceIcon);
-            plugin.getLogger().info("send-join-notification:" + joinNotifications);
-        }
     }
 
     private void updateConfig() {
-        boolean fileChanged = false;
+        boolean changed = false;
 
-        // 2.3 pingmessage -> pingmessages
-        if (configContains("pingmessage")) {
-            final List<String> list = new ArrayList<>();
-            list.add(getConfigString("pingmessage"));
-            setToConfig("pingmessages", list);
-            setToConfig("pingmessage", null);
-            fileChanged = true;
+        // 3.0 - update config format from 2.5
+        if (migrateConfig(new File(plugin.getDataFolder(), "bungee-config.yml"))
+                || migrateConfig(new File(plugin.getDataFolder(), "spigot-config.yml"))) {
+            // Also rename old language file
+            final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
+            if (file.exists()) {
+                if (file.renameTo(new File(plugin.getDataFolder(), "language-" + languageName + ".old")))
+                    plugin.getLogger().info("Renamed old language file!");
+                else
+                    plugin.getLogger().warning("Could not rename old language file! Please rename/delete it yourself as soon as possible!");
+            }
+
+            changed = true;
         }
-        // 2.4 enable-playercountmessage
-        if (!configContains("enable-playercountmessage")) {
-            setToConfig("enable-playercountmessage", true);
-            fileChanged = true;
+        // 3.0 - move SpigotServer.yml fields to config
+        if (plugin.getServerType() == ServerType.BUNGEE && migrateSpigotServersFile()) {
+            changed = true;
         }
-        // 2.4. timer-broadcasts-for-minutes -> timer-broadcast-for-seconds
-        if (configContains("timer-broadcasts-for-minutes") || !configContains("timer-broadcast-for-seconds")) {
-            setToConfig("timer-broadcast-for-seconds", Arrays.asList(1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1));
-            setToConfig("timer-broadcasts-for-minutes", null);
-            fileChanged = true;
-        }
-        // 2.5 language
-        if (!configContains("language")) {
-            setToConfig("language", "en");
+        // 3.0 - move maintenace-icon from server to plugin directory
+        final File icon = new File("maintenance-icon.png");
+        if (icon.exists()) {
+            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png")))
+                plugin.getLogger().info("Moved maintenance-icon from server directory to the plugin's directory!");
+            else
+                plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
         }
 
-        if (updateExtraConfig() || fileChanged) {
+        if (changed) {
             saveConfig();
+            plugin.getLogger().info("Done! Updated all configs to the new format!");
         }
     }
 
-    public boolean updateExtraConfig() {
-        return false;
+    private boolean migrateConfig(final File file) {
+        if (!file.exists()) return false;
+
+        plugin.getLogger().info("Migrating old config to new format...");
+        final Config oldConfig = new Config(file);
+        try {
+            oldConfig.load();
+        } catch (final IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file", e);
+            return false;
+        }
+
+        if (oldConfig.contains("pingmessage"))
+            config.set("pingmessages", Arrays.asList(oldConfig.getString("pingmessage")));
+        if (oldConfig.contains("enable-maintenance-mode"))
+            config.set("maintenance-enabled", oldConfig.getBoolean("enable-maintenance-mode"));
+        config.getValues().entrySet().forEach(entry -> {
+            if (!oldConfig.contains(entry.getKey())) return;
+            entry.setValue(oldConfig.get(entry.getKey()));
+        });
+
+        oldConfig.clear();
+        if (!file.delete())
+            plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
+        else
+            plugin.getLogger().info("Updated to new config file!");
+        return true;
     }
 
-    public abstract void saveWhitelistedPlayers();
+    private boolean migrateSpigotServersFile() {
+        final File file = new File(plugin.getDataFolder(), "SpigotServers.yml");
+        if (!file.exists()) return false;
 
-    public abstract String getConfigString(String path);
+        final Config oldFile = new Config(file);
+        try {
+            oldFile.load();
+        } catch (final IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file", e);
+            return false;
+        }
 
-    public abstract String getMessage(String path);
+        if (oldFile.contains("maintenance-on"))
+            config.set("proxied-maintenance-servers", oldFile.getStringList("maintenance-on"));
+        if (oldFile.contains("fallback"))
+            config.set("fallback", oldFile.getString("fallback"));
 
-    public abstract boolean getConfigBoolean(String path);
-
-    public abstract List<Integer> getConfigIntList(String path);
-
-    public abstract List<String> getConfigList(String path);
-
-    public abstract void loadExtraSettings();
-
-    public abstract void setWhitelist(String uuid, String s);
-
-    public abstract void saveConfig();
-
-    public abstract void reloadConfigs();
-
-    public abstract void setToConfig(String path, Object var);
-
-    public abstract boolean configContains(String path);
-
-    public abstract String getColoredString(String s);
-
-    public List<String> getPingMessages() {
-        return pingMessages;
+        oldFile.clear();
+        if (!file.delete())
+            plugin.getLogger().warning("Could not delete old SpigotServers.yml file! Please delete it as soon as possible.");
+        else
+            plugin.getLogger().info("Deleted old SpigotServers.yml file!");
+        return true;
     }
 
-    public Set<Integer> getBroadcastIntervalls() {
-        return broadcastIntervalls;
+    private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
+
+    public String getColoredString(final String s) {
+        // Method taken from Bungee
+        final char[] b = s.toCharArray();
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == '&' && ALL_CODES.indexOf(b[i + 1]) > -1) {
+                b[i] = '§';
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
     }
 
-    public String getPlayerCountMessage() {
-        return playerCountMessage;
+    public String getConfigString(final String path) {
+        if (!config.contains(path)) {
+            plugin.getLogger().warning("The config is missing the following string: " + path);
+            return "null";
+        }
+        return config.getString(path);
     }
 
-    public String getPlayerCountHoverMessage() {
-        return playerCountHoverMessage;
+    public String getMessage(final String path) {
+        return getMessage(path, "null");
     }
 
-    public String getKickMessage() {
-        return kickMessage;
-    }
-
-    public String getLanguage() {
-        return languageName;
-    }
-
-    public void setMaintenance(final boolean maintenance) {
-        this.maintenance = maintenance;
+    public String getMessage(final String path, final String def) {
+        if (!language.contains(path)) {
+            plugin.getLogger().warning("The language file is missing the following string: " + path);
+            return def;
+        }
+        return language.getString(path);
     }
 
     public String getRandomPingMessage() {
@@ -154,13 +294,49 @@ public abstract class Settings implements ISettings {
         return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
     }
 
-    public boolean hasCustomPlayerCountMessage() {
-        return customPlayerCountMessage;
+    @Override
+    public boolean removeWhitelistedPlayer(final UUID uuid) {
+        if (!whitelistedPlayers.containsKey(uuid)) return false;
+        whitelistedPlayers.remove(uuid);
+        whitelist.remove(uuid.toString());
+        saveWhitelistedPlayers();
+        return true;
+    }
+
+    @Deprecated
+    @Override
+    public boolean removeWhitelistedPlayer(final String name) {
+        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
+        if (entry == null) return false;
+
+        final UUID uuid = entry.getKey();
+        whitelistedPlayers.remove(uuid);
+        whitelist.remove(uuid.toString());
+        saveWhitelistedPlayers();
+        return true;
+    }
+
+    @Override
+    public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
+        final boolean contains = !whitelistedPlayers.containsKey(uuid);
+        whitelistedPlayers.put(uuid, name);
+        whitelist.set(uuid.toString(), name);
+        saveWhitelistedPlayers();
+        return contains;
+    }
+
+    @Override
+    public Map<UUID, String> getWhitelistedPlayers() {
+        return whitelistedPlayers;
     }
 
     @Override
     public boolean isMaintenance() {
         return maintenance;
+    }
+
+    public void setMaintenance(final boolean maintenance) {
+        this.maintenance = maintenance;
     }
 
     @Override
@@ -174,43 +350,47 @@ public abstract class Settings implements ISettings {
     }
 
     @Override
-    public Map<UUID, String> getWhitelistedPlayers() {
-        return whitelistedPlayers;
-    }
-
-    @Override
-    public boolean removeWhitelistedPlayer(final UUID uuid) {
-        if (!whitelistedPlayers.containsKey(uuid)) return false;
-        whitelistedPlayers.remove(uuid);
-        setWhitelist(uuid.toString(), null);
-        saveWhitelistedPlayers();
-        return true;
-    }
-
-    @Deprecated
-    @Override
-    public boolean removeWhitelistedPlayer(final String name) {
-        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
-        if (entry == null) return false;
-
-        final UUID uuid = entry.getKey();
-        whitelistedPlayers.remove(uuid);
-        setWhitelist(uuid.toString(), null);
-        saveWhitelistedPlayers();
-        return true;
-    }
-
-    @Override
-    public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
-        final boolean contains = !whitelistedPlayers.containsKey(uuid);
-        whitelistedPlayers.put(uuid, name);
-        setWhitelist(uuid.toString(), name);
-        saveWhitelistedPlayers();
-        return contains;
-    }
-
-    @Override
     public boolean debugEnabled() {
         return debug;
+    }
+
+    public boolean hasUpdateChecks() {
+        return updateChecks;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public List<String> getPingMessages() {
+        return pingMessages;
+    }
+
+    public Set<Integer> getBroadcastIntervals() {
+        return broadcastIntervals;
+    }
+
+    public String getPlayerCountMessage() {
+        return playerCountMessage.replace("%TIMER%", plugin.formatedTimer());
+    }
+
+    public String getPlayerCountHoverMessage() {
+        return playerCountHoverMessage.replace("%TIMER%", plugin.formatedTimer());
+    }
+
+    public String getKickMessage() {
+        return getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!")
+                .replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
+    }
+
+    public String getLanguage() {
+        return languageName;
+    }
+
+    public boolean hasCustomPlayerCountMessage() {
+        return customPlayerCountMessage;
+    }
+
+    protected void loadExtraSettings() {
     }
 }

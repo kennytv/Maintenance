@@ -1,15 +1,33 @@
+/*
+ * Maintenance - https://git.io/maintenancemode
+ * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.kennytv.maintenance.core.runnable;
 
-import eu.kennytv.maintenance.core.MaintenanceModePlugin;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
 public abstract class MaintenanceRunnableBase implements Runnable {
-    protected final MaintenanceModePlugin plugin;
+    protected final MaintenancePlugin plugin;
     protected final Settings settings;
     protected final boolean enable;
     protected int seconds;
 
-    protected MaintenanceRunnableBase(final MaintenanceModePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
+    protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
         this.plugin = plugin;
         this.settings = settings;
         this.seconds = minutes * 60;
@@ -20,7 +38,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
     public void run() {
         if (seconds == 0) {
             finish();
-        } else if (settings.getBroadcastIntervalls().contains(seconds)) {
+        } else if (settings.getBroadcastIntervals().contains(seconds)) {
             if (enable)
                 plugin.broadcast(startMessageKey());
             else

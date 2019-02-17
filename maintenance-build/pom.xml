@@ -4,20 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>maintenance-parent</artifactId>
         <groupId>eu.kennytv</groupId>
-        <version>2.5.3-SNAPSHOT</version>
+        <artifactId>maintenance-parent</artifactId>
+        <version>3.0</version>
     </parent>
 
     <artifactId>maintenance-build</artifactId>
+    <name>Maintenance</name>
 
     <dependencies>
-        <dependency>
-            <groupId>eu.kennytv</groupId>
-            <artifactId>maintenance-core</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>compile</scope>
-        </dependency>
+        <!-- Also includes maintenance-core and maintenance-core-proxy modules -->
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-bungee</artifactId>
@@ -30,9 +26,17 @@
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.kennytv</groupId>
+            <artifactId>maintenance-sponge</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.kennytv</groupId>
+            <artifactId>maintenance-velocity</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-
-    <build>
-        <finalName>Maintenance</finalName>
-    </build>
 </project>

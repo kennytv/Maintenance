@@ -6,8 +6,9 @@
 
     <groupId>eu.kennytv</groupId>
     <artifactId>maintenance-parent</artifactId>
-    <version>2.5.3-SNAPSHOT</version>
+    <version>3.0</version>
     <packaging>pom</packaging>
+
     <name>Maintenance</name>
     <url>https://github.com/KennyTV/Maintenance</url>
     <inceptionYear>2018</inceptionYear>
@@ -22,8 +23,11 @@
     <modules>
         <module>maintenance-api</module>
         <module>maintenance-core</module>
+        <module>maintenance-core-proxy</module>
         <module>maintenance-spigot</module>
         <module>maintenance-bungee</module>
+        <module>maintenance-sponge</module>
+        <module>maintenance-velocity</module>
         <module>maintenance-build</module>
     </modules>
 
@@ -44,8 +48,24 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
+            <id>sponge</id>
+            <url>http://repo.spongepowered.org/maven</url>
+        </repository>
+        <repository>
+            <id>velocity</id>
+            <url>https://repo.velocitypowered.com/snapshots</url>
+        </repository>
+        <repository>
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <id>bstats-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>minecrell</id>
+            <url>https://repo.minecrell.net/snapshots</url>
         </repository>
     </repositories>
 
@@ -68,8 +88,33 @@
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.yaml.snakeyaml</pattern>
+                                    <shadedPattern>eu.kennytv.lib.snakeyaml</shadedPattern>
+                                </relocation>
+                                <!-- Relocate slf4j to prevent issues on Bungee (except Logger class to prevent false relocation of injected Sponge/Velocity logger) -->
+                                <relocation>
+                                    <pattern>org.slf4j</pattern>
+                                    <shadedPattern>org.slf4j.other</shadedPattern>
+                                    <excludes>
+                                        <exclude>org.slf4j.Logger</exclude>
+                                    </excludes>
+                                </relocation>
                             </relocations>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

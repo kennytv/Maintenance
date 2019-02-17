@@ -4,30 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>maintenance-parent</artifactId>
         <groupId>eu.kennytv</groupId>
-        <version>2.5.3-SNAPSHOT</version>
+        <artifactId>maintenance-parent</artifactId>
+        <version>3.0</version>
     </parent>
 
     <artifactId>maintenance-spigot</artifactId>
+    <name>MaintenanceSpigot</name>
 
     <dependencies>
         <dependency>
             <groupId>eu.kennytv</groupId>
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.13.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.minecrell</groupId>
-            <artifactId>ServerListPlus</artifactId>
-            <version>3.4.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
