@@ -6,7 +6,7 @@
 
     <groupId>eu.kennytv</groupId>
     <artifactId>maintenance-parent</artifactId>
-    <version>3.0</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Maintenance</name>
