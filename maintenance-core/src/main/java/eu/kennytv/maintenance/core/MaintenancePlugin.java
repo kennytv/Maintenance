@@ -22,9 +22,12 @@ import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.event.MaintenanceChangedEvent;
+import eu.kennytv.maintenance.api.event.manager.IEventManager;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.dump.MaintenanceDump;
 import eu.kennytv.maintenance.core.dump.PluginDump;
+import eu.kennytv.maintenance.core.event.EventManager;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -44,6 +47,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class MaintenancePlugin implements IMaintenance {
+    protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
     protected ServerListPlusHook serverListPlusHook;
@@ -58,6 +62,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         this.version = new Version(version);
         this.serverType = serverType;
         this.prefix = "§8[§eMaintenance" + serverType + "§8] ";
+        this.eventManager = new EventManager();
     }
 
     @Override
@@ -66,6 +71,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
         serverActions(maintenance);
+        eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
     public void serverActions(final boolean maintenance) {
@@ -81,6 +87,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
             broadcast(settings.getMessage("maintenanceDeactivated"));
     }
 
+    //TODO format config option
     public String formatedTimer() {
         if (!isTaskRunning()) return "-";
         final int preHours = runnable.getSecondsLeft() / 60;
@@ -248,6 +255,11 @@ public abstract class MaintenancePlugin implements IMaintenance {
     @Override
     public Settings getSettings() {
         return settings;
+    }
+
+    @Override
+    public IEventManager getEventManager() {
+        return eventManager;
     }
 
     @Override

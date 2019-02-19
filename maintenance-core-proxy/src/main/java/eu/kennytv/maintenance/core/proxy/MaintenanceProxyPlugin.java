@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.core.proxy;
 
+import eu.kennytv.maintenance.api.event.proxy.ServerMaintenanceChangedEvent;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
@@ -50,10 +51,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     public void setMaintenance(final boolean maintenance) {
         if (settingsProxy.hasMySQL())
             settingsProxy.setMaintenanceToSQL(maintenance);
-        settingsProxy.setMaintenance(maintenance);
-        settingsProxy.getConfig().set("maintenance-enabled", maintenance);
-        settingsProxy.saveConfig();
-        serverActions(maintenance);
+        super.setMaintenance(maintenance);
     }
 
     @Override
@@ -69,6 +67,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             if (!settingsProxy.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
+        eventManager.callEvent(new ServerMaintenanceChangedEvent(server.getName(), maintenance));
         return true;
     }
 
