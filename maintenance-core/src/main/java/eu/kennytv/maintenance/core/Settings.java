@@ -99,7 +99,7 @@ public class Settings implements ISettings {
         }
     }
 
-    protected void createFile(final String name) {
+    public void createFile(final String name) {
         final File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
             try (final InputStream in = plugin.getResource(name)) {
