@@ -30,10 +30,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author KennyTV
@@ -91,6 +88,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return serverTasks.containsKey(server.getName());
     }
 
+    @Override
+    public Set<String> getMaintenanceServers() {
+        return Collections.unmodifiableSet(settingsProxy.getMaintenanceServers());
+    }
+
     public void cancelSingleTask(final Server server) {
         final Task task = serverTasks.remove(server.getName());
         if (task != null)
@@ -104,7 +106,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Override
-    public List<String> getMaintenanceServers() {
+    public List<String> getMaintenanceServersDump() {
         final List<String> list = new ArrayList<>();
         if (isMaintenance()) list.add("global");
         list.addAll(settingsProxy.getMaintenanceServers());

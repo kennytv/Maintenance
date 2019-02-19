@@ -20,6 +20,8 @@ package eu.kennytv.maintenance.api.proxy;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 
+import java.util.Set;
+
 /**
  * @author KennyTV
  * @since 3.0
@@ -59,4 +61,9 @@ public interface IMaintenanceProxy extends IMaintenance {
      * @return wrapped server object if present, else null
      */
     Server getServer(String server);
+
+    /**
+     * @return immutable set with names of all proxied server that are currently under maintenance
+     */
+    Set<String> getMaintenanceServers();
 }

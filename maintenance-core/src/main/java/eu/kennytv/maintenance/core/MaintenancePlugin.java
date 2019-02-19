@@ -267,7 +267,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return version.toString();
     }
 
-    public List<String> getMaintenanceServers() {
+    public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
     }
 

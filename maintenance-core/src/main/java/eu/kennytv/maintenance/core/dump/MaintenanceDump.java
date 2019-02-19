@@ -33,7 +33,7 @@ public final class MaintenanceDump {
     private final JsonObject plugins;
 
     public MaintenanceDump(final MaintenancePlugin plugin, final Settings settings) {
-        general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServers());
+        general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServersDump());
 
         configuration = new LinkedHashMap<>(settings.getConfig().getValues());
         final Object o = configuration.get("mysql");
