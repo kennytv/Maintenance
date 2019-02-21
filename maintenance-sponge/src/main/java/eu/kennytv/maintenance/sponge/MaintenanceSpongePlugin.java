@@ -36,7 +36,6 @@ import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
-import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandSource;
@@ -78,14 +77,9 @@ import java.util.stream.Collectors;
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     private Logger logger;
     private Favicon favicon;
-    @Inject
-    private Game game;
-    @Inject
-    private PluginContainer container;
-    @Inject
-    private Metrics2 metrics;
-    @Inject
-    @ConfigDir(sharedRoot = false)
+    @Inject private Game game;
+    @Inject private PluginContainer container;
+    @Inject @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
     @Inject
