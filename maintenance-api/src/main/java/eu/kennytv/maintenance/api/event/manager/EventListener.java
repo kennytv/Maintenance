@@ -21,10 +21,16 @@ package eu.kennytv.maintenance.api.event.manager;
 /**
  * Abstract class representing a maintenance eventlistener.
  *
+ * @param <T> event to be listened to
  * @author KennyTV
  * @since 3.0.1
  */
 public abstract class EventListener<T extends MaintenanceEvent> {
 
+    /**
+     * This method is to be overwritten and is called on the given event.
+     *
+     * @param event fired event
+     */
     public abstract void onEvent(final T event);
 }

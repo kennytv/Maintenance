@@ -33,6 +33,9 @@ public final class MaintenanceChangedEvent implements MaintenanceEvent {
         this.maintenance = maintenance;
     }
 
+    /**
+     * @return true if maintenance has been enabled, false otherwise
+     */
     public boolean isMaintenance() {
         return maintenance;
     }

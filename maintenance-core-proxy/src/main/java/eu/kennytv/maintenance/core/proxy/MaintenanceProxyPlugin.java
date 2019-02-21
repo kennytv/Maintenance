@@ -64,7 +64,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             if (!settingsProxy.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
-        eventManager.callEvent(new ServerMaintenanceChangedEvent(server.getName(), maintenance));
+        eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
         return true;
     }
 

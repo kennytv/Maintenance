@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.api.event.proxy;
 
 import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
+import eu.kennytv.maintenance.api.proxy.Server;
 
 /**
  * Notification event fired when maintenance mode has been changed on a proxied server.
@@ -27,18 +28,24 @@ import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
  * @since 3.0.1
  */
 public final class ServerMaintenanceChangedEvent implements MaintenanceEvent {
-    private final String server;
+    private final Server server;
     private final boolean maintenance;
 
-    public ServerMaintenanceChangedEvent(final String server, final boolean maintenance) {
+    public ServerMaintenanceChangedEvent(final Server server, final boolean maintenance) {
         this.server = server;
         this.maintenance = maintenance;
     }
 
-    public String getServer() {
+    /**
+     * @return wrapped server object for the proxied server
+     */
+    public Server getServer() {
         return server;
     }
 
+    /**
+     * @return true if maintenance has been enabled on the server, false otherwise
+     */
     public boolean isMaintenance() {
         return maintenance;
     }
