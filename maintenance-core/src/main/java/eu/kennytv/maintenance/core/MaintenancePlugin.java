@@ -87,13 +87,15 @@ public abstract class MaintenancePlugin implements IMaintenance {
             broadcast(settings.getMessage("maintenanceDeactivated"));
     }
 
-    //TODO format config option
     public String formatedTimer() {
-        if (!isTaskRunning()) return "-";
+        if (!isTaskRunning()) return settings.getMessage("motdTimerNotRunning", "-");
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
         final int seconds = runnable.getSecondsLeft() % 60;
-        return String.format("%02d:%02d:%02d", preHours / 60, minutes, seconds);
+        return settings.getMessage("motdTimer", "%HOURS%:%MINUTES%:%SECONDS%")
+                .replace("%HOURS%", String.format("%02d", preHours / 60))
+                .replace("%MINUTES%", String.format("%02d", minutes))
+                .replace("%SECONDS%", String.format("%02d", seconds));
     }
 
     public void startMaintenanceRunnable(final int minutes, final boolean enable) {
