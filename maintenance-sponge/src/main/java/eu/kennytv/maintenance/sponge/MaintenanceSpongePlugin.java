@@ -91,7 +91,8 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "playercountmessage", "enable-playercountmessage");
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback",
+                "playercountmessage", "enable-playercountmessage", "update-checks");
 
         sendEnableMessage();
 

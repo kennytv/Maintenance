@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.subcommand.*;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,7 +54,9 @@ public abstract class MaintenanceCommand {
         add(new RemoveMotdCommand(plugin), "removemotd");
         add(new MotdCommand(plugin), "motd");
 
-        add(new UpdateCommand(plugin), "update", "forceupdate");
+        // Ore sad and moi lazy :(
+        if (plugin.getServerType() != ServerType.SPONGE)
+            add(new UpdateCommand(plugin), "update", "forceupdate");
         add(new DumpCommand(plugin), "dump");
     }
 

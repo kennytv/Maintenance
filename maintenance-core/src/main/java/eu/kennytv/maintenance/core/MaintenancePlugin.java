@@ -58,6 +58,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     private Version newestVersion;
     private Task task;
 
+    //TODO endtimer nach restart noch irgendwie behalten
+
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;

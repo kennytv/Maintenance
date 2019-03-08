@@ -355,7 +355,8 @@ public class Settings implements ISettings {
     }
 
     public boolean hasUpdateChecks() {
-        return updateChecks;
+        // Ore sad and moi lazy :(
+        return updateChecks && plugin.getServerType() != ServerType.SPONGE;
     }
 
     public Config getConfig() {
