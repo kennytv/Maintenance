@@ -72,8 +72,13 @@ public final class ServerInfoPacketListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null)
-            event.setServerIcon(plugin.getFavicon());
+        if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null) {
+            try {
+                event.setServerIcon(plugin.getFavicon());
+            } catch (final UnsupportedOperationException ignored) {
+                // Thrown in a ping that has not been requested through a status packet, we can just ignore that case
+            }
+        }
     }
 
     /*@Override

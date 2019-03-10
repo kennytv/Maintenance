@@ -290,7 +290,7 @@ public class Settings implements ISettings {
 
     public String getRandomPingMessage() {
         if (pingMessages.isEmpty()) return "";
-        final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
+        final String s = pingMessages.size() == 1 ? pingMessages.get(0) : pingMessages.get(RANDOM.nextInt(pingMessages.size()));
         return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
     }
 

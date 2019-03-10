@@ -41,7 +41,12 @@ public final class ServerListPingListener implements Listener {
         event.setMaxPlayers(0);
         event.setMotd(settings.getRandomPingMessage());
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
-            event.setServerIcon(plugin.getFavicon());
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
+            try {
+                event.setServerIcon(plugin.getFavicon());
+            } catch (final UnsupportedOperationException ignored) {
+                // Thrown in a ping that has not been requested through a status packet, we can just ignore that case
+            }
+        }
     }
 }
