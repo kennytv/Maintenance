@@ -57,18 +57,17 @@ public final class PaperServerListPingListener implements Listener {
         final List<PlayerProfile> sample = event.getPlayerSample();
         sample.clear();
         for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
-            sample.add(new FakePlayerProfile(string));
+            sample.add(new DummyProfile(string));
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null)
             event.setServerIcon(plugin.getFavicon());
     }
 
-    // I don't want to import the paper impl. + less object creation :>
-    private static final class FakePlayerProfile implements PlayerProfile {
-        private static final UUID UUID = new UUID(0, 0);
+    // Less unnecessary object creation :>
+    private static final class DummyProfile implements PlayerProfile {
         private final String name;
 
-        private FakePlayerProfile(final String name) {
+        private DummyProfile(final String name) {
             this.name = name;
         }
 
@@ -86,12 +85,12 @@ public final class PaperServerListPingListener implements Listener {
         @Nullable
         @Override
         public UUID getId() {
-            return UUID;
+            return null;
         }
 
         @Override
         public UUID setId(@Nullable final UUID uuid) {
-            return UUID;
+            return null;
         }
 
         @Nonnull

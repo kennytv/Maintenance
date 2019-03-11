@@ -41,7 +41,6 @@ public final class ServerInfoPacketListener implements Listener {
     private final UUID uuid = new UUID(0, 0);
     private final MaintenanceSpigotPlugin plugin;
     private final Settings settings;
-    //private WrappedServerPing.CompressedImage image;
 
     public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
         this.plugin = plugin;
@@ -65,13 +64,13 @@ public final class ServerInfoPacketListener implements Listener {
                 for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
                     players.add(new WrappedGameProfile(uuid, string));
                 ping.setPlayers(players);
-                //if (settings.hasCustomIcon() && image != null) ping.setFavicon(image);
             }
         });
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
+        // Don't set the icon here, not in the packet listener, as it's broken for 1.13+ clients on older server versions
         if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null) {
             try {
                 event.setServerIcon(plugin.getFavicon());
@@ -80,17 +79,4 @@ public final class ServerInfoPacketListener implements Listener {
             }
         }
     }
-
-    /*@Override
-    public boolean loadIcon() {
-        try {
-            image = WrappedServerPing.CompressedImage.fromPng(ImageIO.read(new File("maintenance-icon.png")));
-        } catch (final Exception e) {
-            pl.getLogger().warning("Could not load 'maintenance-icon.png' - did you create one in your Spigot folder (not the plugins folder)?");
-            if (pl.getApi().getSettings().debugEnabled())
-                e.printStackTrace();
-            return false;
-        }
-        return true;
-    }*/
 }
