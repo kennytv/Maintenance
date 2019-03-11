@@ -70,7 +70,7 @@ public final class ServerInfoPacketListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        // Don't set the icon here, not in the packet listener, as it's broken for 1.13+ clients on older server versions
+        // Set the icon here, not in the packet listener, as it's broken for 1.13+ clients on older server versions
         if (settings.isMaintenance() && settings.hasCustomIcon() && plugin.getFavicon() != null) {
             try {
                 event.setServerIcon(plugin.getFavicon());
