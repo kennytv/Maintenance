@@ -1,6 +1,16 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## Unreleased
+### Changed
+* Created an addon to have PlaceholderAPI placeholders on Spigot when running the Maintenance plugin on Bungee (see [**here**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon))
+* Spigot version: If running on Paper 1.12.2 or higher, ProtocolLib will not be needed anymore
+* Added custom eventsystem to the API
+* Removed bStats metrics from Sponge module
+### Fixed
+* Spigot version: Fixed an occasional error on pings of non clients
+* Minor fixes/changes to Spanish and Portuguese language files
+---
 ## 3.0 - February 17th 2019
 ### Changed
 * This plugin now also supports the platforms Sponge and Velocity!
