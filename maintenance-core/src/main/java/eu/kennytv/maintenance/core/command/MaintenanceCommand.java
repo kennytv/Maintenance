@@ -137,6 +137,8 @@ public abstract class MaintenanceCommand {
             if (plugin.getServerType() != ServerType.SPONGE) {
                 sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
                 sendUpdateMessage(sender);
+            } else {
+                sender.sendMessage(plugin.getPrefix() + "§aDownload the latest version on the Ore plugin page: §bhttps://ore.spongepowered.org/KennyTV/Maintenance");
             }
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
