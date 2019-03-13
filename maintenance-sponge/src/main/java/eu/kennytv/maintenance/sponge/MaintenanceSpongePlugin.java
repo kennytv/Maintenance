@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
  * @since 3.0
  */
 @Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenance.40699/",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     private Logger logger;
@@ -92,7 +92,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         logger = new LoggerWrapper(container.getLogger());
 
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback",
-                "playercountmessage", "enable-playercountmessage", "update-checks");
+                "playercountmessage", "enable-playercountmessage");
 
         sendEnableMessage();
 

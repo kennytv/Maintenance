@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -129,6 +130,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public boolean installUpdate() {
+        // Ore sad :(
+        Preconditions.checkArgument(serverType != ServerType.SPONGE);
         try {
             final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
             writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));

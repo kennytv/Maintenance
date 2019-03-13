@@ -54,9 +54,7 @@ public abstract class MaintenanceCommand {
         add(new RemoveMotdCommand(plugin), "removemotd");
         add(new MotdCommand(plugin), "motd");
 
-        // Ore sad and moi lazy :(
-        if (plugin.getServerType() != ServerType.SPONGE)
-            add(new UpdateCommand(plugin), "update", "forceupdate");
+        add(new UpdateCommand(plugin), "update", "forceupdate");
         add(new DumpCommand(plugin), "dump");
     }
 
@@ -135,8 +133,11 @@ public abstract class MaintenanceCommand {
     public void checkForUpdate(final SenderInfo sender) {
         if (plugin.updateAvailable()) {
             sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
-            sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
-            sendUpdateMessage(sender);
+            // Ore sad :(
+            if (plugin.getServerType() != ServerType.SPONGE) {
+                sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
+                sendUpdateMessage(sender);
+            }
         } else
             sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
     }
