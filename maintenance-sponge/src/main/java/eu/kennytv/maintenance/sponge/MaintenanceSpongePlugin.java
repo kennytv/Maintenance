@@ -102,7 +102,6 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         final EventManager em = game.getEventManager();
         em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));
-        em.registerListeners(this, new ClientPingServerListener(this, settings));
 
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
