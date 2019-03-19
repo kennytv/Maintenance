@@ -37,35 +37,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class ServerInfoPacketListener implements Listener {
+public final class ServerInfoPacketListener extends PacketAdapter implements Listener {
     private final UUID uuid = new UUID(0, 0);
     private final MaintenanceSpigotPlugin plugin;
     private final Settings settings;
 
     public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
+        super(base, ListenerPriority.HIGHEST, PacketType.Status.Server.SERVER_INFO);
         this.plugin = plugin;
         this.settings = settings;
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(base, ListenerPriority.HIGHEST, PacketType.Status.Server.SERVER_INFO) {
-            @Override
-            public void onPacketSending(final PacketEvent event) {
-                if (!settings.isMaintenance()) return;
+        ProtocolLibrary.getProtocolManager().addPacketListener(this);
+    }
 
-                final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-                ping.setMotD(settings.getRandomPingMessage());
+    @Override
+    public void onPacketSending(final PacketEvent event) {
+        if (!settings.isMaintenance()) return;
 
-                if (settings.hasCustomPlayerCountMessage()) {
-                    ping.setVersionProtocol(0);
-                    ping.setVersionName(settings.getPlayerCountMessage()
-                            .replace("%ONLINE%", Integer.toString(base.getServer().getOnlinePlayers().size()))
-                            .replace("%MAX%", Integer.toString(base.getServer().getMaxPlayers())));
-                }
+        final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+        ping.setMotD(settings.getRandomPingMessage());
 
-                final List<WrappedGameProfile> players = new ArrayList<>();
-                for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
-                    players.add(new WrappedGameProfile(uuid, string));
-                ping.setPlayers(players);
-            }
-        });
+        if (settings.hasCustomPlayerCountMessage()) {
+            ping.setVersionProtocol(0);
+            ping.setVersionName(settings.getPlayerCountMessage()
+                    .replace("%ONLINE%", Integer.toString(plugin.getServer().getOnlinePlayers().size()))
+                    .replace("%MAX%", Integer.toString(plugin.getServer().getMaxPlayers())));
+        }
+
+        final List<WrappedGameProfile> players = new ArrayList<>();
+        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
+            players.add(new WrappedGameProfile(uuid, string));
+        ping.setPlayers(players);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
