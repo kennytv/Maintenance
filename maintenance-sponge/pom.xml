@@ -18,12 +18,6 @@
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.spongepowered</groupId>
@@ -32,24 +26,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <finalName>Maintenance</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

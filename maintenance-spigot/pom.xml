@@ -18,12 +18,6 @@
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
