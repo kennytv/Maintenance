@@ -18,6 +18,12 @@
             <artifactId>maintenance-core-proxy</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
