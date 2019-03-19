@@ -24,6 +24,13 @@
             <artifactId>HikariCP</artifactId>
             <version>3.2.0</version>
             <scope>compile</scope>
+            <!-- Shade slf4j specifically and only in the Bungee module to prevent issues -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

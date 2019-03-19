@@ -51,7 +51,7 @@ public final class SettingsProxy extends Settings {
     }
 
     private void setupMySQL() throws Exception {
-        super.plugin.getLogger().info("Trying to open database connection...");
+        super.plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
         final ConfigSection section = config.getSection("mysql");
         if (section == null) {
             plugin.getLogger().warning("Section missing: mysql");
@@ -82,7 +82,8 @@ public final class SettingsProxy extends Settings {
                 setupMySQL();
             } catch (final Exception e) {
                 mySQL = null;
-                super.plugin.getLogger().log(Level.WARNING, "Error while trying do open database connection!", e);
+                super.plugin.getLogger().log(Level.WARNING, "Error while trying do open database connection!");
+                e.printStackTrace();
             }
         }
 
