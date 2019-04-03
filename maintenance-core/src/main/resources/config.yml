@@ -70,7 +70,18 @@ mysql:
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
 
+# If the server is restarted while running an endtimer, the timer will be continued after the restart.
+# This only works, if the time to end hasn't yet ended during the restart.
+#
+# This will only work if you properly restart/stop the server, i.e. not by forcefully killing it.
+# Not recommended with mysql enabled on Bungee/Velocity.
+continue-endtimer-after-restart:
+  enabled: false
+
 # If disabled, you will no longer receive any messages if there is an update.
 # Not recommended to disable, as new versions generally tend to run better and with less bugs.
 # However, you can always check for updates manually using the '/maintenance update' command.
 update-checks: true
+
+# Used for autoupdating the config, do not change this value.
+config-version: 1

@@ -44,6 +44,7 @@ import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -103,12 +104,19 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));
 
+        continueLastEndtimer();
+
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             logger.info("Enabled ServerListPlus integration!");
         }));
+    }
+
+    @Listener
+    public void onDisable(final GameStoppingEvent event) {
+        disable();
     }
 
     @Listener

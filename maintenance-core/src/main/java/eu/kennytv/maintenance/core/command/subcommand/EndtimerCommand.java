@@ -40,7 +40,7 @@ public final class EndtimerCommand extends CommandInfo {
             return;
         }
 
-        plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
+        plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), false);
         sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
     }
 }

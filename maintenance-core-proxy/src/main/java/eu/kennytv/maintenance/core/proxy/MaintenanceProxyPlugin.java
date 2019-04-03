@@ -44,7 +44,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         super(version, serverType);
     }
 
+    @Override
     public void disable() {
+        super.disable();
         if (settingsProxy.getMySQL() != null)
             settingsProxy.getMySQL().close();
     }
@@ -106,7 +108,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes, enable, server);
-        serverTasks.put(server.getName(), startMaintenanceRunnable(runnable));
+        serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
 

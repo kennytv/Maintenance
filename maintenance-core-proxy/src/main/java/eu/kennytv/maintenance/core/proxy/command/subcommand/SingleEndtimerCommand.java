@@ -50,7 +50,7 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
                 sender.sendMessage(getMessage("alreadyDisabled"));
                 return;
             }
-            plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), false);
+            plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), false);
             sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;

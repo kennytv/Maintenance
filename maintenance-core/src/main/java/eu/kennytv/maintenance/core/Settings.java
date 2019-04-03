@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
+    private static final int CURRENT_CONFIG_VERSION = 1;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -99,10 +100,15 @@ public class Settings implements ISettings {
         }
     }
 
+    // Public, as it is used in the MaintenanceAddon
     public void createFile(final String name) {
+        createFile(name, name);
+    }
+
+    private void createFile(final String name, final String from) {
         final File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
-            try (final InputStream in = plugin.getResource(name)) {
+            try (final InputStream in = plugin.getResource(from)) {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
                 throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
@@ -194,9 +200,29 @@ public class Settings implements ISettings {
                 plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
         }
 
+        // Update config to latest version (config version included since 3.0.1)
+        if (config.getInt("config-version") != CURRENT_CONFIG_VERSION) {
+            plugin.getLogger().info("Updating config to latest version...");
+            createFile("config-new.yml", "config.yml");
+            final File file = new File(plugin.getDataFolder(), "config-new.yml");
+            final Config tempConfig = new Config(file, unsupportedFields);
+            try {
+                tempConfig.load();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+
+            config.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+            config.set("config-version", CURRENT_CONFIG_VERSION);
+
+            file.delete();
+            tempConfig.clear();
+            changed = true;
+        }
+
         if (changed) {
             saveConfig();
-            plugin.getLogger().info("Done! Updated all configs to the new format!");
+            plugin.getLogger().info("Done! Updated config(s) to the latest version!");
         }
     }
 

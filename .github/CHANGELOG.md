@@ -5,9 +5,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Created an addon to have PlaceholderAPI placeholders on Spigot when running the Maintenance plugin on Bungee (see [**here**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon))
 * Spigot version: If running on Paper 1.12.2 or higher, ProtocolLib will not be needed anymore
-* Added custom eventsystem to the API
 * The universal jar now only includes Bungee and Spigot (whereas before Sponge and Velocity as well) and has been further minimized in size
   * To use the plugin on the other platforms, use the `MaintenanceSponge.jar` or `MaintenanceVelocity.jar` respectively
+* Added config option `continue-endtimer-after-restart` to have endtimers continued, even if the server restarts during its runtime
+* Added custom eventsystem to the API
 * Removed bStats metrics from Sponge module
 ### Fixed
 * Actually fixed compatibility to other plugins using the same MySQL library (such as LuckPerms) in the Bungee version

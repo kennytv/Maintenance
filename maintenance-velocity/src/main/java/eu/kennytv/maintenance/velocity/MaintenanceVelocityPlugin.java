@@ -105,6 +105,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
         em.register(this, new LoginListener(this, settingsProxy));
 
+        continueLastEndtimer();
+
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);

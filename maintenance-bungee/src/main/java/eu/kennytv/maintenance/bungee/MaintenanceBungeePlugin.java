@@ -84,6 +84,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         commandManager = new MaintenanceBungeeCommand(this, settingsProxy);
         pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(commandManager));
 
+        continueLastEndtimer();
         new MetricsLite(plugin);
 
         // ServerListPlus integration
@@ -140,7 +141,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    protected Task startMaintenanceRunnable(final Runnable runnable) {
+    public Task startMaintenanceRunnable(final Runnable runnable) {
         return new BungeeTask(getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
     }
 

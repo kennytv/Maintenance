@@ -90,6 +90,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
             }
         }
 
+        continueLastEndtimer();
         new MetricsLite(plugin);
 
         // ServerListPlus integration

@@ -20,18 +20,21 @@ package eu.kennytv.maintenance.core.runnable;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.util.Task;
 
 public abstract class MaintenanceRunnableBase implements Runnable {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
     protected final boolean enable;
+    private final Task task;
     protected int seconds;
 
-    protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
+    protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
         this.plugin = plugin;
         this.settings = settings;
-        this.seconds = minutes * 60;
+        this.seconds = seconds;
         this.enable = enable;
+        this.task = plugin.startMaintenanceRunnable(this);
     }
 
     @Override
@@ -67,8 +70,16 @@ public abstract class MaintenanceRunnableBase implements Runnable {
         builder.append(time).append(" ").append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
     }
 
+    public boolean shouldEnable() {
+        return enable;
+    }
+
     public int getSecondsLeft() {
         return seconds;
+    }
+
+    public Task getTask() {
+        return task;
     }
 
     protected abstract void finish();

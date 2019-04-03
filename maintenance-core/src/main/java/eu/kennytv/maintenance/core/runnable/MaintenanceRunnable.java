@@ -23,8 +23,8 @@ import eu.kennytv.maintenance.core.Settings;
 
 public final class MaintenanceRunnable extends MaintenanceRunnableBase {
 
-    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable) {
-        super(plugin, settings, minutes, enable);
+    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
+        super(plugin, settings, seconds, enable);
     }
 
     @Override
