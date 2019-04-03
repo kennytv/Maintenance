@@ -59,8 +59,6 @@ public abstract class MaintenancePlugin implements IMaintenance {
     private Version newestVersion;
     private Task task;
 
-    //TODO endtimer nach restart noch irgendwie behalten
-
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;
@@ -208,7 +206,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
             return jsonOutput.get("key").getAsString();
         } catch (final IOException e) {
-            getLogger().log(Level.WARNING, "Could not paste dump :(", e);
+            getLogger().log(Level.WARNING, "Could not paste dump :(");
+            e.printStackTrace();
             return null;
         }
     }
@@ -223,7 +222,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         try {
             loadIcon(file);
         } catch (final Exception e) {
-            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!", e);
+            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!");
             e.printStackTrace();
         }
     }

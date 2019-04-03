@@ -25,11 +25,16 @@ import net.md_5.bungee.api.plugin.Plugin;
 import java.io.File;
 
 public final class MaintenanceBungeeBase extends Plugin implements IMaintenanceBase {
-    private IMaintenance maintenance;
+    private MaintenanceBungeePlugin maintenance;
 
     @Override
     public void onEnable() {
         maintenance = new MaintenanceBungeePlugin(this);
+    }
+
+    @Override
+    public void onDisable() {
+        maintenance.disable();
     }
 
     @Override

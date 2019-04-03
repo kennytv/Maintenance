@@ -207,4 +207,8 @@ public final class SettingsProxy extends Settings {
     public String getFallbackServer() {
         return fallbackServer;
     }
+
+    MySQL getMySQL() {
+        return mySQL;
+    }
 }

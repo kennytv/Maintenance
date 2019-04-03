@@ -65,4 +65,8 @@ public final class MySQL {
         executeUpdate(query, res -> {
         }, objects);
     }
+
+    public void close() {
+        hikariDataSource.close();
+    }
 }

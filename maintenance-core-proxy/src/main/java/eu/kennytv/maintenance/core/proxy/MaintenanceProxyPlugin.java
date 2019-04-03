@@ -44,6 +44,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         super(version, serverType);
     }
 
+    public void disable() {
+        if (settingsProxy.getMySQL() != null)
+            settingsProxy.getMySQL().close();
+    }
+
     @Override
     public void setMaintenance(final boolean maintenance) {
         if (settingsProxy.hasMySQL())

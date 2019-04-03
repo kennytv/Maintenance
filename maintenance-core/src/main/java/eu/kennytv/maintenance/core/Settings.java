@@ -208,7 +208,8 @@ public class Settings implements ISettings {
         try {
             oldConfig.load();
         } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file", e);
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file");
+            e.printStackTrace();
             return false;
         }
 
@@ -237,7 +238,8 @@ public class Settings implements ISettings {
         try {
             oldFile.load();
         } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file", e);
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file");
+            e.printStackTrace();
             return false;
         }
 
