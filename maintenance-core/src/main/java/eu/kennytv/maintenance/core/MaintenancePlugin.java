@@ -26,7 +26,6 @@ import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.event.MaintenanceChangedEvent;
 import eu.kennytv.maintenance.api.event.manager.IEventManager;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
-import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.dump.MaintenanceDump;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.event.EventManager;
@@ -68,14 +67,6 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public void disable() {
-        // Save the current endtimer to continue it after the next restart
-        if (runnable != null && !runnable.shouldEnable()) {
-            final ConfigSection section = settings.getConfig().getSection("continue-endtimer-after-restart");
-            if (section != null) {
-                section.set("end", System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
-                settings.saveConfig();
-            }
-        }
     }
 
     @Override
@@ -84,7 +75,6 @@ public abstract class MaintenancePlugin implements IMaintenance {
         settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
         serverActions(maintenance);
-        eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
     public void serverActions(final boolean maintenance) {
@@ -98,6 +88,11 @@ public abstract class MaintenancePlugin implements IMaintenance {
             broadcast(settings.getMessage("maintenanceActivated"));
         } else
             broadcast(settings.getMessage("maintenanceDeactivated"));
+        eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
+    }
+
+    public String formatedTimer(final String s) {
+        return s.contains("%TIMER%") ? s.replace("%TIMER%", formatedTimer()) : s;
     }
 
     public String formatedTimer() {
@@ -117,6 +112,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public void startMaintenanceRunnableForSeconds(final int seconds, final boolean enable) {
         runnable = new MaintenanceRunnable(this, settings, seconds, enable);
+        // Save the endtimer to be able to continue it after a server stop
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
+            settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
+        }
     }
 
     public boolean updateAvailable() {
@@ -125,27 +124,23 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     protected void continueLastEndtimer() {
-        final ConfigSection section = settings.getConfig().getSection("continue-endtimer-after-restart");
-        if (section == null) return;
-        if (!section.getBoolean("enabled", false)) return;
-
-        final long end = section.getLong("end");
-        if (end == 0) return;
+        if (!settings.isSaveEndtimerOnStop()) return;
+        if (settings.getSavedEndtimer() == 0) return;
 
         final long current = System.currentTimeMillis();
         getLogger().info("Found interrupted endtimer from last uptime...");
-        if (end < current) {
-            getLogger().info("The endtimer has already expired, thus it has been cancelled.");
-        } else if (!isMaintenance()) {
+        if (!isMaintenance()) {
             getLogger().info("Maintenance has already been disabled, thus the timer has been cancelled.");
+            settings.setSavedEndtimer(0);
+        } else if (settings.getSavedEndtimer() < current) {
+            getLogger().info("The endtimer has already expired, maintenance has been disabled.");
+            setMaintenance(false);
+            settings.setSavedEndtimer(0);
         } else {
-            final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(end - current);
+            final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(settings.getSavedEndtimer() - current);
             startMaintenanceRunnableForSeconds(seconds, false);
             getLogger().info("The timer has been continued - maintenance will be disabled in: " + formatedTimer());
         }
-
-        section.remove("end");
-        settings.saveConfig();
     }
 
     protected void sendEnableMessage() {
@@ -267,6 +262,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public void cancelTask() {
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable())
+            settings.setSavedEndtimer(0);
         runnable.getTask().cancel();
         runnable = null;
     }

@@ -108,8 +108,8 @@ public final class SettingsProxy extends Settings {
         if (hasMySQL() && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
             final boolean databaseValue = loadMaintenance();
             if (databaseValue != maintenance) {
-                plugin.serverActions(maintenance);
                 maintenance = databaseValue;
+                plugin.serverActions(maintenance);
             }
             lastMySQLCheck = System.currentTimeMillis();
         }
@@ -119,8 +119,17 @@ public final class SettingsProxy extends Settings {
     public boolean isMaintenance(final Server server) {
         if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
-            if (!databaseValue.equals(maintenanceServers)) {
-                plugin.serverActions(server, maintenance);
+            if (!maintenanceServers.equals(databaseValue)) {
+                // Enable maintenance on yet unlisted servers
+                databaseValue.forEach(s -> {
+                    if (!maintenanceServers.contains(s))
+                        plugin.serverActions(plugin.getServer(s), true);
+                });
+                // Disable maintenance on now unlisted servers
+                maintenanceServers.forEach(s -> {
+                    if (!databaseValue.contains(s))
+                        plugin.serverActions(plugin.getServer(s), false);
+                });
                 maintenanceServers = databaseValue;
             }
             lastServerCheck = System.currentTimeMillis();

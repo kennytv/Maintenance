@@ -12,6 +12,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Removed bStats metrics from Sponge module
 ### Fixed
 * Actually fixed compatibility to other plugins using the same MySQL library (such as LuckPerms) in the Bungee version
+* Fixed an issue with executing the maintenance change with MySQL enabled on connected proxies
 * Fixed an occasional error on pings of non clients in the Spigot version
 * Fixed 1.13 clients on sub 1.13 servers not showing the playercountmessage in the Spigot version
 * Minor fixes/changes to Spanish and Portuguese language files

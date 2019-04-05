@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.io.File;
@@ -45,7 +46,9 @@ public class Settings implements ISettings {
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
     private boolean updateChecks;
+    private boolean saveEndtimerOnStop;
     private boolean debug;
+    private long savedEndtimer;
 
     protected Config config;
     protected Config language;
@@ -155,6 +158,9 @@ public class Settings implements ISettings {
         languageName = getConfigString("language").toLowerCase();
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
+        final ConfigSection section = config.getSection("continue-endtimer-after-restart");
+        saveEndtimerOnStop = section.getBoolean("enabled");
+        savedEndtimer = section.getLong("end");
         if (customMaintenanceIcon) {
             plugin.loadMaintenanceIcon();
         }
@@ -319,7 +325,7 @@ public class Settings implements ISettings {
     public String getRandomPingMessage() {
         if (pingMessages.isEmpty()) return "";
         final String s = pingMessages.size() == 1 ? pingMessages.get(0) : pingMessages.get(RANDOM.nextInt(pingMessages.size()));
-        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
+        return getColoredString(plugin.formatedTimer(s).replace("%NEWLINE%", "\n"));
     }
 
     @Override
@@ -386,6 +392,21 @@ public class Settings implements ISettings {
         return updateChecks;
     }
 
+    public boolean isSaveEndtimerOnStop() {
+        return saveEndtimerOnStop;
+    }
+
+    public long getSavedEndtimer() {
+        return savedEndtimer;
+    }
+
+    public void setSavedEndtimer(final long millis) {
+        if (savedEndtimer == millis) return;
+        this.savedEndtimer = millis;
+        config.getSection("continue-endtimer-after-restart").set("end", millis);
+        saveConfig();
+    }
+
     public Config getConfig() {
         return config;
     }
@@ -399,16 +420,15 @@ public class Settings implements ISettings {
     }
 
     public String getPlayerCountMessage() {
-        return playerCountMessage.replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(playerCountMessage);
     }
 
     public String getPlayerCountHoverMessage() {
-        return playerCountHoverMessage.replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(playerCountHoverMessage);
     }
 
     public String getKickMessage() {
-        return getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!")
-                .replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!").replace("%NEWLINE%", "\n"));
     }
 
     public String getLanguage() {

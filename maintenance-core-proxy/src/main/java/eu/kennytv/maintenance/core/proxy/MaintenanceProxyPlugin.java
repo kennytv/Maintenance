@@ -71,12 +71,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             if (!settingsProxy.removeMaintenanceServer(server.getName())) return false;
         }
         serverActions(server, maintenance);
-        eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
         return true;
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
-        if (server instanceof DummyServer) return;
+        if (server == null || server instanceof DummyServer) return;
         if (maintenance) {
             final Server fallback = getServer(settingsProxy.getFallbackServer());
             if (fallback == null) {
@@ -88,6 +87,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         } else
             server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
         cancelSingleTask(server);
+        eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
     }
 
     @Override
