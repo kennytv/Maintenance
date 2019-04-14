@@ -312,6 +312,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return isMaintenance() ? Arrays.asList("global") : null;
     }
 
+    public int getSaltLevel() {
+        return Integer.MAX_VALUE;
+    }
+
     public Version getNewestVersion() {
         return newestVersion;
     }
