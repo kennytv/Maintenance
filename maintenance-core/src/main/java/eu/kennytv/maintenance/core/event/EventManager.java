@@ -18,7 +18,6 @@
 
 package eu.kennytv.maintenance.core.event;
 
-import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.api.event.manager.EventListener;
 import eu.kennytv.maintenance.api.event.manager.IEventManager;
 import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
@@ -33,12 +32,10 @@ public final class EventManager implements IEventManager {
 
     @Override
     public void registerListener(final EventListener listener, final Class<? extends MaintenanceEvent> eventClass) {
-        Preconditions.checkArgument(!eventClass.isInterface());
         listeners.computeIfAbsent(eventClass.getSimpleName(), s -> new ArrayList<>()).add(listener);
     }
 
     public void callEvent(final MaintenanceEvent event) {
-        Preconditions.checkArgument(!event.getClass().isInterface());
         final List<EventListener> list = listeners.get(event.getClass().getSimpleName());
         if (list != null)
             list.forEach(listener -> listener.onEvent(event));
