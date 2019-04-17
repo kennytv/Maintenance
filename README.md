@@ -14,6 +14,7 @@ Its features include:
 * Features specifically for Bungee/Velocity
   * Only want to enable maintenance on a single server? You can also do so by using the `/maintenance <on/off> <servername>` command
   * Link multiple proxy instances through a MySQL database connection, so you don't have to change maintenance on each proxy by hand
+  * Use PlaceholderAPI placeholders with the [**MaintenanceAddon**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon) (only for Bungee)
 
 A full list of commands, permissions and configuration options can be found in the wiki listed below.
 * [Wiki](https://github.com/KennyTV/Maintenance/wiki)
@@ -25,8 +26,7 @@ A full list of commands, permissions and configuration options can be found in t
 
 Other forum threads
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
-* [Sponge forums](https://forums.spongepowered.org/t/maintenance/27421) (replacey by Ore)
-* [Ore Forums](https://ore.spongepowered.org/KennyTV/Maintenance)
+* [Ore/Sponge Forums](https://ore.spongepowered.org/KennyTV/Maintenance)
 * [Velocity forums](https://forums.velocitypowered.com/t/maintenance/129)
 
 ## Compiling

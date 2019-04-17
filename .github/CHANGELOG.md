@@ -1,7 +1,7 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
-## Unreleased
+## 3.0.1 - April 17th 2019
 ### Changed
 * Created an addon to have PlaceholderAPI placeholders on Spigot when running the Maintenance plugin on Bungee (see [**here**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon))
 * Spigot version: If running on Paper 1.12.2 or higher, ProtocolLib will not be needed anymore
