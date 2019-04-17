@@ -165,7 +165,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
         // Ore sad :(
         Preconditions.checkArgument(serverType != ServerType.SPONGE);
         try {
-            final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
+            final String fileSuffix = serverType == ServerType.VELOCITY ? "Velocity" : "";
+            final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
             writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
             final File file = new File(getPluginFolder() + "Maintenance.tmp");
             final long newlength = file.length();
