@@ -28,6 +28,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
+import eu.kennytv.maintenance.spigot.listener.PaperServerListPingListener;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.listener.ServerInfoPacketListener;
 import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
@@ -77,13 +78,19 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
-        if (pm.isPluginEnabled("ProtocolLib")) {
-            pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
+
+        if (isAcceptablePaper()) {
+            pm.registerEvents(new PaperServerListPingListener(this, settings), plugin);
         } else {
-            pm.registerEvents(new ServerListPingListener(this, settings), plugin);
-            getLogger().info("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
+            if (pm.isPluginEnabled("ProtocolLib")) {
+                pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
+            } else {
+                pm.registerEvents(new ServerListPingListener(this, settings), plugin);
+                getLogger().warning("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
+            }
         }
 
+        continueLastEndtimer();
         new MetricsLite(plugin);
 
         // ServerListPlus integration
@@ -92,6 +99,15 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             plugin.getLogger().info("Enabled ServerListPlus integration!");
+        }
+    }
+
+    private boolean isAcceptablePaper() {
+        try {
+            Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
+            return true;
+        } catch (final ClassNotFoundException e) {
+            return false;
         }
     }
 

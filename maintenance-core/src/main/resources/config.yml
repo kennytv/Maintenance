@@ -9,13 +9,16 @@
 # You can report bugs here: https://github.com/KennyTV/Maintenance/issues
 # If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq
 
+# Used for autoupdating the config, do not change this value.
+config-version: 1
+
 # Enables maintenance mode.
 maintenance-enabled: false
 
 # Enables maintenance on certain servers managed by your Bungee instance(s).
 proxied-maintenance-servers:
-#- SpigotServer1
-#- AnotherServer
+  - SpigotServer1
+# - AnotherServer
 
 # If maintenance is enabled on a proxied server with players on it,
 # they will be sent to the fallback server instead of being kicked off the network.
@@ -48,7 +51,7 @@ custom-maintenance-icon: false
 send-join-notification: false
 
 # Changes the language of command feedback/messages.
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese)
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish)
 language: en
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies
@@ -69,6 +72,14 @@ mysql:
 
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
+
+# If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
+# If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.
+continue-endtimer-after-restart:
+  enabled: false
+  # This value is set everytime an endtimer is started, cancelled or ended.
+  # Do not manually change this value.
+  end: 0
 
 # If disabled, you will no longer receive any messages if there is an update.
 # Not recommended to disable, as new versions generally tend to run better and with less bugs.

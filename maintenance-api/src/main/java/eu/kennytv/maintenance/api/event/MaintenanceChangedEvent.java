@@ -16,20 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.dump;
+package eu.kennytv.maintenance.api.event;
 
-import java.util.List;
+import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
 
-public final class ServerDump {
-    private final String pluginVersion;
-    private final String platform;
-    private final String serverVersion;
-    private final List<String> maintenance;
+/**
+ * Notification event fired when maintenance mode has been changed.
+ *
+ * @author KennyTV
+ * @since 3.0.1
+ */
+public final class MaintenanceChangedEvent implements MaintenanceEvent {
+    private final boolean maintenance;
 
-    public ServerDump(final String pluginVersion, final String platform, final String serverVersion, final List<String> maintenance) {
-        this.pluginVersion = pluginVersion;
-        this.platform = platform;
-        this.serverVersion = serverVersion;
+    public MaintenanceChangedEvent(final boolean maintenance) {
         this.maintenance = maintenance;
+    }
+
+    /**
+     * @return true if maintenance has been enabled, false otherwise
+     */
+    public boolean isMaintenance() {
+        return maintenance;
     }
 }

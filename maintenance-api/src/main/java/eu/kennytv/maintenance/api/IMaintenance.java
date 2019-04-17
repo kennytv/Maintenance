@@ -18,6 +18,8 @@
 
 package eu.kennytv.maintenance.api;
 
+import eu.kennytv.maintenance.api.event.manager.IEventManager;
+
 /**
  * @author KennyTV
  * @since 2.1
@@ -57,4 +59,11 @@ public interface IMaintenance {
      * @return {@link ISettings} instance
      */
     ISettings getSettings();
+
+    /**
+     * Returns the {@link IEventManager} instance to register listeners to maintenance events.
+     *
+     * @return {@link IEventManager} instance
+     */
+    IEventManager getEventManager();
 }

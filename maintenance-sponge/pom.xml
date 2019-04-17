@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>eu.kennytv</groupId>
+        <groupId>eu.kennytv.maintenance</groupId>
         <artifactId>maintenance-parent</artifactId>
-        <version>3.0</version>
+        <version>3.0.1</version>
     </parent>
 
     <artifactId>maintenance-sponge</artifactId>
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.kennytv</groupId>
+            <groupId>eu.kennytv.maintenance</groupId>
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
@@ -24,12 +24,6 @@
             <artifactId>spongeapi</artifactId>
             <version>7.1.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-sponge</artifactId>
-            <version>1.4</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

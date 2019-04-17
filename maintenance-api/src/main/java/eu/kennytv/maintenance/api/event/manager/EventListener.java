@@ -16,20 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.dump;
+package eu.kennytv.maintenance.api.event.manager;
 
-import java.util.List;
+/**
+ * Abstract class representing a maintenance eventlistener.
+ *
+ * @param <T> event to be listened to
+ * @author KennyTV
+ * @since 3.0.1
+ */
+public abstract class EventListener<T extends MaintenanceEvent> {
 
-public final class ServerDump {
-    private final String pluginVersion;
-    private final String platform;
-    private final String serverVersion;
-    private final List<String> maintenance;
-
-    public ServerDump(final String pluginVersion, final String platform, final String serverVersion, final List<String> maintenance) {
-        this.pluginVersion = pluginVersion;
-        this.platform = platform;
-        this.serverVersion = serverVersion;
-        this.maintenance = maintenance;
-    }
+    /**
+     * This method is to be overwritten and is called on the given event.
+     *
+     * @param event fired event
+     */
+    public abstract void onEvent(final T event);
 }

@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>eu.kennytv</groupId>
+        <groupId>eu.kennytv.maintenance</groupId>
         <artifactId>maintenance-parent</artifactId>
-        <version>3.0</version>
+        <version>3.0.1</version>
     </parent>
 
     <artifactId>maintenance-spigot</artifactId>
@@ -14,15 +14,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.kennytv</groupId>
+            <groupId>eu.kennytv.maintenance</groupId>
             <artifactId>maintenance-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
             <version>1.13.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Needed for backwards compatibility with Paper -->
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.25</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

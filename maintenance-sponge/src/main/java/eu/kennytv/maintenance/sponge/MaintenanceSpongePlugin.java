@@ -36,7 +36,6 @@ import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
-import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandSource;
@@ -45,6 +44,7 @@ import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -73,19 +73,14 @@ import java.util.stream.Collectors;
  * @since 3.0
  */
 @Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenance.40699/",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     private Logger logger;
     private Favicon favicon;
-    @Inject
-    private Game game;
-    @Inject
-    private PluginContainer container;
-    @Inject
-    private Metrics2 metrics;
-    @Inject
-    @ConfigDir(sharedRoot = false)
+    @Inject private Game game;
+    @Inject private PluginContainer container;
+    @Inject @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
     @Inject
@@ -97,7 +92,8 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "playercountmessage", "enable-playercountmessage");
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback",
+                "playercountmessage", "enable-playercountmessage");
 
         sendEnableMessage();
 
@@ -107,7 +103,8 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         final EventManager em = game.getEventManager();
         em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));
-        em.registerListeners(this, new ClientPingServerListener(this, settings));
+
+        continueLastEndtimer();
 
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
@@ -115,6 +112,11 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
             serverListPlusHook.setEnabled(!settings.isMaintenance());
             logger.info("Enabled ServerListPlus integration!");
         }));
+    }
+
+    @Listener
+    public void onDisable(final GameStoppingEvent event) {
+        disable();
     }
 
     @Listener

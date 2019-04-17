@@ -40,7 +40,7 @@ public final class StarttimerCommand extends CommandInfo {
             return;
         }
 
-        plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), true);
+        plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), true);
         sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
     }
 }

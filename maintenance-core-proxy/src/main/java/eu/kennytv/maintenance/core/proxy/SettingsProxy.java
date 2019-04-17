@@ -28,10 +28,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 public final class SettingsProxy extends Settings {
-    private final MaintenanceProxyPlugin plugin;
     private Set<String> maintenanceServers;
     private String fallbackServer;
 
@@ -47,11 +45,10 @@ public final class SettingsProxy extends Settings {
 
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
         super(plugin);
-        this.plugin = plugin;
     }
 
     private void setupMySQL() throws Exception {
-        super.plugin.getLogger().info("Trying to open database connection...");
+        plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
         final ConfigSection section = config.getSection("mysql");
         if (section == null) {
             plugin.getLogger().warning("Section missing: mysql");
@@ -71,7 +68,7 @@ public final class SettingsProxy extends Settings {
         mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
         maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
         serverQuery = "SELECT * FROM " + serverTable;
-        super.plugin.getLogger().info("Done!");
+        plugin.getLogger().info("Done!");
     }
 
     @Override
@@ -82,7 +79,8 @@ public final class SettingsProxy extends Settings {
                 setupMySQL();
             } catch (final Exception e) {
                 mySQL = null;
-                super.plugin.getLogger().log(Level.WARNING, "Error while trying do open database connection!", e);
+                plugin.getLogger().warning("Error while trying do open database connection!");
+                e.printStackTrace();
             }
         }
 
@@ -107,8 +105,8 @@ public final class SettingsProxy extends Settings {
         if (hasMySQL() && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
             final boolean databaseValue = loadMaintenance();
             if (databaseValue != maintenance) {
-                plugin.serverActions(maintenance);
                 maintenance = databaseValue;
+                plugin.serverActions(maintenance);
             }
             lastMySQLCheck = System.currentTimeMillis();
         }
@@ -118,8 +116,18 @@ public final class SettingsProxy extends Settings {
     public boolean isMaintenance(final Server server) {
         if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
-            if (!databaseValue.equals(maintenanceServers)) {
-                plugin.serverActions(server, maintenance);
+            if (!maintenanceServers.equals(databaseValue)) {
+                final MaintenanceProxyPlugin plugin = (MaintenanceProxyPlugin) super.plugin;
+                // Enable maintenance on yet unlisted servers
+                databaseValue.forEach(s -> {
+                    if (!maintenanceServers.contains(s))
+                        plugin.serverActions(plugin.getServer(s), true);
+                });
+                // Disable maintenance on now unlisted servers
+                maintenanceServers.forEach(s -> {
+                    if (!databaseValue.contains(s))
+                        plugin.serverActions(plugin.getServer(s), false);
+                });
                 maintenanceServers = databaseValue;
             }
             lastServerCheck = System.currentTimeMillis();
@@ -188,6 +196,7 @@ public final class SettingsProxy extends Settings {
                     databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
                 }
             } catch (final SQLException e) {
+                plugin.getLogger().warning("An error occured while trying to get the maintenance value from the database!");
                 e.printStackTrace();
             }
         }, "maintenance");
@@ -205,5 +214,9 @@ public final class SettingsProxy extends Settings {
 
     public String getFallbackServer() {
         return fallbackServer;
+    }
+
+    MySQL getMySQL() {
+        return mySQL;
     }
 }

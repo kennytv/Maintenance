@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>eu.kennytv</groupId>
+        <groupId>eu.kennytv.maintenance</groupId>
         <artifactId>maintenance-parent</artifactId>
-        <version>3.0</version>
+        <version>3.0.1</version>
     </parent>
 
     <artifactId>maintenance-core</artifactId>
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.kennytv</groupId>
+            <groupId>eu.kennytv.maintenance</groupId>
             <artifactId>maintenance-api</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
@@ -23,7 +23,7 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.23</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.minecrell</groupId>

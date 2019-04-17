@@ -20,16 +20,22 @@ package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.IMaintenanceBase;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public final class MaintenanceSpigotBase extends JavaPlugin implements IMaintenanceBase {
-    private IMaintenance maintenance;
+    private MaintenancePlugin maintenance;
 
     @Override
     public void onEnable() {
         maintenance = new MaintenanceSpigotPlugin(this);
+    }
+
+    @Override
+    public void onDisable() {
+        maintenance.disable();
     }
 
     @Override

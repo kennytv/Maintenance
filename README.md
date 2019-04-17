@@ -23,9 +23,10 @@ A full list of commands, permissions and configuration options can be found in t
 * [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)
 
-Other forums
+Other forum threads
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
-* [Sponge forums](https://forums.spongepowered.org/t/maintenance/27421)
+* [Sponge forums](https://forums.spongepowered.org/t/maintenance/27421) (replacey by Ore)
+* [Ore Forums](https://ore.spongepowered.org/KennyTV/Maintenance)
 * [Velocity forums](https://forums.velocitypowered.com/t/maintenance/129)
 
 ## Compiling

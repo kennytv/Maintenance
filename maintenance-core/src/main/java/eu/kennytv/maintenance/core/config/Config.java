@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.core.config;
 
+import com.google.common.collect.Sets;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -54,7 +55,7 @@ public final class Config extends ConfigSection {
 
     public Config(final File file, final String... unsupportedFields) {
         this.file = file;
-        this.unsupportedFields = new HashSet<>(Arrays.asList(unsupportedFields));
+        this.unsupportedFields = unsupportedFields.length == 0 ? Collections.emptySet() : Sets.newHashSet(unsupportedFields);
     }
 
     public void load() throws IOException {
@@ -93,6 +94,28 @@ public final class Config extends ConfigSection {
         this.file.getParentFile().mkdirs();
         this.file.createNewFile();
         Files.write(this.file.toPath(), bytes);
+    }
+
+    public void addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
+        // Note: Only scans for the first two levels
+        for (final Map.Entry<String, Object> entry : fields.entrySet()) {
+            final Object o = values.get(entry.getKey());
+            if (o != null) {
+                final Object o2 = entry.getValue();
+                if (!(o instanceof Map) || !(o2 instanceof Map)) continue;
+
+                final Map<String, Object> deepMap = (Map<String, Object>) o2;
+                for (final Map.Entry<String, Object> deepEntry : ((Map<String, Object>) o2).entrySet()) {
+                    if (deepMap.containsKey(deepEntry.getKey())) continue;
+                    deepMap.put(deepEntry.getKey(), deepEntry.getValue());
+                }
+                continue;
+            }
+
+            values.put(entry.getKey(), entry.getValue());
+        }
+
+        this.comments = new HashMap<>(comments);
     }
 
     @Override
@@ -167,6 +190,4 @@ public final class Config extends ConfigSection {
     public void resetAwesomeHeader() {
         this.header = AWESOME_HEADER;
     }
-
-
 }

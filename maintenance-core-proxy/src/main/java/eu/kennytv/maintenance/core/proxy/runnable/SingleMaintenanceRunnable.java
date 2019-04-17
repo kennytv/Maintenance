@@ -27,8 +27,8 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     private final Server server;
 
-    public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int minutes, final boolean enable, final Server server) {
-        super(plugin, settings, minutes, enable);
+    public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable, final Server server) {
+        super(plugin, settings, seconds, enable);
         this.server = server;
     }
 

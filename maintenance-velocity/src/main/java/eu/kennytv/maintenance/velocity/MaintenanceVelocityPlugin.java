@@ -27,6 +27,7 @@ import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -104,6 +105,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
         em.register(this, new LoginListener(this, settingsProxy));
 
+        continueLastEndtimer();
+
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
@@ -116,6 +119,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     public void proxyReload(final ProxyReloadEvent event) {
         settingsProxy.reloadConfigs();
         logger.info("Reloaded config files!");
+    }
+
+    @Subscribe
+    public void onDisable(final ProxyShutdownEvent event) {
+        disable();
     }
 
     @Override

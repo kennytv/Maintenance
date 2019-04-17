@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.config.Config;
+import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
+    private static final int CURRENT_CONFIG_VERSION = 1;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -44,7 +46,9 @@ public class Settings implements ISettings {
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
     private boolean updateChecks;
+    private boolean saveEndtimerOnStop;
     private boolean debug;
+    private long savedEndtimer;
 
     protected Config config;
     protected Config language;
@@ -99,10 +103,15 @@ public class Settings implements ISettings {
         }
     }
 
-    protected void createFile(final String name) {
+    // Public, as it is used in the MaintenanceAddon
+    public void createFile(final String name) {
+        createFile(name, name);
+    }
+
+    private void createFile(final String name, final String from) {
         final File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
-            try (final InputStream in = plugin.getResource(name)) {
+            try (final InputStream in = plugin.getResource(from)) {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
                 throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
@@ -149,6 +158,9 @@ public class Settings implements ISettings {
         languageName = getConfigString("language").toLowerCase();
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
+        final ConfigSection section = config.getSection("continue-endtimer-after-restart");
+        saveEndtimerOnStop = section.getBoolean("enabled");
+        savedEndtimer = section.getLong("end");
         if (customMaintenanceIcon) {
             plugin.loadMaintenanceIcon();
         }
@@ -194,9 +206,29 @@ public class Settings implements ISettings {
                 plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
         }
 
+        // Update config to latest version (config version included since 3.0.1)
+        if (config.getInt("config-version") != CURRENT_CONFIG_VERSION) {
+            plugin.getLogger().info("Updating config to latest version...");
+            createFile("config-new.yml", "config.yml");
+            final File file = new File(plugin.getDataFolder(), "config-new.yml");
+            final Config tempConfig = new Config(file, unsupportedFields);
+            try {
+                tempConfig.load();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+
+            config.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+            config.set("config-version", CURRENT_CONFIG_VERSION);
+
+            file.delete();
+            tempConfig.clear();
+            changed = true;
+        }
+
         if (changed) {
             saveConfig();
-            plugin.getLogger().info("Done! Updated all configs to the new format!");
+            plugin.getLogger().info("Done! Updated config(s) to the latest version!");
         }
     }
 
@@ -208,7 +240,8 @@ public class Settings implements ISettings {
         try {
             oldConfig.load();
         } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file", e);
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file");
+            e.printStackTrace();
             return false;
         }
 
@@ -237,7 +270,8 @@ public class Settings implements ISettings {
         try {
             oldFile.load();
         } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file", e);
+            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file");
+            e.printStackTrace();
             return false;
         }
 
@@ -290,8 +324,8 @@ public class Settings implements ISettings {
 
     public String getRandomPingMessage() {
         if (pingMessages.isEmpty()) return "";
-        final String s = pingMessages.size() > 1 ? pingMessages.get(RANDOM.nextInt(pingMessages.size())) : pingMessages.get(0);
-        return getColoredString(s.replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer()));
+        final String s = pingMessages.size() == 1 ? pingMessages.get(0) : pingMessages.get(RANDOM.nextInt(pingMessages.size()));
+        return getColoredString(plugin.formatedTimer(s).replace("%NEWLINE%", "\n"));
     }
 
     @Override
@@ -358,6 +392,21 @@ public class Settings implements ISettings {
         return updateChecks;
     }
 
+    public boolean isSaveEndtimerOnStop() {
+        return saveEndtimerOnStop;
+    }
+
+    public long getSavedEndtimer() {
+        return savedEndtimer;
+    }
+
+    public void setSavedEndtimer(final long millis) {
+        if (savedEndtimer == millis) return;
+        this.savedEndtimer = millis;
+        config.getSection("continue-endtimer-after-restart").set("end", millis);
+        saveConfig();
+    }
+
     public Config getConfig() {
         return config;
     }
@@ -371,16 +420,15 @@ public class Settings implements ISettings {
     }
 
     public String getPlayerCountMessage() {
-        return playerCountMessage.replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(playerCountMessage);
     }
 
     public String getPlayerCountHoverMessage() {
-        return playerCountHoverMessage.replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(playerCountHoverMessage);
     }
 
     public String getKickMessage() {
-        return getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!")
-                .replace("%NEWLINE%", "\n").replace("%TIMER%", plugin.formatedTimer());
+        return plugin.formatedTimer(getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!").replace("%NEWLINE%", "\n"));
     }
 
     public String getLanguage() {

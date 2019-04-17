@@ -44,6 +44,10 @@ public class ConfigSection {
         return (E) this.values.get(key);
     }
 
+    public <E> E get(final String key, final E def) {
+        return values.containsKey(key) ? (E) this.values.get(key) : def;
+    }
+
     public Object getObject(final String key) {
         return this.values.get(key);
     }
@@ -116,10 +120,19 @@ public class ConfigSection {
 
     public double getDouble(final String key) {
         final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).doubleValue() : 0;
+        return o instanceof Number ? ((Number) o).doubleValue() : 0D;
     }
 
-    public double getDouble(final String key, final double def) {
+    public double getDouble(final String key, final long def) {
+        return values.containsKey(key) ? get(key) : def;
+    }
+
+    public long getLong(final String key) {
+        final Object o = values.get(key);
+        return o instanceof Number ? ((Number) o).longValue() : 0L;
+    }
+
+    public long getLong(final String key, final long def) {
         return values.containsKey(key) ? get(key) : def;
     }
 

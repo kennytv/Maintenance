@@ -18,13 +18,17 @@
 
 package eu.kennytv.maintenance.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.event.MaintenanceChangedEvent;
+import eu.kennytv.maintenance.api.event.manager.IEventManager;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.dump.MaintenanceDump;
 import eu.kennytv.maintenance.core.dump.PluginDump;
+import eu.kennytv.maintenance.core.event.EventManager;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -40,10 +44,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class MaintenancePlugin implements IMaintenance {
+    protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
     protected ServerListPlusHook serverListPlusHook;
@@ -52,12 +58,15 @@ public abstract class MaintenancePlugin implements IMaintenance {
     private final String prefix;
     private final ServerType serverType;
     private Version newestVersion;
-    private Task task;
 
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;
         this.prefix = "§8[§eMaintenance" + serverType + "§8] ";
+        this.eventManager = new EventManager();
+    }
+
+    public void disable() {
     }
 
     @Override
@@ -79,24 +88,59 @@ public abstract class MaintenancePlugin implements IMaintenance {
             broadcast(settings.getMessage("maintenanceActivated"));
         } else
             broadcast(settings.getMessage("maintenanceDeactivated"));
+        eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
+    }
+
+    public String formatedTimer(final String s) {
+        return s.contains("%TIMER%") ? s.replace("%TIMER%", formatedTimer()) : s;
     }
 
     public String formatedTimer() {
-        if (!isTaskRunning()) return "-";
+        if (!isTaskRunning()) return settings.getMessage("motdTimerNotRunning", "-");
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
         final int seconds = runnable.getSecondsLeft() % 60;
-        return String.format("%02d:%02d:%02d", preHours / 60, minutes, seconds);
+        return settings.getMessage("motdTimer", "%HOURS%:%MINUTES%:%SECONDS%")
+                .replace("%HOURS%", String.format("%02d", preHours / 60))
+                .replace("%MINUTES%", String.format("%02d", minutes))
+                .replace("%SECONDS%", String.format("%02d", seconds));
     }
 
-    public void startMaintenanceRunnable(final int minutes, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, settings, minutes, enable);
-        task = startMaintenanceRunnable(runnable);
+    public void startMaintenanceRunnableForMinutes(final int minutes, final boolean enable) {
+        startMaintenanceRunnableForSeconds(minutes * 60, enable);
+    }
+
+    public void startMaintenanceRunnableForSeconds(final int seconds, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, settings, seconds, enable);
+        // Save the endtimer to be able to continue it after a server stop
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
+            settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
+        }
     }
 
     public boolean updateAvailable() {
         checkNewestVersion();
         return version.compareTo(newestVersion) == -1;
+    }
+
+    protected void continueLastEndtimer() {
+        if (!settings.isSaveEndtimerOnStop()) return;
+        if (settings.getSavedEndtimer() == 0) return;
+
+        final long current = System.currentTimeMillis();
+        getLogger().info("Found interrupted endtimer from last uptime...");
+        if (!isMaintenance()) {
+            getLogger().info("Maintenance has already been disabled, thus the timer has been cancelled.");
+            settings.setSavedEndtimer(0);
+        } else if (settings.getSavedEndtimer() < current) {
+            getLogger().info("The endtimer has already expired, maintenance has been disabled.");
+            setMaintenance(false);
+            settings.setSavedEndtimer(0);
+        } else {
+            final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(settings.getSavedEndtimer() - current);
+            startMaintenanceRunnableForSeconds(seconds, false);
+            getLogger().info("The timer has been continued - maintenance will be disabled in: " + formatedTimer());
+        }
     }
 
     protected void sendEnableMessage() {
@@ -118,6 +162,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public boolean installUpdate() {
+        // Ore sad :(
+        Preconditions.checkArgument(serverType != ServerType.SPONGE);
         try {
             final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
             writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
@@ -194,7 +240,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
             return jsonOutput.get("key").getAsString();
         } catch (final IOException e) {
-            getLogger().log(Level.WARNING, "Could not paste dump :(", e);
+            getLogger().log(Level.WARNING, "Could not paste dump :(");
+            e.printStackTrace();
             return null;
         }
     }
@@ -209,15 +256,16 @@ public abstract class MaintenancePlugin implements IMaintenance {
         try {
             loadIcon(file);
         } catch (final Exception e) {
-            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!", e);
+            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!");
             e.printStackTrace();
         }
     }
 
     public void cancelTask() {
-        task.cancel();
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable())
+            settings.setSavedEndtimer(0);
+        runnable.getTask().cancel();
         runnable = null;
-        task = null;
     }
 
     public UUID checkUUID(final SenderInfo sender, final String s) {
@@ -242,7 +290,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     @Override
     public boolean isTaskRunning() {
-        return task != null && runnable != null;
+        return runnable != null;
     }
 
     @Override
@@ -251,12 +299,21 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     @Override
+    public IEventManager getEventManager() {
+        return eventManager;
+    }
+
+    @Override
     public String getVersion() {
         return version.toString();
     }
 
-    public List<String> getMaintenanceServers() {
+    public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
+    }
+
+    public int getSaltLevel() {
+        return Integer.MAX_VALUE;
     }
 
     public Version getNewestVersion() {
@@ -289,6 +346,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract void sendUpdateNotification(SenderInfo sender);
 
+    public abstract Task startMaintenanceRunnable(Runnable runnable);
+
     public abstract SenderInfo getOfflinePlayer(String name);
 
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
@@ -306,8 +365,6 @@ public abstract class MaintenancePlugin implements IMaintenance {
     protected abstract void loadIcon(File file) throws Exception;
 
     protected abstract void kickPlayers();
-
-    protected abstract Task startMaintenanceRunnable(Runnable runnable);
 
     protected abstract File getPluginFile();
 }

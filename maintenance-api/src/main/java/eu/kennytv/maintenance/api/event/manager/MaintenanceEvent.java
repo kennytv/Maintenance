@@ -16,20 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.dump;
+package eu.kennytv.maintenance.api.event.manager;
 
-import java.util.List;
-
-public final class ServerDump {
-    private final String pluginVersion;
-    private final String platform;
-    private final String serverVersion;
-    private final List<String> maintenance;
-
-    public ServerDump(final String pluginVersion, final String platform, final String serverVersion, final List<String> maintenance) {
-        this.pluginVersion = pluginVersion;
-        this.platform = platform;
-        this.serverVersion = serverVersion;
-        this.maintenance = maintenance;
-    }
+/**
+ * Dummy interface representing a maintenance event.
+ *
+ * @author KennyTV
+ * @since 3.0.1
+ */
+public interface MaintenanceEvent {
 }
