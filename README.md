@@ -1,7 +1,8 @@
 # Maintenance
 [![Version](https://img.shields.io/github/release/KennyTV/Maintenance.svg)](https://github.com/KennyTV/Maintenance/releases)
 [![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=master)](https://travis-ci.org/KennyTV/Maintenance)
-[![Discord](https://img.shields.io/badge/discord-online-green.svg)](https://discord.gg/vGCUzHq)
+[![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
+[![Twitter](https://img.shields.io/twitter/follow/KennyTVN.svg?label=Twitter)](https://twitter.com/KennyTVN)
 
 Maintenance is probably the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Bukkit/Spigot, BungeeCord, Sponge as well as Velocity.
 
@@ -33,4 +34,4 @@ Other forum threads
 To create a working jar yourself, simply clone the project and compile it with maven (by using `mvn clean package` in your IDE console).
 
 ## Licence
-You may only copy the code on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).
+When modifying the project's code, do that on a public repository while also keeping it under the same license (see [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0)).
