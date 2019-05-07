@@ -55,7 +55,7 @@ import eu.kennytv.maintenance.velocity.util.VelocityTask;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
-import net.kyori.text.serializer.ComponentSerializers;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -131,8 +131,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final TextComponent tc1 = translate(getPrefix());
         final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
         final TextComponent click = translate(" §7§l§o(CLICK ME)");
-        click.clickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenance.40699/"));
-        click.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("§aDownload the latest version")));
+        click.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"));
+        click.hoverEvent(HoverEvent.showText(TextComponent.of("§aDownload the latest version")));
         tc1.append(tc2);
         tc1.append(click);
         ((VelocitySenderInfo) sender).sendMessage(tc1);
@@ -195,7 +195,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public String getServer(final SenderInfo sender) {
         final Optional<Player> player = server.getPlayer(sender.getUuid());
-        return player.map(p -> p.getCurrentServer().get().getServerInfo().getName()).orElse("");
+        if (!player.isPresent() || player.get().getCurrentServer().isPresent()) return "";
+        return player.get().getCurrentServer().get().getServerInfo().getName();
     }
 
     @Override
@@ -261,6 +262,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     public TextComponent translate(final String s) {
-        return ComponentSerializers.LEGACY.deserialize(s);
+        return LegacyComponentSerializer.INSTANCE.deserialize(s);
     }
 }

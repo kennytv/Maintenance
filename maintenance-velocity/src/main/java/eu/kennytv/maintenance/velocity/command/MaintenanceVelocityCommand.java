@@ -61,8 +61,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     @Override
     protected void sendUpdateMessage(final SenderInfo sender) {
         final TextComponent tc = TextComponent.builder("").append(plugin.translate("§6× §8[§aUpdate§8]"))
-                .clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"))
-                .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to update the plugin")))
+                .clickEvent(ClickEvent.runCommand("/maintenance forceupdate"))
+                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to update the plugin")))
                 .append(plugin.translate(" §8(§7Or use the command §c/maintenance forceupdate§8)")).build();
         ((VelocitySenderInfo) sender).sendMessage(tc);
     }
@@ -70,8 +70,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
         final TextComponent clickText = TextComponent.builder("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
-                .clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url))
-                .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, plugin.translate("§aClick here to copy the link"))).build();
+                .clickEvent(ClickEvent.suggestCommand(url))
+                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link"))).build();
         ((VelocitySenderInfo) sender).sendMessage(clickText);
     }
 
