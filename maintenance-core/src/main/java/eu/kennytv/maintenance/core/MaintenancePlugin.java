@@ -217,11 +217,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
             connection.setRequestProperty("Content-Type", "text/plain");
 
             final GsonBuilder gsonBuilder = new GsonBuilder();
-            final byte[] bytes = gsonBuilder.setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8);
-            connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
-
             final OutputStream out = connection.getOutputStream();
-            out.write(bytes);
+            out.write(gsonBuilder.disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
             out.close();
 
             if (connection.getResponseCode() == 503) {
