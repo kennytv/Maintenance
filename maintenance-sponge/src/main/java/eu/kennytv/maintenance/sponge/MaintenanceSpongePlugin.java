@@ -37,6 +37,7 @@ import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
@@ -208,7 +209,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     public String getServerVersion() {
-        return game.getPlatform().getImplementation().getName();
+        return game.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("woop wooop");
     }
 
     @Override
