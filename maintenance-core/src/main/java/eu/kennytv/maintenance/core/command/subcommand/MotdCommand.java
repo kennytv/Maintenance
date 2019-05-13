@@ -27,29 +27,33 @@ import java.util.List;
 public final class MotdCommand extends CommandInfo {
 
     public MotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        super(plugin, "motd", "§6/maintenance motd [timer] §7(Lists the currently set maintenance motds. If specifying 'timer', the timer motds are shown)");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 1)) return;
         if (args.length == 1) {
-            sender.sendMessage(getMessage("motdList"));
             sendList(sender, getSettings().getPingMessages());
-            sender.sendMessage("§8§m----------");
-        } else if (args.length == 2) {
-
+        } else if (args.length == 2 && args[1].equalsIgnoreCase("timer")) {
+            sendList(sender, getSettings().getTimerSpecificPingMessages());
         } else
             sender.sendMessage(helpMessage);
-
     }
 
     private void sendList(final SenderInfo sender, final List<String> list) {
+        if (list == null || list.isEmpty()) {
+            sender.sendMessage(getMessage("motdListEmpty"));
+            return;
+        }
+
+        sender.sendMessage(getMessage("motdList"));
         for (int i = 0; i < list.size(); i++) {
             sender.sendMessage("§b" + (i + 1) + "§8§m---------");
             for (final String motd : getSettings().getColoredString(list.get(i)).split("%NEWLINE%")) {
                 sender.sendMessage(motd);
             }
         }
+        sender.sendMessage("§8§m----------");
     }
 }
