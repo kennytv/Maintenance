@@ -32,6 +32,13 @@ pingmessages:
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
 # - "Other entry"
 
+# If set to true and an endtimer is currently running, a pingmessage from this pool will be chosen
+# instead of the ones above, so you can have different messages for when an endtimer is running/not running.
+enable-timerspecific-messages: false
+timerspecific-pingmessages:
+  - "&cMaintenance mode!%NEWLINE%&6We will be back in %TIMER%!"
+# - "Other entry"
+
 # If set to true, the message below will be shown at the top right corner of the server in the serverlist, where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.
 #

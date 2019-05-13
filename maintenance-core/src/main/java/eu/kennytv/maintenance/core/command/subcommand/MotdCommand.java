@@ -22,6 +22,8 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.List;
+
 public final class MotdCommand extends CommandInfo {
 
     public MotdCommand(final MaintenancePlugin plugin) {
@@ -31,13 +33,23 @@ public final class MotdCommand extends CommandInfo {
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 1)) return;
-        sender.sendMessage(getMessage("motdList"));
-        for (int i = 0; i < getSettings().getPingMessages().size(); i++) {
+        if (args.length == 1) {
+            sender.sendMessage(getMessage("motdList"));
+            sendList(sender, getSettings().getPingMessages());
+            sender.sendMessage("§8§m----------");
+        } else if (args.length == 2) {
+
+        } else
+            sender.sendMessage(helpMessage);
+
+    }
+
+    private void sendList(final SenderInfo sender, final List<String> list) {
+        for (int i = 0; i < list.size(); i++) {
             sender.sendMessage("§b" + (i + 1) + "§8§m---------");
-            for (final String motd : getSettings().getColoredString(getSettings().getPingMessages().get(i)).split("%NEWLINE%")) {
+            for (final String motd : getSettings().getColoredString(list.get(i)).split("%NEWLINE%")) {
                 sender.sendMessage(motd);
             }
         }
-        sender.sendMessage("§8§m----------");
     }
 }
