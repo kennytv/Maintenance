@@ -32,7 +32,6 @@ public final class MotdCommand extends CommandInfo {
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (checkArgs(sender, args, 1)) return;
         if (args.length == 1) {
             sendList(sender, getSettings().getPingMessages());
         } else if (args.length == 2 && args[1].equalsIgnoreCase("timer")) {
