@@ -1,6 +1,13 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## Unreleased
+### Changed
+* Added config option `timerspecific-pingmessages` to have specific pingmessages shown when endtimers are run
+* Made dumps a little prettier
+* Support Sponge 8.0.0-SNAPSHOT
+* Support latest text/Velocity (now only supports Velocity builds from May 7th upwards)
+---
 ## 3.0.1 - April 17th 2019
 ### Changed
 * Created an addon to have PlaceholderAPI placeholders on Spigot when running the Maintenance plugin on Bungee (see [**here**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon))

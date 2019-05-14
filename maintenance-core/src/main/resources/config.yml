@@ -9,9 +9,6 @@
 # You can report bugs here: https://github.com/KennyTV/Maintenance/issues
 # If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq
 
-# Used for autoupdating the config, do not change this value.
-config-version: 1
-
 # Enables maintenance mode.
 maintenance-enabled: false
 
@@ -77,9 +74,6 @@ mysql:
   # (0 is not recommended if having more than a hundred concurrent players, then I'd recommend keeping it from 10-60).
   update-interval: 15
 
-# If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
-timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
-
 # If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
 # If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.
 continue-endtimer-after-restart:
@@ -88,7 +82,13 @@ continue-endtimer-after-restart:
   # Do not manually change this value.
   end: 0
 
+# If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
+timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
+
 # If disabled, you will no longer receive any messages if there is an update.
 # Not recommended to disable, as new versions generally tend to run better and with less bugs.
 # However, you can always check for updates manually using the '/maintenance update' command.
 update-checks: true
+
+# Used for autoupdating the config, do not change this value.
+config-version: 2
