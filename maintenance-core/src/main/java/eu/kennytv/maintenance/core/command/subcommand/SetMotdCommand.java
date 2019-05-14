@@ -29,10 +29,9 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SetMotdCommand extends CommandInfo {
-    public static final String[] A = new String[0];
 
     public SetMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd", "§6/maintenance [timer] setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
+        super(plugin, "setmotd", "§6/maintenance setmotd [timer] <index> <1/2> <message> §7(Sets a motd for maintenance mode. If using \"timer\" as an argument, a timerspecific pingmessage will be set)");
     }
 
     @Override
@@ -40,7 +39,7 @@ public final class SetMotdCommand extends CommandInfo {
         boolean timerPingMessages = false;
         if (args.length > 1 && args[1].equalsIgnoreCase("timer")) {
             // remove the "timer" off the args to keep the rest the code cleaner
-            args = removeIndex(args);
+            args = plugin.removeArrayIndex(args, 1);
             timerPingMessages = true;
         }
         if (args.length < 4 || !plugin.isNumeric(args[1])) {
@@ -89,16 +88,10 @@ public final class SetMotdCommand extends CommandInfo {
                 .replace("%MOTD%", "§f" + settings.getColoredString(message)));
     }
 
-    private String[] removeIndex(final String[] args) {
-        final List<String> argsList = Arrays.asList(args);
-        argsList.remove(1);
-        return argsList.toArray(A);
-    }
-
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, String[] args) {
         if (args.length > 1 && args[0].equalsIgnoreCase("timer")) {
-            args = removeIndex(args);
+            args = plugin.removeArrayIndex(args, 1);
         }
         if (args.length == 3) return Arrays.asList("1", "2");
         if (args.length == 2) {

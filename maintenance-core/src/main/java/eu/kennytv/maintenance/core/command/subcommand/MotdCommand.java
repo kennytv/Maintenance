@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.Collections;
 import java.util.List;
 
 public final class MotdCommand extends CommandInfo {
@@ -54,5 +55,11 @@ public final class MotdCommand extends CommandInfo {
             }
         }
         sender.sendMessage("§8§m----------");
+    }
+
+    @Override
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        if (args.length != 2) return Collections.emptyList();
+        return Collections.singletonList("timer");
     }
 }

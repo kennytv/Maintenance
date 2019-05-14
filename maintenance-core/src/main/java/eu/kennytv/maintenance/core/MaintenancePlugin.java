@@ -277,6 +277,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return uuid;
     }
 
+    public String[] removeArrayIndex(final String[] args, final int index) {
+        final List<String> argsList = Arrays.asList(args);
+        argsList.remove(index);
+        return argsList.toArray(new String[0]);
+    }
+
     public boolean isNumeric(final String string) {
         return string.matches("[0-9]+");
     }
