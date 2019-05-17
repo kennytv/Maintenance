@@ -21,7 +21,7 @@ package eu.kennytv.maintenance.velocity.util;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
 import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.ComponentSerializers;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 public final class VelocityServer implements Server {
     private final RegisteredServer server;
@@ -42,7 +42,7 @@ public final class VelocityServer implements Server {
 
     @Override
     public void broadcast(final String message) {
-        final TextComponent s = ComponentSerializers.LEGACY.deserialize(message);
+        final TextComponent s = LegacyComponentSerializer.INSTANCE.deserialize(message);
         server.getPlayersConnected().forEach(p -> p.sendMessage(s));
     }
 

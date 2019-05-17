@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -165,7 +166,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
         // Ore sad :(
         Preconditions.checkArgument(serverType != ServerType.SPONGE);
         try {
-            final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance.jar").openConnection();
+            final String fileSuffix = serverType == ServerType.VELOCITY ? "Velocity" : "";
+            final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
             writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
             final File file = new File(getPluginFolder() + "Maintenance.tmp");
             final long newlength = file.length();
@@ -216,11 +218,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
             connection.setRequestProperty("Content-Type", "text/plain");
 
             final GsonBuilder gsonBuilder = new GsonBuilder();
-            final byte[] bytes = gsonBuilder.setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8);
-            connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
-
             final OutputStream out = connection.getOutputStream();
-            out.write(bytes);
+            out.write(gsonBuilder.disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
             out.close();
 
             if (connection.getResponseCode() == 503) {
@@ -277,6 +276,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
             return null;
         }
         return uuid;
+    }
+
+    public String[] removeArrayIndex(final String[] args, final int index) {
+        final List<String> argsList = Lists.newArrayList(args);
+        argsList.remove(index);
+        return argsList.toArray(new String[0]);
     }
 
     public boolean isNumeric(final String string) {

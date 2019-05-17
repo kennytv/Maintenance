@@ -31,21 +31,33 @@ import java.util.List;
 public final class SetMotdCommand extends CommandInfo {
 
     public SetMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd", "§6/maintenance setmotd <index> <1/2> <message> §7(Sets a motd for maintenance mode)");
+        super(plugin, "setmotd", "§6/maintenance setmotd [timer] <index> <1/2> <message> §7(Sets a motd for maintenance mode. If using \"timer\" as an argument, a timerspecific pingmessage will be set)");
     }
 
     @Override
-    public void execute(final SenderInfo sender, final String[] args) {
+    public void execute(final SenderInfo sender, String[] args) {
+        boolean timerPingMessages = false;
+        if (args.length > 1 && args[1].equalsIgnoreCase("timer")) {
+            if (!getSettings().hasTimerSpecificPingMessages()) {
+                sender.sendMessage(getMessage("timerMotdDisabled"));
+                return;
+            }
+
+            // remove the "timer" off the args to keep the rest the code cleaner
+            args = plugin.removeArrayIndex(args, 1);
+            timerPingMessages = true;
+        }
         if (args.length < 4 || !plugin.isNumeric(args[1])) {
             sender.sendMessage(helpMessage);
             return;
         }
 
         final Settings settings = getSettings();
+        final List<String> pingMessages = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
         final int index = Integer.parseInt(args[1]);
-        if (index == 0 || index > settings.getPingMessages().size() + 1) {
-            sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
-                    .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size() + 1)));
+        if (index == 0 || index > pingMessages.size() + 1) {
+            sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(pingMessages.size()))
+                    .replace("%NEWAMOUNT%", Integer.toString(pingMessages.size() + 1)));
             return;
         }
 
@@ -61,31 +73,37 @@ public final class SetMotdCommand extends CommandInfo {
         }
 
         final String message = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
-        final String oldMessage = index > settings.getPingMessages().size() ? "" : settings.getPingMessages().get(index - 1);
+        final String oldMessage = index > pingMessages.size() ? "" : pingMessages.get(index - 1);
         final String newMessage;
-        if (line == 1)
+        if (line == 1) {
             newMessage = oldMessage.contains("%NEWLINE%") ?
                     message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
-        else
+        } else {
             newMessage = oldMessage.contains("%NEWLINE%") ?
                     oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
+        }
 
-        if (index > settings.getPingMessages().size())
-            settings.getPingMessages().add(newMessage);
+        if (index > pingMessages.size())
+            pingMessages.add(newMessage);
         else
-            settings.getPingMessages().set(index - 1, newMessage);
-        settings.getConfig().set("pingmessages", settings.getPingMessages());
+            pingMessages.set(index - 1, newMessage);
+        settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
         settings.saveConfig();
         sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])
                 .replace("%MOTD%", "§f" + settings.getColoredString(message)));
     }
 
     @Override
-    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+    public List<String> getTabCompletion(final SenderInfo sender, String[] args) {
+        boolean timer = false;
+        if (args.length > 1 && args[1].equalsIgnoreCase("timer")) {
+            args = plugin.removeArrayIndex(args, 1);
+            timer = true;
+        }
         if (args.length == 3) return Arrays.asList("1", "2");
         if (args.length == 2) {
             final List<String> list = new ArrayList<>();
-            for (int i = 1; i <= getSettings().getPingMessages().size() + 1; i++) {
+            for (int i = 1; i <= (timer ? getSettings().getTimerSpecificPingMessages() : getSettings().getPingMessages()).size() + 1; i++) {
                 list.add(String.valueOf(i));
             }
             return list;

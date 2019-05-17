@@ -30,11 +30,21 @@ import java.util.List;
 public final class RemoveMotdCommand extends CommandInfo {
 
     public RemoveMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd", "§6/maintenance removemotd <index> §7(Removes a maintenance motd)");
+        super(plugin, "setmotd", "§6/maintenance removemotd [timer] <index> §7(Removes a maintenance motd. If using \"timer\" as an argument, a timerspecific pingmessage will be removed)");
     }
 
     @Override
-    public void execute(final SenderInfo sender, final String[] args) {
+    public void execute(final SenderInfo sender, String[] args) {
+        boolean timerPingMessages = false;
+        if (args.length == 3 && args[1].equalsIgnoreCase("timer")) {
+            if (!getSettings().hasTimerSpecificPingMessages()) {
+                sender.sendMessage(getMessage("timerMotdDisabled"));
+                return;
+            }
+
+            args = plugin.removeArrayIndex(args, 1);
+            timerPingMessages = true;
+        }
         if (checkArgs(sender, args, 2)) return;
         if (!plugin.isNumeric(args[1])) {
             sender.sendMessage(helpMessage);
@@ -42,32 +52,35 @@ public final class RemoveMotdCommand extends CommandInfo {
         }
 
         final Settings settings = getSettings();
-        if (settings.getPingMessages().size() < 2) {
+        final List<String> pingMessages = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
+        if (pingMessages.size() < 2) {
             sender.sendMessage(getMessage("removeMotdError"));
             return;
         }
 
         final int index = Integer.parseInt(args[1]);
-        if (index == 0 || index > settings.getPingMessages().size()) {
-            sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(settings.getPingMessages().size()))
-                    .replace("%NEWAMOUNT%", Integer.toString(settings.getPingMessages().size())));
+        if (index == 0 || index > pingMessages.size()) {
+            sender.sendMessage(getMessage("setMotdIndexError").replace("%MOTDS%", Integer.toString(pingMessages.size()))
+                    .replace("%NEWAMOUNT%", Integer.toString(pingMessages.size())));
             return;
         }
 
-        settings.getPingMessages().remove(index - 1);
-        settings.getConfig().set("pingmessages", settings.getPingMessages());
+        pingMessages.remove(index - 1);
+        settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
         settings.saveConfig();
         sender.sendMessage(getMessage("removedMotd").replace("%INDEX%", args[1]));
     }
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        if (args.length != 2) return Collections.emptyList();
-        final int size = plugin.getSettings().getPingMessages().size();
-        final List<String> list = new ArrayList<>(size);
-        for (int i = 1; i <= size; i++) {
-            list.add(String.valueOf(i));
+        if (args.length == 2 || (args.length == 3 && args[1].equalsIgnoreCase("timer"))) {
+            final int size = (args.length == 3 ? plugin.getSettings().getTimerSpecificPingMessages() : plugin.getSettings().getPingMessages()).size();
+            final List<String> list = new ArrayList<>(size);
+            for (int i = 1; i <= size; i++) {
+                list.add(String.valueOf(i));
+            }
+            return list;
         }
-        return list;
+        return Collections.emptyList();
     }
 }

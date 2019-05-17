@@ -22,22 +22,49 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.Collections;
+import java.util.List;
+
 public final class MotdCommand extends CommandInfo {
 
     public MotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "motd", "§6/maintenance motd §7(Lists the currently set maintenance motds)");
+        super(plugin, "motd", "§6/maintenance motd [timer] §7(Lists the currently set maintenance motds. If specifying 'timer', the timer motds are shown)");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (checkArgs(sender, args, 1)) return;
+        if (args.length == 1) {
+            sendList(sender, getSettings().getPingMessages());
+        } else if (args.length == 2 && args[1].equalsIgnoreCase("timer")) {
+            if (!getSettings().hasTimerSpecificPingMessages()) {
+                sender.sendMessage(getMessage("timerMotdDisabled"));
+                return;
+            }
+
+            sendList(sender, getSettings().getTimerSpecificPingMessages());
+        } else
+            sender.sendMessage(helpMessage);
+    }
+
+    private void sendList(final SenderInfo sender, final List<String> list) {
+        if (list == null || list.isEmpty()) {
+            sender.sendMessage(getMessage("motdListEmpty"));
+            return;
+        }
+
         sender.sendMessage(getMessage("motdList"));
-        for (int i = 0; i < getSettings().getPingMessages().size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             sender.sendMessage("§b" + (i + 1) + "§8§m---------");
-            for (final String motd : getSettings().getColoredString(getSettings().getPingMessages().get(i)).split("%NEWLINE%")) {
+            for (final String motd : getSettings().getColoredString(list.get(i)).split("%NEWLINE%")) {
                 sender.sendMessage(motd);
             }
         }
         sender.sendMessage("§8§m----------");
+    }
+
+    @Override
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        if (args.length != 2 || !getSettings().hasTimerSpecificPingMessages()) return Collections.emptyList();
+        return Collections.singletonList("timer");
     }
 }

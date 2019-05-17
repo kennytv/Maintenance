@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 1;
+    private static final int CURRENT_CONFIG_VERSION = 2;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -39,6 +39,7 @@ public class Settings implements ISettings {
     protected boolean maintenance;
     private Set<Integer> broadcastIntervals;
     private List<String> pingMessages;
+    private List<String> timerSpecificPingMessages;
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String languageName;
@@ -147,6 +148,8 @@ public class Settings implements ISettings {
         updateConfig();
 
         pingMessages = config.getStringList("pingmessages");
+        if (config.getBoolean("enable-timerspecific-messages"))
+            timerSpecificPingMessages = config.getStringList("timerspecific-pingmessages");
         maintenance = config.getBoolean("maintenance-enabled");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
@@ -323,8 +326,15 @@ public class Settings implements ISettings {
     }
 
     public String getRandomPingMessage() {
-        if (pingMessages.isEmpty()) return "";
-        final String s = pingMessages.size() == 1 ? pingMessages.get(0) : pingMessages.get(RANDOM.nextInt(pingMessages.size()));
+        if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable()
+                && hasTimerSpecificPingMessages() && !timerSpecificPingMessages.isEmpty()) {
+            return getPingMessage(timerSpecificPingMessages);
+        }
+        return pingMessages.isEmpty() ? "" : getPingMessage(pingMessages);
+    }
+
+    private String getPingMessage(final List<String> list) {
+        final String s = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
         return getColoredString(plugin.formatedTimer(s).replace("%NEWLINE%", "\n"));
     }
 
@@ -396,6 +406,10 @@ public class Settings implements ISettings {
         return saveEndtimerOnStop;
     }
 
+    public boolean hasTimerSpecificPingMessages() {
+        return timerSpecificPingMessages != null;
+    }
+
     public long getSavedEndtimer() {
         return savedEndtimer;
     }
@@ -413,6 +427,13 @@ public class Settings implements ISettings {
 
     public List<String> getPingMessages() {
         return pingMessages;
+    }
+
+    /**
+     * May be null
+     */
+    public List<String> getTimerSpecificPingMessages() {
+        return timerSpecificPingMessages;
     }
 
     public Set<Integer> getBroadcastIntervals() {

@@ -43,6 +43,8 @@ public final class ServerConnectListener implements EventHandler<ServerPreConnec
         if (!event.getResult().isAllowed()) return;
 
         final Player player = event.getPlayer();
+        if (!event.getResult().getServer().isPresent()) return;
+
         final RegisteredServer target = event.getResult().getServer().get();
         if (!plugin.isMaintenance(target)) return;
         if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
