@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -278,7 +279,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public String[] removeArrayIndex(final String[] args, final int index) {
-        final List<String> argsList = Arrays.asList(args);
+        final List<String> argsList = Lists.newArrayList(args);
         argsList.remove(index);
         return argsList.toArray(new String[0]);
     }

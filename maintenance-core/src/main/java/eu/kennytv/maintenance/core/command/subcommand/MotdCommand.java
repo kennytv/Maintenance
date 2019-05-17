@@ -36,6 +36,11 @@ public final class MotdCommand extends CommandInfo {
         if (args.length == 1) {
             sendList(sender, getSettings().getPingMessages());
         } else if (args.length == 2 && args[1].equalsIgnoreCase("timer")) {
+            if (!getSettings().hasTimerSpecificPingMessages()) {
+                sender.sendMessage(getMessage("timerMotdDisabled"));
+                return;
+            }
+
             sendList(sender, getSettings().getTimerSpecificPingMessages());
         } else
             sender.sendMessage(helpMessage);
@@ -59,7 +64,7 @@ public final class MotdCommand extends CommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        if (args.length != 2) return Collections.emptyList();
+        if (args.length != 2 || !getSettings().hasTimerSpecificPingMessages()) return Collections.emptyList();
         return Collections.singletonList("timer");
     }
 }

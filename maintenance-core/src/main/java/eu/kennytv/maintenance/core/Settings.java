@@ -326,7 +326,8 @@ public class Settings implements ISettings {
     }
 
     public String getRandomPingMessage() {
-        if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable() && hasTimerSpecificPingMessages()) {
+        if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable()
+                && hasTimerSpecificPingMessages() && !timerSpecificPingMessages.isEmpty()) {
             return getPingMessage(timerSpecificPingMessages);
         }
         return pingMessages.isEmpty() ? "" : getPingMessage(pingMessages);
@@ -406,7 +407,7 @@ public class Settings implements ISettings {
     }
 
     public boolean hasTimerSpecificPingMessages() {
-        return timerSpecificPingMessages != null && !timerSpecificPingMessages.isEmpty();
+        return timerSpecificPingMessages != null;
     }
 
     public long getSavedEndtimer() {

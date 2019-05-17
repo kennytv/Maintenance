@@ -37,6 +37,11 @@ public final class RemoveMotdCommand extends CommandInfo {
     public void execute(final SenderInfo sender, String[] args) {
         boolean timerPingMessages = false;
         if (args.length == 3 && args[1].equalsIgnoreCase("timer")) {
+            if (!getSettings().hasTimerSpecificPingMessages()) {
+                sender.sendMessage(getMessage("timerMotdDisabled"));
+                return;
+            }
+
             args = plugin.removeArrayIndex(args, 1);
             timerPingMessages = true;
         }
@@ -69,7 +74,7 @@ public final class RemoveMotdCommand extends CommandInfo {
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         if (args.length == 2 || (args.length == 3 && args[1].equalsIgnoreCase("timer"))) {
-            final int size = plugin.getSettings().getPingMessages().size();
+            final int size = (args.length == 3 ? plugin.getSettings().getTimerSpecificPingMessages() : plugin.getSettings().getPingMessages()).size();
             final List<String> list = new ArrayList<>(size);
             for (int i = 1; i <= size; i++) {
                 list.add(String.valueOf(i));
