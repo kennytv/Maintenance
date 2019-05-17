@@ -103,7 +103,7 @@ public final class SetMotdCommand extends CommandInfo {
         if (args.length == 3) return Arrays.asList("1", "2");
         if (args.length == 2) {
             final List<String> list = new ArrayList<>();
-            for (int i = 1; i <= (timer ? getSettings().getPingMessages() : getSettings().getTimerSpecificPingMessages()).size() + 1; i++) {
+            for (int i = 1; i <= (timer ? getSettings().getTimerSpecificPingMessages() : getSettings().getPingMessages()).size() + 1; i++) {
                 list.add(String.valueOf(i));
             }
             return list;
