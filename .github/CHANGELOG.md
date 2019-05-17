@@ -4,6 +4,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## 3.0.2 - May 17th 2019
 ### Changed
 * Added config option `timerspecific-pingmessages` to have specific pingmessages shown when endtimers are run
+  * You can also set them ingame by using `/maintenance setmotd timer <index> ...` instead of `/maintenance setmotd <index> ...`, along with `/maintenance removemotd timer <index>` and `/maintenance motd timer`
 * Made dumps a little prettier
 * Support Sponge 8.0.0-SNAPSHOT
 * Support latest text/Velocity (now only supports Velocity builds from May 7th upwards)
