@@ -85,7 +85,9 @@ public abstract class MaintenancePlugin implements IMaintenance {
             serverListPlusHook.setEnabled(!maintenance);
 
         if (maintenance) {
-            kickPlayers();
+            if (settings.isKickOnlinePlayers()) {
+                kickPlayers();
+            }
             broadcast(settings.getMessage("maintenanceActivated"));
         } else
             broadcast(settings.getMessage("maintenanceDeactivated"));

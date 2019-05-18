@@ -1,6 +1,10 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## Unreleased
+### Changed
+* Added config option `kick-online-players` to disable the kicks when maintenance is enabled (new connections will still be blocked)... not sure why you'd want that, but you can :p
+---
 ## 3.0.2 - May 17th 2019
 ### Changed
 * Added config option `timerspecific-pingmessages` to have specific pingmessages shown when endtimers are run

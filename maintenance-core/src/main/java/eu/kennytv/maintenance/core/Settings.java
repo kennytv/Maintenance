@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 2;
+    private static final int CURRENT_CONFIG_VERSION = 3;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -48,6 +48,7 @@ public class Settings implements ISettings {
     private boolean joinNotifications;
     private boolean updateChecks;
     private boolean saveEndtimerOnStop;
+    private boolean kickOnlinePlayers;
     private boolean debug;
     private long savedEndtimer;
 
@@ -159,6 +160,7 @@ public class Settings implements ISettings {
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         languageName = getConfigString("language").toLowerCase();
+        kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
         final ConfigSection section = config.getSection("continue-endtimer-after-restart");
@@ -408,6 +410,10 @@ public class Settings implements ISettings {
 
     public boolean hasTimerSpecificPingMessages() {
         return timerSpecificPingMessages != null;
+    }
+
+    public boolean isKickOnlinePlayers() {
+        return kickOnlinePlayers;
     }
 
     public long getSavedEndtimer() {
