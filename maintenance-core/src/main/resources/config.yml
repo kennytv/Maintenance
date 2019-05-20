@@ -95,4 +95,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 2
+config-version: 3
