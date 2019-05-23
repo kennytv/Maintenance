@@ -23,7 +23,6 @@ import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
-import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
@@ -78,7 +77,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         sendEnableMessage();
 
         final PluginManager pm = getProxy().getPluginManager();
-        pm.registerListener(plugin, new PostLoginListener(this, settingsProxy));
         pm.registerListener(plugin, new ProxyPingListener(this, settingsProxy));
         pm.registerListener(plugin, new ServerConnectListener(this, settingsProxy));
         commandManager = new MaintenanceBungeeCommand(this, settingsProxy);

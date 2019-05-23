@@ -19,7 +19,10 @@
 package eu.kennytv.maintenance.bungee.listener;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
+import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
+import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -27,23 +30,39 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
-public final class ServerConnectListener implements Listener {
+public final class ServerConnectListener extends JoinListenerBase implements Listener {
     private final MaintenanceBungeePlugin plugin;
     private final SettingsProxy settings;
     private boolean warned;
 
     public ServerConnectListener(final MaintenanceBungeePlugin plugin, final SettingsProxy settings) {
+        super(plugin, settings);
         this.plugin = plugin;
         this.settings = settings;
     }
 
     @EventHandler
+    public void initialServerConnect(final ServerConnectEvent event) {
+        // Global maintenance check
+        if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY) return;
+        if (kickPlayer(new BungeeSenderInfo(event.getPlayer()))) {
+            event.setCancelled(true);
+            event.getPlayer().disconnect(settings.getKickMessage());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void serverConnect(final ServerConnectEvent event) {
+        // Server specific maintenance check
+        if (event.isCancelled()) return;
+
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo target = event.getTarget();
         if (!plugin.isMaintenance(target)) return;
-        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())) return;
+        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId()))
+            return;
 
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
@@ -68,5 +87,11 @@ public final class ServerConnectListener implements Listener {
         } else {
             event.setTarget(fallback);
         }
+    }
+
+    @Override
+    protected void broadcastJoinNotification(final String name) {
+        final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", name));
+        ProxyServer.getInstance().getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
     }
 }
