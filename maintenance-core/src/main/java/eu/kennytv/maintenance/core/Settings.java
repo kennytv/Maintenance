@@ -233,7 +233,7 @@ public class Settings implements ISettings {
 
         if (changed) {
             saveConfig();
-            plugin.getLogger().info("Done! Updated config(s) to the latest version!");
+            plugin.getLogger().info("Done! Updated config to the latest version!");
         }
     }
 
