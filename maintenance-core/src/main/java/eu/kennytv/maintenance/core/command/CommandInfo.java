@@ -34,7 +34,7 @@ public abstract class CommandInfo {
         this.plugin = plugin;
         this.permission = permission;
         // Just take the class name as the language key
-        this.helpMessageKey = getClass().getSimpleName().replace("Command", "");
+        this.helpMessageKey = "help" + getClass().getSimpleName().replace("Command", "");
     }
 
     public boolean hasPermission(final SenderInfo sender) {
