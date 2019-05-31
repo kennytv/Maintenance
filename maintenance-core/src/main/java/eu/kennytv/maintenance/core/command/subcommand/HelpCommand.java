@@ -76,7 +76,7 @@ public final class HelpCommand extends CommandInfo {
         sender.sendMessage(header);
         filteredCommands.forEach(sender::sendMessage);
         if (page * COMMANDS_PER_PAGE < commands.size())
-            sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
+            sender.sendMessage(getMessage("helpNextPage").replace("%PAGE%", Integer.toString(page + 1)));
         else
             sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bKennyTV");
         sender.sendMessage(header);
