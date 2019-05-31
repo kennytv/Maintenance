@@ -4,9 +4,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added config option `kick-online-players` to disable the kicks when maintenance is enabled (new connections will still be blocked)... not sure why you'd want that, but you can :p
+* Added the messages of the help command into the language files
 ### Fixed
 * Fixed players being kicked *after* the initial connection and thus triggering a join and leave message before being kicked (Bungee version)
-* Fixed the join-notifications being sent twice if both global and server maintenance are enabled (Bungee version)
+* Fixed the join-notifications being sent twice if both global and server maintenance are enabled, as well as when just a server has maintenance in some cases (Bungee version)
 ---
 ## 3.0.2 - May 17th 2019
 ### Changed

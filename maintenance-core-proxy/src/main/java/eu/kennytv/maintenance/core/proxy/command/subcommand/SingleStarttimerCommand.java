@@ -30,7 +30,7 @@ import java.util.List;
 public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     public SingleStarttimerCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, null, "§6/maintenance starttimer [server] <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
+        super(plugin, null);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
         if (args.length == 2) {
             if (checkPermission(sender, "timer")) return;
             if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
-                sender.sendMessage(helpMessage);
+                sender.sendMessage(getHelpMessage());
                 return;
             }
             if (plugin.isMaintenance()) {
@@ -56,7 +56,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;
             if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
-                sender.sendMessage(helpMessage);
+                sender.sendMessage(getHelpMessage());
                 return;
             }
 
@@ -70,7 +70,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), true);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
         } else
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
     }
 
     @Override

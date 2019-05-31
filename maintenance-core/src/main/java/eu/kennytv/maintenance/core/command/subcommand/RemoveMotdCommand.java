@@ -30,7 +30,7 @@ import java.util.List;
 public final class RemoveMotdCommand extends CommandInfo {
 
     public RemoveMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd", "§6/maintenance removemotd [timer] <index> §7(Removes a maintenance motd. If using \"timer\" as an argument, a timerspecific pingmessage will be removed)");
+        super(plugin, "setmotd");
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class RemoveMotdCommand extends CommandInfo {
         }
         if (checkArgs(sender, args, 2)) return;
         if (!plugin.isNumeric(args[1])) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
 

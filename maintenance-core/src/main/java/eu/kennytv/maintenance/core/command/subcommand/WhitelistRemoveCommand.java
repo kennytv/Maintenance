@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public final class WhitelistRemoveCommand extends CommandInfo {
 
     public WhitelistRemoveCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
+        super(plugin, "whitelist.remove");
     }
 
     @Override

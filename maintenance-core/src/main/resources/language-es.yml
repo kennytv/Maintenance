@@ -43,14 +43,7 @@ playerNotFoundUuid: "&8[&eMaintenance&8] &cNo se pudo encontrar el jugador con e
 playerNotOnline: "&8[&eMaintenance&8] &7No hay jugador en línea con ese nombre."
 invalidUuid: "&8[&eMaintenance&8] &cFormato inválido!"
 
-second: "Segundo"
-seconds: "Segundos"
-minute: "Minuto"
-minutes: "Minutos"
-hour: "Hora"
-hours: "Horas"
-
-# Some messages for the Bungee part, just ignore them if you use the plugin on Spigot
+# Messages for the Bungee/Velocity part, just can ignore them if you use the plugin on Spigot/Sponge
 serverNotFound: "&8[&eMaintenance&8] &cNingún servidor con este nombre está registrado en el proxy!"
 singleTimerAlreadyRunning: "&8[&eMaintenance&8] &cYa hay un temporizador programado!"
 singleTimerNotRunning: "&8[&eMaintenance&8] &cActualmente no hay ningún temporizador en ejecución para ese servidor."
@@ -65,3 +58,32 @@ singleServerAlreadyEnabled: "&8[&eMaintenance&8] &7El Modo &6Mantenimiento &7se 
 singleServerAlreadyDisabled: "&8[&eMaintenance&8] 7El Modo &6Mantenimiento &7se encuentra Deshabilitado en &6%SERVER%&7!"
 singleServerMaintenanceList: "&8[&eMaintenance&8] &7Servidores Proxy, que tienen habilitado el &6Mantenimiento:"
 singleServerMaintenanceListEmpty: "&8[&eMaintenance&8] &7No hay servidores Proxy que están en &6Mantenimiento&7."
+
+second: "Segundo"
+seconds: "Segundos"
+minute: "Minuto"
+minutes: "Minutos"
+hour: "Hora"
+hours: "Horas"
+
+helpAbortTimer: "§6/maintenance aborttimer §7(If running, the current timer will be aborted)"
+helpEndtimer: "§6/maintenance endtimer <minutes> §7(After the given time in minutes, maintenance mode will be disabled)"
+helpStarttimer: "§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)"
+helpDump: "§6/maintenance dump §7(Dumps some server information, used for bug reports)"
+helpHelp: "§6/maintenance help [page] §7(Shows this beautiful help window)"
+helpMotd: "§6/maintenance motd [timer] §7(Lists the currently set maintenance motds. If specifying 'timer', the timer motds are shown)"
+helpRemoveMotd: "§6/maintenance removemotd [timer] <index> §7(Removes a maintenance motd. If using \"timer\" as an argument, a timerspecific pingmessage will be removed)"
+helpSetMotd: "§6/maintenance setmotd [timer] <index> <1/2> <message> §7(Sets a motd for maintenance mode. If using \"timer\" as an argument, a timerspecific pingmessage will be set)"
+helpReload: "§6/maintenance reload §7(Reloads the config file, whitelist file and the server-icon)"
+helpToggle: "§6/maintenance <on/off> §7(Enables/disables maintenance mode)"
+helpUpdate: "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)"
+helpWhitelist: "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)"
+helpWhitelistAdd: "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)"
+helpWhitelistRemove: "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)"
+
+# Messages for the Bungee/Velocity part, just can ignore them if you use the plugin on Spigot/Sponge
+helpAbortSingleTimer: "§6/maintenance aborttimer [server] §7(If running, the current timer will be aborted)"
+helpSingleEndtimer: "§6/maintenance endtimer [server] <minutes> §7(After the given time in minutes, maintenance mode will be disabled)"
+helpSingleStarttimer: "§6/maintenance starttimer [server] <minutes> §7(After the given time in minutes, maintenance mode will be enabled)"
+helpSingleToggle: "§6/maintenance <on/off> [server] §7(Enables/disables maintenance mode)"
+helpStatus: "§6/maintenance status §7(Lists all proxied servers, that are currently under maintenance)"

@@ -27,13 +27,14 @@ import java.util.List;
 
 public abstract class CommandInfo {
     protected final MaintenancePlugin plugin;
-    protected final String helpMessage;
+    private final String helpMessageKey;
     private final String permission;
 
-    protected CommandInfo(final MaintenancePlugin plugin, final String permission, final String helpMessage) {
+    protected CommandInfo(final MaintenancePlugin plugin, final String permission) {
         this.plugin = plugin;
         this.permission = permission;
-        this.helpMessage = helpMessage;
+        // Just take the class name as the language key
+        this.helpMessageKey = getClass().getSimpleName().replace("Command", "");
     }
 
     public boolean hasPermission(final SenderInfo sender) {
@@ -41,7 +42,7 @@ public abstract class CommandInfo {
     }
 
     public String getHelpMessage() {
-        return helpMessage;
+        return getMessage(helpMessageKey);
     }
 
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
@@ -60,7 +61,7 @@ public abstract class CommandInfo {
 
     protected boolean checkArgs(final SenderInfo sender, final String[] args, final int length) {
         if (args.length != length) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return true;
         }
         return false;

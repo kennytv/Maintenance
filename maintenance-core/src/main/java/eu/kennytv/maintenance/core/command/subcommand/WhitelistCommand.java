@@ -28,7 +28,7 @@ import java.util.UUID;
 public final class WhitelistCommand extends CommandInfo {
 
     public WhitelistCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.list", "§6/maintenance whitelist §7(Shows all whitelisted players for the maintenance mode)");
+        super(plugin, "whitelist.list");
     }
 
     @Override

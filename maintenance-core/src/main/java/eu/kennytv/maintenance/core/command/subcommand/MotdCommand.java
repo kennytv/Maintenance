@@ -28,7 +28,7 @@ import java.util.List;
 public final class MotdCommand extends CommandInfo {
 
     public MotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "motd", "§6/maintenance motd [timer] §7(Lists the currently set maintenance motds. If specifying 'timer', the timer motds are shown)");
+        super(plugin, "motd");
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class MotdCommand extends CommandInfo {
 
             sendList(sender, getSettings().getTimerSpecificPingMessages());
         } else
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
     }
 
     private void sendList(final SenderInfo sender, final List<String> list) {

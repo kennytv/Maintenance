@@ -29,7 +29,7 @@ import java.util.UUID;
 public final class WhitelistAddCommand extends CommandInfo {
 
     public WhitelistAddCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.add", "§6/maintenance add <name/uuid> §7(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)");
+        super(plugin, "whitelist.add");
     }
 
     @Override

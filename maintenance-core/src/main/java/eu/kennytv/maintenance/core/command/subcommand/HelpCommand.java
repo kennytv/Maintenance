@@ -30,13 +30,13 @@ public final class HelpCommand extends CommandInfo {
     private static final int COMMANDS_PER_PAGE = 8;
 
     public HelpCommand(final MaintenancePlugin plugin) {
-        super(plugin, null, "§6/maintenance help [page] §7(Shows this beautiful help window)");
+        super(plugin, null);
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length > 2) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
 
@@ -44,7 +44,7 @@ public final class HelpCommand extends CommandInfo {
             sendUsage(sender);
         } else {
             if (!plugin.isNumeric(args[1])) {
-                sender.sendMessage(helpMessage);
+                sender.sendMessage(getHelpMessage());
                 return;
             }
 
