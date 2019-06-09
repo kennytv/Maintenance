@@ -5,7 +5,8 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Added config option `kick-online-players` to disable the kicks when maintenance is enabled (new connections will still be blocked)... not sure why you'd want that, but you can :p
 * Added the messages of the help command into the language files
-* Updated missing translations in French language file (thanks to Spigot user Zendrique)
+* Updated missing and new translations in French language file (thanks to Spigot user Zendrique)
+* Updated missing and new translations in Spanish language file (thanks to Spigot user Vixo_Ulises)
 ### Fixed
 * Fixed players being kicked *after* the initial connection and thus triggering a join and leave message before being kicked (Bungee version)
 * Fixed the join-notifications being sent twice if both global and server maintenance are enabled, as well as when just a server has maintenance in some cases (Bungee version)
