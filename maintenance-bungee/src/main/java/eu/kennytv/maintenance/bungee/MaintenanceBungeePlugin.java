@@ -112,7 +112,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settingsProxy.isMaintenance(new BungeeServer(serverInfo));
+        return settingsProxy.isMaintenance(serverInfo.getName());
     }
 
     @Override

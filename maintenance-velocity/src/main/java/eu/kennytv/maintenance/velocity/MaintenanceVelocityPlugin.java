@@ -139,7 +139,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final RegisteredServer serverInfo) {
-        return settingsProxy.isMaintenance(new VelocityServer(serverInfo));
+        return settingsProxy.isMaintenance(serverInfo.getServerInfo().getName());
     }
 
     @Override

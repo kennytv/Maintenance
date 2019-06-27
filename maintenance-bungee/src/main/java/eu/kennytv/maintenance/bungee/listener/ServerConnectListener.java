@@ -61,7 +61,8 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo target = event.getTarget();
         if (!plugin.isMaintenance(target)) return;
-        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId()))
+        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())
+                || plugin.hasPermission(player, "singleserver.bypass." + target.getName().toLowerCase()))
             return;
 
         event.setCancelled(true);

@@ -4,6 +4,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added config option `kick-online-players` to disable the kicks when maintenance is enabled (new connections will still be blocked)... not sure why you'd want that, but you can :p
+* Bungee/Velocity: Added `maintenance.singleserver.bypass.<server>` permission to give individual bypasses for proxied servers (`maintenance.bypass` will still bypass everything as the super-perm)
 * Added the messages of the help command into the language files
 * Updated missing and new translations in French language file (thanks to Spigot user Zendrique)
 * Updated missing and new translations in Spanish language file (thanks to Spigot user Vixo_Ulises)

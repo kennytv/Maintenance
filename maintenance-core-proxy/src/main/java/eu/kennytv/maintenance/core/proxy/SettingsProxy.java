@@ -18,7 +18,6 @@
 
 package eu.kennytv.maintenance.core.proxy;
 
-import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
@@ -113,7 +112,7 @@ public final class SettingsProxy extends Settings {
         return maintenance;
     }
 
-    public boolean isMaintenance(final Server server) {
+    public boolean isMaintenance(final String serverName) {
         if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.equals(databaseValue)) {
@@ -132,7 +131,7 @@ public final class SettingsProxy extends Settings {
             }
             lastServerCheck = System.currentTimeMillis();
         }
-        return maintenanceServers.contains(server.getName());
+        return maintenanceServers.contains(serverName);
     }
 
     public boolean hasMySQL() {
