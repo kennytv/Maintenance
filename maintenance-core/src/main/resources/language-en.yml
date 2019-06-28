@@ -65,6 +65,7 @@ minutes: "minutes"
 hour: "hour"
 hours: "hours"
 
+helpHeader: "&8========[ &e%NAME% &8| &e%PAGE%/%MAX% &8]========"
 helpPageNotFound: "&8[&eMaintenance&8] &cThere is no page with that number!"
 helpNextPage: "&7Use &b/maintenance help %PAGE% &7to get to the next help window."
 helpAbortTimer: "&6/maintenance aborttimer &7(If running, the current timer will be aborted)"

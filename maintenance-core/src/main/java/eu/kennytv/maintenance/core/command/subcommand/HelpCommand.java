@@ -71,7 +71,8 @@ public final class HelpCommand extends CommandInfo {
         else
             filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
 
-        final String header = "§8========[ §eMaintenance" + plugin.getServerType() + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========";
+        final String header = getMessage("helpHeader").replace("%NAME%", "Maintenance" + plugin.getServerType())
+                .replace("%PAGE%", Integer.toString(page)).replace("%MAX%", Integer.toString((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE));
         sender.sendMessage("");
         sender.sendMessage(header);
         filteredCommands.forEach(sender::sendMessage);
