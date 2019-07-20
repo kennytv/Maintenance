@@ -105,7 +105,12 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     private boolean canUsePaperListener() {
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
-            return !getServer().getPluginManager().isPluginEnabled("ProtocolSupport");
+            if (getServer().getPluginManager().isPluginEnabled("ProtocolSupport")) {
+                getLogger().warning("Found ProtocolSupport - you need ProtocolLib, as PS does not fire the Paper ping event!");
+                return false;
+            }
+
+            return true;
         } catch (final ClassNotFoundException e) {
             return false;
         }
