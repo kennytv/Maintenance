@@ -79,7 +79,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
 
-        if (isAcceptablePaper()) {
+        if (canUsePaperListener()) {
             pm.registerEvents(new PaperServerListPingListener(this, settings), plugin);
         } else {
             if (pm.isPluginEnabled("ProtocolLib")) {
@@ -102,10 +102,10 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         }
     }
 
-    private boolean isAcceptablePaper() {
+    private boolean canUsePaperListener() {
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
-            return true;
+            return !getServer().getPluginManager().isPluginEnabled("ProtocolSupport");
         } catch (final ClassNotFoundException e) {
             return false;
         }
