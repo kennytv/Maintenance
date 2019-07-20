@@ -12,6 +12,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Bungee/Velocity: Fixed the join-notifications being sent twice if both global and server maintenance are enabled, as well as when just a server has maintenance in some cases
 * Bungee: Fixed players being kicked *after* the initial connection and thus triggering a join and leave message before being kicked
 * Bungee: Fixed the kickmessage not being displayed in some cases
+* Paper: Fixed compatibility with ProtocolSupport: If running on Paper and having ProtocolSupport installed, Maintenance will switch to ProtocolLib's packet adapter, as PS does not fire Paper's ping event.
 ---
 ## 3.0.2 - May 17th 2019
 ### Changed
