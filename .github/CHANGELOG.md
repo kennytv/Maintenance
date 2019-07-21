@@ -6,6 +6,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Added the messages of the help command into the language files
 * Added config option `kick-online-players` to disable the kicks when maintenance is enabled (new connections will still be blocked)... not sure why you'd want that, but you can :p
 * Bungee/Velocity: Added `maintenance.singleserver.bypass.<server>` permission to give individual bypasses for proxied servers (`maintenance.bypass` will still bypass everything as the super-perm)
+* The language file will now be automatically updated as well, so no need to delete and recreate it anymore, yay!
 * Updated missing and new translations in French language file (thanks to Spigot user Zendrique)
 * Updated missing and new translations in Spanish language file (thanks to Spigot user Vixo_Ulises)
 ### Fixed
@@ -13,6 +14,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Bungee: Fixed players being kicked *after* the initial connection and thus triggering a join and leave message before being kicked
 * Bungee: Fixed the kickmessage not being displayed in some cases
 * Paper: Fixed compatibility with ProtocolSupport: If running on Paper and having ProtocolSupport installed, Maintenance will switch to ProtocolLib's packet adapter, as PS does not fire Paper's ping event.
+* Fixed the config autoupdater when the config contained strings broken over multiple lines.
 ---
 ## 3.0.2 - May 17th 2019
 ### Changed

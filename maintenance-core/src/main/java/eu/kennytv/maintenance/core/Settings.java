@@ -90,6 +90,8 @@ public class Settings implements ISettings {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
 
+        updateLanguageFile();
+
         // Directly save colored messages
         for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
             if (!(entry.getValue() instanceof String)) continue;
@@ -228,12 +230,38 @@ public class Settings implements ISettings {
 
             file.delete();
             tempConfig.clear();
+
             changed = true;
         }
 
         if (changed) {
             saveConfig();
-            plugin.getLogger().info("Done! Updated config to the latest version!");
+            plugin.getLogger().info("Done! Updated config!");
+        }
+    }
+
+    private void updateLanguageFile() {
+        final String s = "language-" + languageName;
+        createFile(s + "-new.yml", s + ".yml");
+        final File file = new File(plugin.getDataFolder(), s + "-new.yml");
+        final Config tempConfig = new Config(file);
+        try {
+            tempConfig.load();
+        } catch (final IOException e) {
+            plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml wasn't found in the resource files!");
+            return;
+        }
+
+        final boolean updated = language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+        tempConfig.clear();
+        file.delete();
+        if (updated) {
+            try {
+                language.save();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+            plugin.getLogger().info("Updated language file!");
         }
     }
 

@@ -96,8 +96,9 @@ public final class Config extends ConfigSection {
         Files.write(this.file.toPath(), bytes);
     }
 
-    public void addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
+    public boolean addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
         // Note: Only scans for the first two levels
+        boolean changed = false;
         for (final Map.Entry<String, Object> entry : fields.entrySet()) {
             final Object o = values.get(entry.getKey());
             if (o != null) {
@@ -108,14 +109,17 @@ public final class Config extends ConfigSection {
                 for (final Map.Entry<String, Object> deepEntry : ((Map<String, Object>) o2).entrySet()) {
                     if (deepMap.containsKey(deepEntry.getKey())) continue;
                     deepMap.put(deepEntry.getKey(), deepEntry.getValue());
+                    changed = true;
                 }
                 continue;
             }
 
             values.put(entry.getKey(), entry.getValue());
+            changed = true;
         }
 
         this.comments = new HashMap<>(comments);
+        return changed;
     }
 
     @Override
@@ -162,6 +166,7 @@ public final class Config extends ConfigSection {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(false);
         options.setIndent(2);
+        options.setWidth(10_000); // be sneaky because autobreak on read/save looks disgusting
         return new Yaml(options);
     }
 

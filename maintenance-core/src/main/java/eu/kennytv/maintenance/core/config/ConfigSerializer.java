@@ -35,44 +35,49 @@ import java.util.regex.Pattern;
 public final class ConfigSerializer {
 
     private static final String[] EMPTY = new String[0];
-    private static final int INDENT_UNIT = 2;
     private static final String PATH_SEPARATOR_STRING = ".";
     private static final String PATH_SEPARATOR_QUOTED = Pattern.quote(PATH_SEPARATOR_STRING);
+    private static final int INDENT_UNIT = 2;
 
     public static String serialize(final String header, final Map<String, Object> data, final Map<String, String[]> comments, final Yaml yaml) {
         if (data.isEmpty()) return yaml.dump(null);
 
         final String rawYaml = yaml.dump(data);
         final StringBuilder fileData = new StringBuilder();
-        int currentIndents = 0;
+        int currentKeyIndents = 0;
         String key = "";
         for (final String line : rawYaml.split("\n")) {
             if (line.isEmpty()) continue;
 
             final int indent = getIndents(line);
             final int indents = indent / INDENT_UNIT;
-
-            final String indentText = indent > 0 ? line.substring(0, indent) : "";
-            if (indents <= currentIndents) {
+            final boolean keyLine;
+            if (indents <= currentKeyIndents) {
                 final String[] array = key.split(PATH_SEPARATOR_QUOTED);
-                final int backspace = currentIndents - indents + 1;
+                final int backspace = currentKeyIndents - indents + 1;
                 key = join(array, array.length - backspace);
+                keyLine = true;
+            } else {
+                keyLine = line.contains(":") && !(line.endsWith("'") || line.endsWith("\"")); //TODO better check?
             }
 
-            final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
-            final String lineKey = line.contains(":") ? line.split(Pattern.quote(":"))[0] : line;
-            key += separator + lineKey.substring(indent);
+            if (keyLine) {
+                if (!key.isEmpty())
+                    key += PATH_SEPARATOR_STRING;
+                key += line.split(":")[0].substring(indent); // had Pattern.quote(":") before for some reason
 
-            currentIndents = indents;
-
-            final String[] strings = comments.get(key);
-            if (strings != null) {
-                for (final String comment : strings) {
-                    if (comment.isEmpty())
-                        fileData.append('\n');
-                    else
-                        fileData.append(indentText).append(comment).append('\n');
+                final String[] strings = comments.get(key);
+                if (strings != null) {
+                    final String indentText = indent > 0 ? line.substring(0, indent) : "";
+                    for (final String comment : strings) {
+                        if (comment.isEmpty())
+                            fileData.append('\n');
+                        else
+                            fileData.append(indentText).append(comment).append('\n');
+                    }
                 }
+
+                currentKeyIndents = indents;
             }
 
             fileData.append(line).append('\n');
