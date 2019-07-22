@@ -46,6 +46,7 @@ public final class ConfigSerializer {
         final StringBuilder fileData = new StringBuilder();
         int currentKeyIndents = 0;
         String key = "";
+        boolean brokenText = false; // Indicates lists or text broken over multiple lines - a bit weird, but meh
         for (final String line : rawYaml.split("\n")) {
             if (line.isEmpty()) continue;
 
@@ -58,13 +59,17 @@ public final class ConfigSerializer {
                 key = join(array, array.length - backspace);
                 keyLine = true;
             } else {
-                keyLine = line.contains(":") && !(line.endsWith("'") || line.endsWith("\"")); //TODO better check?
+                keyLine = !brokenText && line.contains(":");
             }
 
             if (keyLine) {
                 if (!key.isEmpty())
                     key += PATH_SEPARATOR_STRING;
-                key += line.split(":")[0].substring(indent); // had Pattern.quote(":") before for some reason
+                final String substring = line.split(Pattern.quote(":"))[0].substring(indent); // Not sure about the quote thing, so I'll just keep it :aaa:
+                key += substring;
+
+                final char charAt = substring.trim().charAt(0);
+                brokenText = charAt == '\'' || charAt == '"' || charAt == '-';
 
                 final String[] strings = comments.get(key);
                 if (strings != null) {

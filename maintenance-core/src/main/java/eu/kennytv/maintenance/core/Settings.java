@@ -118,7 +118,7 @@ public class Settings implements ISettings {
             try (final InputStream in = plugin.getResource(from)) {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
-                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
+                throw new IllegalArgumentException("Unable to create " + name + " file for Maintenance!", e);
             }
         }
     }
@@ -242,13 +242,20 @@ public class Settings implements ISettings {
 
     private void updateLanguageFile() {
         final String s = "language-" + languageName;
-        createFile(s + "-new.yml", s + ".yml");
+        try {
+            createFile(s + "-new.yml", s + ".yml");
+        } catch (final IllegalArgumentException e) {
+            plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml wasn't found in the resource files!");
+            e.printStackTrace();
+            return;
+        }
+
         final File file = new File(plugin.getDataFolder(), s + "-new.yml");
         final Config tempConfig = new Config(file);
         try {
             tempConfig.load();
         } catch (final IOException e) {
-            plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml wasn't found in the resource files!");
+            e.printStackTrace();
             return;
         }
 
@@ -260,6 +267,7 @@ public class Settings implements ISettings {
                 language.save();
             } catch (final IOException e) {
                 e.printStackTrace();
+                return;
             }
             plugin.getLogger().info("Updated language file!");
         }

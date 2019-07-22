@@ -138,29 +138,6 @@ public final class Config extends ConfigSection {
         this.comments.remove(key);
     }
 
-    /**
-     * Convenience method, not further established as currently not necessary.
-     *
-     * @see #getSection(String)
-     * @deprecated this config is only made for a quite simple use, only goes one level deeper
-     */
-    @Deprecated
-    public Object getDeep(final String key) {
-        final String[] split = key.split("\\.", 2);
-        if (split.length != 2) return get(key);
-
-        final Object o = getObject(split[0]);
-        if (!(o instanceof Map)) return null;
-
-        final Map<String, Object> map = (Map<String, Object>) o;
-        return map.get(split[1]);
-    }
-
-    public ConfigSection getSection(final String key) {
-        final Object o = getObject(key);
-        return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
-    }
-
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
