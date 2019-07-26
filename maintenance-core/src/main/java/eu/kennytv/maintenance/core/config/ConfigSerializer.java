@@ -46,30 +46,29 @@ public final class ConfigSerializer {
         final StringBuilder fileData = new StringBuilder();
         int currentKeyIndents = 0;
         String key = "";
-        boolean brokenText = false; // Indicates lists or text broken over multiple lines - a bit weird, but meh
         for (final String line : rawYaml.split("\n")) {
             if (line.isEmpty()) continue;
 
             final int indent = getIndents(line);
             final int indents = indent / INDENT_UNIT;
             final boolean keyLine;
-            if (indents <= currentKeyIndents) {
+            final String substring = line.substring(indent);
+            if (substring.trim().isEmpty() || substring.charAt(0) == '-') {
+                keyLine = false;
+            } else if (indents <= currentKeyIndents) {
                 final String[] array = key.split(PATH_SEPARATOR_QUOTED);
                 final int backspace = currentKeyIndents - indents + 1;
                 key = join(array, array.length - backspace);
                 keyLine = true;
             } else {
-                keyLine = !brokenText && line.contains(":");
+                keyLine = line.contains(":");
             }
 
             if (keyLine) {
+                final String newKey = substring.split(Pattern.quote(":"))[0]; // Not sure about the quote thing, so I'll just keep it :aaa:
                 if (!key.isEmpty())
                     key += PATH_SEPARATOR_STRING;
-                final String substring = line.split(Pattern.quote(":"))[0].substring(indent); // Not sure about the quote thing, so I'll just keep it :aaa:
-                key += substring;
-
-                final char charAt = substring.trim().charAt(0);
-                brokenText = charAt == '\'' || charAt == '"' || charAt == '-';
+                key += newKey;
 
                 final String[] strings = comments.get(key);
                 if (strings != null) {
