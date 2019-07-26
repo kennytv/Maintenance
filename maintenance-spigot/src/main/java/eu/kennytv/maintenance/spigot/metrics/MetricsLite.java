@@ -1,16 +1,18 @@
 package eu.kennytv.maintenance.spigot.metrics;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Timer;
@@ -19,11 +21,16 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * bStats collects some data for plugin authors.
+ * <p>
+ * Check out https://bStats.org/ to learn more about bStats!
+ */
 public final class MetricsLite {
 
     public static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
-    private boolean enabled;
+    private final boolean enabled;
     private static boolean logFailedRequests;
     private static boolean logSentData;
     private static boolean logResponseStatusText;
@@ -55,15 +62,15 @@ public final class MetricsLite {
             ).copyDefaults(true);
             try {
                 config.save(configFile);
-            } catch (IOException ignored) {
+            } catch (final IOException ignored) {
             }
         }
 
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
+        enabled = config.getBoolean("enabled", true);
         logSentData = config.getBoolean("logSentData", false);
         logResponseStatusText = config.getBoolean("logResponseStatusText", false);
-        enabled = config.getBoolean("enabled", true);
         if (enabled) {
             boolean found = false;
             for (final Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
@@ -90,7 +97,7 @@ public final class MetricsLite {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!plugin.isEnabled()) {
+                if (!plugin.isEnabled()) { // Plugin was disabled
                     timer.cancel();
                     return;
                 }
@@ -99,24 +106,24 @@ public final class MetricsLite {
         }, 1000 * 60 * 5, 1000 * 60 * 30);
     }
 
-    public JSONObject getPluginData() {
-        final JSONObject data = new JSONObject();
+    public JsonObject getPluginData() {
+        final JsonObject data = new JsonObject();
 
         final String pluginName = plugin.getDescription().getName();
         final String pluginVersion = plugin.getDescription().getVersion();
 
-        data.put("pluginName", pluginName);
-        data.put("pluginVersion", pluginVersion);
-        final JSONArray customCharts = new JSONArray();
-        data.put("customCharts", customCharts);
+        data.addProperty("pluginName", pluginName);
+        data.addProperty("pluginVersion", pluginVersion);
+        data.add("customCharts", new JsonArray());
 
         return data;
     }
 
-    private JSONObject getServerData() {
+    private JsonObject getServerData() {
         final int playerAmount = Bukkit.getOnlinePlayers().size();
         final int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
         final String bukkitVersion = Bukkit.getVersion();
+        final String bukkitName = Bukkit.getName();
 
         final String javaVersion = System.getProperty("java.version");
         final String osName = System.getProperty("os.name");
@@ -124,34 +131,53 @@ public final class MetricsLite {
         final String osVersion = System.getProperty("os.version");
         final int coreCount = Runtime.getRuntime().availableProcessors();
 
-        final JSONObject data = new JSONObject();
+        final JsonObject data = new JsonObject();
 
-        data.put("serverUUID", serverUUID);
+        data.addProperty("serverUUID", serverUUID);
 
-        data.put("playerAmount", playerAmount);
-        data.put("onlineMode", onlineMode);
-        data.put("bukkitVersion", bukkitVersion);
+        data.addProperty("playerAmount", playerAmount);
+        data.addProperty("onlineMode", onlineMode);
+        data.addProperty("bukkitVersion", bukkitVersion);
+        data.addProperty("bukkitName", bukkitName);
 
-        data.put("javaVersion", javaVersion);
-        data.put("osName", osName);
-        data.put("osArch", osArch);
-        data.put("osVersion", osVersion);
-        data.put("coreCount", coreCount);
+        data.addProperty("javaVersion", javaVersion);
+        data.addProperty("osName", osName);
+        data.addProperty("osArch", osArch);
+        data.addProperty("osVersion", osVersion);
+        data.addProperty("coreCount", coreCount);
 
         return data;
     }
 
     private void submitData() {
-        final JSONObject data = getServerData();
+        final JsonObject data = getServerData();
 
-        final JSONArray pluginData = new JSONArray();
+        final JsonArray pluginData = new JsonArray();
         for (final Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
             try {
                 service.getField("B_STATS_VERSION");
 
                 for (final RegisteredServiceProvider<?> provider : Bukkit.getServicesManager().getRegistrations(service)) {
                     try {
-                        pluginData.add(provider.getService().getMethod("getPluginData").invoke(provider.getProvider()));
+                        final Object plugin = provider.getService().getMethod("getPluginData").invoke(provider.getProvider());
+                        if (plugin instanceof JsonObject) {
+                            pluginData.add((JsonObject) plugin);
+                        } else {
+                            try {
+                                final Class<?> jsonObjectJsonSimple = Class.forName("org.json.simple.JSONObject");
+                                if (plugin.getClass().isAssignableFrom(jsonObjectJsonSimple)) {
+                                    final Method jsonStringGetter = jsonObjectJsonSimple.getDeclaredMethod("toJSONString");
+                                    jsonStringGetter.setAccessible(true);
+                                    final String jsonString = (String) jsonStringGetter.invoke(plugin);
+                                    final JsonObject object = new JsonParser().parse(jsonString).getAsJsonObject();
+                                    pluginData.add(object);
+                                }
+                            } catch (final ClassNotFoundException e) {
+                                if (logFailedRequests) {
+                                    this.plugin.getLogger().log(Level.SEVERE, "Encountered unexpected exception ", e);
+                                }
+                            }
+                        }
                     } catch (final NullPointerException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
                     }
                 }
@@ -159,7 +185,7 @@ public final class MetricsLite {
             }
         }
 
-        data.put("plugins", pluginData);
+        data.add("plugins", pluginData);
 
         new Thread(() -> {
             try {
@@ -172,7 +198,7 @@ public final class MetricsLite {
         }).start();
     }
 
-    private static void sendData(final Plugin plugin, final JSONObject data) throws Exception {
+    private static void sendData(final Plugin plugin, final JsonObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
         }
@@ -180,7 +206,7 @@ public final class MetricsLite {
             throw new IllegalAccessException("This method must not be called from the main thread!");
         }
         if (logSentData) {
-            plugin.getLogger().info("Sending data to bStats: " + data.toString());
+            plugin.getLogger().info("Sending data to bStats: " + data);
         }
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -210,7 +236,7 @@ public final class MetricsLite {
                 builder.append(line);
             }
             bufferedReader.close();
-            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
         } else {
             connection.getInputStream().close();
         }
@@ -226,5 +252,4 @@ public final class MetricsLite {
         gzip.close();
         return outputStream.toByteArray();
     }
-
 }
