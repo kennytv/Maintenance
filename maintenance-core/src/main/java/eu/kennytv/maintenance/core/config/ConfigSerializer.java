@@ -119,13 +119,19 @@ public final class ConfigSerializer {
             if (indents <= currentIndents) {
                 final String[] array = key.split(PATH_SEPARATOR_QUOTED);
                 final int backspace = currentIndents - indents + 1;
-                key = join(array, array.length - backspace);
+                final int delta = array.length - backspace;
+                key = delta >= 0 ? join(array, delta) : key;
             }
 
-            final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
-            final String lineKey = line.contains(":") ? line.split(Pattern.quote(":"))[0] : line;
-            key += separator + lineKey.substring(indent);
             currentIndents = indents;
+
+            final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
+            final String substring = line.substring(indent).trim();
+            if (substring.isEmpty() || substring.charAt(0) == '-') continue;
+            if (!line.contains(":")) continue;
+
+            final String lineKey = line.split(Pattern.quote(":"))[0];
+            key += separator + lineKey.substring(indent);
 
             if (!currentComments.isEmpty()) {
                 comments.put(key, currentComments.toArray(EMPTY));
