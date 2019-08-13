@@ -40,15 +40,11 @@
 
     <repositories>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>spigotmc-repo</id>
+            <id>spigotmc</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
@@ -60,7 +56,7 @@
             <url>https://repo.velocitypowered.com/snapshots</url>
         </repository>
         <repository>
-            <id>dmulloy2-repo</id>
+            <id>dmulloy2</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
