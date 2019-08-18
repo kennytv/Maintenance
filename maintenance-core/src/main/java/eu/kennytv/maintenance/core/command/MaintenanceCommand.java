@@ -25,7 +25,6 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class MaintenanceCommand {
     protected final MaintenancePlugin plugin;
@@ -91,8 +90,17 @@ public abstract class MaintenanceCommand {
     public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
         if (!sender.hasMaintenancePermission("command") || args.length == 0) return Collections.emptyList();
         final String s = args[0].toLowerCase();
-        if (args.length == 1)
-            return commandExecutors.entrySet().stream().filter(entry -> entry.getKey().startsWith(s) && entry.getValue().hasPermission(sender)).map(Map.Entry::getKey).collect(Collectors.toList());
+        if (args.length == 1) {
+            final List<String> list = new ArrayList<>();
+            for (final Map.Entry<String, CommandInfo> entry : commandExecutors.entrySet()) {
+                final String command = entry.getKey();
+                if (command.startsWith(s) && entry.getValue().hasPermission(sender)) {
+                    list.add(command);
+                }
+            }
+            return list;
+        }
+
         final CommandInfo info = commandExecutors.get(args[0]);
         return info != null && info.hasPermission(sender) ? info.getTabCompletion(sender, args) : Collections.emptyList();
     }

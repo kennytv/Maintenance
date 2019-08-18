@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class BungeeServer implements Server {
     private final ServerInfo server;
@@ -43,7 +44,9 @@ public final class BungeeServer implements Server {
     @Override
     public void broadcast(final String message) {
         final BaseComponent[] s = TextComponent.fromLegacyText(message);
-        server.getPlayers().forEach(p -> p.sendMessage(s));
+        for (final ProxiedPlayer p : server.getPlayers()) {
+            p.sendMessage(s);
+        }
     }
 
     public ServerInfo getServer() {

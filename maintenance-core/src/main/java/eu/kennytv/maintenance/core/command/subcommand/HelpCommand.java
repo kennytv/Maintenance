@@ -23,8 +23,8 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class HelpCommand extends CommandInfo {
     private static final int COMMANDS_PER_PAGE = 8;
@@ -59,7 +59,12 @@ public final class HelpCommand extends CommandInfo {
 
     public void sendUsage(final SenderInfo sender, final int page) {
         Preconditions.checkArgument(page > 0);
-        final List<String> commands = plugin.getCommandManager().getCommands().stream().filter(cmd -> cmd.hasPermission(sender)).map(CommandInfo::getHelpMessage).collect(Collectors.toList());
+        final List<String> commands = new ArrayList<>();
+        for (final CommandInfo cmd : plugin.getCommandManager().getCommands()) {
+            if (cmd.hasPermission(sender)) {
+                commands.add(cmd.getHelpMessage());
+            }
+        }
         if ((page - 1) * COMMANDS_PER_PAGE >= commands.size()) {
             sender.sendMessage(getMessage("helpPageNotFound"));
             return;
@@ -75,7 +80,9 @@ public final class HelpCommand extends CommandInfo {
                 .replace("%PAGE%", Integer.toString(page)).replace("%MAX%", Integer.toString((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE));
         sender.sendMessage("");
         sender.sendMessage(header);
-        filteredCommands.forEach(sender::sendMessage);
+        for (final String command : filteredCommands) {
+            sender.sendMessage(command);
+        }
         if (page * COMMANDS_PER_PAGE < commands.size())
             sender.sendMessage(getMessage("helpNextPage").replace("%PAGE%", Integer.toString(page + 1)));
         else

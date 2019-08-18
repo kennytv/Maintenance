@@ -118,15 +118,15 @@ public final class SettingsProxy extends Settings {
             if (!maintenanceServers.equals(databaseValue)) {
                 final MaintenanceProxyPlugin plugin = (MaintenanceProxyPlugin) super.plugin;
                 // Enable maintenance on yet unlisted servers
-                databaseValue.forEach(s -> {
+                for (final String s : databaseValue) {
                     if (!maintenanceServers.contains(s))
                         plugin.serverActions(plugin.getServer(s), true);
-                });
+                }
                 // Disable maintenance on now unlisted servers
-                maintenanceServers.forEach(s -> {
+                for (final String s : maintenanceServers) {
                     if (!databaseValue.contains(s))
                         plugin.serverActions(plugin.getServer(s), false);
-                });
+                }
                 maintenanceServers = databaseValue;
             }
             lastServerCheck = System.currentTimeMillis();

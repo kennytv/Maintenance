@@ -36,9 +36,9 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @NonnullByDefault
 public final class MaintenanceSpongeCommand extends MaintenanceCommand implements CommandCallable {
@@ -91,7 +91,11 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
 
     @Override
     public List<String> getPlayersCompletion() {
-        return Sponge.getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final Player player : Sponge.getServer().getOnlinePlayers()) {
+            list.add(player.getName());
+        }
+        return list;
     }
 
     private String[] getArgs(final String arguments, final int limit) {

@@ -37,7 +37,10 @@ public final class EventManager implements IEventManager {
 
     public void callEvent(final MaintenanceEvent event) {
         final List<EventListener> list = listeners.get(event.getClass().getSimpleName());
-        if (list != null)
-            list.forEach(listener -> listener.onEvent(event));
+        if (list != null) {
+            for (final EventListener listener : list) {
+                listener.onEvent(event);
+            }
+        }
     }
 }

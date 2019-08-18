@@ -43,6 +43,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
@@ -162,9 +163,11 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
     @Override
     protected void kickPlayers() {
-        getServer().getOnlinePlayers().stream()
-                .filter(p -> !hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.kickPlayer(settings.getKickMessage()));
+        for (final Player p : getServer().getOnlinePlayers()) {
+            if (!hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                p.kickPlayer(settings.getKickMessage());
+            }
+        }
     }
 
     @Override

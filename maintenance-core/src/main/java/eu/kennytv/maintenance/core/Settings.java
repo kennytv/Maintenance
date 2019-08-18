@@ -173,13 +173,13 @@ public class Settings implements ISettings {
         }
 
         whitelistedPlayers.clear();
-        whitelist.getValues().forEach((key, value) -> {
+        for (final Map.Entry<String, Object> entry : whitelist.getValues().entrySet()) {
             try {
-                whitelistedPlayers.put(UUID.fromString(key), (String) value);
+                whitelistedPlayers.put(UUID.fromString(entry.getKey()), (String) entry.getValue());
             } catch (final Exception e) {
-                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + key);
+                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + entry.getKey());
             }
-        });
+        }
         loadExtraSettings();
     }
 
@@ -290,10 +290,10 @@ public class Settings implements ISettings {
             config.set("pingmessages", Arrays.asList(oldConfig.getString("pingmessage")));
         if (oldConfig.contains("enable-maintenance-mode"))
             config.set("maintenance-enabled", oldConfig.getBoolean("enable-maintenance-mode"));
-        config.getValues().entrySet().forEach(entry -> {
-            if (!oldConfig.contains(entry.getKey())) return;
+        for (final Map.Entry<String, Object> entry : config.getValues().entrySet()) {
+            if (!oldConfig.contains(entry.getKey())) continue;
             entry.setValue(oldConfig.get(entry.getKey()));
-        });
+        }
 
         oldConfig.clear();
         if (!file.delete())
@@ -388,10 +388,15 @@ public class Settings implements ISettings {
     @Deprecated
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
-        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
-        if (entry == null) return false;
+        UUID uuid = null;
+        for (final Map.Entry<UUID, String> e : whitelistedPlayers.entrySet()) {
+            if (e.getValue().equalsIgnoreCase(name)) {
+                uuid = e.getKey();
+                break;
+            }
+        }
+        if (uuid == null) return false;
 
-        final UUID uuid = entry.getKey();
         whitelistedPlayers.remove(uuid);
         whitelist.remove(uuid.toString());
         saveWhitelistedPlayers();

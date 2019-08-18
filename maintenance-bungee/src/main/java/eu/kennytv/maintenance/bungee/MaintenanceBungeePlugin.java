@@ -117,15 +117,17 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayers() {
-        getProxy().getPlayers().stream()
-                .filter(p -> !hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(settingsProxy.getKickMessage()));
+        for (final ProxiedPlayer p : getProxy().getPlayers()) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                p.disconnect(settingsProxy.getKickMessage());
+            }
+        }
     }
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
-        ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
+        for (final ProxiedPlayer p : ((BungeeServer) server).getServer().getPlayers()) {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null && fallbackServer.canAccess(p) && !isMaintenance(fallback)) {
                     p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
@@ -135,7 +137,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             } else {
                 p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
-        });
+        }
     }
 
     @Override

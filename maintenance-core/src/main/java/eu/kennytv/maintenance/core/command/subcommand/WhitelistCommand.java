@@ -41,7 +41,9 @@ public final class WhitelistCommand extends CommandInfo {
         } else {
             sender.sendMessage(getMessage("whitelistedPlayers"));
             final String format = getMessage("whitelistedPlayersFormat");
-            players.forEach((key, value) -> sender.sendMessage(format.replace("%NAME%", value).replace("%UUID%", key.toString())));
+            for (final Map.Entry<UUID, String> entry : players.entrySet()) {
+                sender.sendMessage(format.replace("%NAME%", entry.getValue()).replace("%UUID%", entry.getKey().toString()));
+            }
             sender.sendMessage("");
         }
     }

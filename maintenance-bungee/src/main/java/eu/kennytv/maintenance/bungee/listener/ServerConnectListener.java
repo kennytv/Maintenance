@@ -68,7 +68,11 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
         event.setCancelled(true);
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
-            target.getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
+            for (final ProxiedPlayer p : target.getPlayers()) {
+                if (plugin.hasPermission(p, "joinnotification")) {
+                    p.sendMessage(s);
+                }
+            }
         }
 
         // Normal serverconnect
@@ -94,6 +98,10 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
     @Override
     protected void broadcastJoinNotification(final String name) {
         final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", name));
-        ProxyServer.getInstance().getPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
+        for (final ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            if (plugin.hasPermission(p, "joinnotification")) {
+                p.sendMessage(s);
+            }
+        }
     }
 }
