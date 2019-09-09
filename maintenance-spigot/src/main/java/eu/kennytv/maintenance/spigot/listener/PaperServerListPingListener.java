@@ -48,7 +48,7 @@ public final class PaperServerListPingListener implements Listener {
         event.setMotd(settings.getRandomPingMessage());
 
         if (settings.hasCustomPlayerCountMessage()) {
-            event.setProtocolVersion(0);
+            event.setProtocolVersion(-1);
             event.setVersion(settings.getPlayerCountMessage()
                     .replace("%ONLINE%", Integer.toString(plugin.getServer().getOnlinePlayers().size()))
                     .replace("%MAX%", Integer.toString(plugin.getServer().getMaxPlayers())));
