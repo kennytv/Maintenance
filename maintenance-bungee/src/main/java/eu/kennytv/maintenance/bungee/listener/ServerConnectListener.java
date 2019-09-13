@@ -46,7 +46,7 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
     @EventHandler
     public void initialServerConnect(final ServerConnectEvent event) {
         // Global maintenance check
-        if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY) return;
+        if (event.isCancelled() || event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY) return;
         if (kickPlayer(new BungeeSenderInfo(event.getPlayer()))) {
             event.setCancelled(true);
             event.getPlayer().disconnect(settings.getKickMessage());
@@ -65,7 +65,6 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
                 || plugin.hasPermission(player, "singleserver.bypass." + target.getName().toLowerCase()))
             return;
 
-        event.setCancelled(true);
         if (settings.isJoinNotifications()) {
             final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
             for (final ProxiedPlayer p : target.getPlayers()) {
@@ -78,6 +77,7 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
         // Normal serverconnect
         if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
                 && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT) {
+            event.setCancelled(true);
             player.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
             return;
         }
@@ -85,9 +85,10 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
         // If it's the initial proxy join or a kick from another server, go back to fallback server
         final ServerInfo fallback = plugin.getProxy().getServerInfo(settings.getFallbackServer());
         if (fallback == null || !fallback.canAccess(player) || plugin.isMaintenance(fallback)) {
+            event.setCancelled(true);
             player.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
             if (!warned) {
-                plugin.getLogger().warning("Could not send player to the set fallback server! Instead kicking player off the network!");
+                plugin.getLogger().warning("Could not send player to the set fallback server; instead kicking player off the network!");
                 warned = true;
             }
         } else {
