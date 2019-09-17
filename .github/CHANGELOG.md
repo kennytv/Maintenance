@@ -1,7 +1,7 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
-## Unreleased
+## 3.0.3 - September 17th 2019
 ### Changed
 * Bungee/Velocity: Added `maintenance.singleserver.bypass.<server>` permission to give individual bypasses for proxied servers (`maintenance.bypass` will still bypass everything as the super-perm)
 * Added the messages of the help command into the language files
