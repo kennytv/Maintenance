@@ -60,7 +60,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     @Override
     public boolean isMaintenance(final Server server) {
-        return settingsProxy.isMaintenance(server);
+        return settingsProxy.isMaintenance(server.getName());
     }
 
     @Override

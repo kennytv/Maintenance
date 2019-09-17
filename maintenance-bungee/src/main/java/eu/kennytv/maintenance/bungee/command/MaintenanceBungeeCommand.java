@@ -23,13 +23,15 @@ import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     private final MaintenanceBungeePlugin plugin;
@@ -51,9 +53,14 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
 
     @Override
     public List<String> getServersCompletion(final String s) {
-        return plugin.getProxy().getServers().entrySet().stream().filter(entry -> entry.getKey().toLowerCase().startsWith(s))
-                .filter(entry -> !plugin.getSettingsProxy().getMaintenanceServers().contains(entry.getValue().getName()))
-                .map(entry -> entry.getValue().getName()).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final Map.Entry<String, ServerInfo> entry : plugin.getProxy().getServers().entrySet()) {
+            final String serverName = entry.getValue().getName();
+            if (entry.getKey().toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(serverName)) {
+                list.add(serverName);
+            }
+        }
+        return list;
     }
 
     @Override
@@ -67,6 +74,10 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
 
     @Override
     public List<String> getPlayersCompletion() {
-        return plugin.getProxy().getPlayers().stream().map(CommandSender::getName).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final ProxiedPlayer p : plugin.getProxy().getPlayers()) {
+            list.add(p.getName());
+        }
+        return list;
     }
 }

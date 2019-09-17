@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class StatusCommand extends ProxyCommandInfo {
 
     public StatusCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, "singleserver.status", "§6/maintenance status §7(Lists all proxied servers, that are currently under maintenance)");
+        super(plugin, "singleserver.status");
     }
 
     @Override
@@ -34,7 +34,9 @@ public final class StatusCommand extends ProxyCommandInfo {
             sender.sendMessage(getMessage("singleServerMaintenanceListEmpty"));
         } else {
             sender.sendMessage(getMessage("singleServerMaintenanceList"));
-            getSettings().getMaintenanceServers().forEach(server -> sender.sendMessage("§8- §b" + server));
+            for (final String server : getSettings().getMaintenanceServers()) {
+                sender.sendMessage("§8- §b" + server);
+            }
         }
     }
 }

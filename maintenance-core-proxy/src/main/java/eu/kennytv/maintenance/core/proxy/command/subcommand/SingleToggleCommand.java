@@ -30,7 +30,7 @@ import java.util.List;
 public final class SingleToggleCommand extends ProxyCommandInfo {
 
     public SingleToggleCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, null, "§6/maintenance <on/off> [server] §7(Enables/disables maintenance mode)");
+        super(plugin, null);
     }
 
     @Override
@@ -72,7 +72,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             } else
                 sender.sendMessage(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
         } else
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
     }
 
     @Override

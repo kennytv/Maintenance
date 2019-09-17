@@ -25,13 +25,13 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class AbortTimerCommand extends CommandInfo {
 
     public AbortTimerCommand(final MaintenancePlugin plugin) {
-        super(plugin, "timer", "§6/maintenance aborttimer §7(If running, the current timer will be aborted)");
+        super(plugin, "timer");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length != 1) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
 

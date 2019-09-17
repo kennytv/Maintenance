@@ -46,40 +46,6 @@ public final class MaintenanceSpigotCommand extends MaintenanceCommand implement
         return true;
     }
 
-    /*@Override
-    protected void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final Player selected = Bukkit.getOfflinePlayer(name);
-        if (selected != null) {
-            whitelistAddMessage(sender, new BukkitSenderInfo(selected));
-            return;
-        }
-
-        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
-        if (!offlinePlayer.hasPlayedBefore()) {
-            sender.sendMessage(settings.getMessage("playerNotFound"));
-            return;
-        }
-
-        whitelistAddMessage(sender, new BukkitOfflinePlayerInfo(offlinePlayer));
-    }
-
-    @Override
-    protected void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        final Player selected = Bukkit.getOfflinePlayer(name);
-        if (selected != null) {
-            whitelistRemoveMessage(sender, new BukkitSenderInfo(selected));
-            return;
-        }
-
-        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
-        if (!offlinePlayer.hasPlayedBefore()) {
-            sender.sendMessage(settings.getMessage("playerNotFound"));
-            return;
-        }
-
-        whitelistRemoveMessage(sender, new BukkitOfflinePlayerInfo(offlinePlayer));
-    }*/
-
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
         return getSuggestions(new BukkitSenderInfo(sender), args);

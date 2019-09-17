@@ -25,14 +25,14 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class StarttimerCommand extends CommandInfo {
 
     public StarttimerCommand(final MaintenancePlugin plugin) {
-        super(plugin, "timer", "§6/maintenance starttimer <minutes> §7(After the given time in minutes, maintenance mode will be enabled)");
+        super(plugin, "timer");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 2)) return;
         if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
         if (plugin.isMaintenance()) {

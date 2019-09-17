@@ -41,6 +41,7 @@ import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
@@ -176,9 +177,11 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     protected void kickPlayers() {
-        getServer().getOnlinePlayers().stream()
-                .filter(p -> !hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.kick(Text.of(settings.getKickMessage())));
+        for (final Player p : getServer().getOnlinePlayers()) {
+            if (!hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                p.kick(Text.of(settings.getKickMessage()));
+            }
+        }
     }
 
     @Override

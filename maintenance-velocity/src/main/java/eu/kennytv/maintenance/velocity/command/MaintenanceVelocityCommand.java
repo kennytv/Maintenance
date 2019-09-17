@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.velocity.command;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -31,8 +32,8 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements Command {
     private final MaintenanceVelocityPlugin plugin;
@@ -77,13 +78,22 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
 
     @Override
     public List<String> getServersCompletion(final String s) {
-        return plugin.getServer().getAllServers().stream().filter(server -> server.getServerInfo().getName().toLowerCase().startsWith(s))
-                .filter(server -> !plugin.getSettingsProxy().getFallbackServer().contains(server.getServerInfo().getName()))
-                .map(server -> server.getServerInfo().getName()).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final RegisteredServer server : plugin.getServer().getAllServers()) {
+            final String name = server.getServerInfo().getName();
+            if (name.toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getFallbackServer().contains(name)) {
+                list.add(name);
+            }
+        }
+        return list;
     }
 
     @Override
     public List<String> getPlayersCompletion() {
-        return plugin.getServer().getAllPlayers().stream().map(Player::getUsername).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final Player player : plugin.getServer().getAllPlayers()) {
+            list.add(player.getUsername());
+        }
+        return list;
     }
 }

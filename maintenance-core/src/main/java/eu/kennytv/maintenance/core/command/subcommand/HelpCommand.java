@@ -23,20 +23,20 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class HelpCommand extends CommandInfo {
     private static final int COMMANDS_PER_PAGE = 8;
 
     public HelpCommand(final MaintenancePlugin plugin) {
-        super(plugin, null, "§6/maintenance help [page] §7(Shows this beautiful help window)");
+        super(plugin, null);
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length > 2) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
 
@@ -44,7 +44,7 @@ public final class HelpCommand extends CommandInfo {
             sendUsage(sender);
         } else {
             if (!plugin.isNumeric(args[1])) {
-                sender.sendMessage(helpMessage);
+                sender.sendMessage(getHelpMessage());
                 return;
             }
 
@@ -59,7 +59,12 @@ public final class HelpCommand extends CommandInfo {
 
     public void sendUsage(final SenderInfo sender, final int page) {
         Preconditions.checkArgument(page > 0);
-        final List<String> commands = plugin.getCommandManager().getCommands().stream().filter(cmd -> cmd.hasPermission(sender)).map(CommandInfo::getHelpMessage).collect(Collectors.toList());
+        final List<String> commands = new ArrayList<>();
+        for (final CommandInfo cmd : plugin.getCommandManager().getCommands()) {
+            if (cmd.hasPermission(sender)) {
+                commands.add(cmd.getHelpMessage());
+            }
+        }
         if ((page - 1) * COMMANDS_PER_PAGE >= commands.size()) {
             sender.sendMessage(getMessage("helpPageNotFound"));
             return;
@@ -71,12 +76,15 @@ public final class HelpCommand extends CommandInfo {
         else
             filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
 
-        final String header = "§8========[ §eMaintenance" + plugin.getServerType() + " §8| §e" + page + "/" + ((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE) + " §8]========";
+        final String header = getMessage("helpHeader").replace("%NAME%", "Maintenance" + plugin.getServerType())
+                .replace("%PAGE%", Integer.toString(page)).replace("%MAX%", Integer.toString((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE));
         sender.sendMessage("");
         sender.sendMessage(header);
-        filteredCommands.forEach(sender::sendMessage);
+        for (final String command : filteredCommands) {
+            sender.sendMessage(command);
+        }
         if (page * COMMANDS_PER_PAGE < commands.size())
-            sender.sendMessage("§7Use §b/maintenance help " + (page + 1) + " §7to get to the next help window.");
+            sender.sendMessage(getMessage("helpNextPage").replace("%PAGE%", Integer.toString(page + 1)));
         else
             sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bKennyTV");
         sender.sendMessage(header);

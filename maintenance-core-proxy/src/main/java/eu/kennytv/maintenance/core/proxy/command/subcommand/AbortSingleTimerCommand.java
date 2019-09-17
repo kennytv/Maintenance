@@ -29,7 +29,7 @@ import java.util.List;
 public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
     public AbortSingleTimerCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, null, "§6/maintenance aborttimer [server] §7(If running, the current timer will be aborted)");
+        super(plugin, null);
     }
 
     @Override
@@ -63,7 +63,7 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
             plugin.cancelSingleTask(server);
             sender.sendMessage(getMessage("singleTimerCancelled"));
         } else
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
     }
 
     @Override

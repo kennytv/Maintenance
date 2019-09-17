@@ -28,7 +28,7 @@ public final class DumpCommand extends CommandInfo {
     private long lastDump;
 
     public DumpCommand(final MaintenancePlugin plugin) {
-        super(plugin, "dump", "§6/maintenance dump §7(Dumps some server information, used for bug reports)");
+        super(plugin, "dump");
     }
 
     @Override

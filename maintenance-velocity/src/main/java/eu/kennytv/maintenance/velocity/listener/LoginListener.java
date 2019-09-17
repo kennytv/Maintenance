@@ -22,6 +22,7 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
+import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
@@ -51,6 +52,10 @@ public final class LoginListener extends JoinListenerBase {
     @Override
     protected void broadcastJoinNotification(final String name) {
         final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", name));
-        plugin.getServer().getAllPlayers().stream().filter(p -> plugin.hasPermission(p, "joinnotification")).forEach(p -> p.sendMessage(s));
+        for (final Player p : plugin.getServer().getAllPlayers()) {
+            if (plugin.hasPermission(p, "joinnotification")) {
+                p.sendMessage(s);
+            }
+        }
     }
 }

@@ -22,15 +22,15 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public final class WhitelistRemoveCommand extends CommandInfo {
 
     public WhitelistRemoveCommand(final MaintenancePlugin plugin) {
-        super(plugin, "whitelist.remove", "§6/maintenance remove <name/uuid> §7(Removes the player from the maintenance whitelist)");
+        super(plugin, "whitelist.remove");
     }
 
     @Override
@@ -46,8 +46,15 @@ public final class WhitelistRemoveCommand extends CommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 ? getSettings().getWhitelistedPlayers().values().stream()
-                .filter(name -> name.toLowerCase().startsWith(args[1])).collect(Collectors.toList()) : Collections.emptyList();
+        if (args.length != 2) return Collections.emptyList();
+
+        final List<String> list = new ArrayList<>();
+        for (final String name : getSettings().getWhitelistedPlayers().values()) {
+            if (name.toLowerCase().startsWith(args[1])) {
+                list.add(name);
+            }
+        }
+        return list;
     }
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final String name) {

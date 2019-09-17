@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 2;
+    private static final int CURRENT_CONFIG_VERSION = 3;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -48,6 +48,7 @@ public class Settings implements ISettings {
     private boolean joinNotifications;
     private boolean updateChecks;
     private boolean saveEndtimerOnStop;
+    private boolean kickOnlinePlayers;
     private boolean debug;
     private long savedEndtimer;
 
@@ -89,6 +90,8 @@ public class Settings implements ISettings {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
 
+        updateLanguageFile();
+
         // Directly save colored messages
         for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
             if (!(entry.getValue() instanceof String)) continue;
@@ -115,7 +118,7 @@ public class Settings implements ISettings {
             try (final InputStream in = plugin.getResource(from)) {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
-                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
+                throw new IllegalArgumentException("Unable to create " + name + " file for Maintenance!", e);
             }
         }
     }
@@ -159,6 +162,7 @@ public class Settings implements ISettings {
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         languageName = getConfigString("language").toLowerCase();
+        kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
         final ConfigSection section = config.getSection("continue-endtimer-after-restart");
@@ -169,13 +173,13 @@ public class Settings implements ISettings {
         }
 
         whitelistedPlayers.clear();
-        whitelist.getValues().forEach((key, value) -> {
+        for (final Map.Entry<String, Object> entry : whitelist.getValues().entrySet()) {
             try {
-                whitelistedPlayers.put(UUID.fromString(key), (String) value);
+                whitelistedPlayers.put(UUID.fromString(entry.getKey()), (String) entry.getValue());
             } catch (final Exception e) {
-                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + key);
+                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + entry.getKey());
             }
-        });
+        }
         loadExtraSettings();
     }
 
@@ -226,12 +230,46 @@ public class Settings implements ISettings {
 
             file.delete();
             tempConfig.clear();
+
             changed = true;
         }
 
         if (changed) {
             saveConfig();
-            plugin.getLogger().info("Done! Updated config(s) to the latest version!");
+            plugin.getLogger().info("Done! Updated config!");
+        }
+    }
+
+    private void updateLanguageFile() {
+        final String s = "language-" + languageName;
+        try {
+            createFile(s + "-new.yml", s + ".yml");
+        } catch (final IllegalArgumentException e) {
+            plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml wasn't found in the resource files!");
+            e.printStackTrace();
+            return;
+        }
+
+        final File file = new File(plugin.getDataFolder(), s + "-new.yml");
+        final Config tempConfig = new Config(file);
+        try {
+            tempConfig.load();
+        } catch (final IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        final boolean updated = language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+        tempConfig.clear();
+        file.delete();
+        if (updated) {
+            try {
+                language.save();
+            } catch (final IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            plugin.getLogger().info("Updated language file!");
         }
     }
 
@@ -252,10 +290,10 @@ public class Settings implements ISettings {
             config.set("pingmessages", Arrays.asList(oldConfig.getString("pingmessage")));
         if (oldConfig.contains("enable-maintenance-mode"))
             config.set("maintenance-enabled", oldConfig.getBoolean("enable-maintenance-mode"));
-        config.getValues().entrySet().forEach(entry -> {
-            if (!oldConfig.contains(entry.getKey())) return;
+        for (final Map.Entry<String, Object> entry : config.getValues().entrySet()) {
+            if (!oldConfig.contains(entry.getKey())) continue;
             entry.setValue(oldConfig.get(entry.getKey()));
-        });
+        }
 
         oldConfig.clear();
         if (!file.delete())
@@ -350,10 +388,15 @@ public class Settings implements ISettings {
     @Deprecated
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
-        final Map.Entry<UUID, String> entry = whitelistedPlayers.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(name)).findAny().orElse(null);
-        if (entry == null) return false;
+        UUID uuid = null;
+        for (final Map.Entry<UUID, String> e : whitelistedPlayers.entrySet()) {
+            if (e.getValue().equalsIgnoreCase(name)) {
+                uuid = e.getKey();
+                break;
+            }
+        }
+        if (uuid == null) return false;
 
-        final UUID uuid = entry.getKey();
         whitelistedPlayers.remove(uuid);
         whitelist.remove(uuid.toString());
         saveWhitelistedPlayers();
@@ -408,6 +451,10 @@ public class Settings implements ISettings {
 
     public boolean hasTimerSpecificPingMessages() {
         return timerSpecificPingMessages != null;
+    }
+
+    public boolean isKickOnlinePlayers() {
+        return kickOnlinePlayers;
     }
 
     public long getSavedEndtimer() {

@@ -96,8 +96,9 @@ public final class Config extends ConfigSection {
         Files.write(this.file.toPath(), bytes);
     }
 
-    public void addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
+    public boolean addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
         // Note: Only scans for the first two levels
+        boolean changed = false;
         for (final Map.Entry<String, Object> entry : fields.entrySet()) {
             final Object o = values.get(entry.getKey());
             if (o != null) {
@@ -108,14 +109,17 @@ public final class Config extends ConfigSection {
                 for (final Map.Entry<String, Object> deepEntry : ((Map<String, Object>) o2).entrySet()) {
                     if (deepMap.containsKey(deepEntry.getKey())) continue;
                     deepMap.put(deepEntry.getKey(), deepEntry.getValue());
+                    changed = true;
                 }
                 continue;
             }
 
             values.put(entry.getKey(), entry.getValue());
+            changed = true;
         }
 
         this.comments = new HashMap<>(comments);
+        return changed;
     }
 
     @Override
@@ -134,34 +138,12 @@ public final class Config extends ConfigSection {
         this.comments.remove(key);
     }
 
-    /**
-     * Convenience method, not further established as currently not necessary.
-     *
-     * @see #getSection(String)
-     * @deprecated this config is only made for a quite simple use, only goes one level deeper
-     */
-    @Deprecated
-    public Object getDeep(final String key) {
-        final String[] split = key.split("\\.", 2);
-        if (split.length != 2) return get(key);
-
-        final Object o = getObject(split[0]);
-        if (!(o instanceof Map)) return null;
-
-        final Map<String, Object> map = (Map<String, Object>) o;
-        return map.get(split[1]);
-    }
-
-    public ConfigSection getSection(final String key) {
-        final Object o = getObject(key);
-        return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
-    }
-
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(false);
         options.setIndent(2);
+        options.setWidth(10_000); // be sneaky because autobreak on read/save looks disgusting
         return new Yaml(options);
     }
 

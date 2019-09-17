@@ -26,7 +26,7 @@ import eu.kennytv.maintenance.core.util.ServerType;
 public final class UpdateCommand extends CommandInfo {
 
     public UpdateCommand(final MaintenancePlugin plugin) {
-        super(plugin, "update", "§6/maintenance update §7(Remotely downloads the newest version of the plugin onto your server)");
+        super(plugin, "update");
     }
 
     @Override

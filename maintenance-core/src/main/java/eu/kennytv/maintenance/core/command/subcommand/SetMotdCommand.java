@@ -31,7 +31,7 @@ import java.util.List;
 public final class SetMotdCommand extends CommandInfo {
 
     public SetMotdCommand(final MaintenancePlugin plugin) {
-        super(plugin, "setmotd", "§6/maintenance setmotd [timer] <index> <1/2> <message> §7(Sets a motd for maintenance mode. If using \"timer\" as an argument, a timerspecific pingmessage will be set)");
+        super(plugin, "setmotd");
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class SetMotdCommand extends CommandInfo {
             timerPingMessages = true;
         }
         if (args.length < 4 || !plugin.isNumeric(args[1])) {
-            sender.sendMessage(helpMessage);
+            sender.sendMessage(getHelpMessage());
             return;
         }
 

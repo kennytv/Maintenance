@@ -139,20 +139,22 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final RegisteredServer serverInfo) {
-        return settingsProxy.isMaintenance(new VelocityServer(serverInfo));
+        return settingsProxy.isMaintenance(serverInfo.getServerInfo().getName());
     }
 
     @Override
     protected void kickPlayers() {
-        server.getAllPlayers().stream()
-                .filter(p -> !hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(TextComponent.of(settingsProxy.getKickMessage())));
+        for (final Player p : server.getAllPlayers()) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                p.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
+            }
+        }
     }
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
-        ((VelocityServer) server).getServer().getPlayersConnected().forEach(p -> {
+        for (final Player p : ((VelocityServer) server).getServer().getPlayersConnected()) {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null && !isMaintenance(fallback)) {
                     p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
@@ -166,7 +168,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             } else {
                 p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
             }
-        });
+        }
     }
 
     @Override

@@ -45,7 +45,8 @@ public class ConfigSection {
     }
 
     public <E> E get(final String key, final E def) {
-        return values.containsKey(key) ? (E) this.values.get(key) : def;
+        final Object o = this.values.get(key);
+        return o != null ? (E) o : def;
     }
 
     public Object getObject(final String key) {
@@ -53,12 +54,36 @@ public class ConfigSection {
     }
 
     public <E> E getOrSet(final String key, final E def) {
-        if (this.values.containsKey(key)) {
-            return (E) this.values.get(key);
+        final Object o = this.values.get(key);
+        if (o != null) {
+            return (E) o;
         } else {
             this.set(key, def);
             return def;
         }
+    }
+
+    /**
+     * Convenience method, not further established as currently not necessary.
+     *
+     * @see #getSection(String)
+     * @deprecated this config is only made for a quite simple use, only goes one level deeper
+     */
+    @Deprecated
+    public Object getDeep(final String key) {
+        final String[] split = key.split("\\.", 2);
+        if (split.length != 2) return get(key);
+
+        final Object o = getObject(split[0]);
+        if (!(o instanceof Map)) return null;
+
+        final Map<String, Object> map = (Map<String, Object>) o;
+        return map.get(split[1]);
+    }
+
+    public ConfigSection getSection(final String key) {
+        final Object o = getObject(key);
+        return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
     }
 
     public boolean contains(final String key) {
@@ -93,12 +118,12 @@ public class ConfigSection {
     }
 
     public boolean getBoolean(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Boolean && (boolean) o;
+        return getBoolean(key, false);
     }
 
     public boolean getBoolean(final String key, final boolean def) {
-        return values.containsKey(key) ? get(key) : def;
+        final Object o = values.get(key);
+        return o instanceof Boolean ? (boolean) o : def;
     }
 
     public String getString(final String key) {
@@ -106,34 +131,35 @@ public class ConfigSection {
     }
 
     public String getString(final String key, final String def) {
-        return values.containsKey(key) ? get(key) : def;
+        final Object o = get(key);
+        return o instanceof String ? (String) o : def;
     }
 
     public int getInt(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).intValue() : 0;
+        return getInt(key, 0);
     }
 
     public int getInt(final String key, final int def) {
-        return values.containsKey(key) ? get(key) : def;
+        final Object o = values.get(key);
+        return o instanceof Number ? ((Number) o).intValue() : def;
     }
 
     public double getDouble(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).doubleValue() : 0D;
+        return getDouble(key, 0D);
     }
 
-    public double getDouble(final String key, final long def) {
-        return values.containsKey(key) ? get(key) : def;
+    public double getDouble(final String key, final double def) {
+        final Object o = values.get(key);
+        return o instanceof Number ? ((Number) o).doubleValue() : def;
     }
 
     public long getLong(final String key) {
-        final Object o = values.get(key);
-        return o instanceof Number ? ((Number) o).longValue() : 0L;
+        return getLong(key, 0L);
     }
 
     public long getLong(final String key, final long def) {
-        return values.containsKey(key) ? get(key) : def;
+        final Object o = values.get(key);
+        return o instanceof Number ? ((Number) o).longValue() : def;
     }
 
     public List<String> getStringList(final String key) {

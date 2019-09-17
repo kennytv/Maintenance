@@ -25,8 +25,8 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.subcommand.*;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
     private final MaintenanceProxyPlugin plugin;
@@ -50,7 +50,13 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
 
     @Override
     public List<String> getMaintenanceServersCompletion(final String s) {
-        return settingsBungee.getMaintenanceServers().stream().filter(server -> server.toLowerCase().startsWith(s)).collect(Collectors.toList());
+        final List<String> list = new ArrayList<>();
+        for (final String server : settingsBungee.getMaintenanceServers()) {
+            if (server.toLowerCase().startsWith(s)) {
+                list.add(server);
+            }
+        }
+        return list;
     }
 
     public Server checkSingleTimerArgs(final SenderInfo sender, final String[] args) {

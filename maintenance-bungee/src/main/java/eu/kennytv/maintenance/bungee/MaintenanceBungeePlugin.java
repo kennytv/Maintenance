@@ -23,7 +23,6 @@ import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
-import eu.kennytv.maintenance.bungee.listener.PostLoginListener;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
 import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
@@ -78,7 +77,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         sendEnableMessage();
 
         final PluginManager pm = getProxy().getPluginManager();
-        pm.registerListener(plugin, new PostLoginListener(this, settingsProxy));
         pm.registerListener(plugin, new ProxyPingListener(this, settingsProxy));
         pm.registerListener(plugin, new ServerConnectListener(this, settingsProxy));
         commandManager = new MaintenanceBungeeCommand(this, settingsProxy);
@@ -114,20 +112,22 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     public boolean isMaintenance(final ServerInfo serverInfo) {
-        return settingsProxy.isMaintenance(new BungeeServer(serverInfo));
+        return settingsProxy.isMaintenance(serverInfo.getName());
     }
 
     @Override
     protected void kickPlayers() {
-        getProxy().getPlayers().stream()
-                .filter(p -> !hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId()))
-                .forEach(p -> p.disconnect(settingsProxy.getKickMessage()));
+        for (final ProxiedPlayer p : getProxy().getPlayers()) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+                p.disconnect(settingsProxy.getKickMessage());
+            }
+        }
     }
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
-        ((BungeeServer) server).getServer().getPlayers().forEach(p -> {
+        for (final ProxiedPlayer p : ((BungeeServer) server).getServer().getPlayers()) {
             if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
                 if (fallbackServer != null && fallbackServer.canAccess(p) && !isMaintenance(fallback)) {
                     p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
@@ -137,7 +137,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             } else {
                 p.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
-        });
+        }
     }
 
     @Override
