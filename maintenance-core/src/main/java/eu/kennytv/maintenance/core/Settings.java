@@ -246,6 +246,7 @@ public class Settings implements ISettings {
             createFile(s + "-new.yml", s + ".yml");
         } catch (final NullPointerException e) {
             plugin.getLogger().info("Not checking for updated language strings, since there is no " + s + ".yml in the resource files (if your file is self translated and up to date, you can ignore this).");
+            return;
         } catch (final Exception e) {
             plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml could not be loaded from the resource files!");
             e.printStackTrace();
