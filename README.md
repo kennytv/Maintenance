@@ -20,7 +20,7 @@ Its features include:
 A full list of commands, permissions and configuration options can be found in the wiki listed below.
 * [Wiki](https://github.com/KennyTV/Maintenance/wiki)
 * [Downloads](https://github.com/KennyTV/Maintenance/releases) (GitHub)
-* [Development builds](https://kennytv.eu/maintenance/snapshot/) (might be unstable)
+* [Development builds](https://kennytv.eu/maintenance/snapshot/) (out of order at the moment)
 * [Changelogs](https://github.com/KennyTV/Maintenance/blob/master/.github/CHANGELOG.md)
 * [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)

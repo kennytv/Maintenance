@@ -47,14 +47,16 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public void disable() {
         super.disable();
-        if (settingsProxy.getMySQL() != null)
+        if (settingsProxy.getMySQL() != null) {
             settingsProxy.getMySQL().close();
+        }
     }
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.hasMySQL())
+        if (settingsProxy.hasMySQL()) {
             settingsProxy.setMaintenanceToSQL(maintenance);
+        }
         super.setMaintenance(maintenance);
     }
 
@@ -86,6 +88,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             kickPlayers(server, fallback);
         } else
             server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+
         cancelSingleTask(server);
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
     }
