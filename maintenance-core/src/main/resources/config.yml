@@ -77,6 +77,8 @@ mysql:
   # Set this to 0 to make a database request on (almost) every single ping.
   # (0 is not recommended if having more than a hundred concurrent players, then I'd recommend keeping it from 10-60).
   update-interval: 15
+  # If you for some reason cannot establish SSL connections to your database, you may disable it here (not recommended).
+  use-ssl: true
 
 # If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
 # If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.

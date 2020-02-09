@@ -54,11 +54,13 @@ public final class SettingsProxy extends Settings {
             return;
         }
 
-        mySQL = new MySQL(section.getString("host"),
+        mySQL = new MySQL(plugin.getLogger(),
+                section.getString("host"),
                 section.getInt("port"),
                 section.getString("username"),
                 section.getString("password"),
-                section.getString("database"));
+                section.getString("database"),
+                section.getBoolean("use-ssl", true));
 
         // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
         mySQLTable = section.getString("table", "maintenance_settings");

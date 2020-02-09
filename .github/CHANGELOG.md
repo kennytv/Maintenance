@@ -4,6 +4,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added Russian language file (thanks to Spigot user En_0t_S)
+* Added config option `use-ssl` in the `mysql` section to disable SSL connections
 ### Fixed
 * Fixed language updating with an unknown/self-translated language file
 ---
