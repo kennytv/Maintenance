@@ -29,6 +29,7 @@ import java.util.zip.GZIPOutputStream;
 public final class MetricsLite {
 
     public static final int B_STATS_VERSION = 1;
+    private static final int PLUGIN_ID = 2205;
     private static final String URL = "https://bStats.org/submitData/bukkit";
     private final boolean enabled;
     private static boolean logFailedRequests;
@@ -113,6 +114,7 @@ public final class MetricsLite {
         final String pluginVersion = plugin.getDescription().getVersion();
 
         data.addProperty("pluginName", pluginName);
+        data.addProperty("id", PLUGIN_ID);
         data.addProperty("pluginVersion", pluginVersion);
         data.add("customCharts", new JsonArray());
 
@@ -221,21 +223,18 @@ public final class MetricsLite {
         connection.setRequestProperty("User-Agent", "MC-Server/" + B_STATS_VERSION);
 
         connection.setDoOutput(true);
-        final DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-        outputStream.write(compressedData);
-        outputStream.flush();
-        outputStream.close();
+        try (final DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+            outputStream.write(compressedData);
+        }
 
         if (logResponseStatusText) {
-            final InputStream inputStream = connection.getInputStream();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
             final StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                builder.append(line);
+            try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    builder.append(line);
+                }
             }
-            bufferedReader.close();
             plugin.getLogger().info("Sent data to bStats and received response: " + builder);
         } else {
             connection.getInputStream().close();
@@ -247,9 +246,9 @@ public final class MetricsLite {
             return null;
         }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
-        gzip.write(str.getBytes(StandardCharsets.UTF_8));
-        gzip.close();
+        try (final GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
+            gzip.write(str.getBytes(StandardCharsets.UTF_8));
+        }
         return outputStream.toByteArray();
     }
 }

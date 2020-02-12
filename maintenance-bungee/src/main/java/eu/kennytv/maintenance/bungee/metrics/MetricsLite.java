@@ -23,6 +23,7 @@ import java.util.zip.GZIPOutputStream;
 public final class MetricsLite {
 
     public static final int B_STATS_VERSION = 1;
+    private static final int PLUGIN_ID = 742;
     private static final String URL = "https://bStats.org/submitData/bungeecord";
     private final Plugin plugin;
     private boolean enabled;
@@ -79,6 +80,7 @@ public final class MetricsLite {
         final String pluginVersion = plugin.getDescription().getVersion();
 
         data.addProperty("pluginName", pluginName);
+        data.addProperty("id", PLUGIN_ID);
         data.addProperty("pluginVersion", pluginVersion);
 
         final JsonArray customCharts = new JsonArray();
@@ -92,8 +94,7 @@ public final class MetricsLite {
     }
 
     private JsonObject getServerData() {
-        int playerAmount = plugin.getProxy().getOnlineCount();
-        playerAmount = playerAmount > 500 ? 500 : playerAmount;
+        final int playerAmount = Math.min(plugin.getProxy().getOnlineCount(), 500);
         final int onlineMode = plugin.getProxy().getConfig().isOnlineMode() ? 1 : 0;
         final String bungeecordVersion = plugin.getProxy().getVersion();
         final int managedServers = plugin.getProxy().getServers().size();
@@ -148,9 +149,9 @@ public final class MetricsLite {
     }
 
     private void loadConfig() throws IOException {
-        final Path configPath = plugin.getDataFolder().toPath().getParent().resolve("bStats");
-        configPath.toFile().mkdirs();
-        final File configFile = new File(configPath.toFile(), "config.yml");
+        final File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
+        bStatsFolder.mkdirs();
+        final File configFile = new File(bStatsFolder, "config.yml");
         if (!configFile.exists()) {
             writeFile(configFile,
                     "#bStats collects some data for plugin authors like how many servers are using their plugins.",
@@ -158,7 +159,7 @@ public final class MetricsLite {
                     "#This has nearly no effect on the server performance!",
                     "#Check out https://bStats.org/ to learn more :)",
                     "enabled: true",
-                    "serverUuid: \"" + UUID.randomUUID().toString() + "\"",
+                    "serverUuid: \"" + UUID.randomUUID() + "\"",
                     "logFailedRequests: false",
                     "logSentData: false",
                     "logResponseStatusText: false");
@@ -200,10 +201,7 @@ public final class MetricsLite {
         if (!file.exists()) {
             return null;
         }
-        try (
-                final FileReader fileReader = new FileReader(file);
-                final BufferedReader bufferedReader = new BufferedReader(fileReader);
-        ) {
+        try (final BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             return bufferedReader.readLine();
         }
     }
@@ -212,10 +210,7 @@ public final class MetricsLite {
         if (!file.exists()) {
             file.createNewFile();
         }
-        try (
-                final FileWriter fileWriter = new FileWriter(file);
-                final BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
-        ) {
+        try (final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             for (final String line : lines) {
                 bufferedWriter.write(line);
                 bufferedWriter.newLine();
@@ -228,7 +223,7 @@ public final class MetricsLite {
             throw new IllegalArgumentException("Data cannot be null");
         }
         if (logSentData) {
-            plugin.getLogger().info("Sending data to bStats: " + data.toString());
+            plugin.getLogger().info("Sending data to bStats: " + data);
         }
 
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
@@ -244,22 +239,19 @@ public final class MetricsLite {
         connection.setRequestProperty("User-Agent", "MC-Server/" + B_STATS_VERSION);
 
         connection.setDoOutput(true);
-        final DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-        outputStream.write(compressedData);
-        outputStream.flush();
-        outputStream.close();
+        try (final DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+            outputStream.write(compressedData);
+        }
 
         if (logResponseStatusText) {
-            final InputStream inputStream = connection.getInputStream();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
             final StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                builder.append(line);
+            try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    builder.append(line);
+                }
             }
-            bufferedReader.close();
-            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
         } else {
             connection.getInputStream().close();
         }
@@ -270,9 +262,9 @@ public final class MetricsLite {
             return null;
         }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
-        gzip.write(str.getBytes(StandardCharsets.UTF_8));
-        gzip.close();
+        try (final GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
+            gzip.write(str.getBytes(StandardCharsets.UTF_8));
+        }
         return outputStream.toByteArray();
     }
 
