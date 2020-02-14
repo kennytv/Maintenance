@@ -33,6 +33,11 @@ public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     }
 
     @Override
+    protected void broadcast(final String message) {
+        server.broadcast(message);
+    }
+
+    @Override
     protected void finish() {
         ((IMaintenanceProxy) plugin).setMaintenanceToServer(server, enable);
     }
