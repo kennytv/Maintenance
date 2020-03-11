@@ -110,7 +110,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes, enable, server);
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes * 60, enable, server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
