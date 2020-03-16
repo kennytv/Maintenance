@@ -53,9 +53,13 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
             if (waitingServer != null) {
                 event.setTarget(((BungeeServer) waitingServer).getServer());
                 sender.sendMessage(settings.getMessage("sentToWaitingServer"));
-            } else {
-                event.setCancelled(true);
-                event.getPlayer().disconnect(settings.getKickMessage());
+                return;
+            }
+
+            event.setCancelled(true);
+            event.getPlayer().disconnect(settings.getKickMessage());
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(sender.getName());
             }
         }
     }

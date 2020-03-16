@@ -56,6 +56,9 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
             if (waitingServer != null) return;
 
             event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage())));
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(event.getPlayer().getUsername());
+            }
         }
     }
 

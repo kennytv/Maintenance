@@ -44,16 +44,14 @@ public abstract class JoinListenerBase {
      * @return true if the sender should be kicked
      */
     protected boolean shouldKick(final SenderInfo sender, final boolean updateCheck) {
-        if (settings.isMaintenance() && !sender.hasMaintenancePermission("bypass") && !settings.isWhitelisted(sender.getUuid())) {
-            if (settings.isJoinNotifications()) {
-                broadcastJoinNotification(sender.getName());
+        if (!settings.isMaintenance() || sender.hasMaintenancePermission("bypass") || settings.isWhitelisted(sender.getUuid())) {
+            if (updateCheck) {
+                updateCheck(sender);
             }
-            return true;
+            return false;
         }
-        if (updateCheck) {
-            updateCheck(sender);
-        }
-        return false;
+
+        return true;
     }
 
     protected boolean shouldKick(final SenderInfo sender) {

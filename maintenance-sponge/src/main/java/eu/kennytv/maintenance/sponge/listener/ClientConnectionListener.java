@@ -38,9 +38,13 @@ public final class ClientConnectionListener extends JoinListenerBase {
 
     @Listener
     public void login(final ClientConnectionEvent.Login event) {
-        if (shouldKick(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
+        final Player player = event.getTargetUser().getPlayer().get();
+        if (shouldKick(new SpongeSenderInfo(player), false)) {
             event.setCancelled(true);
             event.setMessage(Text.of(settings.getKickMessage()));
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(player.getName());
+            }
         }
     }
 

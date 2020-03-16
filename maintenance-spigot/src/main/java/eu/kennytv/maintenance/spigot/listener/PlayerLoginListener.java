@@ -41,6 +41,9 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
         if (shouldKick(sender)) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
             event.setKickMessage(settings.getKickMessage());
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(sender.getName());
+            }
         }
     }
 
