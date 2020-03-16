@@ -3,8 +3,6 @@
 
 noPermission: "&cУ вас недостаточно прав!"
 kickmessage: "&cСервер закрыт на тех. работы!"
-sentToWaitingServer: "&cYou have been sent to a waiting server!"
-forceWaitingServer: "&8[&eMaintenance&8] &cYou cannot leave the waiting server while maintenance is enabled!"
 maintenanceActivated: "&aРежим тех. работ включен!"
 maintenanceDeactivated: "&7Режим тех. работ выключен!"
 alreadyEnabled: "&cРежим тех. работ уже включен!"
@@ -45,7 +43,10 @@ playerNotOnline: "&cИгрок должен быть онлайн!"
 invalidUuid: "&cНеверный формат UUID!"
 
 # Messages for the Bungee/Velocity part, just can ignore them if you use the plugin on Spigot/Sponge
+sentToWaitingServer: "&cYou have been sent to a waiting server!"
+forceWaitingServer: "&cYou cannot leave the waiting server while maintenance is enabled!"
 serverNotFound: "&cСервер не найден!"
+
 singleTimerAlreadyRunning: "&cТаймер сервера &f%SERVER% &cуже запущен!"
 singleTimerCancelled: "&7Таймер сервера &f%SERVER% &7был остановлен."
 singleTimerNotRunning: "&cТаймер сервера &f%SERVER% &cне был запущен."
