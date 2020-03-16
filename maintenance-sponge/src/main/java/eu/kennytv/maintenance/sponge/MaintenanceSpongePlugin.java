@@ -94,7 +94,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public void onEnable(final GameInitializationEvent event) {
         logger = new LoggerWrapper(container.getLogger());
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback",
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
                 "playercountmessage", "enable-playercountmessage");
 
         sendEnableMessage();
@@ -178,7 +178,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Override
     protected void kickPlayers() {
         for (final Player p : getServer().getOnlinePlayers()) {
-            if (!hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!hasPermission(p, "bypass") && !settings.isWhitelisted(p.getUniqueId())) {
                 p.kick(Text.of(settings.getKickMessage()));
             }
         }

@@ -3,6 +3,8 @@
 
 noPermission: "&cУ вас недостаточно прав!"
 kickmessage: "&cСервер закрыт на тех. работы!"
+sentToWaitingServer: "&cYou have been sent to a waiting server!"
+forceWaitingServer: "&8[&eMaintenance&8] &cYou cannot leave the waiting server while maintenance is enabled!"
 maintenanceActivated: "&aРежим тех. работ включен!"
 maintenanceDeactivated: "&7Режим тех. работ выключен!"
 alreadyEnabled: "&cРежим тех. работ уже включен!"

@@ -16,28 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.proxy.server;
+package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 
-public final class DummyServer implements Server {
-    private final String name;
+public interface ProxySenderInfo extends SenderInfo {
 
-    public DummyServer(final String name) {
-        this.name = name;
-    }
+    boolean canAccess(Server server);
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean hasPlayers() {
-        return false;
-    }
-
-    @Override
-    public void broadcast(final String s) {
-    }
+    void disconnect(String message);
 }

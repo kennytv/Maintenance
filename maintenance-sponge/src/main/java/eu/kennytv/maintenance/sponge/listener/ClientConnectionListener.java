@@ -38,7 +38,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
 
     @Listener
     public void login(final ClientConnectionEvent.Login event) {
-        if (kickPlayer(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
+        if (shouldKick(new SpongeSenderInfo(event.getTargetUser().getPlayer().get()), false)) {
             event.setCancelled(true);
             event.setMessage(Text.of(settings.getKickMessage()));
         }

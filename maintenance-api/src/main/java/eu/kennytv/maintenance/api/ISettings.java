@@ -53,6 +53,14 @@ public interface ISettings {
     Map<UUID, String> getWhitelistedPlayers();
 
     /**
+     * Returns whether the uuid is whitelisted.
+     *
+     * @param uuid uuid of the player to check
+     * @return true if the uuid is whitelisted
+     */
+    boolean isWhitelisted(UUID uuid);
+
+    /**
      * Removes a player from the maintenance whitelist.
      *
      * @param uuid uuid of the player to remove

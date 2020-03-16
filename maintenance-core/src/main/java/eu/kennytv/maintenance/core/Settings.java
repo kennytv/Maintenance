@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 3;
+    private static final int CURRENT_CONFIG_VERSION = 4;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -215,10 +215,11 @@ public class Settings implements ISettings {
         // 3.0 - move maintenace-icon from server to plugin directory
         final File icon = new File("maintenance-icon.png");
         if (icon.exists()) {
-            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png")))
+            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png"))) {
                 plugin.getLogger().info("Moved maintenance-icon from server directory to the plugin's directory!");
-            else
+            } else {
                 plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
+            }
         }
 
         // Update config to latest version (config version included since 3.0.1)
@@ -429,6 +430,11 @@ public class Settings implements ISettings {
     @Override
     public Map<UUID, String> getWhitelistedPlayers() {
         return whitelistedPlayers;
+    }
+
+    @Override
+    public boolean isWhitelisted(final UUID uuid) {
+        return whitelistedPlayers.containsKey(uuid);
     }
 
     @Override

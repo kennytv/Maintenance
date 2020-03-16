@@ -22,6 +22,10 @@ proxied-maintenance-servers:
 # If the fallback server is not reachable/not set, they will just be kicked off the network.
 fallback: lobby
 
+# If maintenance is enabled globally, you can define a "waiting" lobby for players to be sent to instead of being kicked.
+# Leave this empty to disable.
+waiting-server: ""
+
 # The message shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
 # If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
@@ -97,4 +101,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 3
+config-version: 4

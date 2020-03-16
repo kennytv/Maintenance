@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.2.0</version>
+            <version>3.4.2</version>
             <scope>compile</scope>
             <!-- Shade slf4j specifically and only in the Bungee module to prevent issues -->
             <exclusions>

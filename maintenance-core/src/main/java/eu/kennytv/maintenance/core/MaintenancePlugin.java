@@ -87,12 +87,13 @@ public abstract class MaintenancePlugin implements IMaintenance {
         }
 
         if (maintenance) {
+            broadcast(settings.getMessage("maintenanceActivated"));
             if (settings.isKickOnlinePlayers()) {
                 kickPlayers();
             }
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
+        } else {
             broadcast(settings.getMessage("maintenanceDeactivated"));
+        }
 
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }

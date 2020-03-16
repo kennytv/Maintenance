@@ -3,6 +3,8 @@
 
 noPermission: "&cNao tens permissao para executar este comando."
 kickmessage: "&cO servidor esta em manutencao!%NEWLINE%&cTente mais tarde!"
+sentToWaitingServer: "&8[&eMaintenance&8] &cYou have been sent to a waiting server!"
+forceWaitingServer: "&8[&eMaintenance&8] &cYou cannot leave the waiting server while maintenance is enabled!"
 maintenanceActivated: "&8[&cManutencao&8] &6Manutencao esta agora ativada!"
 maintenanceDeactivated: "&8[&cManutencao&8] &6Manutencao esta agora desativada!"
 alreadyEnabled: "&8[&cManutencao&8] &cManutencao ja esta ativada!"

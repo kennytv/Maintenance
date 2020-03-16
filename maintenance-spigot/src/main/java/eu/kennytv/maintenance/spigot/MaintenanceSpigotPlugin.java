@@ -69,7 +69,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
         this.plugin = plugin;
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback");
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server");
 
         sendEnableMessage();
 
@@ -82,13 +82,11 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
         if (canUsePaperListener()) {
             pm.registerEvents(new PaperServerListPingListener(this, settings), plugin);
+        } else if (pm.isPluginEnabled("ProtocolLib")) {
+            pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
         } else {
-            if (pm.isPluginEnabled("ProtocolLib")) {
-                pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
-            } else {
-                pm.registerEvents(new ServerListPingListener(this, settings), plugin);
-                getLogger().warning("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
-            }
+            pm.registerEvents(new ServerListPingListener(this, settings), plugin);
+            getLogger().warning("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
         }
 
         continueLastEndtimer();
@@ -164,7 +162,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     @Override
     protected void kickPlayers() {
         for (final Player p : getServer().getOnlinePlayers()) {
-            if (!hasPermission(p, "bypass") && !settings.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!hasPermission(p, "bypass") && !settings.isWhitelisted(p.getUniqueId())) {
                 p.kickPlayer(settings.getKickMessage());
             }
         }
