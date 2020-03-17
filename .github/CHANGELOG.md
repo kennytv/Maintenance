@@ -1,10 +1,10 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
-## Unreleased
+## 3.0.4 - March 17th 2020
 ### Changed
 * Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)
-* Added config option `use-ssl` in the `mysql` section to disable SSL connections
+* Bungee/Velocity: Added config option `use-ssl` in the `mysql` section to disable SSL connections
 * Added Russian language file (thanks to Spigot user En_0t_S)
 * Updated missing translations in Portuguese language file (thanks to Spigot user JoaoPinto)
 * Updated bStats metrics
