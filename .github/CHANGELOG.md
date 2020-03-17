@@ -1,6 +1,10 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## Unreleased
+### Changed
+* Added Chinese language file (thanks to Spigot user yeban)
+
 ## 3.0.4 - March 17th 2020
 ### Changed
 * Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)
@@ -10,6 +14,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Updated bStats metrics
 ### Fixed
 * Fixed singleserver timers using input as seconds instead of minutes (by mxs42)
+* Fixed singleserver timers broadcasting globally
 * Fixed language updating with an unknown/self-translated language file
 * Fixed Velocity server autocompletion in the maintenance command
 ---
