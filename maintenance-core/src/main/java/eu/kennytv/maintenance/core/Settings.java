@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 3;
+    private static final int CURRENT_CONFIG_VERSION = 4;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -118,7 +118,7 @@ public class Settings implements ISettings {
             try (final InputStream in = plugin.getResource(from)) {
                 Files.copy(in, file.toPath());
             } catch (final IOException e) {
-                throw new IllegalArgumentException("Unable to create " + name + " file for Maintenance!", e);
+                throw new RuntimeException("Unable to create " + name + " file for Maintenance!", e);
             }
         }
     }
@@ -132,17 +132,19 @@ public class Settings implements ISettings {
     }
 
     private void createLanguageFile() {
-        final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
-        if (!file.exists()) {
-            try (final InputStream in = plugin.getResource("language-" + languageName + ".yml")) {
-                Files.copy(in, file.toPath());
-            } catch (final IOException e) {
-                plugin.getLogger().warning("Unable to provide language " + languageName);
-                if (!languageName.equals("en")) {
-                    plugin.getLogger().warning("Falling back to default language: en");
-                    languageName = "en";
-                    createLanguageFile();
-                }
+        final String fileName = "language-" + languageName + ".yml";
+        final File file = new File(plugin.getDataFolder(), fileName);
+        if (file.exists()) return;
+
+        try (final InputStream in = plugin.getResource(fileName)) {
+            Files.copy(in, file.toPath());
+        } catch (final IOException e) {
+            plugin.getLogger().warning("Unable to provide language " + languageName);
+            // Fall back to English language (if not already selected)
+            if (!languageName.equals("en")) {
+                plugin.getLogger().warning("Falling back to default language: en");
+                languageName = "en";
+                createLanguageFile();
             }
         }
     }
@@ -151,23 +153,27 @@ public class Settings implements ISettings {
         updateConfig();
 
         pingMessages = config.getStringList("pingmessages");
-        if (config.getBoolean("enable-timerspecific-messages"))
+        if (config.getBoolean("enable-timerspecific-messages")) {
             timerSpecificPingMessages = config.getStringList("timerspecific-pingmessages");
+        }
         maintenance = config.getBoolean("maintenance-enabled");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
         broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
-        if (plugin.getServerType() != ServerType.SPONGE)
+        if (plugin.getServerType() != ServerType.SPONGE) {
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
+        }
         playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
         languageName = getConfigString("language").toLowerCase();
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
+
         final ConfigSection section = config.getSection("continue-endtimer-after-restart");
         saveEndtimerOnStop = section.getBoolean("enabled");
         savedEndtimer = section.getLong("end");
+
         if (customMaintenanceIcon) {
             plugin.loadMaintenanceIcon();
         }
@@ -180,6 +186,7 @@ public class Settings implements ISettings {
                 plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + entry.getKey());
             }
         }
+
         loadExtraSettings();
     }
 
@@ -192,10 +199,11 @@ public class Settings implements ISettings {
             // Also rename old language file
             final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
             if (file.exists()) {
-                if (file.renameTo(new File(plugin.getDataFolder(), "language-" + languageName + ".old")))
+                if (file.renameTo(new File(plugin.getDataFolder(), "language-" + languageName + ".old"))) {
                     plugin.getLogger().info("Renamed old language file!");
-                else
+                } else {
                     plugin.getLogger().warning("Could not rename old language file! Please rename/delete it yourself as soon as possible!");
+                }
             }
 
             changed = true;
@@ -207,10 +215,11 @@ public class Settings implements ISettings {
         // 3.0 - move maintenace-icon from server to plugin directory
         final File icon = new File("maintenance-icon.png");
         if (icon.exists()) {
-            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png")))
+            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png"))) {
                 plugin.getLogger().info("Moved maintenance-icon from server directory to the plugin's directory!");
-            else
+            } else {
                 plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
+            }
         }
 
         // Update config to latest version (config version included since 3.0.1)
@@ -241,16 +250,19 @@ public class Settings implements ISettings {
     }
 
     private void updateLanguageFile() {
-        final String s = "language-" + languageName;
+        final String filePrefix = "language-" + languageName;
         try {
-            createFile(s + "-new.yml", s + ".yml");
-        } catch (final IllegalArgumentException e) {
-            plugin.getLogger().warning("Couldn't update language file, as the " + s + ".yml wasn't found in the resource files!");
+            createFile(filePrefix + "-new.yml", filePrefix + ".yml");
+        } catch (final NullPointerException e) {
+            plugin.getLogger().info("Not checking for updated language strings, since there is no " + filePrefix + ".yml in the resource files (if your file is self translated and up to date, you can ignore this).");
+            return;
+        } catch (final Exception e) {
+            plugin.getLogger().warning("Couldn't update language file, as the " + filePrefix + ".yml could not be loaded from the resource files!");
             e.printStackTrace();
             return;
         }
 
-        final File file = new File(plugin.getDataFolder(), s + "-new.yml");
+        final File file = new File(plugin.getDataFolder(), filePrefix + "-new.yml");
         final Config tempConfig = new Config(file);
         try {
             tempConfig.load();
@@ -265,11 +277,10 @@ public class Settings implements ISettings {
         if (updated) {
             try {
                 language.save();
+                plugin.getLogger().info("Updated language file!");
             } catch (final IOException e) {
                 e.printStackTrace();
-                return;
             }
-            plugin.getLogger().info("Updated language file!");
         }
     }
 
@@ -296,10 +307,11 @@ public class Settings implements ISettings {
         }
 
         oldConfig.clear();
-        if (!file.delete())
+        if (!file.delete()) {
             plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
-        else
+        } else {
             plugin.getLogger().info("Updated to new config file!");
+        }
         return true;
     }
 
@@ -316,16 +328,19 @@ public class Settings implements ISettings {
             return false;
         }
 
-        if (oldFile.contains("maintenance-on"))
+        if (oldFile.contains("maintenance-on")) {
             config.set("proxied-maintenance-servers", oldFile.getStringList("maintenance-on"));
-        if (oldFile.contains("fallback"))
+        }
+        if (oldFile.contains("fallback")) {
             config.set("fallback", oldFile.getString("fallback"));
+        }
 
         oldFile.clear();
-        if (!file.delete())
+        if (!file.delete()) {
             plugin.getLogger().warning("Could not delete old SpigotServers.yml file! Please delete it as soon as possible.");
-        else
+        } else {
             plugin.getLogger().info("Deleted old SpigotServers.yml file!");
+        }
         return true;
     }
 
@@ -415,6 +430,11 @@ public class Settings implements ISettings {
     @Override
     public Map<UUID, String> getWhitelistedPlayers() {
         return whitelistedPlayers;
+    }
+
+    @Override
+    public boolean isWhitelisted(final UUID uuid) {
+        return whitelistedPlayers.containsKey(uuid);
     }
 
     @Override

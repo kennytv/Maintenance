@@ -6,7 +6,7 @@
 
     <groupId>eu.kennytv.maintenance</groupId>
     <artifactId>maintenance-parent</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
     <packaging>pom</packaging>
 
     <name>Maintenance</name>
@@ -40,12 +40,12 @@
 
     <repositories>
         <repository>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>spigotmc</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sponge</id>
@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

@@ -18,72 +18,94 @@
 
 package eu.kennytv.maintenance.velocity.listener;
 
-import com.velocitypowered.api.event.EventHandler;
+import com.velocitypowered.api.event.PostOrder;
+import com.velocitypowered.api.event.ResultedEvent;
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.LoginEvent;
+import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.listener.ProxyJoinListenerBase;
+import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
+import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
+import eu.kennytv.maintenance.velocity.util.VelocityServer;
 import net.kyori.text.TextComponent;
 
 import java.util.Optional;
 
-public final class ServerConnectListener implements EventHandler<ServerPreConnectEvent> {
+public final class ServerConnectListener extends ProxyJoinListenerBase {
     private final MaintenanceVelocityPlugin plugin;
-    private final SettingsProxy settings;
-    private boolean warned;
 
     public ServerConnectListener(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
+        super(plugin, settings);
         this.plugin = plugin;
-        this.settings = settings;
+    }
+
+    @Subscribe
+    public void login(final LoginEvent event) {
+        if (!event.getResult().isAllowed()) return;
+
+        final VelocitySenderInfo sender = new VelocitySenderInfo(event.getPlayer());
+        if (shouldKick(sender, false)) {
+            final Server waitingServer = shouldConnectToWaitingServer(sender);
+            // Do the actual connecting in the ServerPreConnectEvent handler if a waiting server exists
+            if (waitingServer != null) return;
+
+            event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage())));
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(event.getPlayer().getUsername());
+            }
+        }
+    }
+
+    @Subscribe
+    public void postLogin(final PostLoginEvent event) {
+        updateCheck(new VelocitySenderInfo(event.getPlayer()));
+    }
+
+    @Subscribe(order = PostOrder.LAST)
+    public void preConnect(final ServerPreConnectEvent event) {
+        if (!event.getResult().isAllowed()) return;
+
+        final Optional<RegisteredServer> optionalTarget = event.getResult().getServer();
+        if (!optionalTarget.isPresent()) return;
+
+        final Player player = event.getPlayer();
+        final boolean hasCurrentServer = player.getCurrentServer().isPresent();
+        final ServerConnectResult connectResult = serverConnect(new VelocitySenderInfo(player), new VelocityServer(optionalTarget.get()), hasCurrentServer);
+        if (connectResult.isCancelled()) {
+            event.setResult(ServerPreConnectEvent.ServerResult.denied());
+
+            // Player has no server to connect to
+            if (!hasCurrentServer) {
+                player.disconnect(TextComponent.of(settings.getKickMessage()));
+            }
+        } else if (connectResult.getTarget() != null) {
+            final RegisteredServer newTarget = ((VelocityServer) connectResult.getTarget()).getServer();
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(newTarget));
+        }
     }
 
     @Override
-    public void execute(final ServerPreConnectEvent event) {
-        if (!event.getResult().isAllowed()) return;
-
-        final Player player = event.getPlayer();
-        if (!event.getResult().getServer().isPresent()) return;
-
-        final RegisteredServer target = event.getResult().getServer().get();
-        if (!plugin.isMaintenance(target)) return;
-        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())
-                || plugin.hasPermission(player, "singleserver.bypass." + target.getServerInfo().getName().toLowerCase()))
-            return;
-
-        event.setResult(ServerPreConnectEvent.ServerResult.denied());
-        if (settings.isJoinNotifications()) {
-            final TextComponent s = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", player.getUsername()));
-            for (final Player p : target.getPlayersConnected()) {
-                if (plugin.hasPermission(p, "joinnotification")) {
-                    p.sendMessage(s);
-                }
-            }
-        }
-
-        // Normal serverconnect
-        if (player.getCurrentServer().isPresent()) {
-            player.sendMessage(plugin.translate(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getServerInfo().getName())));
-            return;
-        }
-
-        // If it's the initial proxy join or a kick from another server, go back to fallback server
-        final Optional<RegisteredServer> fallback = plugin.getServer().getServer(settings.getFallbackServer());
-        if (!fallback.isPresent() || plugin.isMaintenance(fallback.get())) {
-            disconnect(player, target);
-            if (!warned) {
-                plugin.getLogger().warning("Could not send player to the set fallback server! Instead kicking player off the network!");
-                warned = true;
-            }
-        } else {
-            player.createConnectionRequest(fallback.get()).connect().whenComplete((result, throwable) -> {
-                if (!result.isSuccessful()) disconnect(player, target);
-            });
-        }
+    protected void broadcastJoinNotification(final String name) {
+        sendJoinMessage(plugin.getServer().getAllPlayers(), name);
     }
 
-    private void disconnect(final Player player, final RegisteredServer target) {
-        player.disconnect(TextComponent.of(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n")
-                .replace("%SERVER%", target.getServerInfo().getName())));
+    @Override
+    protected void broadcastJoinNotification(final String name, final Server server) {
+        sendJoinMessage(((VelocityServer) server).getServer().getPlayersConnected(), name);
+    }
+
+    private void sendJoinMessage(final Iterable<Player> players, final String name) {
+        final TextComponent message = plugin.translate(settings.getMessage("joinNotification").replace("%PLAYER%", name));
+        for (final Player player : players) {
+            if (plugin.hasPermission(player, "joinnotification")) {
+                player.sendMessage(message);
+            }
+        }
     }
 }

@@ -18,14 +18,16 @@
 
 package eu.kennytv.maintenance.bungee.util;
 
-import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
-public final class BungeeSenderInfo implements SenderInfo {
+public final class BungeeSenderInfo implements ProxySenderInfo {
     private final CommandSender sender;
 
     public BungeeSenderInfo(final CommandSender sender) {
@@ -59,5 +61,17 @@ public final class BungeeSenderInfo implements SenderInfo {
 
     public void sendMessage(final TextComponent textComponent) {
         sender.sendMessage(textComponent);
+    }
+
+    @Override
+    public boolean canAccess(final Server server) {
+        return ((BungeeServer) server).getServer().canAccess(sender);
+    }
+
+    @Override
+    public void disconnect(final String message) {
+        if (sender instanceof Connection) {
+            ((Connection) sender).disconnect(message);
+        }
     }
 }

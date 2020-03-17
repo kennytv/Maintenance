@@ -22,6 +22,10 @@ proxied-maintenance-servers:
 # If the fallback server is not reachable/not set, they will just be kicked off the network.
 fallback: lobby
 
+# If maintenance is enabled globally, you can define a "waiting" lobby for players to be sent to instead of being kicked.
+# Leave this empty to disable.
+waiting-server: ""
+
 # The message shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
 # If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
@@ -59,7 +63,7 @@ send-join-notification: false
 kick-online-players: true
 
 # Changes the language of command feedback/messages.
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish)
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian)
 language: en
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies
@@ -77,6 +81,8 @@ mysql:
   # Set this to 0 to make a database request on (almost) every single ping.
   # (0 is not recommended if having more than a hundred concurrent players, then I'd recommend keeping it from 10-60).
   update-interval: 15
+  # If you for some reason cannot establish SSL connections to your database, you may disable it here (not recommended).
+  use-ssl: true
 
 # If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
 # If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.
@@ -95,4 +101,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 3
+config-version: 4

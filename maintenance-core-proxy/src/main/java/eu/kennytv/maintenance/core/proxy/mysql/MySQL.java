@@ -8,19 +8,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class MySQL {
+    private final Logger logger;
     private final HikariDataSource hikariDataSource;
 
     // Excuse me and everything to do with the MySQL stuff, I have little to no idea of how to use databases
-    public MySQL(final String hostname, final int port, final String username, final String password, final String database) {
+    public MySQL(final Logger logger, final String hostname, final int port, final String username, final String password, final String database, final boolean useSSL) {
+        this.logger = logger;
+
         final HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setMaximumPoolSize(10);
         hikariConfig.addDataSourceProperty("serverName", hostname);
         hikariConfig.addDataSourceProperty("user", username);
         hikariConfig.addDataSourceProperty("password", password);
-        hikariConfig.addDataSourceProperty("url", "jdbc:mysql://" + hostname + ":" + port + "/" + database);
-        hikariConfig.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
+
+        String urlProperty = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
+        if (useSSL) {
+            urlProperty += "?useSSL=false";
+        }
+        hikariConfig.addDataSourceProperty("url", urlProperty);
+
+        hikariConfig.setJdbcUrl(urlProperty);
         hikariConfig.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         hikariDataSource = new HikariDataSource(hikariConfig);
     }
@@ -37,7 +48,7 @@ public final class MySQL {
                 callback.accept(preparedStatement.executeUpdate());
             }
         } catch (final SQLException e) {
-            System.out.println("Error while executing update method: " + query);
+            logger.log(Level.SEVERE, "Error while executing update method: " + query);
             e.printStackTrace();
         }
     }
@@ -56,7 +67,7 @@ public final class MySQL {
                 resultSet.close();
             }
         } catch (final SQLException e) {
-            System.out.println("Error while executing query method: " + query);
+            logger.log(Level.SEVERE, "Error while executing query method: " + query);
             e.printStackTrace();
         }
     }

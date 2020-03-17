@@ -81,7 +81,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
         final List<String> list = new ArrayList<>();
         for (final RegisteredServer server : plugin.getServer().getAllServers()) {
             final String name = server.getServerInfo().getName();
-            if (name.toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getFallbackServer().contains(name)) {
+            if (name.toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(name)) {
                 list.add(name);
             }
         }

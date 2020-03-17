@@ -20,13 +20,14 @@ package eu.kennytv.maintenance.velocity.util;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.UUID;
 
-public final class VelocitySenderInfo implements SenderInfo {
+public final class VelocitySenderInfo implements ProxySenderInfo {
     private final CommandSource sender;
 
     public VelocitySenderInfo(final CommandSource sender) {
@@ -60,5 +61,15 @@ public final class VelocitySenderInfo implements SenderInfo {
 
     public void sendMessage(final TextComponent textComponent) {
         sender.sendMessage(textComponent);
+    }
+
+    @Override
+    public boolean canAccess(final Server server) {
+        return true;
+    }
+
+    @Override
+    public void disconnect(final String message) {
+        ((Player) sender).disconnect(TextComponent.of(message));
     }
 }

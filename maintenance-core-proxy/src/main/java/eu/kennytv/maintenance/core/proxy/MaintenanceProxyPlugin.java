@@ -47,14 +47,16 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public void disable() {
         super.disable();
-        if (settingsProxy.getMySQL() != null)
+        if (settingsProxy.getMySQL() != null) {
             settingsProxy.getMySQL().close();
+        }
     }
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.hasMySQL())
+        if (settingsProxy.hasMySQL()) {
             settingsProxy.setMaintenanceToSQL(maintenance);
+        }
         super.setMaintenance(maintenance);
     }
 
@@ -79,13 +81,16 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         if (maintenance) {
             final Server fallback = getServer(settingsProxy.getFallbackServer());
             if (fallback == null) {
-                if (server.hasPlayers())
+                if (server.hasPlayers()) {
                     getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
-            } else if (fallback.getName().equals(server.getName()))
+                }
+            } else if (fallback.getName().equals(server.getName())) {
                 getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
+            }
             kickPlayers(server, fallback);
         } else
             server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+
         cancelSingleTask(server);
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
     }
@@ -107,7 +112,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes, enable, server);
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes * 60, enable, server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
@@ -125,6 +130,21 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return (MaintenanceProxyCommand) commandManager;
     }
 
+    @Override
+    protected void kickPlayers() {
+        // Send players to waiting server is set
+        if (settingsProxy.getWaitingServer() != null) {
+            final Server waitingServer = getServer(settingsProxy.getWaitingServer());
+            if (waitingServer != null) {
+                kickPlayersTo(waitingServer);
+                return;
+            }
+        }
+
+        // If not set, kick players from proxy
+        kickPlayersFromProxy();
+    }
+
     public SettingsProxy getSettingsProxy() {
         return settingsProxy;
     }
@@ -132,4 +152,8 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     public abstract String getServer(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);
+
+    protected abstract void kickPlayersTo(Server server);
+
+    protected abstract void kickPlayersFromProxy();
 }

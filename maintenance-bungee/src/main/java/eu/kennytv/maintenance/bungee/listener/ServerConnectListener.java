@@ -18,38 +18,49 @@
 
 package eu.kennytv.maintenance.bungee.listener;
 
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
-import eu.kennytv.maintenance.core.listener.JoinListenerBase;
+import eu.kennytv.maintenance.bungee.util.BungeeServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.listener.ProxyJoinListenerBase;
+import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-public final class ServerConnectListener extends JoinListenerBase implements Listener {
+public final class ServerConnectListener extends ProxyJoinListenerBase implements Listener {
     private final MaintenanceBungeePlugin plugin;
-    private final SettingsProxy settings;
-    private boolean warned;
 
     public ServerConnectListener(final MaintenanceBungeePlugin plugin, final SettingsProxy settings) {
         super(plugin, settings);
         this.plugin = plugin;
-        this.settings = settings;
     }
 
     @EventHandler
     public void initialServerConnect(final ServerConnectEvent event) {
         // Global maintenance check
         if (event.isCancelled() || event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY) return;
-        if (kickPlayer(new BungeeSenderInfo(event.getPlayer()))) {
+
+        final BungeeSenderInfo sender = new BungeeSenderInfo(event.getPlayer());
+        if (shouldKick(sender)) {
+            final Server waitingServer = shouldConnectToWaitingServer(sender);
+            if (waitingServer != null) {
+                event.setTarget(((BungeeServer) waitingServer).getServer());
+                sender.sendMessage(settings.getMessage("sentToWaitingServer"));
+                return;
+            }
+
             event.setCancelled(true);
             event.getPlayer().disconnect(settings.getKickMessage());
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(sender.getName());
+            }
         }
     }
 
@@ -59,49 +70,36 @@ public final class ServerConnectListener extends JoinListenerBase implements Lis
         if (event.isCancelled()) return;
 
         final ProxiedPlayer player = event.getPlayer();
-        final ServerInfo target = event.getTarget();
-        if (!plugin.isMaintenance(target)) return;
-        if (plugin.hasPermission(player, "bypass") || settings.getWhitelistedPlayers().containsKey(player.getUniqueId())
-                || plugin.hasPermission(player, "singleserver.bypass." + target.getName().toLowerCase()))
-            return;
-
-        if (settings.isJoinNotifications()) {
-            final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", player.getName()));
-            for (final ProxiedPlayer p : target.getPlayers()) {
-                if (plugin.hasPermission(p, "joinnotification")) {
-                    p.sendMessage(s);
-                }
-            }
-        }
-
-        // Normal serverconnect
-        if (event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
-                && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT) {
+        final boolean normalServerConnect = event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
+                && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT;
+        final ServerConnectResult connectResult = serverConnect(new BungeeSenderInfo(player), new BungeeServer(event.getTarget()), normalServerConnect);
+        if (connectResult.isCancelled()) {
             event.setCancelled(true);
-            player.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
-            return;
-        }
 
-        // If it's the initial proxy join or a kick from another server, go back to fallback server
-        final ServerInfo fallback = plugin.getProxy().getServerInfo(settings.getFallbackServer());
-        if (fallback == null || !fallback.canAccess(player) || plugin.isMaintenance(fallback)) {
-            event.setCancelled(true);
-            player.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
-            if (!warned) {
-                plugin.getLogger().warning("Could not send player to the set fallback server; instead kicking player off the network!");
-                warned = true;
+            // Player has no server to connect to
+            if (player.getServer() == null) {
+                player.disconnect(settings.getKickMessage());
             }
-        } else {
-            event.setTarget(fallback);
+        } else if (connectResult.getTarget() != null) {
+            event.setTarget(((BungeeServer) connectResult.getTarget()).getServer());
         }
     }
 
     @Override
     protected void broadcastJoinNotification(final String name) {
-        final BaseComponent[] s = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", name));
-        for (final ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-            if (plugin.hasPermission(p, "joinnotification")) {
-                p.sendMessage(s);
+        sendJoinMessage(ProxyServer.getInstance().getPlayers(), name);
+    }
+
+    @Override
+    protected void broadcastJoinNotification(final String name, final Server server) {
+        sendJoinMessage(((BungeeServer) server).getServer().getPlayers(), name);
+    }
+
+    private void sendJoinMessage(final Iterable<ProxiedPlayer> players, final String name) {
+        final BaseComponent[] message = TextComponent.fromLegacyText(settings.getMessage("joinNotification").replace("%PLAYER%", name));
+        for (final ProxiedPlayer player : players) {
+            if (plugin.hasPermission(player, "joinnotification")) {
+                player.sendMessage(message);
             }
         }
     }

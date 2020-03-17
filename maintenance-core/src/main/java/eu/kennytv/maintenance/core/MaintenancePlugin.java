@@ -79,18 +79,22 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public void serverActions(final boolean maintenance) {
-        if (isTaskRunning())
+        if (isTaskRunning()) {
             cancelTask();
-        if (serverListPlusHook != null)
+        }
+        if (serverListPlusHook != null) {
             serverListPlusHook.setEnabled(!maintenance);
+        }
 
         if (maintenance) {
+            broadcast(settings.getMessage("maintenanceActivated"));
             if (settings.isKickOnlinePlayers()) {
                 kickPlayers();
             }
-            broadcast(settings.getMessage("maintenanceActivated"));
-        } else
+        } else {
             broadcast(settings.getMessage("maintenanceDeactivated"));
+        }
+
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
@@ -204,8 +208,9 @@ public abstract class MaintenancePlugin implements IMaintenance {
             final String newVersionString = reader.readLine();
             reader.close();
             final Version newVersion = new Version(newVersionString);
-            if (!newVersion.equals(version))
+            if (!newVersion.equals(version)) {
                 newestVersion = newVersion;
+            }
         } catch (final Exception ignored) {
         }
     }

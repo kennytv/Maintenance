@@ -23,7 +23,6 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
@@ -45,7 +44,6 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.velocity.command.MaintenanceVelocityCommand;
-import eu.kennytv.maintenance.velocity.listener.LoginListener;
 import eu.kennytv.maintenance.velocity.listener.ProxyPingListener;
 import eu.kennytv.maintenance.velocity.listener.ServerConnectListener;
 import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
@@ -74,7 +72,7 @@ import java.util.stream.Collectors;
  * @since 3.0
  */
 @Plugin(id = "maintenancevelocity", name = "MaintenanceVelocity", version = MaintenanceVersion.VERSION, authors = "KennyTV",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://www.spigotmc.org/resources/maintenance.40699/",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://forums.velocitypowered.com/t/maintenance/129",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
@@ -102,8 +100,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         server.getCommandManager().register(command, "maintenance", "maintenancevelocity");
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
-        em.register(this, ServerPreConnectEvent.class, PostOrder.LAST, new ServerConnectListener(this, settingsProxy));
-        em.register(this, new LoginListener(this, settingsProxy));
+        em.register(this, new ServerConnectListener(this, settingsProxy));
 
         continueLastEndtimer();
 
@@ -143,9 +140,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    protected void kickPlayers() {
+    protected void kickPlayersFromProxy() {
         for (final Player p : server.getAllPlayers()) {
-            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.isWhitelisted(p.getUniqueId())) {
                 p.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
             }
         }
@@ -154,19 +151,43 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
-        for (final Player p : ((VelocityServer) server).getServer().getPlayersConnected()) {
-            if (!hasPermission(p, "bypass") && !settingsProxy.getWhitelistedPlayers().containsKey(p.getUniqueId())) {
-                if (fallbackServer != null && !isMaintenance(fallback)) {
-                    p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+        final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
+        for (final Player player : ((VelocityServer) server).getServer().getPlayersConnected()) {
+            if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
+                if (checkForFallback) {
+                    player.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
-                    p.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
-                        if (!result.isSuccessful())
-                            p.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                    player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
+                        if (!result.isSuccessful()) {
+                            player.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                        }
                     });
                 } else
-                    p.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                    player.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
             } else {
-                p.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+                player.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
+            }
+        }
+    }
+
+    @Override
+    protected void kickPlayersTo(final Server server) {
+        final RegisteredServer waitingServer = ((VelocityServer) server).getServer();
+        // Notifications done in global method
+        for (final Player player : this.server.getAllPlayers()) {
+            if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
+            if (player.getCurrentServer().isPresent() && player.getCurrentServer().get().getServerInfo().getName().equals(waitingServer.getServerInfo().getName()))
+                continue;
+            if (!isMaintenance(waitingServer)) {
+                player.createConnectionRequest(waitingServer).connect().whenComplete((result, e) -> {
+                    if (result.isSuccessful()) {
+                        player.sendMessage(translate(settingsProxy.getMessage("sentToWaitingServer").replace("%SERVER%", server.getName())));
+                    } else {
+                        player.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
+                    }
+                });
+            } else {
+                player.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
             }
         }
     }
@@ -197,7 +218,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     public String getServer(final SenderInfo sender) {
         final Optional<Player> player = server.getPlayer(sender.getUuid());
-        if (!player.isPresent() || player.get().getCurrentServer().isPresent()) return "";
+        if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;
         return player.get().getCurrentServer().get().getServerInfo().getName();
     }
 

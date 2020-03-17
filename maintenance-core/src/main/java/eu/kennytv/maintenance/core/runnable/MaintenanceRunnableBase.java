@@ -42,10 +42,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
         if (seconds == 0) {
             finish();
         } else if (settings.getBroadcastIntervals().contains(seconds)) {
-            if (enable)
-                plugin.broadcast(startMessageKey());
-            else
-                plugin.broadcast(endMessageKey());
+            broadcast(enable ? startMessageKey() : endMessageKey());
         }
 
         seconds--;
@@ -80,6 +77,10 @@ public abstract class MaintenanceRunnableBase implements Runnable {
 
     public Task getTask() {
         return task;
+    }
+
+    protected void broadcast(final String message) {
+        plugin.broadcast(message);
     }
 
     protected abstract void finish();

@@ -38,9 +38,12 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
     @EventHandler
     public void postLogin(final PlayerLoginEvent event) {
         final BukkitSenderInfo sender = new BukkitSenderInfo(event.getPlayer());
-        if (kickPlayer(sender)) {
+        if (shouldKick(sender)) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
             event.setKickMessage(settings.getKickMessage());
+            if (settings.isJoinNotifications()) {
+                broadcastJoinNotification(sender.getName());
+            }
         }
     }
 

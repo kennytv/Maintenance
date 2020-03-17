@@ -43,7 +43,10 @@ playerNotOnline: "&8[&eMaintenance&8] &cEs ist momentan kein Spieler mit diesem 
 invalidUuid: "&8[&eMaintenance&8] &cUngültiges UUID Format!"
 
 # Nachrichten für den Bungee/Velocity Teil des Plugins, einfach ignorieren, falls das Plugin auf Spigot/Sponge verwendet wird
+sentToWaitingServer: "&8[&eMaintenance&8] &cDu wurdest auf den Warteserver verbunden!"
+forceWaitingServer: "&8[&eMaintenance&8] &cDu kannst den Warteserver nicht verlassen solange der Wartungsmodus aktiviert ist!"
 serverNotFound: "&8[&eMaintenance&8] &cEs wurde kein Server mit diesem Namen gefunden!"
+
 singleTimerAlreadyRunning: "&8[&eMaintenance&8] &cMomentan läuft bereits ein Timer auf diesem Server!"
 singleTimerNotRunning: "&8[&eMaintenance&8] &cMomentan läuft kein Timer auf diesem Server."
 singleTimerCancelled: "&8[&eMaintenance&8] &cDer laufende Timer dieses Servers wurde beendet."

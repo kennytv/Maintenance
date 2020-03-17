@@ -43,7 +43,10 @@ playerNotOnline: "&8[&eMaintenance&8] &cIl n'y a pas de joueur en ligne avec ce 
 invalidUuid: "&8[&eMaintenance&8] &cLe format de l'uuid est invalide!"
 
 # Quelques messages pour la partie Bungee/Velocity, ignorez-les si vous utilisez le plugin sur Spigot/Sponge
+sentToWaitingServer: "&8[&eMaintenance&8] &cYou have been sent to a waiting server!"
+forceWaitingServer: "&8[&eMaintenance&8] &cYou cannot leave the waiting server while maintenance is enabled!"
 serverNotFound: "&8[&eMaintenance&8] &cAucun serveur avec ce nom n'est enregistré sur le proxy!"
+
 singleTimerAlreadyRunning: "&8[&eMaintenance&8] &cIl y a déjà un horaire prévu sur ce server!"
 singleTimerNotRunning: "&8[&eMaintenance&8] &cIl n'y a actuellement aucune maintenance prévue sur ce server."
 singleTimerCancelled: "&8[&eMaintenance&8] &cLa minuterie actuelle a été désactivée sur ce server."

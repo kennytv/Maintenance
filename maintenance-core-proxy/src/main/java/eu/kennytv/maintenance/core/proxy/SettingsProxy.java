@@ -31,6 +31,7 @@ import java.util.Set;
 public final class SettingsProxy extends Settings {
     private Set<String> maintenanceServers;
     private String fallbackServer;
+    private String waitingServer;
 
     private String mySQLTable;
     private String serverTable;
@@ -54,11 +55,13 @@ public final class SettingsProxy extends Settings {
             return;
         }
 
-        mySQL = new MySQL(section.getString("host"),
+        mySQL = new MySQL(plugin.getLogger(),
+                section.getString("host"),
                 section.getInt("port"),
                 section.getString("username"),
                 section.getString("password"),
-                section.getString("database"));
+                section.getString("database"),
+                section.getBoolean("use-ssl", true));
 
         // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
         mySQLTable = section.getString("table", "maintenance_settings");
@@ -84,6 +87,11 @@ public final class SettingsProxy extends Settings {
         }
 
         fallbackServer = config.getString("fallback", "lobby");
+        waitingServer = config.getString("waiting-server", "");
+        if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
+            waitingServer = null;
+        }
+
         if (hasMySQL()) {
             maintenance = loadMaintenance();
             maintenanceServers = loadMaintenanceServersFromSQL();
@@ -213,6 +221,10 @@ public final class SettingsProxy extends Settings {
 
     public String getFallbackServer() {
         return fallbackServer;
+    }
+
+    public String getWaitingServer() {
+        return waitingServer;
     }
 
     MySQL getMySQL() {

@@ -1,6 +1,18 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## 3.0.4 - March 17th 2020
+### Changed
+* Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)
+* Bungee/Velocity: Added config option `use-ssl` in the `mysql` section to disable SSL connections
+* Added Russian language file (thanks to Spigot user En_0t_S)
+* Updated missing translations in Portuguese language file (thanks to Spigot user JoaoPinto)
+* Updated bStats metrics
+### Fixed
+* Fixed singleserver timers using input as seconds instead of minutes (by mxs42)
+* Fixed language updating with an unknown/self-translated language file
+* Fixed Velocity server autocompletion in the maintenance command
+---
 ## 3.0.3 - September 17th 2019
 ### Changed
 * Bungee/Velocity: Added `maintenance.singleserver.bypass.<server>` permission to give individual bypasses for proxied servers (`maintenance.bypass` will still bypass everything as the super-perm)
@@ -15,7 +27,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Bungee: Fixed the kickmessage not being displayed in some cases
 * Paper: Fixed the playercount message not being displayed on Paper servers with ViaVersion
 * Paper: Fixed the motd not being changed at all on Paper servers with ProtocolSupport (-> ProtocolLib listener used, since ProtocolSupport does not fire Paper's ping event)
-* Fixed the config autoupdater when the config contained strings broken over multiple lines.
+* Fixed the config autoupdater when the config contained strings broken over multiple lines
 ---
 ## 3.0.2 - May 17th 2019
 ### Changed
