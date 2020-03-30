@@ -29,6 +29,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -118,6 +119,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Override
+    @Nullable
     public List<String> getMaintenanceServersDump() {
         final List<String> list = new ArrayList<>();
         if (isMaintenance()) list.add("global");
@@ -149,6 +151,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return settingsProxy;
     }
 
+    @Nullable
     public abstract String getServer(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);

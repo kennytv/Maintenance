@@ -54,6 +54,7 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -198,24 +199,28 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    @Nullable
     public Server getServer(final String server) {
         final Optional<RegisteredServer> serverInfo = this.server.getServer(server);
         return serverInfo.map(VelocityServer::new).orElse(null);
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final Optional<Player> player = server.getPlayer(name);
         return player.map(VelocitySenderInfo::new).orElse(null);
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final Optional<Player> player = server.getPlayer(uuid);
         return player.map(VelocitySenderInfo::new).orElse(null);
     }
 
     @Override
+    @Nullable
     public String getServer(final SenderInfo sender) {
         final Optional<Player> player = server.getPlayer(sender.getUuid());
         if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;

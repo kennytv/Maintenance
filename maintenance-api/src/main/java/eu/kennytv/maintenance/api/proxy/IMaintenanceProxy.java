@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.api.proxy;
 
 import eu.kennytv.maintenance.api.IMaintenance;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -60,6 +61,7 @@ public interface IMaintenanceProxy extends IMaintenance {
      * @param server name of the proxied server
      * @return wrapped server object if present, else null
      */
+    @Nullable
     Server getServer(String server);
 
     /**

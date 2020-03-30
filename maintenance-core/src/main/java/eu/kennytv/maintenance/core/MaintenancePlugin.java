@@ -36,6 +36,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -274,6 +275,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         runnable = null;
     }
 
+    @Nullable
     public UUID checkUUID(final SenderInfo sender, final String s) {
         final UUID uuid;
         try {
@@ -320,6 +322,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return version.toString();
     }
 
+    @Nullable
     public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
     }
@@ -336,6 +339,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return prefix;
     }
 
+    /**
+     * @see #isTaskRunning()
+     */
+    @Nullable
     public MaintenanceRunnable getRunnable() {
         return runnable;
     }
@@ -360,8 +367,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 
+    @Nullable
     public abstract SenderInfo getOfflinePlayer(String name);
 
+    @Nullable
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
 
     public abstract File getDataFolder();

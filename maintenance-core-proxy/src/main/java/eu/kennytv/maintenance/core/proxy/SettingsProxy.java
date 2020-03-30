@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.core.proxy;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -223,10 +224,12 @@ public final class SettingsProxy extends Settings {
         return fallbackServer;
     }
 
+    @Nullable
     public String getWaitingServer() {
         return waitingServer;
     }
 
+    @Nullable
     MySQL getMySQL() {
         return mySQL;
     }

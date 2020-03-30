@@ -47,6 +47,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -163,24 +164,28 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    @Nullable
     public Server getServer(final String server) {
         final ServerInfo serverInfo = getProxy().getServerInfo(server);
         return serverInfo != null ? new BungeeServer(serverInfo) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final ProxiedPlayer player = getProxy().getPlayer(name);
         return player != null ? new BungeeSenderInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final ProxiedPlayer player = getProxy().getPlayer(uuid);
         return player != null ? new BungeeSenderInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public String getServer(final SenderInfo sender) {
         final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
         if (player == null || player.getServer() == null) return null;

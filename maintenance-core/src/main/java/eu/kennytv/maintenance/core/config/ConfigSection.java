@@ -18,6 +18,8 @@
 
 package eu.kennytv.maintenance.core.config;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,20 +42,24 @@ public class ConfigSection {
         this.values = values;
     }
 
+    @Nullable
     public <E> E get(final String key) {
         return (E) this.values.get(key);
     }
 
-    public <E> E get(final String key, final E def) {
+    @Nullable
+    public <E> E get(final String key, @Nullable final E def) {
         final Object o = this.values.get(key);
         return o != null ? (E) o : def;
     }
 
+    @Nullable
     public Object getObject(final String key) {
         return this.values.get(key);
     }
 
-    public <E> E getOrSet(final String key, final E def) {
+    @Nullable
+    public <E> E getOrSet(final String key, @Nullable final E def) {
         final Object o = this.values.get(key);
         if (o != null) {
             return (E) o;
@@ -70,6 +76,7 @@ public class ConfigSection {
      * @deprecated this config is only made for a quite simple use, only goes one level deeper
      */
     @Deprecated
+    @Nullable
     public Object getDeep(final String key) {
         final String[] split = key.split("\\.", 2);
         if (split.length != 2) return get(key);
@@ -81,6 +88,7 @@ public class ConfigSection {
         return map.get(split[1]);
     }
 
+    @Nullable
     public ConfigSection getSection(final String key) {
         final Object o = getObject(key);
         return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
@@ -90,14 +98,14 @@ public class ConfigSection {
         return this.values.containsKey(key);
     }
 
-    public void set(final String key, final Object value) {
+    public void set(final String key, @Nullable final Object value) {
         if (value == null) {
             remove(key);
         } else
             this.values.put(key, value);
     }
 
-    public void set(final String key, final Object value, final String... comments) {
+    public void set(final String key, @Nullable final Object value, final String... comments) {
         if (value == null) {
             remove(key);
         } else {
@@ -126,11 +134,13 @@ public class ConfigSection {
         return o instanceof Boolean ? (boolean) o : def;
     }
 
+    @Nullable
     public String getString(final String key) {
         return get(key);
     }
 
-    public String getString(final String key, final String def) {
+    @Nullable
+    public String getString(final String key, @Nullable final String def) {
         final Object o = get(key);
         return o instanceof String ? (String) o : def;
     }
@@ -162,19 +172,21 @@ public class ConfigSection {
         return o instanceof Number ? ((Number) o).longValue() : def;
     }
 
+    @Nullable
     public List<String> getStringList(final String key) {
         return get(key);
     }
 
-    public List<String> getStringList(final String key, final List<String> def) {
+    public List<String> getStringList(final String key, @Nullable final List<String> def) {
         return values.containsKey(key) ? get(key) : def;
     }
 
+    @Nullable
     public List<Integer> getIntList(final String key) {
         return get(key);
     }
 
-    public List<Integer> getIntList(final String key, final List<Integer> def) {
+    public List<Integer> getIntList(final String key, @Nullable final List<Integer> def) {
         return values.containsKey(key) ? get(key) : def;
     }
 }

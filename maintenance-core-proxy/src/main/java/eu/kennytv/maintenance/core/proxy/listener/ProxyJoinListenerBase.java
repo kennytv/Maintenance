@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class ProxyJoinListenerBase extends JoinListenerBase {
     private static final ServerConnectResult ALLOWED = new ServerConnectResult(false);
@@ -106,6 +107,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
      * @param sender sender
      * @return waiting server, null if player should be kicked
      */
+    @Nullable
     protected Server shouldConnectToWaitingServer(final ProxySenderInfo sender) {
         if (settings.getWaitingServer() == null) return null;
 

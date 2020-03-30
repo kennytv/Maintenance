@@ -47,6 +47,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -148,12 +149,14 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final OfflinePlayer player = getServer().getOfflinePlayer(name);
         return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
         return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;

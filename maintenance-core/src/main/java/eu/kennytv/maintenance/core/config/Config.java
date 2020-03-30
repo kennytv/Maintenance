@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core.config;
 
 import com.google.common.collect.Sets;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -63,8 +64,10 @@ public final class Config extends ConfigSection {
         final Map<String, Object> map = yaml.load(data);
         this.values = map != null ? map : new LinkedHashMap<>();
         this.comments = ConfigSerializer.deserializeComments(data);
-        if (comments.containsKey(".header"))
-            this.header = String.join("\n", comments.remove(".header"));
+        final String[] header = comments.remove(".header");
+        if (header != null) {
+            this.header = String.join("\n", header);
+        }
 
         final boolean removedFields = values.keySet().removeIf(key -> {
             final String[] split = key.split("\\.");
@@ -123,7 +126,7 @@ public final class Config extends ConfigSection {
     }
 
     @Override
-    public void set(final String key, final Object value, final String... comments) {
+    public void set(final String key, @Nullable final Object value, final String... comments) {
         if (value == null) {
             remove(key);
         } else {
@@ -165,6 +168,7 @@ public final class Config extends ConfigSection {
         return unsupportedFields;
     }
 
+    @Nullable
     public String getHeader() {
         return header;
     }

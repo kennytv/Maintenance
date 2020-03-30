@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.api.ISettings;
 import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -496,9 +497,7 @@ public class Settings implements ISettings {
         return pingMessages;
     }
 
-    /**
-     * May be null
-     */
+    @Nullable
     public List<String> getTimerSpecificPingMessages() {
         return timerSpecificPingMessages;
     }

@@ -36,6 +36,7 @@ import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
@@ -164,12 +165,14 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
         return userStorage.get(name).map(SpongeOfflinePlayerInfo::new).orElse(null);
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
         return userStorage.get(uuid).map(SpongeOfflinePlayerInfo::new).orElse(null);

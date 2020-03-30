@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
+import org.jetbrains.annotations.Nullable;
 
 public final class ServerConnectResult {
     private final boolean cancel;
@@ -38,6 +39,7 @@ public final class ServerConnectResult {
         return cancel;
     }
 
+    @Nullable
     public Server getTarget() {
         return target;
     }
