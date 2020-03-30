@@ -93,10 +93,16 @@ public final class Config extends ConfigSection {
     }
 
     public void save() throws IOException {
-        final byte[] bytes = this.saveConfigToString().getBytes(StandardCharsets.UTF_8);
-        this.file.getParentFile().mkdirs();
-        this.file.createNewFile();
-        Files.write(this.file.toPath(), bytes);
+        saveTo(file);
+    }
+
+    public void saveTo(final File file) throws IOException {
+        final byte[] bytes = toString().getBytes(StandardCharsets.UTF_8);
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
+        file.createNewFile();
+        Files.write(file.toPath(), bytes);
     }
 
     public boolean addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
@@ -150,10 +156,6 @@ public final class Config extends ConfigSection {
         return new Yaml(options);
     }
 
-    public String saveConfigToString() {
-        return ConfigSerializer.serialize(this.header, this.values, this.comments, this.yaml);
-    }
-
     public void clear() {
         this.values.clear();
         this.comments.clear();
@@ -175,5 +177,10 @@ public final class Config extends ConfigSection {
 
     public void resetAwesomeHeader() {
         this.header = AWESOME_HEADER;
+    }
+
+    @Override
+    public String toString() {
+        return ConfigSerializer.serialize(this.header, this.values, this.comments, this.yaml);
     }
 }

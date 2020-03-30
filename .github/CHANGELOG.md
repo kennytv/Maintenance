@@ -5,6 +5,9 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Added Chinese language file (thanks to Spigot user yeban)
 
+### Fixed
+* Fixed config parsing with multi line strings
+
 ## 3.0.4 - March 17th 2020
 ### Changed
 * Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)

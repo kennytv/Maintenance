@@ -40,7 +40,9 @@ public final class ConfigSerializer {
     private static final int INDENT_UNIT = 2;
 
     public static String serialize(final String header, final Map<String, Object> data, final Map<String, String[]> comments, final Yaml yaml) {
-        if (data.isEmpty()) return yaml.dump(null);
+        if (data.isEmpty()) {
+            return yaml.dump(null);
+        }
 
         final String rawYaml = yaml.dump(data);
         final StringBuilder fileData = new StringBuilder();
@@ -61,46 +63,59 @@ public final class ConfigSerializer {
                 key = join(array, array.length - backspace);
                 keyLine = true;
             } else {
-                keyLine = line.contains(":");
+                keyLine = line.indexOf(':') != -1;
             }
 
-            if (keyLine) {
-                final String newKey = substring.split(Pattern.quote(":"))[0]; // Not sure about the quote thing, so I'll just keep it :aaa:
-                if (!key.isEmpty())
-                    key += PATH_SEPARATOR_STRING;
-                key += newKey;
+            if (!keyLine) {
+                // Nothing to do, go to next line
+                fileData.append(line).append('\n');
+                continue;
+            }
 
+            final String newKey = substring.split(Pattern.quote(":"))[0]; // Not sure about the quote thing, so I'll just keep it :aaa:
+            if (!key.isEmpty()) {
+                key += PATH_SEPARATOR_STRING;
+            }
+            key += newKey;
+
+            // Add comments if present
+            if (comments != null) {
                 final String[] strings = comments.get(key);
                 if (strings != null) {
                     final String indentText = indent > 0 ? line.substring(0, indent) : "";
                     for (final String comment : strings) {
-                        if (comment.isEmpty())
+                        if (comment.isEmpty()) {
                             fileData.append('\n');
-                        else
+                        } else {
                             fileData.append(indentText).append(comment).append('\n');
+                        }
                     }
                 }
-
-                currentKeyIndents = indents;
             }
 
+            currentKeyIndents = indents;
             fileData.append(line).append('\n');
         }
         return header != null && !header.isEmpty() ? header + fileData : fileData.toString();
     }
 
     public static Map<String, String[]> deserializeComments(final String data) {
+        //TODO go through known yaml keys and figure out comments from there instead of from line to line?
         final Map<String, String[]> comments = new HashMap<>();
         final List<String> currentComments = new ArrayList<>();
         boolean header = true;
+        boolean multiLineValue = false;
         int currentIndents = 0;
         String key = "";
         for (final String line : data.split("\n")) {
             final String s = line.trim();
+            // It's a comment!
             if (s.startsWith("#")) {
                 currentComments.add(s);
                 continue;
             }
+
+            // Header is over - save it!
             if (header) {
                 if (!currentComments.isEmpty()) {
                     currentComments.add("");
@@ -109,21 +124,39 @@ public final class ConfigSerializer {
                 }
                 header = false;
             }
+
+            // Save empty lines as well
             if (s.isEmpty()) {
                 currentComments.add(s);
                 continue;
             }
 
+            // Multi line values?
+            if (s.startsWith("- |")) {
+                multiLineValue = true;
+                continue;
+            }
+
             final int indent = getIndents(line);
             final int indents = indent / INDENT_UNIT;
+            // Check if the multi line value is over
+            if (multiLineValue) {
+                if (indents > currentIndents) continue;
+
+                multiLineValue = false;
+            }
+
+            // Check if this is a level lower
             if (indents <= currentIndents) {
                 final String[] array = key.split(PATH_SEPARATOR_QUOTED);
                 final int backspace = currentIndents - indents + 1;
-                key = join(array, array.length - backspace);
+                final int delta = array.length - backspace;
+                key = delta >= 0 ? join(array, delta) : key;
             }
 
+            // Finish current key
             final String separator = key.isEmpty() ? "" : PATH_SEPARATOR_STRING;
-            final String lineKey = line.contains(":") ? line.split(Pattern.quote(":"))[0] : line;
+            final String lineKey = line.indexOf(':') != -1 ? line.split(Pattern.quote(":"))[0] : line;
             key += separator + lineKey.substring(indent);
             currentIndents = indents;
 
@@ -138,8 +171,11 @@ public final class ConfigSerializer {
     private static int getIndents(final String line) {
         int count = 0;
         for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) == ' ') count++;
-            else break;
+            if (line.charAt(i) != ' ') {
+                break;
+            }
+
+            count++;
         }
         return count;
     }

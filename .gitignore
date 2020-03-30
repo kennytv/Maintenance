@@ -1,5 +1,4 @@
 .metadata
-dependencies/
 bin/
 tmp/
 *.tmp
@@ -93,3 +92,4 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 !MaintenanceAPI.jar
+**/src/test/resources/
