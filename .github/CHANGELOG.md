@@ -4,6 +4,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added Chinese language file (thanks to Spigot user yeban)
+* Added Italian language file (thanks to @TheViperShow)
 
 ### Fixed
 * Fixed config parsing with multi line strings
