@@ -24,6 +24,7 @@ A full list of commands, permissions and configuration options can be found in t
 * [Changelogs](https://github.com/KennyTV/Maintenance/blob/master/.github/CHANGELOG.md)
 * [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)
+* [PlaceholderAPI addon](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon)
 
 Other forum threads
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
