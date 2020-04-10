@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
