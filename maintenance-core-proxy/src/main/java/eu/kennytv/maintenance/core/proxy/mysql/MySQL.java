@@ -33,7 +33,6 @@ public final class MySQL {
     private final Logger logger;
     private final HikariDataSource hikariDataSource;
 
-    // Excuse me and everything to do with the MySQL stuff, I have little to no idea of how to use databases
     public MySQL(final Logger logger, final String hostname, final int port, final String username, final String password, final String database, final boolean useSSL) {
         this.logger = logger;
 
@@ -44,7 +43,7 @@ public final class MySQL {
         hikariConfig.addDataSourceProperty("password", password);
 
         String urlProperty = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
-        if (useSSL) {
+        if (!useSSL) {
             urlProperty += "?useSSL=false";
         }
         hikariConfig.addDataSourceProperty("url", urlProperty);

@@ -43,7 +43,7 @@ timerspecific-pingmessages:
 # If set to true, the message below will be shown at the top right corner of the server in the serverlist, where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.
 #
-# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message (e.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
+# Alternatively you can use '%ONLINE%' and '%MAX%' if you want to include the playercount in a custom message (e.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
 enable-playercountmessage: true
 playercountmessage: "&4Maintenance"
 
