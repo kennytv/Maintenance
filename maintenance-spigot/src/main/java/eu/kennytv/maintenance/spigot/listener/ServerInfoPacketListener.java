@@ -64,8 +64,9 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
         }
 
         final List<WrappedGameProfile> players = new ArrayList<>();
-        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
+        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%")) {
             players.add(new WrappedGameProfile(uuid, string));
+        }
         ping.setPlayers(players);
     }
 

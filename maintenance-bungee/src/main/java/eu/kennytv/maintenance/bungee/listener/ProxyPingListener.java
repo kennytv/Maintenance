@@ -48,8 +48,6 @@ public final class ProxyPingListener implements Listener {
         }
 
         ping.setDescription(settings.getRandomPingMessage());
-        ping.getPlayers().setOnline(0);
-        ping.getPlayers().setMax(0);
         ping.getPlayers().setSample(new ServerPing.PlayerInfo[]{
                 new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage().replace("%NEWLINE%", "\n"), "")
         });

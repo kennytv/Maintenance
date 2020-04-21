@@ -54,13 +54,14 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         for (int i = 0; i < split.length; i++) {
             samplePlayers[i] = new ServerPing.SamplePlayer(split[i], uuid);
         }
+
         builder.description(TextComponent.of(settings.getRandomPingMessage()))
-                .onlinePlayers(0)
-                .maximumPlayers(0)
                 .samplePlayers(samplePlayers);
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             builder.favicon(plugin.getFavicon());
+        }
+
         event.setPing(builder.build());
     }
 }

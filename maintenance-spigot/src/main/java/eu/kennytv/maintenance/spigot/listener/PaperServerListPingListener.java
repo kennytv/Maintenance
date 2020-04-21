@@ -56,11 +56,13 @@ public final class PaperServerListPingListener implements Listener {
 
         final List<PlayerProfile> sample = event.getPlayerSample();
         sample.clear();
-        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
+        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%")) {
             sample.add(new DummyProfile(string));
+        }
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             event.setServerIcon(plugin.getFavicon());
+        }
     }
 
     // Less unnecessary object creation :>

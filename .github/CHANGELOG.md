@@ -9,8 +9,8 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ### Fixed
 * Fixed the `use-ssl` option being inverted
+* Fixed disabling the playercount-message still hiding online/max players
 * Fixed config parsing with multi line strings
-* Spigot: Fixed disabling the playercount-message still setting max-players to 0 in the ping
 
 ## 3.0.4 - March 17th 2020
 ### Changed

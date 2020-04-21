@@ -41,6 +41,7 @@ public final class ServerListPingListener implements Listener {
         if (settings.hasCustomPlayerCountMessage()) {
             event.setMaxPlayers(0);
         }
+
         event.setMotd(settings.getRandomPingMessage());
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

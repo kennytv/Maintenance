@@ -44,20 +44,23 @@ public final class ClientPingServerListener {
         if (!settings.isMaintenance()) return;
 
         final ClientPingServerEvent.Response response = event.getResponse();
-        /*if (settings.hasCustomPlayerCountMessage()) {
+        if (settings.hasCustomPlayerCountMessage()) {
             //TODO versionmessage possible without much trouble?
             // (spoiler: no, it isn't)
-        }*/
+            response.getPlayers().ifPresent(players -> players.setMax(0));
+        }
 
         response.setDescription(Text.of(settings.getRandomPingMessage()));
         response.getPlayers().ifPresent(players -> {
             final List<GameProfile> profiles = players.getProfiles();
             profiles.clear();
-            for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
+            for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%")) {
                 profiles.add(GameProfile.of(uuid, string));
+            }
         });
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             response.setFavicon(plugin.getFavicon());
+        }
     }
 }
