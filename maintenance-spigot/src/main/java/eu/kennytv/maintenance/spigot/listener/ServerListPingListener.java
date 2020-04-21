@@ -38,7 +38,9 @@ public final class ServerListPingListener implements Listener {
     public void serverListPing(final ServerListPingEvent event) {
         if (!settings.isMaintenance()) return;
 
-        event.setMaxPlayers(0);
+        if (settings.hasCustomPlayerCountMessage()) {
+            event.setMaxPlayers(0);
+        }
         event.setMotd(settings.getRandomPingMessage());
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

@@ -8,7 +8,9 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Updated Russian language file (thanks to Spigot user En_0t_S)
 
 ### Fixed
+* Fixed the `use-ssl` option being inverted
 * Fixed config parsing with multi line strings
+* Spigot: Fixed disabling the playercount-message still setting max-players to 0 in the ping
 
 ## 3.0.4 - March 17th 2020
 ### Changed
