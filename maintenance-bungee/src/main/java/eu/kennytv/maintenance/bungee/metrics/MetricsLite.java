@@ -76,7 +76,8 @@ public final class MetricsLite {
     public JsonObject getPluginData() {
         final JsonObject data = new JsonObject();
 
-        final String pluginName = plugin.getDescription().getName();
+        //final String pluginName = plugin.getDescription().getName();
+        final String pluginName = "MaintenanceBungee"; // I cut off the suffix, not sure how bStats would like the name change
         final String pluginVersion = plugin.getDescription().getVersion();
 
         data.addProperty("pluginName", pluginName);

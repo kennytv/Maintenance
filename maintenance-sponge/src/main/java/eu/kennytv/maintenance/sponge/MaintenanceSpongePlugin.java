@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
  * @author KennyTV
  * @since 3.0
  */
-@Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
+@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "KennyTV",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {

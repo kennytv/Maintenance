@@ -41,9 +41,9 @@ public final class MaintenanceSpigotAPI {
      * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenance getAPI() {
-        final Plugin maintenance = Bukkit.getPluginManager().getPlugin("MaintenanceSpigot");
+        final Plugin maintenance = Bukkit.getPluginManager().getPlugin("Maintenance");
         if (maintenance == null)
-            throw new IllegalArgumentException("Could not get instance of MaintenanceSpigot! Broken/custom build of the plugin?");
+            throw new IllegalArgumentException("Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return ((IMaintenanceBase) maintenance).getApi();
     }
 }

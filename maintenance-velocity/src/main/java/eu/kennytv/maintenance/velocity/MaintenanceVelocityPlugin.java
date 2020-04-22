@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
  * @author KennyTV
  * @since 3.0
  */
-@Plugin(id = "maintenancevelocity", name = "MaintenanceVelocity", version = MaintenanceVersion.VERSION, authors = "KennyTV",
+@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "KennyTV",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://forums.velocitypowered.com/t/maintenance/129",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
@@ -245,7 +245,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public File getPluginFile() {
-        return server.getPluginManager().getPlugin("maintenancevelocity")
+        return server.getPluginManager().getPlugin("maintenance")
                 .orElseThrow(() -> new IllegalArgumentException("Couldn't get Maintenance instance. Custom/broken build?")).getDescription().getSource()
                 .orElseThrow(IllegalArgumentException::new).toFile();
     }

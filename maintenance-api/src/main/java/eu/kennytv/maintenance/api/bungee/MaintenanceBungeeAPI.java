@@ -41,9 +41,9 @@ public final class MaintenanceBungeeAPI {
      * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenanceProxy getAPI() {
-        final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");
+        final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("Maintenance");
         if (maintenance == null)
-            throw new IllegalArgumentException("Could not get instance of MaintenanceBungee! Broken/custom build of the plugin?");
+            throw new IllegalArgumentException("Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return (IMaintenanceProxy) ((IMaintenanceBase) maintenance).getApi();
     }
 }

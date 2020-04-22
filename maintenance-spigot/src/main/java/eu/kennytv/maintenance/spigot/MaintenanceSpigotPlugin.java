@@ -76,7 +76,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
         final MaintenanceSpigotCommand command = new MaintenanceSpigotCommand(this, settings);
         commandManager = command;
-        plugin.getCommand("maintenancespigot").setExecutor(command);
+        plugin.getCommand("maintenance").setExecutor(command);
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);

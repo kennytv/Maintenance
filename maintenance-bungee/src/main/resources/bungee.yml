@@ -1,4 +1,4 @@
-name: MaintenanceBungee
+name: Maintenance
 version: ${project.version}
 main: eu.kennytv.maintenance.bungee.MaintenanceBungeeBase
 author: KennyTV
