@@ -3,11 +3,14 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ## Unreleased
 ### Changed
+* **IMPORTANT**: The plugin identifiers are now all `Maintenance` instead of the previous `MaintenanceSpigot`, `MaintenanceBungee`, etc.
+  * **This means you have to rename your plugin folder to `Maintenance` without the suffix before restarting your server**
+  * If you are using the MaintenancePlaceholderAddon, you need to update it to 1.0.3
+* Bungee/Velocity: Added language fields to choose custom kickmessages for individual proxied servers
+  * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Configuration#language-file) for an example setting
 * Added Chinese language file (thanks to Spigot user yeban)
 * Added Italian language file (thanks to @TheViperShow)
 * Updated Russian language file (thanks to Spigot user En_0t_S)
-* API change: The plugin identifiers are now all `Maintenance` instead of the previous `MaintenanceSpigot`, `MaintenanceBungee`, etc.
-  * If you are using the MaintenancePlaceholderAddon, you need to update it to 1.0.3
 ### Fixed
 * Fixed the `use-ssl` option being inverted
 * Fixed disabling the playercount-message still hiding online/max players

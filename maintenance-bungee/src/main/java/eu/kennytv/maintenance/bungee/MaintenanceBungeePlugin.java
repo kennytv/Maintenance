@@ -127,6 +127,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
+        // Kick players from a proxied server
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
         final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
         for (final ProxiedPlayer player : ((BungeeServer) server).getServer().getPlayers()) {
@@ -135,7 +136,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
                     player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     player.connect(fallbackServer);
                 } else
-                    player.disconnect(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
+                    player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
             } else {
                 player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
@@ -144,6 +145,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayersTo(final Server server) {
+        // Kick all players to a single waiting server
         final ServerInfo serverInfo = ((BungeeServer) server).getServer();
         // Notifications done in global method
         for (final ProxiedPlayer player : getProxy().getPlayers()) {

@@ -77,7 +77,7 @@ public final class SettingsProxy extends Settings {
     @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
-        if (!hasMySQL() && (boolean) config.getDeep("mysql.use-mysql")) {
+        if (!hasMySQL() && config.getBoolean("mysql.use-mysql")) {
             try {
                 setupMySQL();
             } catch (final Exception e) {
@@ -141,6 +141,23 @@ public final class SettingsProxy extends Settings {
             lastServerCheck = System.currentTimeMillis();
         }
         return maintenanceServers.contains(serverName);
+    }
+
+    public String getServerKickMessage(final String server) {
+        String message = getMessage("singleMaintenanceKicks." + server, null);
+        if (message == null) {
+            message = getMessage("singleMaintenanceKick");
+        }
+        return plugin.formatedTimer(message).replace("%SERVER%", server);
+    }
+
+    // Full meaning being kicked from the proxy, not just a proxied server
+    public String getFullServerKickMessage(final String server) {
+        String message = getMessage("singleMaintenanceKicksComplete." + server, null);
+        if (message == null) {
+            message = getMessage("singleMaintenanceKickComplete");
+        }
+        return plugin.formatedTimer(message).replace("%NEWLINE%", "\n").replace("%SERVER%", server);
     }
 
     public boolean hasMySQL() {

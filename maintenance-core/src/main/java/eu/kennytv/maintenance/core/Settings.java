@@ -28,7 +28,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Settings implements ISettings {
@@ -94,9 +101,16 @@ public class Settings implements ISettings {
         updateLanguageFile();
 
         // Directly save colored messages
-        for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
-            if (!(entry.getValue() instanceof String)) continue;
-            entry.setValue(getColoredString((String) entry.getValue()));
+        transformColoredMessages(language.getValues());
+    }
+
+    private void transformColoredMessages(final Map<String, Object> map) {
+        for (final Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() instanceof Map) {
+                transformColoredMessages((Map<String, Object>) entry.getValue());
+            } else if (entry.getValue() instanceof String) {
+                entry.setValue(getColoredString((String) entry.getValue()));
+            }
         }
     }
 

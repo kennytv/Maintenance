@@ -160,11 +160,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                     // Kick the player if fallback server is not reachable
                     player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful()) {
-                            player.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                            player.disconnect(TextComponent.of(settingsProxy.getFullServerKickMessage(server.getName())));
                         }
                     });
                 } else
-                    player.disconnect(TextComponent.of(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName())));
+                    player.disconnect(TextComponent.of(settingsProxy.getFullServerKickMessage(server.getName())));
             } else {
                 player.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
             }

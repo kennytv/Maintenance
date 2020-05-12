@@ -60,7 +60,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
 
             // Player already is on the waiting server
             final String currentServer = plugin.getServer(sender);
-            if (currentServer != null && currentServer.equals(waitingServer.getName())) {
+            if (waitingServer.getName().equals(currentServer)) {
                 sender.sendMessage(settings.getMessage("forceWaitingServer"));
                 return DENIED;
             }
@@ -81,7 +81,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
         }
 
         if (normalServerConnect) {
-            sender.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
+            sender.sendMessage(settings.getServerKickMessage(target.getName()));
             return DENIED;
         }
 
@@ -89,7 +89,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
         final Server fallback = plugin.getServer(settings.getFallbackServer());
         if (fallback == null || !sender.canAccess(fallback) || plugin.isMaintenance(fallback)) {
             // Nothing to redirect to, player has to be kicked from the proxy
-            sender.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
+            sender.disconnect(settings.getFullServerKickMessage(target.getName()));
             if (!warned) {
                 plugin.getLogger().warning("Could not send player to the set fallback server; instead kicking player off the network!");
                 warned = true;
