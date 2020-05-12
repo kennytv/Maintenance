@@ -100,7 +100,7 @@ public class Settings implements ISettings {
 
         updateLanguageFile();
 
-        // Directly save colored messages
+        // Directly cache colored messages
         transformColoredMessages(language.getValues());
     }
 

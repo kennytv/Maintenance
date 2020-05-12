@@ -6,6 +6,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * **IMPORTANT**: The plugin identifiers are now all `Maintenance` instead of the previous `MaintenanceSpigot`, `MaintenanceBungee`, etc.
   * **This means you have to rename your plugin folder to `Maintenance` without the suffix before restarting your server**
   * If you are using the MaintenancePlaceholderAddon, you need to update it to 1.0.3
+* Bungee/Velocity: The `fallback` field can now also be set as a list to define multiple fallback servers
 * Bungee/Velocity: Added language fields to choose custom kickmessages for individual proxied servers
   * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Configuration#language-file) for an example setting
 * Added Chinese language file (thanks to Spigot user yeban)

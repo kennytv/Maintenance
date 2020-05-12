@@ -80,13 +80,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     public void serverActions(final Server server, final boolean maintenance) {
         if (server == null || server instanceof DummyServer) return;
         if (maintenance) {
-            final Server fallback = getServer(settingsProxy.getFallbackServer());
+            final Server fallback = settingsProxy.getFallbackServer();
             if (fallback == null) {
                 if (server.hasPlayers()) {
                     getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
                 }
-            } else if (fallback.getName().equals(server.getName())) {
-                getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             }
             kickPlayers(server, fallback);
         } else

@@ -86,8 +86,8 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
         }
 
         // If it's the initial proxy join or a kick from another server, go back to fallback server
-        final Server fallback = plugin.getServer(settings.getFallbackServer());
-        if (fallback == null || !sender.canAccess(fallback) || plugin.isMaintenance(fallback)) {
+        final Server fallback = settings.getFallbackServer();
+        if (fallback == null || !sender.canAccess(fallback)) {
             // Nothing to redirect to, player has to be kicked from the proxy
             sender.disconnect(settings.getFullServerKickMessage(target.getName()));
             if (!warned) {
