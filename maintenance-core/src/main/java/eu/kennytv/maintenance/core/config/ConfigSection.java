@@ -44,48 +44,47 @@ public class ConfigSection {
 
     @Nullable
     public <E> E get(final String key) {
-        return (E) this.values.get(key);
+        return (E) getObject(key);
     }
 
     @Nullable
     public <E> E get(final String key, @Nullable final E def) {
-        final Object o = this.values.get(key);
+        final Object o = getObject(key);
         return o != null ? (E) o : def;
     }
 
     @Nullable
     public Object getObject(final String key) {
-        return this.values.get(key);
+        return getObject(key, null);
+    }
+
+    @Nullable
+    public Object getObject(final String key, final Object def) {
+        int i1 = -1;
+        int i2;
+        ConfigSection section = this;
+        while ((i1 = key.indexOf('.', i2 = i1 + 1)) != -1) {
+            section = section.getSection(key.substring(i2, i1));
+            if (section == null) return def;
+        }
+
+        final String subKey = key.substring(i2);
+        if (section == this) {
+            final Object result = values.get(subKey);
+            return result != null ? result : def;
+        }
+        return section.getObject(subKey, def);
     }
 
     @Nullable
     public <E> E getOrSet(final String key, @Nullable final E def) {
-        final Object o = this.values.get(key);
+        final Object o = getObject(key);
         if (o != null) {
             return (E) o;
         } else {
             this.set(key, def);
             return def;
         }
-    }
-
-    /**
-     * Convenience method, not further established as currently not necessary.
-     *
-     * @see #getSection(String)
-     * @deprecated this config is only made for a quite simple use, only goes one level deeper
-     */
-    @Deprecated
-    @Nullable
-    public Object getDeep(final String key) {
-        final String[] split = key.split("\\.", 2);
-        if (split.length != 2) return get(key);
-
-        final Object o = getObject(split[0]);
-        if (!(o instanceof Map)) return null;
-
-        final Map<String, Object> map = (Map<String, Object>) o;
-        return map.get(split[1]);
     }
 
     @Nullable
@@ -95,14 +94,16 @@ public class ConfigSection {
     }
 
     public boolean contains(final String key) {
-        return this.values.containsKey(key);
+        return getObject(key) != null;
     }
 
     public void set(final String key, @Nullable final Object value) {
+        //TODO go deep if necessary
         if (value == null) {
             remove(key);
-        } else
+        } else {
             this.values.put(key, value);
+        }
     }
 
     public void set(final String key, @Nullable final Object value, final String... comments) {
@@ -130,7 +131,7 @@ public class ConfigSection {
     }
 
     public boolean getBoolean(final String key, final boolean def) {
-        final Object o = values.get(key);
+        final Object o = getObject(key);
         return o instanceof Boolean ? (boolean) o : def;
     }
 
@@ -141,7 +142,7 @@ public class ConfigSection {
 
     @Nullable
     public String getString(final String key, @Nullable final String def) {
-        final Object o = get(key);
+        final Object o = getObject(key);
         return o instanceof String ? (String) o : def;
     }
 
@@ -150,7 +151,7 @@ public class ConfigSection {
     }
 
     public int getInt(final String key, final int def) {
-        final Object o = values.get(key);
+        final Object o = getObject(key);
         return o instanceof Number ? ((Number) o).intValue() : def;
     }
 
@@ -159,7 +160,7 @@ public class ConfigSection {
     }
 
     public double getDouble(final String key, final double def) {
-        final Object o = values.get(key);
+        final Object o = getObject(key);
         return o instanceof Number ? ((Number) o).doubleValue() : def;
     }
 
@@ -168,7 +169,7 @@ public class ConfigSection {
     }
 
     public long getLong(final String key, final long def) {
-        final Object o = values.get(key);
+        final Object o = getObject(key);
         return o instanceof Number ? ((Number) o).longValue() : def;
     }
 
@@ -177,8 +178,10 @@ public class ConfigSection {
         return get(key);
     }
 
+    @Nullable
     public List<String> getStringList(final String key, @Nullable final List<String> def) {
-        return values.containsKey(key) ? get(key) : def;
+        final List<String> list = get(key);
+        return list != null ? list : def;
     }
 
     @Nullable
@@ -186,7 +189,9 @@ public class ConfigSection {
         return get(key);
     }
 
+    @Nullable
     public List<Integer> getIntList(final String key, @Nullable final List<Integer> def) {
-        return values.containsKey(key) ? get(key) : def;
+        final List<Integer> list = get(key);
+        return list != null ? list : def;
     }
 }

@@ -22,6 +22,13 @@ class ConfigTest {
     }
 
     @Test
+    void testDeep() throws IOException {
+        final Config config = new Config(getTestFile("config.yml"));
+        config.load();
+        assert config.getInt("mysql.port") == 3306;
+    }
+
+    @Test
     void testSaveConsistency() throws IOException {
         final Config config = new Config(getTestFile("config.yml"));
         config.load();
