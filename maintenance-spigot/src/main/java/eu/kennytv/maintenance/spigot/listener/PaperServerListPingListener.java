@@ -56,7 +56,7 @@ public final class PaperServerListPingListener implements Listener {
 
         final List<PlayerProfile> sample = event.getPlayerSample();
         sample.clear();
-        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%")) {
+        for (final String string : settings.getPlayerCountHoverMessage().split("\n")) {
             sample.add(new DummyProfile(string));
         }
 

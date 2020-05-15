@@ -49,7 +49,7 @@ public final class ProxyPingListener implements Listener {
 
         ping.setDescription(settings.getRandomPingMessage());
         ping.getPlayers().setSample(new ServerPing.PlayerInfo[]{
-                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage().replace("%NEWLINE%", "\n"), "")
+                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage(), "")
         });
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null)

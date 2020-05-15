@@ -49,7 +49,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
                     .replace("%MAX%", Integer.toString(builder.getOnlinePlayers()))));
         }
 
-        final String[] split = settings.getPlayerCountHoverMessage().split("%NEWLINE%");
+        final String[] split = settings.getPlayerCountHoverMessage().split("\n");
         final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[split.length];
         for (int i = 0; i < split.length; i++) {
             samplePlayers[i] = new ServerPing.SamplePlayer(split[i], uuid);

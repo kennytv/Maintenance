@@ -162,7 +162,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getMessage("singleMaintenanceKickComplete");
         }
-        return plugin.formatedTimer(message).replace("%NEWLINE%", "\n").replace("%SERVER%", server);
+        return plugin.formatedTimer(message).replace("%SERVER%", server);
     }
 
     public boolean hasMySQL() {

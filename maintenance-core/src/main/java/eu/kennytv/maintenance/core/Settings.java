@@ -100,7 +100,7 @@ public class Settings implements ISettings {
 
         updateLanguageFile();
 
-        // Directly cache colored messages
+        // Directly cache colored messages - this should not be saved!
         transformColoredMessages(language.getValues());
     }
 
@@ -109,7 +109,7 @@ public class Settings implements ISettings {
             if (entry.getValue() instanceof Map) {
                 transformColoredMessages((Map<String, Object>) entry.getValue());
             } else if (entry.getValue() instanceof String) {
-                entry.setValue(getColoredString((String) entry.getValue()));
+                entry.setValue(getColoredString(replaceNewlineVar((String) entry.getValue())));
             }
         }
     }
@@ -179,7 +179,7 @@ public class Settings implements ISettings {
         if (plugin.getServerType() != ServerType.SPONGE) {
             playerCountMessage = getColoredString(getConfigString("playercountmessage"));
         }
-        playerCountHoverMessage = getColoredString(getConfigString("playercounthovermessage"));
+        playerCountHoverMessage = replaceNewlineVar(getColoredString(getConfigString("playercounthovermessage")));
         languageName = getConfigString("language").toLowerCase();
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
@@ -403,7 +403,7 @@ public class Settings implements ISettings {
 
     private String getPingMessage(final List<String> list) {
         final String s = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
-        return getColoredString(plugin.formatedTimer(s).replace("%NEWLINE%", "\n"));
+        return getColoredString(replaceNewlineVar(plugin.formatedTimer(s)));
     }
 
     @Override
@@ -507,6 +507,7 @@ public class Settings implements ISettings {
         return config;
     }
 
+    // The ping messages still contain the %NEWLINE% (if they have 2 lines)
     public List<String> getPingMessages() {
         return pingMessages;
     }
@@ -529,7 +530,7 @@ public class Settings implements ISettings {
     }
 
     public String getKickMessage() {
-        return plugin.formatedTimer(getMessage("kickmessage", "§cThe server is currently under maintenance!%NEWLINE%§cTry again later!").replace("%NEWLINE%", "\n"));
+        return plugin.formatedTimer(getMessage("kickmessage"));
     }
 
     public String getLanguage() {
@@ -538,6 +539,20 @@ public class Settings implements ISettings {
 
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
+    }
+
+    /*
+     * Note on why this even exists: Yaml will force save all strings containing line breaks '\n' in this rather chunky format:
+     *   key: |-
+     *     First line text
+     *      Second line text.
+     *      ...
+     *
+     * This also happens to string lists, making those practically unreadable (in partciular the motd list), as well as confusing for most users in general.
+     * Because of this, I replace %NEWLINE% manually, to spare users from these ugly breaks.
+     */
+    protected String replaceNewlineVar(final String s) {
+        return s.replace("%NEWLINE%", "\n");
     }
 
     protected void loadExtraSettings() {
