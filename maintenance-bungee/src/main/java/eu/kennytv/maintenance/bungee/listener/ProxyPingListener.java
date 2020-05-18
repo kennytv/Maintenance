@@ -35,7 +35,7 @@ public final class ProxyPingListener implements Listener {
         this.settings = settings;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = 80)
     public void proxyPing(final ProxyPingEvent event) {
         if (!settings.isMaintenance()) return;
 
