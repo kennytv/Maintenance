@@ -16,6 +16,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Fixed the `use-ssl` option being inverted
 * Fixed disabling the playercount-message still hiding online/max players
 * Fixed config parsing with multi line strings
+* Bungee: Fixed compatibility with other motd changing plugins using the 'HIGHEST' ping listener priority
 
 ## 3.0.4 - March 17th 2020
 ### Changed
