@@ -3,8 +3,9 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ## Unreleased
 ### Changed
-* **IMPORTANT**: The plugin identifiers are now all `Maintenance` instead of the previous `MaintenanceSpigot`, `MaintenanceBungee`, etc.
-  * **This means you have to rename your plugin folder to `Maintenance` without the suffix before restarting your server**
+* The plugin identifiers are now `Maintenance` instead of the previous `MaintenanceSpigot` and `MaintenanceBungee`,
+ and `maintenance` instead of `maintenancesponge` and `maintenancevelocity`
+  * The plugin directory will automatically be renamed accordingly when starting the server
   * If you are using the MaintenancePlaceholderAddon, you need to update it to 1.0.3
 * Bungee/Velocity: The `fallback` field can now also be set as a list to define multiple fallback servers
 * Bungee/Velocity: Added language fields to choose custom kickmessages for individual proxied servers

@@ -67,8 +67,10 @@ public class Settings implements ISettings {
     public Settings(final MaintenancePlugin plugin, final String... unsupportedFields) {
         this.plugin = plugin;
         this.unsupportedFields = unsupportedFields;
-        if (!plugin.getDataFolder().exists())
+        if (!plugin.getDataFolder().exists()) {
+            updatePluginDirectory();
             plugin.getDataFolder().mkdirs();
+        }
 
         createFile("config.yml");
         createFile("WhitelistedPlayers.yml");
@@ -123,6 +125,7 @@ public class Settings implements ISettings {
     }
 
     // Public, as it is used in the MaintenanceAddon
+
     public void createFile(final String name) {
         createFile(name, name);
     }
@@ -203,6 +206,27 @@ public class Settings implements ISettings {
         }
 
         loadExtraSettings();
+    }
+
+    private void updatePluginDirectory() {
+        // All plugin identifiers were changed to 'Maintenance' ('maintenance' in Sponge and Velocity) in 3.0.5
+        // Don't worry, this is only checked if no plugin folder is found
+        final boolean lowerCaseName = plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY;
+        String oldDirName = "Maintenance" + plugin.getServerType();
+        if (lowerCaseName) {
+            oldDirName = oldDirName.toLowerCase();
+        }
+
+        final File oldDir = new File(plugin.getDataFolder().getParentFile(), oldDirName);
+        if (!oldDir.exists()) return;
+
+        try {
+            Files.move(oldDir.toPath(), plugin.getDataFolder().toPath());
+            plugin.getLogger().info("Moved old " + oldDirName + " to new " + plugin.getDataFolder().getName() + " directory!");
+        } catch (final IOException e) {
+            plugin.getLogger().severe("Error while copying " + oldDirName + " to new " + plugin.getDataFolder().getName() + " directory!");
+            e.printStackTrace();
+        }
     }
 
     private void updateConfig() {
