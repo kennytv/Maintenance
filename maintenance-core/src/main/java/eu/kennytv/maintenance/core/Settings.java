@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +35,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Settings implements ISettings {
     private static final int CURRENT_CONFIG_VERSION = 4;
@@ -125,7 +123,6 @@ public class Settings implements ISettings {
     }
 
     // Public, as it is used in the MaintenanceAddon
-
     public void createFile(final String name) {
         createFile(name, name);
     }
@@ -209,11 +206,10 @@ public class Settings implements ISettings {
     }
 
     private void updatePluginDirectory() {
-        // All plugin identifiers were changed to 'Maintenance' ('maintenance' in Sponge and Velocity) in 3.0.5
+        // All plugin identifiers were changed to 'Maintenance' ('maintenance' for Sponge and Velocity) in 3.0.5
         // Don't worry, this is only checked if no plugin folder is found
-        final boolean lowerCaseName = plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY;
         String oldDirName = "Maintenance" + plugin.getServerType();
-        if (lowerCaseName) {
+        if (plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY) {
             oldDirName = oldDirName.toLowerCase();
         }
 
@@ -231,35 +227,6 @@ public class Settings implements ISettings {
 
     private void updateConfig() {
         boolean changed = false;
-
-        // 3.0 - update config format from 2.5
-        if (migrateConfig(new File(plugin.getDataFolder(), "bungee-config.yml"))
-                || migrateConfig(new File(plugin.getDataFolder(), "spigot-config.yml"))) {
-            // Also rename old language file
-            final File file = new File(plugin.getDataFolder(), "language-" + languageName + ".yml");
-            if (file.exists()) {
-                if (file.renameTo(new File(plugin.getDataFolder(), "language-" + languageName + ".old"))) {
-                    plugin.getLogger().info("Renamed old language file!");
-                } else {
-                    plugin.getLogger().warning("Could not rename old language file! Please rename/delete it yourself as soon as possible!");
-                }
-            }
-
-            changed = true;
-        }
-        // 3.0 - move SpigotServer.yml fields to config
-        if (plugin.getServerType() == ServerType.BUNGEE && migrateSpigotServersFile()) {
-            changed = true;
-        }
-        // 3.0 - move maintenace-icon from server to plugin directory
-        final File icon = new File("maintenance-icon.png");
-        if (icon.exists()) {
-            if (icon.renameTo(new File(plugin.getDataFolder(), "maintenance-icon.png"))) {
-                plugin.getLogger().info("Moved maintenance-icon from server directory to the plugin's directory!");
-            } else {
-                plugin.getLogger().warning("Could not move maintenance-icon from server directory to the plugin's directory! Please do so yourself!");
-            }
-        }
 
         // Update config to latest version (config version included since 3.0.1)
         if (config.getInt("config-version") != CURRENT_CONFIG_VERSION) {
@@ -321,66 +288,6 @@ public class Settings implements ISettings {
                 e.printStackTrace();
             }
         }
-    }
-
-    private boolean migrateConfig(final File file) {
-        if (!file.exists()) return false;
-
-        plugin.getLogger().info("Migrating old config to new format...");
-        final Config oldConfig = new Config(file);
-        try {
-            oldConfig.load();
-        } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old config file");
-            e.printStackTrace();
-            return false;
-        }
-
-        if (oldConfig.contains("pingmessage"))
-            config.set("pingmessages", Arrays.asList(oldConfig.getString("pingmessage")));
-        if (oldConfig.contains("enable-maintenance-mode"))
-            config.set("maintenance-enabled", oldConfig.getBoolean("enable-maintenance-mode"));
-        for (final Map.Entry<String, Object> entry : config.getValues().entrySet()) {
-            if (!oldConfig.contains(entry.getKey())) continue;
-            entry.setValue(oldConfig.get(entry.getKey()));
-        }
-
-        oldConfig.clear();
-        if (!file.delete()) {
-            plugin.getLogger().warning("Could not delete old config file! Please delete it as soon as possible.");
-        } else {
-            plugin.getLogger().info("Updated to new config file!");
-        }
-        return true;
-    }
-
-    private boolean migrateSpigotServersFile() {
-        final File file = new File(plugin.getDataFolder(), "SpigotServers.yml");
-        if (!file.exists()) return false;
-
-        final Config oldFile = new Config(file);
-        try {
-            oldFile.load();
-        } catch (final IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Error while trying to migrate old SpigotServers file");
-            e.printStackTrace();
-            return false;
-        }
-
-        if (oldFile.contains("maintenance-on")) {
-            config.set("proxied-maintenance-servers", oldFile.getStringList("maintenance-on"));
-        }
-        if (oldFile.contains("fallback")) {
-            config.set("fallback", oldFile.getString("fallback"));
-        }
-
-        oldFile.clear();
-        if (!file.delete()) {
-            plugin.getLogger().warning("Could not delete old SpigotServers.yml file! Please delete it as soon as possible.");
-        } else {
-            plugin.getLogger().info("Deleted old SpigotServers.yml file!");
-        }
-        return true;
     }
 
     private static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
