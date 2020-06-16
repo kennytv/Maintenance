@@ -19,8 +19,7 @@
 package eu.kennytv.maintenance.core.util;
 
 import com.google.common.base.Preconditions;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public final class Version implements Comparable<Version> {
     private final int[] parts;
