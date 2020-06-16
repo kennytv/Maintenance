@@ -38,7 +38,16 @@ import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -127,8 +136,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public boolean updateAvailable() {
-        checkNewestVersion();
-        return version.compareTo(newestVersion) == -1;
+        try {
+            checkNewestVersion();
+            return version.compareTo(newestVersion) == -1;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 
     protected void continueLastEndtimer() {
@@ -155,7 +168,13 @@ public abstract class MaintenancePlugin implements IMaintenance {
         getLogger().info("Plugin by KennyTV");
         if (!settings.hasUpdateChecks()) return;
         async(() -> {
-            checkNewestVersion();
+            try {
+                checkNewestVersion();
+            } catch (final Exception e) {
+                getLogger().warning("An error occured during update checking!");
+                return;
+            }
+
             final int compare = version.compareTo(newestVersion);
             if (compare == -1) {
                 getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
@@ -202,17 +221,14 @@ public abstract class MaintenancePlugin implements IMaintenance {
         os.close();
     }
 
-    private void checkNewestVersion() {
-        try {
-            final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
+    private void checkNewestVersion() throws Exception {
+        final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()))) {
             final String newVersionString = reader.readLine();
-            reader.close();
             final Version newVersion = new Version(newVersionString);
             if (!newVersion.equals(version)) {
                 newestVersion = newVersion;
             }
-        } catch (final Exception ignored) {
         }
     }
 

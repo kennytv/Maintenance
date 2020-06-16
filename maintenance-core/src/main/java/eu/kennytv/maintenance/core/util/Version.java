@@ -18,35 +18,36 @@
 
 package eu.kennytv.maintenance.core.util;
 
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nullable;
+
 public final class Version implements Comparable<Version> {
     private final int[] parts;
     private final String version;
     private final String tag;
 
+    /**
+     * Creates a new version object to be compared.
+     * The version format are numbers separated by '.', possibly followed by a '-' to include an extra tag after it.
+     *
+     * @param version string representation of the version
+     * @throws IllegalArgumentException if the given version string is null or empty
+     * @throws NumberFormatException    if there are non-number characters in the version (before the tag)
+     */
     public Version(final String version) {
-        if (version == null || version.isEmpty()) {
-            this.version = "";
-            tag = "";
-            parts = new int[0];
-            System.out.println("Unknown Maintenance version detected!");
-            return;
-        }
+        Preconditions.checkArgument(version != null && !version.isEmpty());
 
-        final String[] split = version.split("-", 2)[0].split("\\.");
+        final int index = version.indexOf('-');
+        final String[] split = (index == -1 ? version : version.substring(0, index)).split("\\.");
         parts = new int[split.length];
         for (int i = 0; i < split.length; i++) {
-            if (!split[i].matches("[0-9]+")) {
-                this.version = "";
-                tag = "";
-                System.out.println("Unknown Maintenance version detected!");
-                return;
-            }
-
+            // Let this throw an exception if parsing fails
             parts[i] = Integer.parseInt(split[i]);
         }
 
         this.version = version;
-        tag = version.contains("-") ? version.split("-", 2)[1] : "";
+        tag = index != -1 ? version.substring(index + 1) : "";
     }
 
     /**
@@ -56,20 +57,23 @@ public final class Version implements Comparable<Version> {
      * @return 0 if they are the same, 1 if this instance is newer, -1 if older
      */
     @Override
-    public int compareTo(final Version version) {
-        if (version == null || version.toString() == null) return 0;
+    public int compareTo(@Nullable final Version version) {
+        if (version == null) return 0;
+
         final int max = Math.max(this.parts.length, version.parts.length);
         for (int i = 0; i < max; i++) {
             final int partA = i < this.parts.length ? this.parts[i] : 0;
             final int partB = i < version.parts.length ? version.parts[i] : 0;
-            if (partA < partB) return -1;
-            if (partA > partB) return 1;
+            if (partA < partB) {
+                return -1;
+            } else if (partA > partB) {
+                return 1;
+            }
         }
 
         if (this.tag.isEmpty() && !version.tag.isEmpty()) {
             return 1;
-        }
-        if (!this.tag.isEmpty() && version.tag.isEmpty()) {
+        } else if (!this.tag.isEmpty() && version.tag.isEmpty()) {
             return -1;
         }
         return 0;
