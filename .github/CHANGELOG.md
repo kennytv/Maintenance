@@ -13,6 +13,8 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Added Chinese language file (thanks to Spigot user yeban)
 * Added Italian language file (thanks to @TheViperShow)
 * Updated Russian language file (thanks to Spigot user En_0t_S)
+* Removed automated config migration from 2.x->3.0
+  * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Updates#updating-from-2x) on how to do that manually - virtually noone should be using such old versions anymore
 ### Fixed
 * Fixed the `use-ssl` option being inverted
 * Fixed disabling the playercount-message still hiding online/max players

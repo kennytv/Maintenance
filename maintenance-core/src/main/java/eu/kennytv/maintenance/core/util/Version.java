@@ -31,6 +31,7 @@ public final class Version implements Comparable<Version> {
             System.out.println("Unknown Maintenance version detected!");
             return;
         }
+
         final String[] split = version.split("-", 2)[0].split("\\.");
         parts = new int[split.length];
         for (int i = 0; i < split.length; i++) {
@@ -40,6 +41,7 @@ public final class Version implements Comparable<Version> {
                 System.out.println("Unknown Maintenance version detected!");
                 return;
             }
+
             parts[i] = Integer.parseInt(split[i]);
         }
 
@@ -64,10 +66,12 @@ public final class Version implements Comparable<Version> {
             if (partA > partB) return 1;
         }
 
-        if (this.tag.isEmpty() && !version.tag.isEmpty())
+        if (this.tag.isEmpty() && !version.tag.isEmpty()) {
             return 1;
-        if (!this.tag.isEmpty() && version.tag.isEmpty())
+        }
+        if (!this.tag.isEmpty() && version.tag.isEmpty()) {
             return -1;
+        }
         return 0;
     }
 
@@ -82,7 +86,9 @@ public final class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(final Object o) {
-        if (o == null) return false;
-        return o instanceof Version && o == this || version.equals(o.toString());
+        if (o == this) return true;
+        if (!(o instanceof Version)) return false;
+        final Version other = (Version) o;
+        return version.equals(other.version);
     }
 }
