@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.api.spigot;
 
+import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.api.IMaintenance;
 import eu.kennytv.maintenance.api.IMaintenanceBase;
 import org.bukkit.Bukkit;
@@ -42,8 +43,7 @@ public final class MaintenanceSpigotAPI {
      */
     public static IMaintenance getAPI() {
         final Plugin maintenance = Bukkit.getPluginManager().getPlugin("Maintenance");
-        if (maintenance == null)
-            throw new IllegalArgumentException("Could not get instance of Maintenance! Broken/custom build of the plugin?");
+        Preconditions.checkNotNull(maintenance, "Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return ((IMaintenanceBase) maintenance).getApi();
     }
 }

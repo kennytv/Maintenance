@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.api.bungee;
 
+import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.api.IMaintenanceBase;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import net.md_5.bungee.api.ProxyServer;
@@ -42,8 +43,7 @@ public final class MaintenanceBungeeAPI {
      */
     public static IMaintenanceProxy getAPI() {
         final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("Maintenance");
-        if (maintenance == null)
-            throw new IllegalArgumentException("Could not get instance of Maintenance! Broken/custom build of the plugin?");
+        Preconditions.checkNotNull(maintenance, "Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return (IMaintenanceProxy) ((IMaintenanceBase) maintenance).getApi();
     }
 }
