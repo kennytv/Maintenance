@@ -76,6 +76,23 @@ class ConfigTest {
         assert newlyLoaded.getInt("config-version") == 4;
     }
 
+    @Test
+    void testSetAndContains() throws IOException {
+        final Config config = new Config(getTestFile("config.yml"));
+        config.load();
+
+        config.set("test", "abc");
+        config.remove("fallback");
+        final ConfigSection section = config.getSection("mysql");
+        section.set("port", 1000);
+        section.remove("password");
+
+        assert config.contains("test") && config.getString("test").equals("abc");
+        assert config.getInt("mysql.port") == 1000;
+        assert !config.contains("mysql.password") && !config.getSection("mysql").contains("password");
+        assert !config.contains("fallback");
+    }
+
     private File getTestFile(final String path) {
         return new File("src/test/resources/" + path);
     }

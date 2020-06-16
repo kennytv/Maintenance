@@ -156,7 +156,7 @@ public final class SettingsProxy extends Settings {
         return plugin.formatedTimer(message).replace("%SERVER%", server);
     }
 
-    // Full meaning being kicked from the proxy, not just a proxied server
+    // Full = being kicked from the proxy, not just a proxied server
     public String getFullServerKickMessage(final String server) {
         String message = getMessage("singleMaintenanceKicksComplete." + server, null);
         if (message == null) {

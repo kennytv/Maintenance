@@ -32,13 +32,17 @@ import java.util.Set;
  */
 public class ConfigSection {
 
+    protected final Config root;
+    protected final String currentPath;
     protected Map<String, Object> values;
 
-    ConfigSection() {
-        this(new HashMap<>());
+    ConfigSection(final Config root, final String currentPath) {
+        this(root, currentPath, new HashMap<>());
     }
 
-    ConfigSection(final Map<String, Object> values) {
+    ConfigSection(final Config root, final String currentPath, final Map<String, Object> values) {
+        this.root = root;
+        this.currentPath = currentPath;
         this.values = values;
     }
 
@@ -90,7 +94,8 @@ public class ConfigSection {
     @Nullable
     public ConfigSection getSection(final String key) {
         final Object o = getObject(key);
-        return o instanceof Map ? new ConfigSection((Map<String, Object>) o) : null;
+        if (!(o instanceof Map)) return null;
+        return new ConfigSection(getRoot(), getFullKeyInPath(key), (Map<String, Object>) o);
     }
 
     public boolean contains(final String key) {
@@ -100,22 +105,15 @@ public class ConfigSection {
     public void set(final String key, @Nullable final Object value) {
         //TODO go deep if necessary
         if (value == null) {
-            remove(key);
+            values.remove(key);
+            getRoot().getComments().remove(getFullKeyInPath(key));
         } else {
-            this.values.put(key, value);
-        }
-    }
-
-    public void set(final String key, @Nullable final Object value, final String... comments) {
-        if (value == null) {
-            remove(key);
-        } else {
-            this.values.put(key, value);
+            values.put(key, value);
         }
     }
 
     public void remove(final String key) {
-        this.values.remove(key);
+        set(key, null);
     }
 
     public Set<String> getKeys() {
@@ -193,5 +191,23 @@ public class ConfigSection {
     public List<Integer> getIntList(final String key, @Nullable final List<Integer> def) {
         final List<Integer> list = get(key);
         return list != null ? list : def;
+    }
+
+    /**
+     * @return root config
+     */
+    public Config getRoot() {
+        return root;
+    }
+
+    /**
+     * @return current path, or empty string if root
+     */
+    public String getCurrentPath() {
+        return currentPath;
+    }
+
+    protected String getFullKeyInPath(final String key) {
+        return currentPath.isEmpty() ? key : currentPath + "." + key;
     }
 }

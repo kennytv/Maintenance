@@ -27,7 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Further modified version of the SimpleConfig project of PSandro (https://github.com/PSandro/SimpleConfig).
@@ -55,6 +59,7 @@ public final class Config extends ConfigSection {
     private String header;
 
     public Config(final File file, final String... unsupportedFields) {
+        super(null, "");
         this.file = file;
         this.unsupportedFields = unsupportedFields.length == 0 ? Collections.emptySet() : Sets.newHashSet(unsupportedFields);
     }
@@ -64,6 +69,7 @@ public final class Config extends ConfigSection {
         final Map<String, Object> map = yaml.load(data);
         this.values = map != null ? map : new LinkedHashMap<>();
         this.comments = ConfigSerializer.deserializeComments(data);
+
         final String[] header = comments.remove(".header");
         if (header != null) {
             this.header = String.join("\n", header);
@@ -72,20 +78,18 @@ public final class Config extends ConfigSection {
         final boolean removedFields = values.keySet().removeIf(key -> {
             final String[] split = key.split("\\.");
             String splitKey = "";
-            boolean remove = false;
             for (final String s : split) {
                 splitKey += s;
                 if (!unsupportedFields.contains(splitKey)) {
                     splitKey += ".";
                     continue;
                 }
-                remove = true;
-                break;
-            }
 
-            if (remove)
+                // Unsupported field
                 comments.remove(key);
-            return remove;
+                return true;
+            }
+            return false;
         });
         if (removedFields) {
             save();
@@ -131,28 +135,12 @@ public final class Config extends ConfigSection {
         return changed;
     }
 
-    @Override
-    public void set(final String key, @Nullable final Object value, final String... comments) {
-        if (value == null) {
-            remove(key);
-        } else {
-            this.values.put(key, value);
-            this.comments.put(key, comments);
-        }
-    }
-
-    @Override
-    public void remove(final String key) {
-        this.values.remove(key);
-        this.comments.remove(key);
-    }
-
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(false);
         options.setIndent(2);
-        options.setWidth(10_000); // be sneaky because autobreak on read/save looks disgusting
+        options.setWidth(10_000); // be sneaky because autobreak on saving looks disgusting
         return new Yaml(options);
     }
 
@@ -168,6 +156,11 @@ public final class Config extends ConfigSection {
 
     public Set<String> getUnsupportedFields() {
         return unsupportedFields;
+    }
+
+    @Override
+    public Config getRoot() {
+        return this;
     }
 
     @Nullable
