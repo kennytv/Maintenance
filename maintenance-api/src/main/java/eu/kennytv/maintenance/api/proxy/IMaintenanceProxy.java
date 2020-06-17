@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.api.proxy;
 
 import eu.kennytv.maintenance.api.IMaintenance;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -60,6 +61,7 @@ public interface IMaintenanceProxy extends IMaintenance {
      * @param server name of the proxied server
      * @return wrapped server object if present, else null
      */
+    @Nullable
     Server getServer(String server);
 
     /**

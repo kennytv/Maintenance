@@ -17,9 +17,9 @@ proxied-maintenance-servers:
   - SpigotServer1
 # - AnotherServer
 
-# If maintenance is enabled on a proxied server with players on it,
-# they will be sent to the fallback server instead of being kicked off the network.
+# If maintenance is enabled on a proxied server with players on it, they will be sent to the fallback server instead of being kicked off the network.
 # If the fallback server is not reachable/not set, they will just be kicked off the network.
+# This can also be set to an array to set multiple fallback servers, in case one server is not always reachable: 'fallback: [s1, s2, s3, ...]'
 fallback: lobby
 
 # If maintenance is enabled globally, you can define a "waiting" lobby for players to be sent to instead of being kicked.
@@ -43,7 +43,7 @@ timerspecific-pingmessages:
 # If set to true, the message below will be shown at the top right corner of the server in the serverlist, where the playercount would normally be displayed.
 # If set to false, the normal playercount will be shown.
 #
-# Alternatively you can use '%ONLINE%' and '%MAX% if you want to include the playercount in a custom message (e.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
+# Alternatively you can use '%ONLINE%' and '%MAX%' if you want to include the playercount in a custom message (e.g. "&cMaintenance &7%ONLINE%&8/&7%MAX%").
 enable-playercountmessage: true
 playercountmessage: "&4Maintenance"
 
@@ -63,7 +63,8 @@ send-join-notification: false
 kick-online-players: true
 
 # Changes the language of command feedback/messages.
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian)
+# If you find missing translations or want to contribute a new language file, you are very welcome to message me on Spigot or my Discord server! :)
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian), zh (Chinese), it (Italian)
 language: en
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
+import org.jetbrains.annotations.Nullable;
 
 public final class ServerConnectResult {
     private final boolean cancel;
@@ -38,6 +39,7 @@ public final class ServerConnectResult {
         return cancel;
     }
 
+    @Nullable
     public Server getTarget() {
         return target;
     }

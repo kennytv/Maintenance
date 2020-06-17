@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ public final class ProxyPingListener implements Listener {
         this.settings = settings;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = 80)
     public void proxyPing(final ProxyPingEvent event) {
         if (!settings.isMaintenance()) return;
 
@@ -48,13 +48,12 @@ public final class ProxyPingListener implements Listener {
         }
 
         ping.setDescription(settings.getRandomPingMessage());
-        ping.getPlayers().setOnline(0);
-        ping.getPlayers().setMax(0);
         ping.getPlayers().setSample(new ServerPing.PlayerInfo[]{
-                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage().replace("%NEWLINE%", "\n"), "")
+                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage(), "")
         });
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());
+        }
     }
 }

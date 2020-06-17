@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,23 @@
 
 package eu.kennytv.maintenance.core.proxy;
 
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public final class SettingsProxy extends Settings {
+    private final MaintenanceProxyPlugin plugin;
     private Set<String> maintenanceServers;
-    private String fallbackServer;
+    private List<String> fallbackServers;
     private String waitingServer;
 
     private String mySQLTable;
@@ -45,6 +49,7 @@ public final class SettingsProxy extends Settings {
 
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
         super(plugin);
+        this.plugin = plugin;
     }
 
     private void setupMySQL() throws Exception {
@@ -76,7 +81,7 @@ public final class SettingsProxy extends Settings {
     @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
-        if (!hasMySQL() && (boolean) config.getDeep("mysql.use-mysql")) {
+        if (!hasMySQL() && config.getBoolean("mysql.use-mysql")) {
             try {
                 setupMySQL();
             } catch (final Exception e) {
@@ -86,7 +91,9 @@ public final class SettingsProxy extends Settings {
             }
         }
 
-        fallbackServer = config.getString("fallback", "lobby");
+        final Object fallback = config.getObject("fallback");
+        fallbackServers = fallback instanceof String ? Collections.singletonList((String) fallback) : config.getStringList("fallback");
+
         waitingServer = config.getString("waiting-server", "");
         if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
             waitingServer = null;
@@ -124,7 +131,6 @@ public final class SettingsProxy extends Settings {
         if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
             final Set<String> databaseValue = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.equals(databaseValue)) {
-                final MaintenanceProxyPlugin plugin = (MaintenanceProxyPlugin) super.plugin;
                 // Enable maintenance on yet unlisted servers
                 for (final String s : databaseValue) {
                     if (!maintenanceServers.contains(s))
@@ -140,6 +146,23 @@ public final class SettingsProxy extends Settings {
             lastServerCheck = System.currentTimeMillis();
         }
         return maintenanceServers.contains(serverName);
+    }
+
+    public String getServerKickMessage(final String server) {
+        String message = getMessage("singleMaintenanceKicks." + server, null);
+        if (message == null) {
+            message = getMessage("singleMaintenanceKick");
+        }
+        return plugin.formatedTimer(message).replace("%SERVER%", server);
+    }
+
+    // Full = being kicked from the proxy, not just a proxied server
+    public String getFullServerKickMessage(final String server) {
+        String message = getMessage("singleMaintenanceKicksComplete." + server, null);
+        if (message == null) {
+            message = getMessage("singleMaintenanceKickComplete");
+        }
+        return plugin.formatedTimer(message).replace("%SERVER%", server);
     }
 
     public boolean hasMySQL() {
@@ -219,14 +242,23 @@ public final class SettingsProxy extends Settings {
         return maintenanceServers;
     }
 
-    public String getFallbackServer() {
-        return fallbackServer;
+    @Nullable
+    public Server getFallbackServer() {
+        for (final String fallbackServer : fallbackServers) {
+            final Server server = plugin.getServer(fallbackServer);
+            if (server != null && !isMaintenance(server.getName())) {
+                return server;
+            }
+        }
+        return null;
     }
 
+    @Nullable
     public String getWaitingServer() {
         return waitingServer;
     }
 
+    @Nullable
     MySQL getMySQL() {
         return mySQL;
     }

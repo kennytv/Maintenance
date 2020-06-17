@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.core.command;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,7 @@ public abstract class CommandInfo {
     private final String helpMessageKey;
     private final String permission;
 
-    protected CommandInfo(final MaintenancePlugin plugin, final String permission) {
+    protected CommandInfo(final MaintenancePlugin plugin, @Nullable final String permission) {
         this.plugin = plugin;
         this.permission = permission;
         // Just take the class name as the language key

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.api.sponge;
 
+import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.api.IMaintenance;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -42,9 +43,9 @@ public final class MaintenanceSpongeAPI {
      * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenance getAPI() {
-        final Optional<PluginContainer> container = Sponge.getPluginManager().getPlugin("maintenancesponge");
-        if (!container.isPresent() || !container.get().getInstance().isPresent())
-            throw new IllegalArgumentException("Could not get instance of MaintenanceSponge! Broken/custom build of the plugin?");
+        final Optional<PluginContainer> container = Sponge.getPluginManager().getPlugin("maintenance");
+        Preconditions.checkArgument(container.isPresent() && container.get().getInstance().isPresent(),
+                "Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return (IMaintenance) container.get().getInstance().get();
     }
 }

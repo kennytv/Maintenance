@@ -1,10 +1,11 @@
 # Maintenance
 [![Version](https://img.shields.io/github/release/KennyTV/Maintenance.svg)](https://github.com/KennyTV/Maintenance/releases)
 [![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=master)](https://travis-ci.org/KennyTV/Maintenance)
+[![GH Downloads](https://img.shields.io/github/downloads/KennyTV/Maintenance/total)](https://github.com/KennyTV/Maintenance/releases)
 [![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
 [![Twitter](https://img.shields.io/twitter/follow/KennyTVN.svg?label=Twitter)](https://twitter.com/KennyTVN)
 
-Maintenance is probably the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Bukkit/Spigot, BungeeCord, Sponge as well as Velocity.
+Maintenance is probably the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Spigot, BungeeCord, Sponge, as well as Velocity.
 
 Its features include:
 * A custom motd as well as server icon, that will be shown during maintenance
@@ -18,12 +19,12 @@ Its features include:
   * Use PlaceholderAPI placeholders with the [**MaintenanceAddon**](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon) (only for Bungee)
 
 A full list of commands, permissions and configuration options can be found in the wiki listed below.
-* [Wiki](https://github.com/KennyTV/Maintenance/wiki)
+* [Wiki](https://github.com/KennyTV/Maintenance/wiki) (configuration, permissions, API usage)
 * [Downloads](https://github.com/KennyTV/Maintenance/releases) (GitHub)
-* [Development builds](https://kennytv.eu/maintenance/snapshot/) (out of order at the moment)
 * [Changelogs](https://github.com/KennyTV/Maintenance/blob/master/.github/CHANGELOG.md)
 * [Issue tracker/bug reports](https://github.com/KennyTV/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)
+* [PlaceholderAPI addon](https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon)
 
 Other forum threads
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)

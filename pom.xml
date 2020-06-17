@@ -6,7 +6,7 @@
 
     <groupId>eu.kennytv.maintenance</groupId>
     <artifactId>maintenance-parent</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <packaging>pom</packaging>
 
     <name>Maintenance</name>
@@ -16,7 +16,7 @@
     <developers>
         <developer>
             <id>KennyTV</id>
-            <url>https://kennytv.eu/</url>
+            <url>https://github.com/KennyTV/</url>
         </developer>
     </developers>
 
@@ -64,6 +64,21 @@
             <url>https://repo.minecrell.net/snapshots</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

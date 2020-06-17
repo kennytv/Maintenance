@@ -1,6 +1,26 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## 3.0.5 - June 17th 2020
+### Changed
+* The plugin identifiers are now `Maintenance` instead of the previous `MaintenanceSpigot` and `MaintenanceBungee`,
+ and `maintenance` instead of `maintenancesponge` and `maintenancevelocity`
+  * The plugin directory will automatically be renamed accordingly when starting the server
+  * If you are using the MaintenancePlaceholderAddon, you need to [update it to 1.0.3](https://github.com/KennyTV/MaintenanceAddon/releases)
+* Bungee/Velocity: The `fallback` field can now also be set as a list to define multiple fallback servers
+* Bungee/Velocity: Added language fields to choose custom kickmessages for individual proxied servers
+  * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Configuration#language-file) for an example setting
+* Added Chinese language file (thanks to Spigot user yeban)
+* Added Italian language file (thanks to @TheViperShow)
+* Updated Russian language file (thanks to Spigot user En_0t_S)
+* Removed automated config migration from 2.x->3.0
+  * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Updates#updating-from-2x) on how to do that manually - virtually noone should be using such old versions anymore
+### Fixed
+* Fixed the `use-ssl` option being inverted
+* Fixed disabling the playercount-message still hiding online/max players
+* Fixed config parsing with multi line strings
+* Bungee: Fixed compatibility with other motd changing plugins using the 'HIGHEST' ping listener priority
+
 ## 3.0.4 - March 17th 2020
 ### Changed
 * Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)
@@ -10,6 +30,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Updated bStats metrics
 ### Fixed
 * Fixed singleserver timers using input as seconds instead of minutes (by mxs42)
+* Fixed singleserver timers broadcasting globally
 * Fixed language updating with an unknown/self-translated language file
 * Fixed Velocity server autocompletion in the maintenance command
 ---

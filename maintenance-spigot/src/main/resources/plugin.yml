@@ -1,4 +1,4 @@
-name: MaintenanceSpigot
+name: Maintenance
 version: ${project.version}
 main: eu.kennytv.maintenance.spigot.MaintenanceSpigotBase
 author: KennyTV

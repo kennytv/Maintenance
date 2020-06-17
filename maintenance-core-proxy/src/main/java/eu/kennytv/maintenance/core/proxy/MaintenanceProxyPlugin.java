@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -79,13 +80,11 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     public void serverActions(final Server server, final boolean maintenance) {
         if (server == null || server instanceof DummyServer) return;
         if (maintenance) {
-            final Server fallback = getServer(settingsProxy.getFallbackServer());
+            final Server fallback = settingsProxy.getFallbackServer();
             if (fallback == null) {
                 if (server.hasPlayers()) {
                     getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
                 }
-            } else if (fallback.getName().equals(server.getName())) {
-                getLogger().warning("Maintenance has been enabled on the fallback server! If a player joins on a proxied server, they will be kicked completely instead of being sent to the fallback server!");
             }
             kickPlayers(server, fallback);
         } else
@@ -118,6 +117,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Override
+    @Nullable
     public List<String> getMaintenanceServersDump() {
         final List<String> list = new ArrayList<>();
         if (isMaintenance()) list.add("global");
@@ -149,6 +149,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return settingsProxy;
     }
 
+    @Nullable
     public abstract String getServer(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);

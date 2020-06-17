@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,18 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -126,8 +136,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public boolean updateAvailable() {
-        checkNewestVersion();
-        return version.compareTo(newestVersion) == -1;
+        try {
+            checkNewestVersion();
+            return version.compareTo(newestVersion) == -1;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 
     protected void continueLastEndtimer() {
@@ -154,7 +168,13 @@ public abstract class MaintenancePlugin implements IMaintenance {
         getLogger().info("Plugin by KennyTV");
         if (!settings.hasUpdateChecks()) return;
         async(() -> {
-            checkNewestVersion();
+            try {
+                checkNewestVersion();
+            } catch (final Exception e) {
+                getLogger().warning("An error occured during update checking!");
+                return;
+            }
+
             final int compare = version.compareTo(newestVersion);
             if (compare == -1) {
                 getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
@@ -201,17 +221,14 @@ public abstract class MaintenancePlugin implements IMaintenance {
         os.close();
     }
 
-    private void checkNewestVersion() {
-        try {
-            final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
+    private void checkNewestVersion() throws Exception {
+        final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()))) {
             final String newVersionString = reader.readLine();
-            reader.close();
             final Version newVersion = new Version(newVersionString);
             if (!newVersion.equals(version)) {
                 newestVersion = newVersion;
             }
-        } catch (final Exception ignored) {
         }
     }
 
@@ -274,6 +291,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         runnable = null;
     }
 
+    @Nullable
     public UUID checkUUID(final SenderInfo sender, final String s) {
         final UUID uuid;
         try {
@@ -320,6 +338,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return version.toString();
     }
 
+    @Nullable
     public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
     }
@@ -336,6 +355,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return prefix;
     }
 
+    /**
+     * @see #isTaskRunning()
+     */
+    @Nullable
     public MaintenanceRunnable getRunnable() {
         return runnable;
     }
@@ -360,8 +383,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 
+    @Nullable
     public abstract SenderInfo getOfflinePlayer(String name);
 
+    @Nullable
     public abstract SenderInfo getOfflinePlayer(UUID uuid);
 
     public abstract File getDataFolder();

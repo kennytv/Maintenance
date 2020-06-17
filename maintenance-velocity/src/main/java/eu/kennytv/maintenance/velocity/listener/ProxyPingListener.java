@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,18 +49,19 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
                     .replace("%MAX%", Integer.toString(builder.getOnlinePlayers()))));
         }
 
-        final String[] split = settings.getPlayerCountHoverMessage().split("%NEWLINE%");
+        final String[] split = settings.getPlayerCountHoverMessage().split("\n");
         final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[split.length];
         for (int i = 0; i < split.length; i++) {
             samplePlayers[i] = new ServerPing.SamplePlayer(split[i], uuid);
         }
+
         builder.description(TextComponent.of(settings.getRandomPingMessage()))
-                .onlinePlayers(0)
-                .maximumPlayers(0)
                 .samplePlayers(samplePlayers);
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             builder.favicon(plugin.getFavicon());
+        }
+
         event.setPing(builder.build());
     }
 }

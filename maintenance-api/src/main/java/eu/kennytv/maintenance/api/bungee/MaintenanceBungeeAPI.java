@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.api.bungee;
 
+import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.api.IMaintenanceBase;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import net.md_5.bungee.api.ProxyServer;
@@ -41,9 +42,8 @@ public final class MaintenanceBungeeAPI {
      * @throws IllegalArgumentException if using a custom (or broken?) version of the plugin, that can't be identified
      */
     public static IMaintenanceProxy getAPI() {
-        final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("MaintenanceBungee");
-        if (maintenance == null)
-            throw new IllegalArgumentException("Could not get instance of MaintenanceBungee! Broken/custom build of the plugin?");
+        final Plugin maintenance = ProxyServer.getInstance().getPluginManager().getPlugin("Maintenance");
+        Preconditions.checkNotNull(maintenance, "Could not get instance of Maintenance! Broken/custom build of the plugin?");
         return (IMaintenanceProxy) ((IMaintenanceBase) maintenance).getApi();
     }
 }

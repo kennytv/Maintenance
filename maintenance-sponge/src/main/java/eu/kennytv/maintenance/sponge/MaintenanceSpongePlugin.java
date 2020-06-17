@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
@@ -74,7 +75,7 @@ import java.util.stream.Collectors;
  * @author KennyTV
  * @since 3.0
  */
-@Plugin(id = "maintenancesponge", name = "MaintenanceSponge", version = MaintenanceVersion.VERSION, authors = "KennyTV",
+@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "KennyTV",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
@@ -164,12 +165,14 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
         return userStorage.get(name).map(SpongeOfflinePlayerInfo::new).orElse(null);
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
         return userStorage.get(uuid).map(SpongeOfflinePlayerInfo::new).orElse(null);

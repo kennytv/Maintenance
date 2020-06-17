@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core.config;
 
 import com.google.common.collect.Sets;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,7 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Further modified version of the SimpleConfig project of PSandro (https://github.com/PSandro/SimpleConfig).
@@ -54,6 +59,7 @@ public final class Config extends ConfigSection {
     private String header;
 
     public Config(final File file, final String... unsupportedFields) {
+        super(null, "");
         this.file = file;
         this.unsupportedFields = unsupportedFields.length == 0 ? Collections.emptySet() : Sets.newHashSet(unsupportedFields);
     }
@@ -63,26 +69,27 @@ public final class Config extends ConfigSection {
         final Map<String, Object> map = yaml.load(data);
         this.values = map != null ? map : new LinkedHashMap<>();
         this.comments = ConfigSerializer.deserializeComments(data);
-        if (comments.containsKey(".header"))
-            this.header = String.join("\n", comments.remove(".header"));
+
+        final String[] header = comments.remove(".header");
+        if (header != null) {
+            this.header = String.join("\n", header);
+        }
 
         final boolean removedFields = values.keySet().removeIf(key -> {
             final String[] split = key.split("\\.");
             String splitKey = "";
-            boolean remove = false;
             for (final String s : split) {
                 splitKey += s;
                 if (!unsupportedFields.contains(splitKey)) {
                     splitKey += ".";
                     continue;
                 }
-                remove = true;
-                break;
-            }
 
-            if (remove)
+                // Unsupported field
                 comments.remove(key);
-            return remove;
+                return true;
+            }
+            return false;
         });
         if (removedFields) {
             save();
@@ -90,10 +97,16 @@ public final class Config extends ConfigSection {
     }
 
     public void save() throws IOException {
-        final byte[] bytes = this.saveConfigToString().getBytes(StandardCharsets.UTF_8);
-        this.file.getParentFile().mkdirs();
-        this.file.createNewFile();
-        Files.write(this.file.toPath(), bytes);
+        saveTo(file);
+    }
+
+    public void saveTo(final File file) throws IOException {
+        final byte[] bytes = toString().getBytes(StandardCharsets.UTF_8);
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
+        file.createNewFile();
+        Files.write(file.toPath(), bytes);
     }
 
     public boolean addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
@@ -122,33 +135,13 @@ public final class Config extends ConfigSection {
         return changed;
     }
 
-    @Override
-    public void set(final String key, final Object value, final String... comments) {
-        if (value == null) {
-            remove(key);
-        } else {
-            this.values.put(key, value);
-            this.comments.put(key, comments);
-        }
-    }
-
-    @Override
-    public void remove(final String key) {
-        this.values.remove(key);
-        this.comments.remove(key);
-    }
-
     private static Yaml createYaml() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(false);
         options.setIndent(2);
-        options.setWidth(10_000); // be sneaky because autobreak on read/save looks disgusting
+        options.setWidth(10_000); // be sneaky because autobreak on saving looks disgusting
         return new Yaml(options);
-    }
-
-    public String saveConfigToString() {
-        return ConfigSerializer.serialize(this.header, this.values, this.comments, this.yaml);
     }
 
     public void clear() {
@@ -165,11 +158,22 @@ public final class Config extends ConfigSection {
         return unsupportedFields;
     }
 
+    @Override
+    public Config getRoot() {
+        return this;
+    }
+
+    @Nullable
     public String getHeader() {
         return header;
     }
 
     public void resetAwesomeHeader() {
         this.header = AWESOME_HEADER;
+    }
+
+    @Override
+    public String toString() {
+        return ConfigSerializer.serialize(this.header, this.values, this.comments, this.yaml);
     }
 }

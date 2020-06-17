@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -75,7 +76,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
         final MaintenanceSpigotCommand command = new MaintenanceSpigotCommand(this, settings);
         commandManager = command;
-        plugin.getCommand("maintenancespigot").setExecutor(command);
+        plugin.getCommand("maintenance").setExecutor(command);
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
@@ -148,12 +149,14 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final OfflinePlayer player = getServer().getOfflinePlayer(name);
         return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
         return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;

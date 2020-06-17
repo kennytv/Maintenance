@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -126,6 +127,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
+        // Kick players from a proxied server
         final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
         final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
         for (final ProxiedPlayer player : ((BungeeServer) server).getServer().getPlayers()) {
@@ -134,7 +136,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
                     player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     player.connect(fallbackServer);
                 } else
-                    player.disconnect(settingsProxy.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", server.getName()));
+                    player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
             } else {
                 player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
@@ -143,6 +145,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayersTo(final Server server) {
+        // Kick all players to a single waiting server
         final ServerInfo serverInfo = ((BungeeServer) server).getServer();
         // Notifications done in global method
         for (final ProxiedPlayer player : getProxy().getPlayers()) {
@@ -163,24 +166,28 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    @Nullable
     public Server getServer(final String server) {
         final ServerInfo serverInfo = getProxy().getServerInfo(server);
         return serverInfo != null ? new BungeeServer(serverInfo) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final ProxiedPlayer player = getProxy().getPlayer(name);
         return player != null ? new BungeeSenderInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
         final ProxiedPlayer player = getProxy().getPlayer(uuid);
         return player != null ? new BungeeSenderInfo(player) : null;
     }
 
     @Override
+    @Nullable
     public String getServer(final SenderInfo sender) {
         final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
         if (player == null || player.getServer() == null) return null;

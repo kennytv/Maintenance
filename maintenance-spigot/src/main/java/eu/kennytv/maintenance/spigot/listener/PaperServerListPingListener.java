@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,11 +56,13 @@ public final class PaperServerListPingListener implements Listener {
 
         final List<PlayerProfile> sample = event.getPlayerSample();
         sample.clear();
-        for (final String string : settings.getPlayerCountHoverMessage().split("%NEWLINE%"))
+        for (final String string : settings.getPlayerCountHoverMessage().split("\n")) {
             sample.add(new DummyProfile(string));
+        }
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             event.setServerIcon(plugin.getFavicon());
+        }
     }
 
     // Less unnecessary object creation :>

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class ProxyJoinListenerBase extends JoinListenerBase {
     private static final ServerConnectResult ALLOWED = new ServerConnectResult(false);
@@ -59,7 +60,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
 
             // Player already is on the waiting server
             final String currentServer = plugin.getServer(sender);
-            if (currentServer != null && currentServer.equals(waitingServer.getName())) {
+            if (waitingServer.getName().equals(currentServer)) {
                 sender.sendMessage(settings.getMessage("forceWaitingServer"));
                 return DENIED;
             }
@@ -80,15 +81,15 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
         }
 
         if (normalServerConnect) {
-            sender.sendMessage(settings.getMessage("singleMaintenanceKick").replace("%SERVER%", target.getName()));
+            sender.sendMessage(settings.getServerKickMessage(target.getName()));
             return DENIED;
         }
 
         // If it's the initial proxy join or a kick from another server, go back to fallback server
-        final Server fallback = plugin.getServer(settings.getFallbackServer());
-        if (fallback == null || !sender.canAccess(fallback) || plugin.isMaintenance(fallback)) {
+        final Server fallback = settings.getFallbackServer();
+        if (fallback == null || !sender.canAccess(fallback)) {
             // Nothing to redirect to, player has to be kicked from the proxy
-            sender.disconnect(settings.getMessage("singleMaintenanceKickComplete").replace("%NEWLINE%", "\n").replace("%SERVER%", target.getName()));
+            sender.disconnect(settings.getFullServerKickMessage(target.getName()));
             if (!warned) {
                 plugin.getLogger().warning("Could not send player to the set fallback server; instead kicking player off the network!");
                 warned = true;
@@ -106,6 +107,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
      * @param sender sender
      * @return waiting server, null if player should be kicked
      */
+    @Nullable
     protected Server shouldConnectToWaitingServer(final ProxySenderInfo sender) {
         if (settings.getWaitingServer() == null) return null;
 
