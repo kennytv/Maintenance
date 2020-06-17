@@ -81,16 +81,25 @@ class ConfigTest {
         final Config config = new Config(getTestFile("config.yml"));
         config.load();
 
+        // Test for pre-existing values
+        assert config.contains("fallback");
+        assert config.contains("mysql.password");
+        assert !config.contains("test");
+        assert config.getComments().containsKey("fallback");
+        assert config.getComments().containsKey("mysql.use-ssl");
+
         config.set("test", "abc");
         config.remove("fallback");
         final ConfigSection section = config.getSection("mysql");
         section.set("port", 1000);
-        section.remove("password");
+        section.remove("use-ssl");
 
         assert config.contains("test") && config.getString("test").equals("abc");
         assert config.getInt("mysql.port") == 1000;
-        assert !config.contains("mysql.password") && !config.getSection("mysql").contains("password");
+        assert !config.contains("mysql.use-ssl") && !config.getSection("mysql").contains("use-ssl");
         assert !config.contains("fallback");
+        assert !config.getComments().containsKey("fallback");
+        assert !config.getComments().containsKey("mysql.use-ssl");
     }
 
     private File getTestFile(final String path) {
