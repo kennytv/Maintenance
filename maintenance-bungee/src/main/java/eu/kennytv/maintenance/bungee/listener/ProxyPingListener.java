@@ -52,7 +52,8 @@ public final class ProxyPingListener implements Listener {
                 new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage(), "")
         });
 
-        if (settings.hasCustomIcon() && plugin.getFavicon() != null)
+        if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());
+        }
     }
 }
