@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 public final class SettingsProxy extends Settings {
-    private final MaintenanceProxyPlugin plugin;
+    private final MaintenanceProxyPlugin proxyPlugin;
     private Set<String> maintenanceServers;
     private List<String> fallbackServers;
     private String waitingServer;
@@ -49,7 +49,7 @@ public final class SettingsProxy extends Settings {
 
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
         super(plugin);
-        this.plugin = plugin;
+        this.proxyPlugin = plugin;
     }
 
     private void setupMySQL() throws Exception {
@@ -134,12 +134,12 @@ public final class SettingsProxy extends Settings {
                 // Enable maintenance on yet unlisted servers
                 for (final String s : databaseValue) {
                     if (!maintenanceServers.contains(s))
-                        plugin.serverActions(plugin.getServer(s), true);
+                        proxyPlugin.serverActions(proxyPlugin.getServer(s), true);
                 }
                 // Disable maintenance on now unlisted servers
                 for (final String s : maintenanceServers) {
                     if (!databaseValue.contains(s))
-                        plugin.serverActions(plugin.getServer(s), false);
+                        proxyPlugin.serverActions(proxyPlugin.getServer(s), false);
                 }
                 maintenanceServers = databaseValue;
             }
@@ -245,7 +245,7 @@ public final class SettingsProxy extends Settings {
     @Nullable
     public Server getFallbackServer() {
         for (final String fallbackServer : fallbackServers) {
-            final Server server = plugin.getServer(fallbackServer);
+            final Server server = proxyPlugin.getServer(fallbackServer);
             if (server != null && !isMaintenance(server.getName())) {
                 return server;
             }
