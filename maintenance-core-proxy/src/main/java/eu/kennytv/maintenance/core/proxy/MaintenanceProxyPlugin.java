@@ -150,7 +150,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Nullable
-    public abstract String getServer(SenderInfo sender);
+    public abstract String getServerNameOf(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);
 

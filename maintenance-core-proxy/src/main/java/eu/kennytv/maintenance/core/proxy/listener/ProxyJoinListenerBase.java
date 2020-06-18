@@ -59,7 +59,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
             if (target.getName().equals(waitingServer.getName())) return ALLOWED;
 
             // Player already is on the waiting server
-            final String currentServer = plugin.getServer(sender);
+            final String currentServer = plugin.getServerNameOf(sender);
             if (waitingServer.getName().equals(currentServer)) {
                 sender.sendMessage(settings.getMessage("forceWaitingServer"));
                 return DENIED;

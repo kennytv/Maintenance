@@ -188,7 +188,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     @Nullable
-    public String getServer(final SenderInfo sender) {
+    public String getServerNameOf(final SenderInfo sender) {
         final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
         if (player == null || player.getServer() == null) return null;
         return player.getServer().getInfo().getName();

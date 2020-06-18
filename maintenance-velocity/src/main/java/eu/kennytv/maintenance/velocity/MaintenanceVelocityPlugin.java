@@ -221,7 +221,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     @Nullable
-    public String getServer(final SenderInfo sender) {
+    public String getServerNameOf(final SenderInfo sender) {
         final Optional<Player> player = server.getPlayer(sender.getUuid());
         if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;
         return player.get().getCurrentServer().get().getServerInfo().getName();

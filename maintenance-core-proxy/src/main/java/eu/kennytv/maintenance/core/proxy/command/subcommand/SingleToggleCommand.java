@@ -67,7 +67,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             }
 
             if (plugin.setMaintenanceToServer(server, maintenance)) {
-                if (!sender.isPlayer() || !server.getName().equals(plugin.getServer(sender))) {
+                if (!sender.isPlayer() || !server.getName().equals(plugin.getServerNameOf(sender))) {
                     sender.sendMessage(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
                 }
             } else {

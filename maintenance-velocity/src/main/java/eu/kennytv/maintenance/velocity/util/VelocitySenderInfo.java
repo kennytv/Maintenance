@@ -70,6 +70,8 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
 
     @Override
     public void disconnect(final String message) {
-        ((Player) sender).disconnect(TextComponent.of(message));
+        if (sender instanceof Player) {
+            ((Player) sender).disconnect(TextComponent.of(message));
+        }
     }
 }
