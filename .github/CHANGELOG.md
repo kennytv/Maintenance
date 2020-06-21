@@ -1,6 +1,10 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## Unreleased
+### Changed
+* Some improvements to the French language file (thanks to @Aurelien30000)
+
 ## 3.0.5 - June 17th 2020
 ### Changed
 * The plugin identifiers are now `Maintenance` instead of the previous `MaintenanceSpigot` and `MaintenanceBungee`,
