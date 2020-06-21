@@ -1,6 +1,5 @@
 # Plugin Maintenance par KennyTV, traduit en Français par Zendrique & Aurelien30000.
 # Ne supprimez pas de mots entre les '%' si vous ne savez pas exactement pourquoi, ils correspondent à des référencements de valeurs changeantes.
-# Dernière mise à jour 06/2020
 
 noPermission: "&cVous n'avez pas la permission d'exécuter cette commande."
 kickmessage: "&cLe serveur est actuellement en maintenance !%NEWLINE%&cRéessayez plus tard !"
