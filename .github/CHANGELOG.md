@@ -4,6 +4,8 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Some improvements to the French language file (thanks to @Aurelien30000)
+### Fixed
+* Fixed not setting custom singleserver kickmessages throwing warnings
 
 ## 3.0.5 - June 17th 2020
 ### Changed

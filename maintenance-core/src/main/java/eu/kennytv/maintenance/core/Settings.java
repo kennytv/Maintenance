@@ -305,11 +305,12 @@ public class Settings implements ISettings {
     }
 
     public String getConfigString(final String path) {
-        if (!config.contains(path)) {
+        final String s = config.getString(path);
+        if (s == null) {
             plugin.getLogger().warning("The config is missing the following string: " + path);
             return "null";
         }
-        return config.getString(path);
+        return s;
     }
 
     public String getMessage(final String path) {
@@ -317,11 +318,12 @@ public class Settings implements ISettings {
     }
 
     public String getMessage(final String path, final String def) {
-        if (!language.contains(path)) {
+        final String s = language.getString(path);
+        if (s == null) {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
             return def;
         }
-        return language.getString(path);
+        return s;
     }
 
     public String getRandomPingMessage() {

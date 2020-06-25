@@ -149,7 +149,7 @@ public final class SettingsProxy extends Settings {
     }
 
     public String getServerKickMessage(final String server) {
-        String message = getMessage("singleMaintenanceKicks." + server, null);
+        String message = language.getString("singleMaintenanceKicks." + server);
         if (message == null) {
             message = getMessage("singleMaintenanceKick");
         }
@@ -158,7 +158,7 @@ public final class SettingsProxy extends Settings {
 
     // Full = being kicked from the proxy, not just a proxied server
     public String getFullServerKickMessage(final String server) {
-        String message = getMessage("singleMaintenanceKicksComplete." + server, null);
+        String message = language.getString("singleMaintenanceKicksComplete." + server);
         if (message == null) {
             message = getMessage("singleMaintenanceKickComplete");
         }
