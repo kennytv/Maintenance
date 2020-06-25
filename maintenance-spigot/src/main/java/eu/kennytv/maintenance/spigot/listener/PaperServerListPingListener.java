@@ -134,7 +134,22 @@ public final class PaperServerListPingListener implements Listener {
         }
 
         @Override
+        public boolean completeFromCache(boolean b) {
+            return false;
+        }
+
+        @Override
+        public boolean completeFromCache(boolean b, boolean b1) {
+            return false;
+        }
+
+        @Override
         public boolean complete(final boolean textures) {
+            return false;
+        }
+
+        @Override
+        public boolean complete(boolean b, boolean b1) {
             return false;
         }
 
