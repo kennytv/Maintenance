@@ -69,8 +69,9 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), true);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     @Override

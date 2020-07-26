@@ -87,8 +87,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
                 }
             }
             kickPlayers(server, fallback);
-        } else
+        } else {
             server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+        }
 
         cancelSingleTask(server);
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
@@ -106,8 +107,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     public void cancelSingleTask(final Server server) {
         final Task task = serverTasks.remove(server.getName());
-        if (task != null)
+        if (task != null) {
             task.cancel();
+        }
     }
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
@@ -120,7 +122,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Nullable
     public List<String> getMaintenanceServersDump() {
         final List<String> list = new ArrayList<>();
-        if (isMaintenance()) list.add("global");
+        if (isMaintenance()) {
+            list.add("global");
+        }
         list.addAll(settingsProxy.getMaintenanceServers());
         return list.isEmpty() ? null : list;
     }

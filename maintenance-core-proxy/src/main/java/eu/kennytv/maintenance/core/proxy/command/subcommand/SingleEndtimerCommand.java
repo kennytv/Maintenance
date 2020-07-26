@@ -50,6 +50,7 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
                 sender.sendMessage(getMessage("alreadyDisabled"));
                 return;
             }
+
             plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), false);
             sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
@@ -65,10 +66,12 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
                 sender.sendMessage(getMessage("singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
                 return;
             }
+
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
             sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", runnable.getTime()));
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     @Override

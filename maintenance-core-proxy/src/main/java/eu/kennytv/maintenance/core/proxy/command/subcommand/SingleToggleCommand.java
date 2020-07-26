@@ -73,8 +73,9 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             } else {
                 sender.sendMessage(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
             }
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     @Override

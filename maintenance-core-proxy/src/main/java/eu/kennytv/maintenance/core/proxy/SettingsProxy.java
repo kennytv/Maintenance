@@ -194,10 +194,12 @@ public final class SettingsProxy extends Settings {
         if (hasMySQL()) {
             maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.remove(server)) return false;
+
             plugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.remove(server)) return false;
+
             saveServersToConfig();
         }
         return true;

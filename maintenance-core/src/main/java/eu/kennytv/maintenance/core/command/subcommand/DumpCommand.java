@@ -44,15 +44,17 @@ public final class DumpCommand extends CommandInfo {
         plugin.async(() -> {
             final String key = plugin.pasteDump();
             if (key == null) {
-                if (sender.isPlayer())
+                if (sender.isPlayer()) {
                     sender.sendMessage(plugin.getPrefix() + "§cCould not paste dump (see the console for details)");
+                }
                 return;
             }
 
             final String url = "https://hasteb.in/" + key;
             sender.sendMessage(plugin.getPrefix() + "§c" + url);
-            if (sender.isPlayer())
+            if (sender.isPlayer()) {
                 plugin.getCommandManager().sendDumpMessage(sender, url);
+            }
         });
     }
 }

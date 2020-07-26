@@ -62,9 +62,10 @@ public abstract class MaintenanceRunnableBase implements Runnable {
 
     private void append(final StringBuilder builder, final String timeUnit, final int time) {
         if (time == 0) return;
-        if (builder.length() != 0)
-            builder.append(" ");
-        builder.append(time).append(" ").append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
+        if (builder.length() != 0) {
+            builder.append(' ');
+        }
+        builder.append(time).append(' ').append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
     }
 
     public boolean shouldEnable() {

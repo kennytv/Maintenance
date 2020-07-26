@@ -3,6 +3,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ## Unreleased
 ### Changed
+* Added command alias `mt` for the Maintenance command
 * Some improvements to the French language file (thanks to @Aurelien30000)
 ### Fixed
 * Fixed not setting custom singleserver kickmessages throwing warnings

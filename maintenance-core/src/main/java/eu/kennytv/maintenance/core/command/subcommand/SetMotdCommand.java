@@ -88,6 +88,7 @@ public final class SetMotdCommand extends CommandInfo {
         } else {
             pingMessages.set(index - 1, newMessage);
         }
+
         settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
         settings.saveConfig();
         sender.sendMessage(settings.getMessage("setMotd").replace("%LINE%", args[2]).replace("%INDEX%", args[1])

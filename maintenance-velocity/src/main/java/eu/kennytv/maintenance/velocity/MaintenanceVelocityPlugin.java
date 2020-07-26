@@ -98,7 +98,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         final MaintenanceVelocityCommand command = new MaintenanceVelocityCommand(this, settingsProxy);
         commandManager = command;
-        server.getCommandManager().register(command, "maintenance", "maintenancevelocity");
+        server.getCommandManager().register(command, "maintenance", "maintenancevelocity", "mt");
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, new ServerConnectListener(this, settingsProxy));

@@ -32,11 +32,12 @@ public final class StatusCommand extends ProxyCommandInfo {
     public void execute(final SenderInfo sender, final String[] args) {
         if (getSettings().getMaintenanceServers().isEmpty()) {
             sender.sendMessage(getMessage("singleServerMaintenanceListEmpty"));
-        } else {
-            sender.sendMessage(getMessage("singleServerMaintenanceList"));
-            for (final String server : getSettings().getMaintenanceServers()) {
-                sender.sendMessage("§8- §b" + server);
-            }
+            return;
+        }
+
+        sender.sendMessage(getMessage("singleServerMaintenanceList"));
+        for (final String server : getSettings().getMaintenanceServers()) {
+            sender.sendMessage("§8- §b" + server);
         }
     }
 }

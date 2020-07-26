@@ -77,7 +77,7 @@ public final class RemoveMotdCommand extends CommandInfo {
             final int size = (args.length == 3 ? plugin.getSettings().getTimerSpecificPingMessages() : plugin.getSettings().getPingMessages()).size();
             final List<String> list = new ArrayList<>(size);
             for (int i = 1; i <= size; i++) {
-                list.add(String.valueOf(i));
+                list.add(Integer.toString(i));
             }
             return list;
         }

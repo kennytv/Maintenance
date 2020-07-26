@@ -38,10 +38,12 @@ public final class WhitelistRemoveCommand extends CommandInfo {
         if (checkArgs(sender, args, 2)) return;
         if (args[1].length() == 36) {
             final UUID uuid = plugin.checkUUID(sender, args[1]);
-            if (uuid != null)
+            if (uuid != null) {
                 removePlayerFromWhitelist(sender, uuid);
-        } else
+            }
+        } else {
             removePlayerFromWhitelist(sender, args[1]);
+        }
     }
 
     @Override
@@ -60,10 +62,11 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     private void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
         final SenderInfo selected = plugin.getOfflinePlayer(name);
         if (selected == null) {
-            if (getSettings().removeWhitelistedPlayer(name))
+            if (getSettings().removeWhitelistedPlayer(name)) {
                 sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", name));
-            else
+            } else {
                 sender.sendMessage(getMessage("whitelistNotFound"));
+            }
             return;
         }
 
@@ -72,16 +75,18 @@ public final class WhitelistRemoveCommand extends CommandInfo {
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
         final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null)
+        if (selected == null) {
             whitelistRemoveMessage(sender, uuid, uuid.toString());
-        else
+        } else {
             whitelistRemoveMessage(sender, selected.getUuid(), selected.getName());
+        }
     }
 
     private void whitelistRemoveMessage(final SenderInfo sender, final UUID uuid, final String toReplace) {
-        if (getSettings().removeWhitelistedPlayer(uuid))
+        if (getSettings().removeWhitelistedPlayer(uuid)) {
             sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", toReplace));
-        else
+        } else {
             sender.sendMessage(getMessage("whitelistNotFound"));
+        }
     }
 }

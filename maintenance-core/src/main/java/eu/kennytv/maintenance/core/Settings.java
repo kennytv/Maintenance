@@ -358,6 +358,7 @@ public class Settings implements ISettings {
                 break;
             }
         }
+
         if (uuid == null) return false;
 
         whitelistedPlayers.remove(uuid);

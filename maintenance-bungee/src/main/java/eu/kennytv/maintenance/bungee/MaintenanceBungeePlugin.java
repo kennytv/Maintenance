@@ -135,8 +135,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
                 if (checkForFallback && fallbackServer.canAccess(player)) {
                     player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     player.connect(fallbackServer);
-                } else
+                } else {
                     player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
+                }
             } else {
                 player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }

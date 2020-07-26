@@ -37,10 +37,12 @@ public final class WhitelistAddCommand extends CommandInfo {
         if (checkArgs(sender, args, 2)) return;
         if (args[1].length() == 36) {
             final UUID uuid = plugin.checkUUID(sender, args[1]);
-            if (uuid != null)
+            if (uuid != null) {
                 addPlayerToWhitelist(sender, uuid);
-        } else
+            }
+        } else {
             addPlayerToWhitelist(sender, args[1]);
+        }
     }
 
     @Override
@@ -69,9 +71,10 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     private void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
-        if (getSettings().addWhitelistedPlayer(selected.getUuid(), selected.getName()))
+        if (getSettings().addWhitelistedPlayer(selected.getUuid(), selected.getName())) {
             sender.sendMessage(getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
-        else
+        } else {
             sender.sendMessage(getMessage("whitelistAlreadyAdded").replace("%PLAYER%", selected.getName()));
+        }
     }
 }

@@ -42,8 +42,9 @@ public final class MotdCommand extends CommandInfo {
             }
 
             sendList(sender, getSettings().getTimerSpecificPingMessages());
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     private void sendList(final SenderInfo sender, final List<String> list) {

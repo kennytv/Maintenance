@@ -38,13 +38,15 @@ public final class WhitelistCommand extends CommandInfo {
         final Map<UUID, String> players = getSettings().getWhitelistedPlayers();
         if (players.isEmpty()) {
             sender.sendMessage(getMessage("whitelistEmpty"));
-        } else {
-            sender.sendMessage(getMessage("whitelistedPlayers"));
-            final String format = getMessage("whitelistedPlayersFormat");
-            for (final Map.Entry<UUID, String> entry : players.entrySet()) {
-                sender.sendMessage(format.replace("%NAME%", entry.getValue()).replace("%UUID%", entry.getKey().toString()));
-            }
-            sender.sendMessage("");
+            return;
         }
+
+        sender.sendMessage(getMessage("whitelistedPlayers"));
+        final String format = getMessage("whitelistedPlayersFormat");
+        for (final Map.Entry<UUID, String> entry : players.entrySet()) {
+            sender.sendMessage(format.replace("%NAME%", entry.getValue()).replace("%UUID%", entry.getKey().toString()));
+        }
+
+        sender.sendMessage("");
     }
 }

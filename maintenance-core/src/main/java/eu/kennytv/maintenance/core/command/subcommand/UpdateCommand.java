@@ -46,10 +46,11 @@ public final class UpdateCommand extends CommandInfo {
             }
 
             sender.sendMessage(getMessage("updateDownloading"));
-            if (plugin.installUpdate())
+            if (plugin.installUpdate()) {
                 sender.sendMessage(getMessage("updateFinished"));
-            else
+            } else {
                 sender.sendMessage(getMessage("updateFailed"));
+            }
         }
     }
 }
