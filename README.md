@@ -1,6 +1,6 @@
 # Maintenance
 [![Version](https://img.shields.io/github/release/KennyTV/Maintenance.svg)](https://github.com/KennyTV/Maintenance/releases)
-[![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=master)](https://travis-ci.org/KennyTV/Maintenance)
+[![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=dev)](https://travis-ci.org/KennyTV/Maintenance)
 [![GH Downloads](https://img.shields.io/github/downloads/KennyTV/Maintenance/total)](https://github.com/KennyTV/Maintenance/releases)
 [![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
 [![Twitter](https://img.shields.io/twitter/follow/KennyTVN.svg?label=Twitter)](https://twitter.com/KennyTVN)
