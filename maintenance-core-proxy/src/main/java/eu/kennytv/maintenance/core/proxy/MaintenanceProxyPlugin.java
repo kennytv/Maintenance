@@ -24,14 +24,18 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
-import eu.kennytv.maintenance.core.proxy.server.DummyServer;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author KennyTV
@@ -78,20 +82,25 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
-        if (server == null || server instanceof DummyServer) return;
-        if (maintenance) {
-            final Server fallback = settingsProxy.getFallbackServer();
-            if (fallback == null) {
-                if (server.hasPlayers()) {
-                    getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
+        if (server == null) return;
+
+        // Skip to the even fire for dummy servers
+        if (server.isRegisteredServer()) {
+            if (maintenance) {
+                final Server fallback = settingsProxy.getFallbackServer();
+                if (fallback == null) {
+                    if (server.hasPlayers()) {
+                        getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
+                    }
                 }
+                kickPlayers(server, fallback);
+            } else {
+                server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
             }
-            kickPlayers(server, fallback);
-        } else {
-            server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+
+            cancelSingleTask(server);
         }
 
-        cancelSingleTask(server);
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
     }
 

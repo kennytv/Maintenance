@@ -133,13 +133,15 @@ public final class SettingsProxy extends Settings {
             if (!maintenanceServers.equals(databaseValue)) {
                 // Enable maintenance on yet unlisted servers
                 for (final String s : databaseValue) {
-                    if (!maintenanceServers.contains(s))
+                    if (!maintenanceServers.contains(s)) {
                         proxyPlugin.serverActions(proxyPlugin.getServer(s), true);
+                    }
                 }
                 // Disable maintenance on now unlisted servers
                 for (final String s : maintenanceServers) {
-                    if (!databaseValue.contains(s))
+                    if (!databaseValue.contains(s)) {
                         proxyPlugin.serverActions(proxyPlugin.getServer(s), false);
+                    }
                 }
                 maintenanceServers = databaseValue;
             }

@@ -49,6 +49,11 @@ public final class VelocityServer implements Server {
         }
     }
 
+    @Override
+    public boolean isRegisteredServer() {
+        return true;
+    }
+
     public RegisteredServer getServer() {
         return server;
     }

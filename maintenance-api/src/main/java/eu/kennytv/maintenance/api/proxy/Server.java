@@ -43,4 +43,12 @@ public interface Server {
      * @param message message to be broadcasted
      */
     void broadcast(String message);
+
+    /**
+     * Returns whether the server is registered under the proxy.
+     * This will only ever be false if maintenance is disabled on a *previously* registered server.
+     *
+     * @return whether the server is registered under the proxy
+     */
+    boolean isRegisteredServer();
 }

@@ -49,6 +49,11 @@ public final class BungeeServer implements Server {
         }
     }
 
+    @Override
+    public boolean isRegisteredServer() {
+        return true;
+    }
+
     public ServerInfo getServer() {
         return server;
     }

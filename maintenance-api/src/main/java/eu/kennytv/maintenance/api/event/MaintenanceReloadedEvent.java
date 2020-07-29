@@ -16,33 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.proxy.server;
+package eu.kennytv.maintenance.api.event;
 
-import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.api.IMaintenance;
+import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
+import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 
-public final class DummyServer implements Server {
-    private final String name;
-
-    public DummyServer(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean hasPlayers() {
-        return false;
-    }
-
-    @Override
-    public void broadcast(final String s) {
-    }
-
-    @Override
-    public boolean isRegisteredServer() {
-        return false;
-    }
+/**
+ * Notification event fired when Maintenance configuration is reloaded.
+ *
+ * @author KennyTV
+ * @see IMaintenance#isMaintenance() for the new maintenance status
+ * @see IMaintenanceProxy#getMaintenanceServers() for the new list of servers under maintenance
+ * @since 3.0.6
+ */
+public final class MaintenanceReloadedEvent implements MaintenanceEvent {
 }
