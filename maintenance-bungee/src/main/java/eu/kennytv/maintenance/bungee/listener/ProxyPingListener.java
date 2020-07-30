@@ -47,9 +47,13 @@ public final class ProxyPingListener implements Listener {
         }
 
         ping.setDescription(settings.getRandomPingMessage());
-        ping.getPlayers().setSample(new ServerPing.PlayerInfo[]{
-                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage(), "")
-        });
+
+        final String[] split = settings.getPlayerCountHoverMessage().split("\n");
+        final ServerPing.PlayerInfo[] samplePlayers = new ServerPing.PlayerInfo[split.length];
+        for (int i = 0; i < split.length; i++) {
+            samplePlayers[i] = new ServerPing.PlayerInfo(split[i], "");
+        }
+        ping.getPlayers().setSample(samplePlayers);
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());

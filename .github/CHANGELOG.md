@@ -5,8 +5,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Added command alias `mt` for the Maintenance command
 * Some improvements to the French language file (thanks to @Aurelien30000)
+* API addition: Added MaintenanceReloadedEvent
 ### Fixed
 * Fixed not setting custom singleserver kickmessages throwing warnings
+* Bungee: Fixed linebreaks in the playercount hovermessage for 1.16+ clients
 ---
 ## 3.0.5 - June 17th 2020
 ### Changed
