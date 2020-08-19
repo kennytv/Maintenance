@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core.command.subcommand;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.util.DummySenderInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
@@ -34,14 +35,27 @@ public final class WhitelistAddCommand extends CommandInfo {
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (checkArgs(sender, args, 2)) return;
-        if (args[1].length() == 36) {
+        if (args.length == 2) {
+            if (args[1].length() == 36) {
+                final UUID uuid = plugin.checkUUID(sender, args[1]);
+                if (uuid != null) {
+                    addPlayerToWhitelist(sender, uuid);
+                }
+            } else {
+                addPlayerToWhitelist(sender, args[1]);
+            }
+        } else if (args.length == 3) {
+            if (args[1].length() != 36) {
+                sender.sendMessage(getHelpMessage());
+                return;
+            }
+
             final UUID uuid = plugin.checkUUID(sender, args[1]);
             if (uuid != null) {
-                addPlayerToWhitelist(sender, uuid);
+                addPlayerToWhitelist(sender, new DummySenderInfo(uuid, args[2]));
             }
         } else {
-            addPlayerToWhitelist(sender, args[1]);
+            sender.sendMessage(getHelpMessage());
         }
     }
 
@@ -57,7 +71,7 @@ public final class WhitelistAddCommand extends CommandInfo {
             return;
         }
 
-        whitelistAddMessage(sender, selected);
+        addPlayerToWhitelist(sender, selected);
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
@@ -67,10 +81,10 @@ public final class WhitelistAddCommand extends CommandInfo {
             return;
         }
 
-        whitelistAddMessage(sender, selected);
+        addPlayerToWhitelist(sender, selected);
     }
 
-    private void whitelistAddMessage(final SenderInfo sender, final SenderInfo selected) {
+    private void addPlayerToWhitelist(final SenderInfo sender, final SenderInfo selected) {
         if (getSettings().addWhitelistedPlayer(selected.getUuid(), selected.getName())) {
             sender.sendMessage(getMessage("whitelistAdded").replace("%PLAYER%", selected.getName()));
         } else {

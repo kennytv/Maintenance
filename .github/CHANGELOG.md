@@ -4,6 +4,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added command alias `mt` for the Maintenance command
+* Added secret argument to the whitelist add command: You can use `maintenance add <uuid> <name>` to add offline entries per command
 * Some improvements to the French language file (thanks to @Aurelien30000)
 * API addition: Added MaintenanceReloadedEvent
 ### Fixed

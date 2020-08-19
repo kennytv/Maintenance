@@ -70,19 +70,19 @@ public final class WhitelistRemoveCommand extends CommandInfo {
             return;
         }
 
-        whitelistRemoveMessage(sender, selected.getUuid(), selected.getName());
+        removePlayerFromWhitelist(sender, selected.getUuid(), selected.getName());
     }
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
         final SenderInfo selected = plugin.getOfflinePlayer(uuid);
         if (selected == null) {
-            whitelistRemoveMessage(sender, uuid, uuid.toString());
+            removePlayerFromWhitelist(sender, uuid, uuid.toString());
         } else {
-            whitelistRemoveMessage(sender, selected.getUuid(), selected.getName());
+            removePlayerFromWhitelist(sender, selected.getUuid(), selected.getName());
         }
     }
 
-    private void whitelistRemoveMessage(final SenderInfo sender, final UUID uuid, final String toReplace) {
+    private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid, final String toReplace) {
         if (getSettings().removeWhitelistedPlayer(uuid)) {
             sender.sendMessage(getMessage("whitelistRemoved").replace("%PLAYER%", toReplace));
         } else {
