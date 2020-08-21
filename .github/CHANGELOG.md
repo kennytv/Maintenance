@@ -3,6 +3,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ## Unreleased
 ### Changed
+* Updated Velocity version to be compatible with Velocity 1.1.0 (use Maintenance 3.0.5 if you use an older version of Velocity)
 * Added command alias `mt` for the Maintenance command
 * Added secret argument to the whitelist add command: You can use `maintenance add <uuid> <name>` to add offline entries per command
 * Some improvements to the French language file (thanks to @Aurelien30000)

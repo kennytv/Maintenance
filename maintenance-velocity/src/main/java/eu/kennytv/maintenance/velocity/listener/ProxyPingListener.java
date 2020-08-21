@@ -23,7 +23,6 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import net.kyori.text.TextComponent;
 
 import java.util.UUID;
 
@@ -55,7 +54,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
             samplePlayers[i] = new ServerPing.SamplePlayer(split[i], uuid);
         }
 
-        builder.description(TextComponent.of(settings.getRandomPingMessage()))
+        builder.description(plugin.translate(settings.getRandomPingMessage()))
                 .samplePlayers(samplePlayers);
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

@@ -22,8 +22,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.UUID;
 
@@ -51,7 +51,7 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
 
     @Override
     public void sendMessage(final String message) {
-        sender.sendMessage(LegacyComponentSerializer.INSTANCE.deserialize(message));
+        sender.sendMessage(fromLegacy(message));
     }
 
     @Override
@@ -71,7 +71,11 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
     @Override
     public void disconnect(final String message) {
         if (sender instanceof Player) {
-            ((Player) sender).disconnect(TextComponent.of(message));
+            ((Player) sender).disconnect(fromLegacy(message));
         }
+    }
+
+    private TextComponent fromLegacy(final String s) {
+        return LegacyComponentSerializer.legacySection().deserialize(s);
     }
 }
