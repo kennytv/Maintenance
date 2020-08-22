@@ -39,10 +39,15 @@ public final class ProxyPingListener implements Listener {
         if (!settings.isMaintenance()) return;
 
         final ServerPing ping = event.getResponse();
+        ServerPing.Players players = ping.getPlayers();
+        if (players == null) {
+            ping.setPlayers(players = new ServerPing.Players(0, 0,  null));
+        }
+
         if (settings.hasCustomPlayerCountMessage()) {
             ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(ping.getPlayers().getOnline()))
-                    .replace("%MAX%", Integer.toString(ping.getPlayers().getMax())), 1));
+                    .replace("%ONLINE%", Integer.toString(players.getOnline()))
+                    .replace("%MAX%", Integer.toString(players.getMax())), 1));
         }
 
         ping.setDescription(settings.getRandomPingMessage());
@@ -52,7 +57,7 @@ public final class ProxyPingListener implements Listener {
         for (int i = 0; i < split.length; i++) {
             samplePlayers[i] = new ServerPing.PlayerInfo(split[i], "");
         }
-        ping.getPlayers().setSample(samplePlayers);
+        players.setSample(samplePlayers);
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());
