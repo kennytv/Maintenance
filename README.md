@@ -1,10 +1,9 @@
 # Maintenance
 [![Version](https://img.shields.io/github/release/KennyTV/Maintenance.svg)](https://github.com/KennyTV/Maintenance/releases)
-[![Build Status](https://travis-ci.org/KennyTV/Maintenance.svg?branch=dev)](https://travis-ci.org/KennyTV/Maintenance)
+![Build Status](https://github.com/KennyTV/Maintenance/workflows/Build/badge.svg)
 [![GH Downloads](https://img.shields.io/github/downloads/KennyTV/Maintenance/total)](https://github.com/KennyTV/Maintenance/releases)
 [![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
 [![Twitter](https://img.shields.io/twitter/follow/KennyTVN.svg?label=Twitter)](https://twitter.com/KennyTVN)
-
 Maintenance is probably the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Spigot, BungeeCord, Sponge, as well as Velocity.
 
 Its features include:
