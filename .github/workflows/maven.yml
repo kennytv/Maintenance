@@ -28,8 +28,8 @@ jobs:
         with:
           name: artifact
           path: |
-            "**/Maintenance.jar"
-            "**/MaintenanceSpigot.jar"
-            "**/MaintenanceBungee.jar"
-            "**/MaintenanceVelocity.jar"
-            "**/MaintenanceSponge.jar"
+            **/Maintenance.jar
+            **/MaintenanceSpigot.jar
+            **/MaintenanceBungee.jar
+            **/MaintenanceVelocity.jar
+            **/MaintenanceSponge.jar
