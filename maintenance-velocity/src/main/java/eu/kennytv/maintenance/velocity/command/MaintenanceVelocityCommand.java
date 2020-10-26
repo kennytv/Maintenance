@@ -18,8 +18,7 @@
 
 package eu.kennytv.maintenance.velocity.command;
 
-import com.velocitypowered.api.command.Command;
-import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
@@ -27,15 +26,15 @@ import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements Command {
+public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements SimpleCommand {
     private final MaintenanceVelocityPlugin plugin;
 
     public MaintenanceVelocityCommand(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
@@ -45,26 +44,26 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     }
 
     @Override
-    public void execute(final CommandSource commandSource, final @NonNull String[] strings) {
-        execute(new VelocitySenderInfo(commandSource), strings);
+    public void execute(final Invocation invocation) {
+        execute(new VelocitySenderInfo(invocation.source()), invocation.arguments());
     }
 
     @Override
-    public List<String> suggest(final CommandSource source, final @NonNull String[] currentArgs) {
-        return getSuggestions(new VelocitySenderInfo(source), currentArgs);
+    public List<String> suggest(final Invocation invocation) {
+        return getSuggestions(new VelocitySenderInfo(invocation.source()), invocation.arguments());
     }
 
     @Override
-    public boolean hasPermission(final CommandSource source, final @NonNull String[] args) {
+    public boolean hasPermission(final Invocation invocation) {
         return true;
     }
 
     @Override
     protected void sendUpdateMessage(final SenderInfo sender) {
-        final TextComponent tc = TextComponent.builder("").append(plugin.translate("§6× §8[§aUpdate§8]"))
+        final TextComponent tc = Component.text("").append(plugin.translate("§6× §8[§aUpdate§8]"))
                 .clickEvent(ClickEvent.runCommand("/maintenance forceupdate"))
                 .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to update the plugin")))
-                .append(plugin.translate(" §8(§7Or use the command §c/maintenance forceupdate§8)")).build();
+                .append(plugin.translate(" §8(§7Or use the command §c/maintenance forceupdate§8)"));
         ((VelocitySenderInfo) sender).sendMessage(tc);
     }
 
