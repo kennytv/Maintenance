@@ -11,3 +11,4 @@ commands:
   maintenance:
     description: Maintenance main-command
     aliases: [maintenancespigot, mt]
+    permission: maintenance.command

@@ -6,6 +6,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Updated Velocity version to be compatible with Velocity 1.1.0 (use Maintenance 3.0.5 if you use an older version of Velocity)
 * Added command alias `mt` for the Maintenance command
 * Added secret argument to the whitelist add command: You can use `maintenance add <uuid> <name>` to add offline entries per command
+* The maintenance's base command is now properly registered with a permission on each platform, so that it is excluded from tabcomplection to unauthorized players
 * Some improvements to the French language file (thanks to @Aurelien30000)
 * API addition: Added MaintenanceReloadedEvent
 ### Fixed

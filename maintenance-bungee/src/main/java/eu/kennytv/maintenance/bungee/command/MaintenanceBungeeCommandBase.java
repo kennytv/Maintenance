@@ -28,8 +28,13 @@ public final class MaintenanceBungeeCommandBase extends Command implements TabEx
     private final MaintenanceCommand command;
 
     public MaintenanceBungeeCommandBase(final MaintenanceCommand command) {
-        super("maintenance", "", "maintenancebungee", "mt");
+        super("maintenance", "maintenance.command", "maintenancebungee", "mt");
         this.command = command;
+    }
+
+    @Override
+    public boolean hasPermission(final CommandSender sender) {
+        return sender.hasPermission("maintenance.admin") || sender.hasPermission("maintenance.command");
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package eu.kennytv.maintenance.velocity.command;
 
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -55,7 +56,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
 
     @Override
     public boolean hasPermission(final Invocation invocation) {
-        return true;
+        final CommandSource source = invocation.source();
+        return source.hasPermission("maintenance.admin") || source.hasPermission("maintenance.command");
     }
 
     @Override
@@ -69,9 +71,9 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
 
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
-        final TextComponent clickText = TextComponent.builder("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
+        final TextComponent clickText = Component.text("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
                 .clickEvent(ClickEvent.suggestCommand(url))
-                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link"))).build();
+                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link")));
         ((VelocitySenderInfo) sender).sendMessage(clickText);
     }
 
