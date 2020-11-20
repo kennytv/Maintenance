@@ -155,7 +155,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getMessage("singleMaintenanceKick");
         }
-        return plugin.formatedTimer(message).replace("%SERVER%", server);
+        return plugin.replacePingVariables(message).replace("%SERVER%", server);
     }
 
     // Full = being kicked from the proxy, not just a proxied server
@@ -164,7 +164,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getMessage("singleMaintenanceKickComplete");
         }
-        return plugin.formatedTimer(message).replace("%SERVER%", server);
+        return plugin.replacePingVariables(message).replace("%SERVER%", server);
     }
 
     public boolean hasMySQL() {

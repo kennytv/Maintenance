@@ -151,7 +151,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         // Notifications done in global method
         for (final ProxiedPlayer player : getProxy().getPlayers()) {
             if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
-            if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName())) continue;
+            if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName()))
+                continue;
             if (serverInfo.canAccess(player) && !isMaintenance(serverInfo)) {
                 player.sendMessage(settingsProxy.getMessage("sentToWaitingServer").replace("%SERVER%", server.getName()));
                 player.connect(serverInfo);
@@ -213,6 +214,16 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public File getPluginFile() {
         return plugin.getPluginFile();
+    }
+
+    @Override
+    protected int getOnlinePlayers() {
+        return getProxy().getOnlineCount();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return getProxy().getConfig().getPlayerLimit();
     }
 
     @Override

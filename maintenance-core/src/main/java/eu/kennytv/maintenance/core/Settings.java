@@ -336,7 +336,7 @@ public class Settings implements ISettings {
 
     private String getPingMessage(final List<String> list) {
         final String s = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
-        return getColoredString(replaceNewlineVar(plugin.formatedTimer(s)));
+        return getColoredString(replaceNewlineVar(plugin.replacePingVariables(s)));
     }
 
     @Override
@@ -456,15 +456,15 @@ public class Settings implements ISettings {
     }
 
     public String getPlayerCountMessage() {
-        return plugin.formatedTimer(playerCountMessage);
+        return plugin.replacePingVariables(playerCountMessage);
     }
 
     public String getPlayerCountHoverMessage() {
-        return plugin.formatedTimer(playerCountHoverMessage);
+        return plugin.replacePingVariables(playerCountHoverMessage);
     }
 
     public String getKickMessage() {
-        return plugin.formatedTimer(getMessage("kickmessage"));
+        return plugin.replacePingVariables(getMessage("kickmessage"));
     }
 
     public String getLanguage() {

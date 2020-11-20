@@ -199,6 +199,16 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
+    protected int getOnlinePlayers() {
+        return getServer().getOnlinePlayers().size();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return getServer().getMaxPlayers();
+    }
+
+    @Override
     protected String getPluginFolder() {
         return "mods/";
     }

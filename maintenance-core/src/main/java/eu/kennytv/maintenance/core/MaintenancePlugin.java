@@ -108,11 +108,20 @@ public abstract class MaintenancePlugin implements IMaintenance {
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
-    public String formatedTimer(final String s) {
-        return s.contains("%TIMER%") ? s.replace("%TIMER%", formatedTimer()) : s;
+    public String replacePingVariables(String s) {
+        if (s.contains("%TIMER%")) {
+            s = s.replace("%TIMER%", replacePingVariables());
+        }
+        if (s.contains("%ONLINE%")) {
+            s = s.replace("%ONLINE%", Integer.toString(getOnlinePlayers()));
+        }
+        if (s.contains("%MAX%")) {
+            s = s.replace("%MAX%", Integer.toString(getMaxPlayers()));
+        }
+        return s;
     }
 
-    public String formatedTimer() {
+    public String replacePingVariables() {
         if (!isTaskRunning()) return settings.getMessage("motdTimerNotRunning", "-");
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
@@ -160,7 +169,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         } else {
             final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(settings.getSavedEndtimer() - current);
             startMaintenanceRunnableForSeconds(seconds, false);
-            getLogger().info("The timer has been continued - maintenance will be disabled in: " + formatedTimer());
+            getLogger().info("The timer has been continued - maintenance will be disabled in: " + replacePingVariables());
         }
     }
 
@@ -404,4 +413,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     protected abstract void kickPlayers();
 
     protected abstract File getPluginFile();
+
+    protected abstract int getOnlinePlayers();
+
+    protected abstract int getMaxPlayers();
 }

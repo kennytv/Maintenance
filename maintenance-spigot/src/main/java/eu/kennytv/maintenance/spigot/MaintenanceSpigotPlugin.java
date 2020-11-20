@@ -182,6 +182,16 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
+    protected int getOnlinePlayers() {
+        return getServer().getOnlinePlayers().size();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return getServer().getMaxPlayers();
+    }
+
+    @Override
     public InputStream getResource(final String name) {
         return plugin.getResource(name);
     }

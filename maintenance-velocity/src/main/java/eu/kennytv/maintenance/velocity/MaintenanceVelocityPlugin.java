@@ -251,6 +251,16 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    protected int getOnlinePlayers() {
+        return server.getPlayerCount();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return server.getConfiguration().getShowMaxPlayers();
+    }
+
+    @Override
     public InputStream getResource(final String name) {
         return this.getClass().getClassLoader().getResourceAsStream(name);
     }
