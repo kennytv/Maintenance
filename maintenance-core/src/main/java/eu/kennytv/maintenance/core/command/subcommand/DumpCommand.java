@@ -50,7 +50,7 @@ public final class DumpCommand extends CommandInfo {
                 return;
             }
 
-            final String url = "https://hasteb.in/" + key;
+            final String url = "https://hastebin.com/" + key;
             sender.sendMessage(plugin.getPrefix() + "§c" + url);
             if (sender.isPlayer()) {
                 plugin.getCommandManager().sendDumpMessage(sender, url);

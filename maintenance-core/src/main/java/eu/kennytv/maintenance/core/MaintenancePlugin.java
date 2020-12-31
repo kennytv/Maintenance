@@ -244,7 +244,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     public String pasteDump() {
         final MaintenanceDump dump = new MaintenanceDump(this, settings);
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hasteb.in/documents").openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hastebin.com/documents").openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
@@ -256,7 +256,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
             out.close();
 
             if (connection.getResponseCode() == 503) {
-                getLogger().warning("Could not paste dump, hasteb.in down?");
+                getLogger().warning("Could not paste dump, hastebin.com down?");
                 return null;
             }
 
