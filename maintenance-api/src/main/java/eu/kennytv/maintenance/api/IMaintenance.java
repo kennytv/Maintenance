@@ -66,4 +66,16 @@ public interface IMaintenance {
      * @return {@link IEventManager} instance
      */
     IEventManager getEventManager();
+
+    /**
+     * @return true if debug mode is enabled, currently only implemented on Bungee
+     */
+    boolean isDebug();
+
+    /**
+     * Sets the debug mode.
+     *
+     * @param debug debug state
+     */
+    void setDebug(boolean debug);
 }

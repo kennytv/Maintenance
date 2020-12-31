@@ -69,6 +69,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     private final String prefix;
     private final ServerType serverType;
     private Version newestVersion;
+    private boolean debug;
 
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
@@ -350,6 +351,16 @@ public abstract class MaintenancePlugin implements IMaintenance {
     @Nullable
     public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @Override
+    public void setDebug(final boolean debug) {
+        this.debug = debug;
     }
 
     public int getSaltLevel() {

@@ -16,39 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.proxy.util;
+package eu.kennytv.maintenance.core.command.subcommand;
 
-import eu.kennytv.maintenance.api.proxy.Server;
-import org.jetbrains.annotations.Nullable;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
+import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 
-public final class ServerConnectResult {
-    private final boolean cancel;
-    private final Server target;
+public final class DebugCommand extends CommandInfo {
 
-    public ServerConnectResult(final boolean cancel) {
-        this.cancel = cancel;
-        this.target = null;
-    }
-
-    public ServerConnectResult(final Server target) {
-        this.cancel = false;
-        this.target = target;
-    }
-
-    public boolean isCancelled() {
-        return cancel;
-    }
-
-    @Nullable
-    public Server getTarget() {
-        return target;
+    public DebugCommand(final MaintenancePlugin plugin) {
+        super(plugin, "debug");
     }
 
     @Override
-    public String toString() {
-        return "ServerConnectResult{" +
-                "cancel=" + cancel +
-                ", target=" + target +
-                '}';
+    public void execute(final SenderInfo sender, final String[] args) {
+        if (checkArgs(sender, args, 1)) return;
+
+        //TODO put this and the help message into language files
+        plugin.setDebug(!plugin.isDebug());
+        sender.sendMessage("Debug mode is now " + (plugin.isDebug() ? "enabled" : "disabled"));
     }
 }

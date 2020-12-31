@@ -48,11 +48,20 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
         if (event.isCancelled() || event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY) return;
 
         final BungeeSenderInfo sender = new BungeeSenderInfo(event.getPlayer());
+        if (plugin.isDebug()) {
+            plugin.getLogger().info("Join permission check for " + event.getPlayer().getName()
+                    + " - Permission: " + sender.hasMaintenancePermission("bypass") + ", whitelist: " + settings.isWhitelisted(sender.getUuid()));
+        }
+
         if (shouldKick(sender)) {
             final Server waitingServer = shouldConnectToWaitingServer(sender);
             if (waitingServer != null) {
                 event.setTarget(((BungeeServer) waitingServer).getServer());
                 sender.sendMessage(settings.getMessage("sentToWaitingServer"));
+
+                if (plugin.isDebug()) {
+                    plugin.getLogger().info("Join to waiting server for " + event.getPlayer().getName());
+                }
                 return;
             }
 
@@ -73,6 +82,10 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
         final boolean normalServerConnect = event.getReason() != ServerConnectEvent.Reason.JOIN_PROXY && event.getReason() != ServerConnectEvent.Reason.KICK_REDIRECT
                 && event.getReason() != ServerConnectEvent.Reason.LOBBY_FALLBACK && event.getReason() != ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT;
         final ServerConnectResult connectResult = serverConnect(new BungeeSenderInfo(player), new BungeeServer(event.getTarget()), normalServerConnect);
+        if (plugin.isDebug()) {
+            plugin.getLogger().info("Connectresult for " + player.getName() + " to " + event.getTarget().getName() + ": " + connectResult);
+        }
+
         if (connectResult.isCancelled()) {
             event.setCancelled(true);
 

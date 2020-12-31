@@ -20,11 +20,29 @@ package eu.kennytv.maintenance.core.command;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.core.command.subcommand.*;
+import eu.kennytv.maintenance.core.command.subcommand.AbortTimerCommand;
+import eu.kennytv.maintenance.core.command.subcommand.DebugCommand;
+import eu.kennytv.maintenance.core.command.subcommand.DumpCommand;
+import eu.kennytv.maintenance.core.command.subcommand.EndtimerCommand;
+import eu.kennytv.maintenance.core.command.subcommand.HelpCommand;
+import eu.kennytv.maintenance.core.command.subcommand.MotdCommand;
+import eu.kennytv.maintenance.core.command.subcommand.ReloadCommand;
+import eu.kennytv.maintenance.core.command.subcommand.RemoveMotdCommand;
+import eu.kennytv.maintenance.core.command.subcommand.SetMotdCommand;
+import eu.kennytv.maintenance.core.command.subcommand.StarttimerCommand;
+import eu.kennytv.maintenance.core.command.subcommand.ToggleCommand;
+import eu.kennytv.maintenance.core.command.subcommand.UpdateCommand;
+import eu.kennytv.maintenance.core.command.subcommand.WhitelistAddCommand;
+import eu.kennytv.maintenance.core.command.subcommand.WhitelistCommand;
+import eu.kennytv.maintenance.core.command.subcommand.WhitelistRemoveCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class MaintenanceCommand {
     protected final MaintenancePlugin plugin;
@@ -55,6 +73,7 @@ public abstract class MaintenanceCommand {
 
         add(new UpdateCommand(plugin), "update", "forceupdate");
         add(new DumpCommand(plugin), "dump");
+        add(new DebugCommand(plugin), "debug");
     }
 
     protected void add(final CommandInfo command, final String... aliases) {
