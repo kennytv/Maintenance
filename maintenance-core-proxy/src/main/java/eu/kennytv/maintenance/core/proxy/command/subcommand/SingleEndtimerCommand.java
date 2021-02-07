@@ -26,6 +26,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public final class SingleEndtimerCommand extends ProxyCommandInfo {
 
@@ -51,7 +52,7 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), false);
+            plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), TimeUnit.MINUTES, false);
             sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;
@@ -60,14 +61,14 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final Server server = plugin.getCommandManager().checkSingleTimerArgs(sender, args);
+            final Server server = plugin.getCommandManager().checkSingleTimerServerArg(sender, args[1]);
             if (server == null) return;
             if (!plugin.isMaintenance(server)) {
                 sender.sendMessage(getMessage("singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), false);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), TimeUnit.MINUTES, false);
             sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", runnable.getTime()));
         } else {
             sender.sendMessage(getHelpMessage());

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,24 +21,21 @@ package eu.kennytv.maintenance.core.runnable;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 
-public class MaintenanceRunnable extends MaintenanceRunnableBase {
+import java.util.concurrent.TimeUnit;
 
-    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
-        super(plugin, settings, seconds, enable);
+public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
+    private final int maintenanceDuration;
+
+    public MaintenanceScheduleRunnable(final MaintenancePlugin plugin, final Settings settings, final int secondsToEnable, final int maintenanceDuration) {
+        super(plugin, settings, secondsToEnable, true);
+        this.maintenanceDuration = maintenanceDuration;
     }
 
     @Override
     protected void finish() {
-        plugin.setMaintenance(enable);
-    }
+        super.finish();
 
-    @Override
-    protected String getStartMessage() {
-        return settings.getMessage("starttimerBroadcast").replace("%TIME%", getTime());
-    }
-
-    @Override
-    protected String getEndMessage() {
-        return settings.getMessage("endtimerBroadcast").replace("%TIME%", getTime());
+        // Start the timer to disable maintenance again
+        plugin.startMaintenanceRunnable(maintenanceDuration, TimeUnit.SECONDS, false);
     }
 }

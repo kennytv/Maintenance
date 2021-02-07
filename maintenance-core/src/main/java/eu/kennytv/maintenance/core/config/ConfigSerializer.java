@@ -101,6 +101,7 @@ public final class ConfigSerializer {
 
     public static Map<String, String[]> deserializeComments(final String data) {
         //TODO go through known yaml keys and figure out comments from there instead of from line to line?
+        // ... tho everything here would benefit from a cleanup
         final Map<String, String[]> comments = new HashMap<>();
         final List<String> currentComments = new ArrayList<>();
         boolean header = true;

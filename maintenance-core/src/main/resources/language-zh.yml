@@ -91,5 +91,6 @@ helpWhitelistRemove: "&6/maintenance remove <name/uuid> &7(将玩家从维护玩
 helpAbortSingleTimer: "&6/maintenance aborttimer [server] &7(中止指定服务器开启的计时器)"
 helpSingleEndtimer: "&6/maintenance endtimer [server] <minutes> &7(在以分钟为单位给定时间后将关闭指定服务器的维护模式)"
 helpSingleStarttimer: "&6/maintenance starttimer [server] <minutes> &7(在以分钟为单位给定时间后将开启指定服务器的维护模式)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "&6/maintenance <on/off> [server] &7(开启/关闭指定服务器的维护模式)"
 helpStatus: "&6/maintenance status &7(列出当前正在维护的所有服务器)"

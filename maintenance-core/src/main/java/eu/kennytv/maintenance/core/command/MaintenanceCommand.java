@@ -28,6 +28,7 @@ import eu.kennytv.maintenance.core.command.subcommand.HelpCommand;
 import eu.kennytv.maintenance.core.command.subcommand.MotdCommand;
 import eu.kennytv.maintenance.core.command.subcommand.ReloadCommand;
 import eu.kennytv.maintenance.core.command.subcommand.RemoveMotdCommand;
+import eu.kennytv.maintenance.core.command.subcommand.ScheduleTimerCommand;
 import eu.kennytv.maintenance.core.command.subcommand.SetMotdCommand;
 import eu.kennytv.maintenance.core.command.subcommand.StarttimerCommand;
 import eu.kennytv.maintenance.core.command.subcommand.ToggleCommand;
@@ -154,6 +155,7 @@ public abstract class MaintenanceCommand {
 
         add(new StarttimerCommand(plugin), "starttimer", "start");
         add(new EndtimerCommand(plugin), "endtimer", "end");
+        add(new ScheduleTimerCommand(plugin), "scheduletimer", "schedule");
         add(new AbortTimerCommand(plugin), "aborttimer", "abort");
     }
 

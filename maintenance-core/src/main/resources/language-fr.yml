@@ -90,5 +90,6 @@ helpWhitelistRemove: "&6/maintenance remove <name/uuid> &7(Supprime un joueur de
 helpAbortSingleTimer: "&6/maintenance aborttimer [server] &7(Si en cours d'exécution, le minuteur actuel sera abandonné)"
 helpSingleEndtimer: "&6/maintenance endtimer [server] <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera désactivé)"
 helpSingleStarttimer: "&6/maintenance starttimer [server] <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera activé)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "&6/maintenance <on/off> [server] &7(Active/désactive le mode maintenance)"
 helpStatus: "&6/maintenance status &7(Répertorie tous les serveurs mandatés actuellement en maintenance)"

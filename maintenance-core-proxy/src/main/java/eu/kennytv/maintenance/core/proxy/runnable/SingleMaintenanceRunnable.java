@@ -24,8 +24,8 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 
-public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
-    private final Server server;
+public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
+    protected final Server server;
 
     public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable, final Server server) {
         super(plugin, settings, seconds, enable);
@@ -43,12 +43,12 @@ public final class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     }
 
     @Override
-    protected String startMessageKey() {
+    protected String getStartMessage() {
         return settings.getMessage("singleStarttimerBroadcast").replace("%TIME%", getTime()).replace("%SERVER%", server.getName());
     }
 
     @Override
-    protected String endMessageKey() {
+    protected String getEndMessage() {
         return settings.getMessage("singleEndtimerBroadcast").replace("%TIME%", getTime()).replace("%SERVER%", server.getName());
     }
 }

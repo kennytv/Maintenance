@@ -91,5 +91,6 @@ helpWhitelistRemove: "&6/maintenance remove [ник|uuid] &7- &fУдалить �
 helpAbortSingleTimer: "&6/maintenance aborttimer [сервер] &7- &fОстановить таймер включения/выключения режима технических работ."
 helpSingleEndtimer: "&6/maintenance endtimer [сервер] [время в минутах] &7- &fЗапустить таймер выключения режима технических работ."
 helpSingleStarttimer: "&6/maintenance starttimer [сервер] [время в минутах] &7- &fЗапустить таймер включения режима технических работ."
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "&6/maintenance [on|off] [сервер] &7- &fВключить/выключить режим технических работы."
 helpStatus: "&6/maintenance status &7- &fСписок всех серверов закрытых на технические работы."

@@ -24,6 +24,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
+import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author KennyTV
@@ -121,8 +123,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         }
     }
 
-    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes * 60, enable, server);
+    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final long duration, final TimeUnit unit, final boolean enable) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) unit.toSeconds(duration), enable, server);
+        serverTasks.put(server.getName(), runnable.getTask());
+        return runnable;
+    }
+
+    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final long duration, final long maintenanceDuration, final TimeUnit unit) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
+                (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration), server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }

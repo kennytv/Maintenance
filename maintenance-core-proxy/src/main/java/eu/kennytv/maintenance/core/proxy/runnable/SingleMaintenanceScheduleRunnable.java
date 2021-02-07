@@ -16,29 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.kennytv.maintenance.core.runnable;
+package eu.kennytv.maintenance.core.proxy.runnable;
 
+import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 
-public class MaintenanceRunnable extends MaintenanceRunnableBase {
+import java.util.concurrent.TimeUnit;
 
-    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
-        super(plugin, settings, seconds, enable);
+public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRunnable {
+    private final int maintenanceDuration;
+
+    public SingleMaintenanceScheduleRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final int maintenanceDuration, final Server server) {
+        super(plugin, settings, seconds, true, server);
+        this.maintenanceDuration = maintenanceDuration;
     }
 
     @Override
     protected void finish() {
-        plugin.setMaintenance(enable);
-    }
-
-    @Override
-    protected String getStartMessage() {
-        return settings.getMessage("starttimerBroadcast").replace("%TIME%", getTime());
-    }
-
-    @Override
-    protected String getEndMessage() {
-        return settings.getMessage("endtimerBroadcast").replace("%TIME%", getTime());
+        super.finish();
+        ((MaintenanceProxyPlugin) plugin).startSingleMaintenanceRunnable(server, maintenanceDuration, TimeUnit.SECONDS, false);
     }
 }

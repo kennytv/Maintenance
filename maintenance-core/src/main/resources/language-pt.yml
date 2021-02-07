@@ -91,5 +91,6 @@ helpWhitelistRemove: "&6/maintenance remove <name/uuid> &7(Remove o player da wh
 helpAbortSingleTimer: "&6/maintenance aborttimer [server] &7(Se o timer estiver ativado este vai ser abortado)"
 helpSingleEndtimer: "&6/maintenance endtimer [server] <minutes> &7(Depois do tempo dado a manutenção vai ser desativada)"
 helpSingleStarttimer: "&6/maintenance starttimer [server] <minutes> &7(Depois do tempo dado a manutenção vai ser ativa)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "&6/maintenance <on/off> [server] &7(Ativa/Desativa a manutenção)"
 helpStatus: "&6/maintenance status &7(Lista os servers em proxy que estão em manutenção)"

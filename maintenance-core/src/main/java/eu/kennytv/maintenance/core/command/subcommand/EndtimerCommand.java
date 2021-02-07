@@ -22,6 +22,8 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.concurrent.TimeUnit;
+
 public final class EndtimerCommand extends CommandInfo {
 
     public EndtimerCommand(final MaintenancePlugin plugin) {
@@ -40,7 +42,7 @@ public final class EndtimerCommand extends CommandInfo {
             return;
         }
 
-        plugin.startMaintenanceRunnableForMinutes(Integer.parseInt(args[1]), false);
+        plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), TimeUnit.MINUTES, false);
         sender.sendMessage(getMessage("endtimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
     }
 }

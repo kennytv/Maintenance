@@ -32,6 +32,7 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.event.EventManager;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.runnable.MaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
@@ -111,7 +112,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public String replacePingVariables(String s) {
         if (s.contains("%TIMER%")) {
-            s = s.replace("%TIMER%", replacePingVariables());
+            s = s.replace("%TIMER%", getTimerMessage());
         }
         if (s.contains("%ONLINE%")) {
             s = s.replace("%ONLINE%", Integer.toString(getOnlinePlayers()));
@@ -122,7 +123,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         return s;
     }
 
-    public String replacePingVariables() {
+    public String getTimerMessage() {
         if (!isTaskRunning()) return settings.getMessage("motdTimerNotRunning", "-");
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
@@ -133,16 +134,16 @@ public abstract class MaintenancePlugin implements IMaintenance {
                 .replace("%SECONDS%", String.format("%02d", seconds));
     }
 
-    public void startMaintenanceRunnableForMinutes(final int minutes, final boolean enable) {
-        startMaintenanceRunnableForSeconds(minutes * 60, enable);
-    }
-
-    public void startMaintenanceRunnableForSeconds(final int seconds, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, settings, seconds, enable);
+    public void startMaintenanceRunnable(final long duration, final TimeUnit unit, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, settings, (int) unit.toSeconds(duration), enable);
         // Save the endtimer to be able to continue it after a server stop
         if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
         }
+    }
+
+    public void scheduleMaintenanceRunnable(final long duration, final int maintenanceDuration, final TimeUnit unit) {
+        runnable = new MaintenanceScheduleRunnable(this, settings, (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration));
     }
 
     public boolean updateAvailable() {
@@ -168,14 +169,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
             setMaintenance(false);
             settings.setSavedEndtimer(0);
         } else {
-            final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(settings.getSavedEndtimer() - current);
-            startMaintenanceRunnableForSeconds(seconds, false);
-            getLogger().info("The timer has been continued - maintenance will be disabled in: " + replacePingVariables());
+            startMaintenanceRunnable(settings.getSavedEndtimer() - current, TimeUnit.MILLISECONDS, false);
+            getLogger().info("The timer has been continued - maintenance will be disabled in: " + getTimerMessage());
         }
     }
 
     protected void sendEnableMessage() {
-        getLogger().info("Plugin by KennyTV");
         if (!settings.hasUpdateChecks()) return;
         async(() -> {
             try {
@@ -295,8 +294,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public void cancelTask() {
-        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable())
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(0);
+        }
+
         runnable.getTask().cancel();
         runnable = null;
     }

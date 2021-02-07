@@ -45,6 +45,7 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
 
         add(new SingleStarttimerCommand(plugin), "starttimer", "start");
         add(new SingleEndtimerCommand(plugin), "endtimer", "end");
+        add(new SingleScheduleTimerCommand(plugin), "scheduletimer", "schedule");
         add(new AbortSingleTimerCommand(plugin), "aborttimer", "abort");
     }
 
@@ -59,8 +60,8 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
         return list;
     }
 
-    public Server checkSingleTimerArgs(final SenderInfo sender, final String[] args) {
-        final Server server = plugin.getServer(args[1]);
+    public Server checkSingleTimerServerArg(final SenderInfo sender, final String serverName) {
+        final Server server = plugin.getServer(serverName);
         if (server == null) {
             sender.sendMessage(settings.getMessage("serverNotFound"));
             return null;

@@ -25,8 +25,8 @@ import eu.kennytv.maintenance.core.util.Task;
 public abstract class MaintenanceRunnableBase implements Runnable {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
-    protected final boolean enable;
     private final Task task;
+    protected boolean enable;
     protected int seconds;
 
     protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
@@ -42,7 +42,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
         if (seconds == 0) {
             finish();
         } else if (settings.getBroadcastIntervals().contains(seconds)) {
-            broadcast(enable ? startMessageKey() : endMessageKey());
+            broadcast(enable ? getStartMessage() : getEndMessage());
         }
 
         seconds--;
@@ -86,7 +86,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
 
     protected abstract void finish();
 
-    protected abstract String startMessageKey();
+    protected abstract String getStartMessage();
 
-    protected abstract String endMessageKey();
+    protected abstract String getEndMessage();
 }

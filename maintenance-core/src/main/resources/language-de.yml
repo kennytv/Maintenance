@@ -90,5 +90,6 @@ helpWhitelistRemove: "&6/maintenance remove <Name/UUID> &7(Entfernt einen Spiele
 helpAbortSingleTimer: "&6/maintenance aborttimer [Server] &7(Falls momentan ein Timer läuft, wird dieser abgebrochen)"
 helpSingleEndtimer: "&6/maintenance endtimer [Server] <Minuten> &7(Sobald der Timer abläuft wird der Wartungsmodus deaktiviert)"
 helpSingleStarttimer: "&6/maintenance starttimer [Server] <Minuten> &7(Sobald der Timer abläuft wird der Wartungsmodus aktiviert)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [Server] <Minuten> <Wartung in Minuten> &7(Sobald der Timer abläuft wird der Wartungsmodus für die gegebene Länge aktiviert)"
 helpSingleToggle: "&6/maintenance <on/off> [Server] &7(Aktiviert/deaktiviert den Wartungsmodus)"
 helpStatus: "&6/maintenance status &7(Zeigt alle Server an, auf denen momentan der Wartungsmodus aktiviert ist)"

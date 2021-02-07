@@ -28,9 +28,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public final class SingleStarttimerCommand extends ProxyCommandInfo {
+public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
 
-    public SingleStarttimerCommand(final MaintenanceProxyPlugin plugin) {
+    public SingleScheduleTimerCommand(final MaintenanceProxyPlugin plugin) {
         super(plugin, null);
     }
 
@@ -41,9 +41,10 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (checkPermission(sender, "timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
+            if (plugin.getCommandManager().checkTimerArgs(sender, args[1])
+                    || plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
                 sender.sendMessage(getHelpMessage());
                 return;
             }
@@ -52,11 +53,12 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), TimeUnit.MINUTES, true);
+            plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), Integer.parseInt(args[2]), TimeUnit.MINUTES);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", plugin.getRunnable().getTime()));
-        } else if (args.length == 3) {
+        } else if (args.length == 4) {
             if (checkPermission(sender, "singleserver.timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
+            if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)
+                    || plugin.getCommandManager().checkTimerArgs(sender, args[3], false)) {
                 sender.sendMessage(getHelpMessage());
                 return;
             }
@@ -68,7 +70,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), TimeUnit.MINUTES, true);
+            final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), Integer.parseInt(args[3]), TimeUnit.MINUTES);
             sender.sendMessage(getMessage("starttimerStarted").replace("%TIME%", runnable.getTime()));
         } else {
             sender.sendMessage(getHelpMessage());
