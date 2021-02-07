@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.api.event.MaintenanceReloadedEvent;
 import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -102,6 +103,8 @@ public class Settings implements ISettings {
 
         // Directly cache colored messages - this should not be saved!
         transformColoredMessages(language.getValues());
+
+        plugin.getEventManager().callEvent(new MaintenanceReloadedEvent());
     }
 
     private void transformColoredMessages(final Map<String, Object> map) {

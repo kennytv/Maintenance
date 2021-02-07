@@ -35,6 +35,7 @@ public final class EventManager implements IEventManager {
         listeners.computeIfAbsent(eventClass.getSimpleName(), s -> new ArrayList<>()).add(listener);
     }
 
+    @Override
     public void callEvent(final MaintenanceEvent event) {
         final List<EventListener> list = listeners.get(event.getClass().getSimpleName());
         if (list != null) {

@@ -31,4 +31,11 @@ public interface IEventManager {
      * @param eventClass class of the event that should be registered
      */
     void registerListener(EventListener listener, Class<? extends MaintenanceEvent> eventClass);
+
+    /**
+     * Fires a maintenance event.
+     *
+     * @param event event to fire
+     */
+    void callEvent(MaintenanceEvent event);
 }
