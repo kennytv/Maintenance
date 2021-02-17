@@ -13,7 +13,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * The maintenance's base command is now properly registered with a permission on each platform, so that it is excluded from tabcomplection to unauthorized players
 * Some improvements to the French language file (thanks to @Aurelien30000)
 * API addition: Added MaintenanceReloadedEvent
-  * If you are using the MaintenancePlaceholderAddon, you need to [update it to 1.0.4](https://github.com/KennyTV/MaintenanceAddon/releases)
+  * If you are using the MaintenancePlaceholderAddon, you need to [update it to 1.1.0](https://github.com/KennyTV/MaintenanceAddon/releases)
 ### Fixed
 * Fixed not setting custom singleserver kickmessages throwing warnings
 * Bungee: Fixed linebreaks in the playercount hovermessage for 1.16+ clients
