@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ public final class RemoveMotdCommand extends CommandInfo {
             final int size = (args.length == 3 ? plugin.getSettings().getTimerSpecificPingMessages() : plugin.getSettings().getPingMessages()).size();
             final List<String> list = new ArrayList<>(size);
             for (int i = 1; i <= size; i++) {
-                list.add(String.valueOf(i));
+                list.add(Integer.toString(i));
             }
             return list;
         }

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,13 @@ public final class MaintenanceBungeeCommandBase extends Command implements TabEx
     private final MaintenanceCommand command;
 
     public MaintenanceBungeeCommandBase(final MaintenanceCommand command) {
-        super("maintenance", "", "maintenancebungee");
+        super("maintenance", "maintenance.command", "maintenancebungee", "mt");
         this.command = command;
+    }
+
+    @Override
+    public boolean hasPermission(final CommandSender sender) {
+        return sender.hasPermission("maintenance.admin") || sender.hasPermission("maintenance.command");
     }
 
     @Override

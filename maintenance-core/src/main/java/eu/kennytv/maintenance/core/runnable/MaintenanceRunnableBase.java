@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ import eu.kennytv.maintenance.core.util.Task;
 public abstract class MaintenanceRunnableBase implements Runnable {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
-    protected final boolean enable;
     private final Task task;
+    protected boolean enable;
     protected int seconds;
 
     protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
@@ -42,7 +42,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
         if (seconds == 0) {
             finish();
         } else if (settings.getBroadcastIntervals().contains(seconds)) {
-            broadcast(enable ? startMessageKey() : endMessageKey());
+            broadcast(enable ? getStartMessage() : getEndMessage());
         }
 
         seconds--;
@@ -62,9 +62,10 @@ public abstract class MaintenanceRunnableBase implements Runnable {
 
     private void append(final StringBuilder builder, final String timeUnit, final int time) {
         if (time == 0) return;
-        if (builder.length() != 0)
-            builder.append(" ");
-        builder.append(time).append(" ").append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
+        if (builder.length() != 0) {
+            builder.append(' ');
+        }
+        builder.append(time).append(' ').append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
     }
 
     public boolean shouldEnable() {
@@ -85,7 +86,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
 
     protected abstract void finish();
 
-    protected abstract String startMessageKey();
+    protected abstract String getStartMessage();
 
-    protected abstract String endMessageKey();
+    protected abstract String getEndMessage();
 }

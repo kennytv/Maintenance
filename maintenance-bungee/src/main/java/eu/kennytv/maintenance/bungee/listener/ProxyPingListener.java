@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
 
 public final class ProxyPingListener implements Listener {
     private final MaintenanceBungeePlugin plugin;
@@ -40,17 +39,25 @@ public final class ProxyPingListener implements Listener {
         if (!settings.isMaintenance()) return;
 
         final ServerPing ping = event.getResponse();
+        ServerPing.Players players = ping.getPlayers();
+        if (players == null) {
+            ping.setPlayers(players = new ServerPing.Players(0, 0,  null));
+        }
+
         if (settings.hasCustomPlayerCountMessage()) {
-            ping.getVersion().setProtocol(1);
-            ping.getVersion().setName(settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(ping.getPlayers().getOnline()))
-                    .replace("%MAX%", Integer.toString(ping.getPlayers().getMax())));
+            ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage()
+                    .replace("%ONLINE%", Integer.toString(players.getOnline()))
+                    .replace("%MAX%", Integer.toString(players.getMax())), 1));
         }
 
         ping.setDescription(settings.getRandomPingMessage());
-        ping.getPlayers().setSample(new ServerPing.PlayerInfo[]{
-                new ServerPing.PlayerInfo(settings.getPlayerCountHoverMessage(), "")
-        });
+
+        final String[] split = settings.getPlayerCountHoverMessage().split("\n");
+        final ServerPing.PlayerInfo[] samplePlayers = new ServerPing.PlayerInfo[split.length];
+        for (int i = 0; i < split.length; i++) {
+            samplePlayers[i] = new ServerPing.PlayerInfo(split[i], "");
+        }
+        players.setSample(samplePlayers);
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());

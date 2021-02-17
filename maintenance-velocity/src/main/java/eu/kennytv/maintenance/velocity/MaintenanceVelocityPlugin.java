@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,10 +50,10 @@ import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
 import eu.kennytv.maintenance.velocity.util.VelocityTask;
-import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -98,7 +98,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         final MaintenanceVelocityCommand command = new MaintenanceVelocityCommand(this, settingsProxy);
         commandManager = command;
-        server.getCommandManager().register(command, "maintenance", "maintenancevelocity");
+        server.getCommandManager().register(server.getCommandManager().metaBuilder("maintenance").aliases("maintenancevelocity", "mt").build(), command);
+
         final EventManager em = server.getEventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, new ServerConnectListener(this, settingsProxy));
@@ -130,7 +131,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
         final TextComponent click = translate(" §7§l§o(CLICK ME)");
         click.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"));
-        click.hoverEvent(HoverEvent.showText(TextComponent.of("§aDownload the latest version")));
+        click.hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
         tc1.append(tc2);
         tc1.append(click);
         ((VelocitySenderInfo) sender).sendMessage(tc1);
@@ -144,7 +145,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayersFromProxy() {
         for (final Player p : server.getAllPlayers()) {
             if (!hasPermission(p, "bypass") && !settingsProxy.isWhitelisted(p.getUniqueId())) {
-                p.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
+                p.disconnect(translate(settingsProxy.getKickMessage()));
             }
         }
     }
@@ -160,11 +161,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                     // Kick the player if fallback server is not reachable
                     player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful()) {
-                            player.disconnect(TextComponent.of(settingsProxy.getFullServerKickMessage(server.getName())));
+                            player.disconnect(translate(settingsProxy.getFullServerKickMessage(server.getName())));
                         }
                     });
                 } else
-                    player.disconnect(TextComponent.of(settingsProxy.getFullServerKickMessage(server.getName())));
+                    player.disconnect(translate(settingsProxy.getFullServerKickMessage(server.getName())));
             } else {
                 player.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
             }
@@ -184,11 +185,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
                     if (result.isSuccessful()) {
                         player.sendMessage(translate(settingsProxy.getMessage("sentToWaitingServer").replace("%SERVER%", server.getName())));
                     } else {
-                        player.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
+                        player.disconnect(translate(settingsProxy.getKickMessage()));
                     }
                 });
             } else {
-                player.disconnect(TextComponent.of(settingsProxy.getKickMessage()));
+                player.disconnect(translate(settingsProxy.getKickMessage()));
             }
         }
     }
@@ -221,7 +222,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     @Nullable
-    public String getServer(final SenderInfo sender) {
+    public String getServerNameOf(final SenderInfo sender) {
         final Optional<Player> player = server.getPlayer(sender.getUuid());
         if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;
         return player.get().getCurrentServer().get().getServerInfo().getName();
@@ -234,8 +235,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void broadcast(final String message) {
-        server.broadcast(translate(message));
-        logger.info(message);
+        server.sendMessage(translate(message));
     }
 
     @Override
@@ -248,6 +248,16 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         return server.getPluginManager().getPlugin("maintenance")
                 .orElseThrow(() -> new IllegalArgumentException("Couldn't get Maintenance instance. Custom/broken build?")).getDescription().getSource()
                 .orElseThrow(IllegalArgumentException::new).toFile();
+    }
+
+    @Override
+    protected int getOnlinePlayers() {
+        return server.getPlayerCount();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return server.getConfiguration().getShowMaxPlayers();
     }
 
     @Override
@@ -290,6 +300,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     public TextComponent translate(final String s) {
-        return LegacyComponentSerializer.INSTANCE.deserialize(s);
+        return LegacyComponentSerializer.legacySection().deserialize(s);
     }
 }

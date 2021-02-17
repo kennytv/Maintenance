@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,4 +43,12 @@ public interface Server {
      * @param message message to be broadcasted
      */
     void broadcast(String message);
+
+    /**
+     * Returns whether the server is registered under the proxy.
+     * This will only ever be false if maintenance is disabled on a *previously* registered server.
+     *
+     * @return whether the server is registered under the proxy
+     */
+    boolean isRegisteredServer();
 }

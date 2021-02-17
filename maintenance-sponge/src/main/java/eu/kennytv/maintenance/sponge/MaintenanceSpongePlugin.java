@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
         final MaintenanceSpongeCommand command = new MaintenanceSpongeCommand(this, settings);
         commandManager = command;
-        game.getCommandManager().register(this, command, "maintenance", "maintenancesponge");
+        game.getCommandManager().register(this, command, "maintenance", "maintenancesponge", "mt");
         final EventManager em = game.getEventManager();
         em.registerListeners(this, new ClientPingServerListener(this, settings));
         em.registerListeners(this, new ClientConnectionListener(this, settings));
@@ -196,6 +196,16 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public File getPluginFile() {
         final Optional<Path> source = container.getSource();
         return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));
+    }
+
+    @Override
+    protected int getOnlinePlayers() {
+        return getServer().getOnlinePlayers().size();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return getServer().getMaxPlayers();
     }
 
     @Override

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,9 @@ public final class MotdCommand extends CommandInfo {
             }
 
             sendList(sender, getSettings().getTimerSpecificPingMessages());
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     private void sendList(final SenderInfo sender, final List<String> list) {

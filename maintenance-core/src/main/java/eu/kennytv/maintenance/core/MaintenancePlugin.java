@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.event.EventManager;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
+import eu.kennytv.maintenance.core.runnable.MaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
@@ -69,6 +70,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     private final String prefix;
     private final ServerType serverType;
     private Version newestVersion;
+    private boolean debug;
 
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
@@ -108,11 +110,20 @@ public abstract class MaintenancePlugin implements IMaintenance {
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
-    public String formatedTimer(final String s) {
-        return s.contains("%TIMER%") ? s.replace("%TIMER%", formatedTimer()) : s;
+    public String replacePingVariables(String s) {
+        if (s.contains("%TIMER%")) {
+            s = s.replace("%TIMER%", getTimerMessage());
+        }
+        if (s.contains("%ONLINE%")) {
+            s = s.replace("%ONLINE%", Integer.toString(getOnlinePlayers()));
+        }
+        if (s.contains("%MAX%")) {
+            s = s.replace("%MAX%", Integer.toString(getMaxPlayers()));
+        }
+        return s;
     }
 
-    public String formatedTimer() {
+    public String getTimerMessage() {
         if (!isTaskRunning()) return settings.getMessage("motdTimerNotRunning", "-");
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
@@ -123,16 +134,16 @@ public abstract class MaintenancePlugin implements IMaintenance {
                 .replace("%SECONDS%", String.format("%02d", seconds));
     }
 
-    public void startMaintenanceRunnableForMinutes(final int minutes, final boolean enable) {
-        startMaintenanceRunnableForSeconds(minutes * 60, enable);
-    }
-
-    public void startMaintenanceRunnableForSeconds(final int seconds, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, settings, seconds, enable);
+    public void startMaintenanceRunnable(final long duration, final TimeUnit unit, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, settings, (int) unit.toSeconds(duration), enable);
         // Save the endtimer to be able to continue it after a server stop
         if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
         }
+    }
+
+    public void scheduleMaintenanceRunnable(final long duration, final int maintenanceDuration, final TimeUnit unit) {
+        runnable = new MaintenanceScheduleRunnable(this, settings, (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration));
     }
 
     public boolean updateAvailable() {
@@ -158,14 +169,12 @@ public abstract class MaintenancePlugin implements IMaintenance {
             setMaintenance(false);
             settings.setSavedEndtimer(0);
         } else {
-            final int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(settings.getSavedEndtimer() - current);
-            startMaintenanceRunnableForSeconds(seconds, false);
-            getLogger().info("The timer has been continued - maintenance will be disabled in: " + formatedTimer());
+            startMaintenanceRunnable(settings.getSavedEndtimer() - current, TimeUnit.MILLISECONDS, false);
+            getLogger().info("The timer has been continued - maintenance will be disabled in: " + getTimerMessage());
         }
     }
 
     protected void sendEnableMessage() {
-        getLogger().info("Plugin by KennyTV");
         if (!settings.hasUpdateChecks()) return;
         async(() -> {
             try {
@@ -235,7 +244,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
     public String pasteDump() {
         final MaintenanceDump dump = new MaintenanceDump(this, settings);
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hasteb.in/documents").openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hastebin.com/documents").openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
@@ -247,7 +256,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
             out.close();
 
             if (connection.getResponseCode() == 503) {
-                getLogger().warning("Could not paste dump, hasteb.in down?");
+                getLogger().warning("Could not paste dump, hastebin.com down?");
                 return null;
             }
 
@@ -285,8 +294,10 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public void cancelTask() {
-        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable())
+        if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(0);
+        }
+
         runnable.getTask().cancel();
         runnable = null;
     }
@@ -341,6 +352,16 @@ public abstract class MaintenancePlugin implements IMaintenance {
     @Nullable
     public List<String> getMaintenanceServersDump() {
         return isMaintenance() ? Arrays.asList("global") : null;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @Override
+    public void setDebug(final boolean debug) {
+        this.debug = debug;
     }
 
     public int getSaltLevel() {
@@ -404,4 +425,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     protected abstract void kickPlayers();
 
     protected abstract File getPluginFile();
+
+    protected abstract int getOnlinePlayers();
+
+    protected abstract int getMaxPlayers();
 }

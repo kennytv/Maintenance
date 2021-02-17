@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,8 +135,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
                 if (checkForFallback && fallbackServer.canAccess(player)) {
                     player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
                     player.connect(fallbackServer);
-                } else
+                } else {
                     player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
+                }
             } else {
                 player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName()));
             }
@@ -150,7 +151,8 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         // Notifications done in global method
         for (final ProxiedPlayer player : getProxy().getPlayers()) {
             if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
-            if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName())) continue;
+            if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName()))
+                continue;
             if (serverInfo.canAccess(player) && !isMaintenance(serverInfo)) {
                 player.sendMessage(settingsProxy.getMessage("sentToWaitingServer").replace("%SERVER%", server.getName()));
                 player.connect(serverInfo);
@@ -188,7 +190,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
     @Override
     @Nullable
-    public String getServer(final SenderInfo sender) {
+    public String getServerNameOf(final SenderInfo sender) {
         final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
         if (player == null || player.getServer() == null) return null;
         return player.getServer().getInfo().getName();
@@ -212,6 +214,16 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public File getPluginFile() {
         return plugin.getPluginFile();
+    }
+
+    @Override
+    protected int getOnlinePlayers() {
+        return getProxy().getOnlineCount();
+    }
+
+    @Override
+    protected int getMaxPlayers() {
+        return getProxy().getConfig().getPlayerLimit();
     }
 
     @Override

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,14 +67,15 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             }
 
             if (plugin.setMaintenanceToServer(server, maintenance)) {
-                if (!sender.isPlayer() || !server.getName().equals(plugin.getServer(sender))) {
+                if (!sender.isPlayer() || !server.getName().equals(plugin.getServerNameOf(sender))) {
                     sender.sendMessage(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
                 }
             } else {
                 sender.sendMessage(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled").replace("%SERVER%", server.getName()));
             }
-        } else
+        } else {
             sender.sendMessage(getHelpMessage());
+        }
     }
 
     @Override

@@ -1,6 +1,23 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+---
+## 3.0.6 - February 17th 2021
+### Changed
+* Updated the Velocity version to be compatible with Velocity 1.1.0 (use Maintenance 3.0.5 if you use an older version of Velocity)
+* Added `maintenance schedule <minutes> <duration> command`
+  * This starts a timer for maintenance to be enabled, after which another timer will be started to disable it again (in contrast to `starttimer` and `endtimer`, which each only do one of)
+  * On proxies, you can use `maintenance schedule [server] <minutes> <duration> command` to schedule maintenance on a proxied server
+* Added command alias `mt` for the Maintenance command
+* Added secret argument to the whitelist add command: You can use `maintenance add <uuid> <name>` to add offline entries per command
+* The maintenance's base command is now properly registered with a permission on each platform, so that it is excluded from tabcomplection to unauthorized players
+* Some improvements to the French language file (thanks to @Aurelien30000)
+* API addition: Added MaintenanceReloadedEvent
+  * If you are using the MaintenancePlaceholderAddon, you need to [update it to 1.0.4](https://github.com/KennyTV/MaintenanceAddon/releases)
+### Fixed
+* Fixed not setting custom singleserver kickmessages throwing warnings
+* Bungee: Fixed linebreaks in the playercount hovermessage for 1.16+ clients
+---
 ## 3.0.5 - June 17th 2020
 ### Changed
 * The plugin identifiers are now `Maintenance` instead of the previous `MaintenanceSpigot` and `MaintenanceBungee`,
@@ -20,7 +37,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Fixed disabling the playercount-message still hiding online/max players
 * Fixed config parsing with multi line strings
 * Bungee: Fixed compatibility with other motd changing plugins using the 'HIGHEST' ping listener priority
-
+---
 ## 3.0.4 - March 17th 2020
 ### Changed
 * Bungee/Velocity: Added config option `waiting-server` to send players to a waiting server when global maintenance is enabled (instead of kicking them)

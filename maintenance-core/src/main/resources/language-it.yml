@@ -1,4 +1,5 @@
 # Maintenance Plugin by KennyTV
+# Translators: TheViperShow
 # Don't remove words inbetween the '%' if you don't exactly know why you're doing it
 
 noPermission: "&cNon hai i permessi necessari per eseguire quel comando."
@@ -90,5 +91,6 @@ helpWhitelistRemove: "&6/maintenance remove <name/uuid> &7(Rimuovi il player dal
 helpAbortSingleTimer: "&6/maintenance aborttimer [server] &7(Se attivo, il timer attuale verrà fermato)"
 helpSingleEndtimer: "&6/maintenance endtimer [server] <minutes> &7(Dopo il tempo fornito in minuti, la modalità manutenzione sarà rimossa)"
 helpSingleStarttimer: "&6/maintenance starttimer [server] <minutes> &7(Dopo il tempo fornito in minuti, la modalità manutenzione sarà attivata)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "&6/maintenance <on/off> [server] &7(Abilita/Disabilita la modalità manutenzione)"
 helpStatus: "&6/maintenance status &7(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"

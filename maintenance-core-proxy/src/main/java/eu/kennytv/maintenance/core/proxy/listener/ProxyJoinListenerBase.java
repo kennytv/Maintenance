@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public abstract class ProxyJoinListenerBase extends JoinListenerBase {
             if (target.getName().equals(waitingServer.getName())) return ALLOWED;
 
             // Player already is on the waiting server
-            final String currentServer = plugin.getServer(sender);
+            final String currentServer = plugin.getServerNameOf(sender);
             if (waitingServer.getName().equals(currentServer)) {
                 sender.sendMessage(settings.getMessage("forceWaitingServer"));
                 return DENIED;

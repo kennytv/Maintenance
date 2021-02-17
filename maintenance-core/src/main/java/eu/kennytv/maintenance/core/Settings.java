@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
+import eu.kennytv.maintenance.api.event.MaintenanceReloadedEvent;
 import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -102,6 +103,8 @@ public class Settings implements ISettings {
 
         // Directly cache colored messages - this should not be saved!
         transformColoredMessages(language.getValues());
+
+        plugin.getEventManager().callEvent(new MaintenanceReloadedEvent());
     }
 
     private void transformColoredMessages(final Map<String, Object> map) {
@@ -305,11 +308,12 @@ public class Settings implements ISettings {
     }
 
     public String getConfigString(final String path) {
-        if (!config.contains(path)) {
+        final String s = config.getString(path);
+        if (s == null) {
             plugin.getLogger().warning("The config is missing the following string: " + path);
             return "null";
         }
-        return config.getString(path);
+        return s;
     }
 
     public String getMessage(final String path) {
@@ -317,11 +321,12 @@ public class Settings implements ISettings {
     }
 
     public String getMessage(final String path, final String def) {
-        if (!language.contains(path)) {
+        final String s = language.getString(path);
+        if (s == null) {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
             return def;
         }
-        return language.getString(path);
+        return s;
     }
 
     public String getRandomPingMessage() {
@@ -334,7 +339,7 @@ public class Settings implements ISettings {
 
     private String getPingMessage(final List<String> list) {
         final String s = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
-        return getColoredString(replaceNewlineVar(plugin.formatedTimer(s)));
+        return getColoredString(replaceNewlineVar(plugin.replacePingVariables(s)));
     }
 
     @Override
@@ -356,6 +361,7 @@ public class Settings implements ISettings {
                 break;
             }
         }
+
         if (uuid == null) return false;
 
         whitelistedPlayers.remove(uuid);
@@ -453,15 +459,15 @@ public class Settings implements ISettings {
     }
 
     public String getPlayerCountMessage() {
-        return plugin.formatedTimer(playerCountMessage);
+        return plugin.replacePingVariables(playerCountMessage);
     }
 
     public String getPlayerCountHoverMessage() {
-        return plugin.formatedTimer(playerCountHoverMessage);
+        return plugin.replacePingVariables(playerCountHoverMessage);
     }
 
     public String getKickMessage() {
-        return plugin.formatedTimer(getMessage("kickmessage"));
+        return plugin.replacePingVariables(getMessage("kickmessage"));
     }
 
     public String getLanguage() {

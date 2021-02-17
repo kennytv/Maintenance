@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,13 +133,15 @@ public final class SettingsProxy extends Settings {
             if (!maintenanceServers.equals(databaseValue)) {
                 // Enable maintenance on yet unlisted servers
                 for (final String s : databaseValue) {
-                    if (!maintenanceServers.contains(s))
+                    if (!maintenanceServers.contains(s)) {
                         proxyPlugin.serverActions(proxyPlugin.getServer(s), true);
+                    }
                 }
                 // Disable maintenance on now unlisted servers
                 for (final String s : maintenanceServers) {
-                    if (!databaseValue.contains(s))
+                    if (!databaseValue.contains(s)) {
                         proxyPlugin.serverActions(proxyPlugin.getServer(s), false);
+                    }
                 }
                 maintenanceServers = databaseValue;
             }
@@ -149,20 +151,20 @@ public final class SettingsProxy extends Settings {
     }
 
     public String getServerKickMessage(final String server) {
-        String message = getMessage("singleMaintenanceKicks." + server, null);
+        String message = language.getString("singleMaintenanceKicks." + server);
         if (message == null) {
             message = getMessage("singleMaintenanceKick");
         }
-        return plugin.formatedTimer(message).replace("%SERVER%", server);
+        return plugin.replacePingVariables(message).replace("%SERVER%", server);
     }
 
     // Full = being kicked from the proxy, not just a proxied server
     public String getFullServerKickMessage(final String server) {
-        String message = getMessage("singleMaintenanceKicksComplete." + server, null);
+        String message = language.getString("singleMaintenanceKicksComplete." + server);
         if (message == null) {
             message = getMessage("singleMaintenanceKickComplete");
         }
-        return plugin.formatedTimer(message).replace("%SERVER%", server);
+        return plugin.replacePingVariables(message).replace("%SERVER%", server);
     }
 
     public boolean hasMySQL() {
@@ -194,10 +196,12 @@ public final class SettingsProxy extends Settings {
         if (hasMySQL()) {
             maintenanceServers = loadMaintenanceServersFromSQL();
             if (!maintenanceServers.remove(server)) return false;
+
             plugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.remove(server)) return false;
+
             saveServersToConfig();
         }
         return true;

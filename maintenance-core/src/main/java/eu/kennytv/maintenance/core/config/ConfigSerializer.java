@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,6 +101,7 @@ public final class ConfigSerializer {
 
     public static Map<String, String[]> deserializeComments(final String data) {
         //TODO go through known yaml keys and figure out comments from there instead of from line to line?
+        // ... tho everything here would benefit from a cleanup
         final Map<String, String[]> comments = new HashMap<>();
         final List<String> currentComments = new ArrayList<>();
         boolean header = true;

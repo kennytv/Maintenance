@@ -16,6 +16,7 @@ class ConfigTest {
     void initAll() {
         delete("config.yml");
         delete("config-saved.yml");
+        delete("config-set.yml");
         delete("dirty-config-saved.yml");
         delete("dirty-config-upgraded.yml");
         copyOriginalToTest("config.yml", "config.yml");

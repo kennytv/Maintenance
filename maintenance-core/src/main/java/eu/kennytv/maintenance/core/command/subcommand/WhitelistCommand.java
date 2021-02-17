@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,13 +38,15 @@ public final class WhitelistCommand extends CommandInfo {
         final Map<UUID, String> players = getSettings().getWhitelistedPlayers();
         if (players.isEmpty()) {
             sender.sendMessage(getMessage("whitelistEmpty"));
-        } else {
-            sender.sendMessage(getMessage("whitelistedPlayers"));
-            final String format = getMessage("whitelistedPlayersFormat");
-            for (final Map.Entry<UUID, String> entry : players.entrySet()) {
-                sender.sendMessage(format.replace("%NAME%", entry.getValue()).replace("%UUID%", entry.getKey().toString()));
-            }
-            sender.sendMessage("");
+            return;
         }
+
+        sender.sendMessage(getMessage("whitelistedPlayers"));
+        final String format = getMessage("whitelistedPlayersFormat");
+        for (final Map.Entry<UUID, String> entry : players.entrySet()) {
+            sender.sendMessage(format.replace("%NAME%", entry.getValue()).replace("%UUID%", entry.getKey().toString()));
+        }
+
+        sender.sendMessage("");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import net.kyori.text.TextComponent;
 
 import java.util.UUID;
 
@@ -55,7 +54,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
             samplePlayers[i] = new ServerPing.SamplePlayer(split[i], uuid);
         }
 
-        builder.description(TextComponent.of(settings.getRandomPingMessage()))
+        builder.description(plugin.translate(settings.getRandomPingMessage()))
                 .samplePlayers(samplePlayers);
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

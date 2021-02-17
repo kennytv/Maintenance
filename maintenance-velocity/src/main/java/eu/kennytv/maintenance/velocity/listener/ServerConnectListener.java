@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 
 import java.util.Optional;
 
@@ -82,7 +82,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
             // Player has no server to connect to
             if (!hasCurrentServer) {
-                player.disconnect(TextComponent.of(settings.getKickMessage()));
+                player.disconnect(plugin.translate(settings.getKickMessage()));
             }
         } else if (connectResult.getTarget() != null) {
             final RegisteredServer newTarget = ((VelocityServer) connectResult.getTarget()).getServer();

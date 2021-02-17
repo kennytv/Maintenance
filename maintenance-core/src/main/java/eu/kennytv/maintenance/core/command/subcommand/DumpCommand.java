@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +44,17 @@ public final class DumpCommand extends CommandInfo {
         plugin.async(() -> {
             final String key = plugin.pasteDump();
             if (key == null) {
-                if (sender.isPlayer())
+                if (sender.isPlayer()) {
                     sender.sendMessage(plugin.getPrefix() + "§cCould not paste dump (see the console for details)");
+                }
                 return;
             }
 
-            final String url = "https://hasteb.in/" + key;
+            final String url = "https://hastebin.com/" + key;
             sender.sendMessage(plugin.getPrefix() + "§c" + url);
-            if (sender.isPlayer())
+            if (sender.isPlayer()) {
                 plugin.getCommandManager().sendDumpMessage(sender, url);
+            }
         });
     }
 }

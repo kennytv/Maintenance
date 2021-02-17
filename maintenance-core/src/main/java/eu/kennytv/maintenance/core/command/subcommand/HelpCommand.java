@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,15 +42,16 @@ public final class HelpCommand extends CommandInfo {
 
         if (args.length == 1) {
             sendUsage(sender);
-        } else {
-            if (!plugin.isNumeric(args[1])) {
-                sender.sendMessage(getHelpMessage());
-                return;
-            }
-
-            final int page = Integer.parseInt(args[1]);
-            sendUsage(sender, page == 0 ? 1 : page);
+            return;
         }
+
+        if (!plugin.isNumeric(args[1])) {
+            sender.sendMessage(getHelpMessage());
+            return;
+        }
+
+        final int page = Integer.parseInt(args[1]);
+        sendUsage(sender, page == 0 ? 1 : page);
     }
 
     public void sendUsage(final SenderInfo sender) {
@@ -70,11 +71,7 @@ public final class HelpCommand extends CommandInfo {
             return;
         }
 
-        final List<String> filteredCommands;
-        if (page * COMMANDS_PER_PAGE >= commands.size())
-            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, commands.size());
-        else
-            filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, page * COMMANDS_PER_PAGE);
+        final List<String> filteredCommands = commands.subList((page - 1) * COMMANDS_PER_PAGE, Math.min(page * COMMANDS_PER_PAGE, commands.size()));
 
         final String header = getMessage("helpHeader").replace("%NAME%", "Maintenance" + plugin.getServerType())
                 .replace("%PAGE%", Integer.toString(page)).replace("%MAX%", Integer.toString((commands.size() + getDivide(commands.size())) / COMMANDS_PER_PAGE));
@@ -83,10 +80,13 @@ public final class HelpCommand extends CommandInfo {
         for (final String command : filteredCommands) {
             sender.sendMessage(command);
         }
-        if (page * COMMANDS_PER_PAGE < commands.size())
+
+        if (page * COMMANDS_PER_PAGE < commands.size()) {
             sender.sendMessage(getMessage("helpNextPage").replace("%PAGE%", Integer.toString(page + 1)));
-        else
+        } else {
             sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bKennyTV");
+        }
+
         sender.sendMessage(header);
         sender.sendMessage("");
     }

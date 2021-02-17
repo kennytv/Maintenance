@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,22 @@ public final class PaperServerListPingListener implements Listener {
         }
 
         @Override
+        public boolean completeFromCache(boolean b) {
+            return false;
+        }
+
+        @Override
+        public boolean completeFromCache(boolean b, boolean b1) {
+            return false;
+        }
+
+        @Override
         public boolean complete(final boolean textures) {
+            return false;
+        }
+
+        @Override
+        public boolean complete(boolean b, boolean b1) {
             return false;
         }
 

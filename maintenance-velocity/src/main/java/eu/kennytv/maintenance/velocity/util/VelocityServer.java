@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ package eu.kennytv.maintenance.velocity.util;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public final class VelocityServer implements Server {
     private final RegisteredServer server;
@@ -43,10 +43,15 @@ public final class VelocityServer implements Server {
 
     @Override
     public void broadcast(final String message) {
-        final TextComponent s = LegacyComponentSerializer.INSTANCE.deserialize(message);
+        final TextComponent s = LegacyComponentSerializer.legacySection().deserialize(message);
         for (final Player p : server.getPlayersConnected()) {
             p.sendMessage(s);
         }
+    }
+
+    @Override
+    public boolean isRegisteredServer() {
+        return true;
     }
 
     public RegisteredServer getServer() {

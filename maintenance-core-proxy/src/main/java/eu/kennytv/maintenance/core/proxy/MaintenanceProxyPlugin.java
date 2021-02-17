@@ -1,6 +1,6 @@
 /*
  * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2020 KennyTV (https://github.com/KennyTV)
+ * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,20 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
-import eu.kennytv.maintenance.core.proxy.server.DummyServer;
+import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author KennyTV
@@ -78,19 +84,25 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
-        if (server == null || server instanceof DummyServer) return;
-        if (maintenance) {
-            final Server fallback = settingsProxy.getFallbackServer();
-            if (fallback == null) {
-                if (server.hasPlayers()) {
-                    getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
-                }
-            }
-            kickPlayers(server, fallback);
-        } else
-            server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+        if (server == null) return;
 
-        cancelSingleTask(server);
+        // Skip to the even fire for dummy servers
+        if (server.isRegisteredServer()) {
+            if (maintenance) {
+                final Server fallback = settingsProxy.getFallbackServer();
+                if (fallback == null) {
+                    if (server.hasPlayers()) {
+                        getLogger().warning("The set fallback could not be found! Instead kicking players from that server off the network!");
+                    }
+                }
+                kickPlayers(server, fallback);
+            } else {
+                server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated").replace("%SERVER%", server.getName()));
+            }
+
+            cancelSingleTask(server);
+        }
+
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
     }
 
@@ -106,12 +118,20 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     public void cancelSingleTask(final Server server) {
         final Task task = serverTasks.remove(server.getName());
-        if (task != null)
+        if (task != null) {
             task.cancel();
+        }
     }
 
-    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final int minutes, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, minutes * 60, enable, server);
+    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final long duration, final TimeUnit unit, final boolean enable) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) unit.toSeconds(duration), enable, server);
+        serverTasks.put(server.getName(), runnable.getTask());
+        return runnable;
+    }
+
+    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final long duration, final long maintenanceDuration, final TimeUnit unit) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
+                (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration), server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
@@ -120,7 +140,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Nullable
     public List<String> getMaintenanceServersDump() {
         final List<String> list = new ArrayList<>();
-        if (isMaintenance()) list.add("global");
+        if (isMaintenance()) {
+            list.add("global");
+        }
         list.addAll(settingsProxy.getMaintenanceServers());
         return list.isEmpty() ? null : list;
     }
@@ -150,7 +172,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Nullable
-    public abstract String getServer(SenderInfo sender);
+    public abstract String getServerNameOf(SenderInfo sender);
 
     protected abstract void kickPlayers(Server server, Server fallback);
 
