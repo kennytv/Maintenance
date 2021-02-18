@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 4;
+    private static final int CURRENT_CONFIG_VERSION = 5;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -50,6 +50,7 @@ public class Settings implements ISettings {
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String languageName;
+    private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
@@ -170,6 +171,7 @@ public class Settings implements ISettings {
     private void loadSettings() {
         updateConfig();
 
+        enablePingMessages = config.getBoolean("enable-pingmessages", true);
         pingMessages = config.getStringList("pingmessages");
         if (config.getBoolean("enable-timerspecific-messages")) {
             timerSpecificPingMessages = config.getStringList("timerspecific-pingmessages");
@@ -396,6 +398,11 @@ public class Settings implements ISettings {
 
     public void setMaintenance(final boolean maintenance) {
         this.maintenance = maintenance;
+    }
+
+    @Override
+    public boolean isEnablePingMessages() {
+        return enablePingMessages;
     }
 
     @Override

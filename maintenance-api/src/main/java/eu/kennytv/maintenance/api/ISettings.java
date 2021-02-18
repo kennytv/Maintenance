@@ -35,6 +35,11 @@ public interface ISettings {
     boolean isMaintenance();
 
     /**
+     * @return true if custom ping messages during maintenance should be used
+     */
+    boolean isEnablePingMessages();
+
+    /**
      * @return value of the 'send-join-notification' config field
      */
     boolean isJoinNotifications();

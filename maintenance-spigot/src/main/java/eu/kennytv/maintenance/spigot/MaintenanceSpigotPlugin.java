@@ -97,7 +97,9 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (pm.isPluginEnabled(serverListPlus)) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settings.isMaintenance());
+            }
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }

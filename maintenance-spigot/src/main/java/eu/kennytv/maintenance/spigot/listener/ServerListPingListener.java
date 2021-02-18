@@ -36,7 +36,7 @@ public final class ServerListPingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         if (settings.hasCustomPlayerCountMessage()) {
             event.setMaxPlayers(0);

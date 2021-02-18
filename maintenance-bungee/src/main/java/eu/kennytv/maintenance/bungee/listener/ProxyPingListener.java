@@ -36,7 +36,7 @@ public final class ProxyPingListener implements Listener {
 
     @EventHandler(priority = 80)
     public void proxyPing(final ProxyPingEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         final ServerPing ping = event.getResponse();
         ServerPing.Players players = ping.getPlayers();

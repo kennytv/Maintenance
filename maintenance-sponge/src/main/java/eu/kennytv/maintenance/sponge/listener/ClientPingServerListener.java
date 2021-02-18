@@ -41,7 +41,7 @@ public final class ClientPingServerListener {
 
     @Listener(order = Order.LAST)
     public void proxyPing(final ClientPingServerEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         final ClientPingServerEvent.Response response = event.getResponse();
         if (settings.hasCustomPlayerCountMessage()) {

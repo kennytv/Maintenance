@@ -109,7 +109,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         // ServerListPlus integration
         server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            }
             logger.info("Enabled ServerListPlus integration!");
         }));
     }

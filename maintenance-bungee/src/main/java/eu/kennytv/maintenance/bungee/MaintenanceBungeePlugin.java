@@ -90,7 +90,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            if (!settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            }
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }

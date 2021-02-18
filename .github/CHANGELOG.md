@@ -2,6 +2,10 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## Unreleased
+### Changed
+* Added config option `enable-pingmessages` to can change whether a custom maintenance motd should be displayed during maintenance
+---
 ## 3.0.6 - February 17th 2021
 ### Changed
 * Updated the Velocity version to be compatible with Velocity 1.1.0 (use Maintenance 3.0.5 if you use an older version of Velocity)

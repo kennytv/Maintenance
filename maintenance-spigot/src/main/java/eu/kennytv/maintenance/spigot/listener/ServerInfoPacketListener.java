@@ -51,7 +51,7 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
 
     @Override
     public void onPacketSending(final PacketEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
         ping.setMotD(settings.getRandomPingMessage());

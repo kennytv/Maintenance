@@ -38,7 +38,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
 
     @Override
     public void execute(final ProxyPingEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         final ServerPing ping = event.getPing();
         final ServerPing.Builder builder = ping.asBuilder();

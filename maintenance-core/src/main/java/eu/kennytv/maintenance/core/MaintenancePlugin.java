@@ -94,7 +94,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         if (isTaskRunning()) {
             cancelTask();
         }
-        if (serverListPlusHook != null) {
+        if (serverListPlusHook != null && settings.isEnablePingMessages()) {
             serverListPlusHook.setEnabled(!maintenance);
         }
 

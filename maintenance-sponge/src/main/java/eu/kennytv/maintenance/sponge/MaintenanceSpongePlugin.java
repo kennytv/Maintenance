@@ -112,7 +112,9 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settings.isMaintenance());
+            }
             logger.info("Enabled ServerListPlus integration!");
         }));
     }

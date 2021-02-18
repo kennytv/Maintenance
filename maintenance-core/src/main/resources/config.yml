@@ -32,6 +32,7 @@ waiting-server: ""
 pingmessages:
   - "&cMaintenance mode!%NEWLINE%&6We will be back soon!"
 # - "Other entry"
+enable-pingmessages: true
 
 # If set to true and an endtimer is currently running, a pingmessage from this pool will be chosen
 # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
@@ -102,4 +103,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 4
+config-version: 5
