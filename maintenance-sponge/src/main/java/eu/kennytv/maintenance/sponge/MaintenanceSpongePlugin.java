@@ -146,6 +146,11 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
+    protected void executeConsoleCommand(final String command) {
+        game.getCommandManager().process(game.getServer().getConsole(), command);
+    }
+
+    @Override
     public void broadcast(final String message) {
         getServer().getBroadcastChannel().send(translate(message));
     }

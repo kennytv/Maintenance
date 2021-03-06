@@ -47,6 +47,8 @@ public class Settings implements ISettings {
     private Set<Integer> broadcastIntervals;
     private List<String> pingMessages;
     private List<String> timerSpecificPingMessages;
+    private List<String> commandsOnMaintenanceEnable;
+    private List<String> commandsOnMaintenanceDisable;
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String languageName;
@@ -177,6 +179,8 @@ public class Settings implements ISettings {
             timerSpecificPingMessages = config.getStringList("timerspecific-pingmessages");
         }
         maintenance = config.getBoolean("maintenance-enabled");
+        commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
+        commandsOnMaintenanceDisable = config.getStringList("commands-on-maintenance-disable");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
@@ -454,6 +458,14 @@ public class Settings implements ISettings {
     // The ping messages still contain the %NEWLINE% (if they have 2 lines)
     public List<String> getPingMessages() {
         return pingMessages;
+    }
+
+    public List<String> getCommandsOnMaintenanceEnable() {
+        return commandsOnMaintenanceEnable;
+    }
+
+    public List<String> getCommandsOnMaintenanceDisable() {
+        return commandsOnMaintenanceDisable;
     }
 
     @Nullable

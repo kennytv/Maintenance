@@ -236,6 +236,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    protected void executeConsoleCommand(final String command) {
+        server.getCommandManager().executeAsync(server.getConsoleCommandSource(), command);
+    }
+
+    @Override
     public void broadcast(final String message) {
         server.sendMessage(translate(message));
     }

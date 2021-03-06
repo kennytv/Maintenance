@@ -134,6 +134,11 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
+    protected void executeConsoleCommand(final String command) {
+        getServer().dispatchCommand(getServer().getConsoleSender(), command);
+    }
+
+    @Override
     public void broadcast(final String message) {
         getServer().broadcastMessage(message);
     }

@@ -204,6 +204,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    protected void executeConsoleCommand(final String command) {
+        getProxy().getPluginManager().dispatchCommand(getProxy().getConsole(), command);
+    }
+
+    @Override
     public void broadcast(final String message) {
         getProxy().broadcast(message);
     }

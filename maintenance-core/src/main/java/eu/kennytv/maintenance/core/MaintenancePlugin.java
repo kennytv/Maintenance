@@ -88,6 +88,15 @@ public abstract class MaintenancePlugin implements IMaintenance {
         settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
         serverActions(maintenance);
+
+        for (final String command : (maintenance ? settings.getCommandsOnMaintenanceEnable() : settings.getCommandsOnMaintenanceDisable())) {
+            try {
+                executeConsoleCommand(command);
+            } catch (final Exception e) {
+                getLogger().severe("Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command);
+                e.printStackTrace();
+            }
+        }
     }
 
     public void serverActions(final boolean maintenance) {
@@ -397,6 +406,8 @@ public abstract class MaintenancePlugin implements IMaintenance {
     }
 
     public abstract void async(Runnable runnable);
+
+    protected abstract void executeConsoleCommand(String command);
 
     public abstract void broadcast(String message);
 

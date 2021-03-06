@@ -34,6 +34,11 @@ pingmessages:
 # - "Other entry"
 enable-pingmessages: true
 
+# Any extra commands inside of the arrays will be executed when maintenance is enabled/disabled.
+# Example: commands-on-maintenance-enable: ["say hello!", "stop"]
+commands-on-maintenance-enable: []
+commands-on-maintenance-disable: []
+
 # If set to true and an endtimer is currently running, a pingmessage from this pool will be chosen
 # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
 enable-timerspecific-messages: false
