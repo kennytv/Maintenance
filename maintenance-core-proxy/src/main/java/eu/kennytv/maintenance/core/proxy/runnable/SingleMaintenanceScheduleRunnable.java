@@ -38,4 +38,10 @@ public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRu
         super.finish();
         ((MaintenanceProxyPlugin) plugin).startSingleMaintenanceRunnable(server, maintenanceDuration, TimeUnit.SECONDS, false);
     }
+
+    @Override
+    protected String getStartMessage() {
+        return settings.getMessage("singleScheduletimerBroadcast").replace("%SERVER%", server.getName())
+                .replace("%TIME%", getTime()).replace("%DURATION%", plugin.getFormattedTime(maintenanceDuration));
+    }
 }

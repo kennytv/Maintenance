@@ -143,6 +143,26 @@ public abstract class MaintenancePlugin implements IMaintenance {
                 .replace("%SECONDS%", String.format("%02d", seconds));
     }
 
+    public String getFormattedTime(final int timeSeconds) {
+        final int preHours = timeSeconds / 60;
+        final int minutes = preHours % 60;
+        final int seconds = timeSeconds % 60;
+
+        final StringBuilder buider = new StringBuilder();
+        append(buider, "hour", preHours / 60);
+        append(buider, "minute", minutes);
+        append(buider, "second", seconds);
+        return buider.toString();
+    }
+
+    private void append(final StringBuilder builder, final String timeUnit, final int time) {
+        if (time == 0) return;
+        if (builder.length() != 0) {
+            builder.append(' ');
+        }
+        builder.append(time).append(' ').append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
+    }
+
     public void startMaintenanceRunnable(final long duration, final TimeUnit unit, final boolean enable) {
         runnable = new MaintenanceRunnable(this, settings, (int) unit.toSeconds(duration), enable);
         // Save the endtimer to be able to continue it after a server stop

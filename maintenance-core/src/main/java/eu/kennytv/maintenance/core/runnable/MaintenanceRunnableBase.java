@@ -49,23 +49,7 @@ public abstract class MaintenanceRunnableBase implements Runnable {
     }
 
     public String getTime() {
-        final int preHours = this.seconds / 60;
-        final int minutes = preHours % 60;
-        final int seconds = this.seconds % 60;
-
-        final StringBuilder buider = new StringBuilder();
-        append(buider, "hour", preHours / 60);
-        append(buider, "minute", minutes);
-        append(buider, "second", seconds);
-        return buider.toString();
-    }
-
-    private void append(final StringBuilder builder, final String timeUnit, final int time) {
-        if (time == 0) return;
-        if (builder.length() != 0) {
-            builder.append(' ');
-        }
-        builder.append(time).append(' ').append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
+        return plugin.getFormattedTime(seconds);
     }
 
     public boolean shouldEnable() {

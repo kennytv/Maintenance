@@ -38,4 +38,10 @@ public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
         // Start the timer to disable maintenance again
         plugin.startMaintenanceRunnable(maintenanceDuration, TimeUnit.SECONDS, false);
     }
+
+    @Override
+    protected String getStartMessage() {
+        return settings.getMessage("scheduletimerBroadcast")
+                .replace("%TIME%", getTime()).replace("%DURATION%", plugin.getFormattedTime(maintenanceDuration));
+    }
 }
