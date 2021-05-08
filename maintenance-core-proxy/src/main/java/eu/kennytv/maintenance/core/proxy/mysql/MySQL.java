@@ -79,9 +79,9 @@ public final class MySQL {
                     current++;
                 }
 
-                final ResultSet resultSet = preparedStatement.executeQuery();
-                callback.accept(resultSet);
-                resultSet.close();
+                try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                    callback.accept(resultSet);
+                }
             }
         } catch (final SQLException e) {
             logger.log(Level.SEVERE, "Error while executing query method: " + query);

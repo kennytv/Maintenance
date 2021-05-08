@@ -39,6 +39,8 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
+import eu.kennytv.maintenance.core.proxy.util.ProxyOfflineSenderInfo;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -212,7 +214,18 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final Optional<Player> player = server.getPlayer(name);
-        return player.map(VelocitySenderInfo::new).orElse(null);
+        if (player.isPresent()) {
+            return new VelocitySenderInfo(player.get());
+        }
+
+        final ProfileLookup profile;
+        try {
+            profile = doUUIDLookup(name);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
     }
 
     @Override

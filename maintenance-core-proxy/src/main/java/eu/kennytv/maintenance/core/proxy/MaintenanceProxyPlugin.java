@@ -18,6 +18,8 @@
 
 package eu.kennytv.maintenance.core.proxy;
 
+import com.google.common.io.CharStreams;
+import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.event.proxy.ServerMaintenanceChangedEvent;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
@@ -25,18 +27,25 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
+import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -165,6 +174,19 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
         // If not set, kick players from proxy
         kickPlayersFromProxy();
+    }
+
+    protected ProfileLookup doUUIDLookup(final String name) throws IOException {
+        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        try (final InputStream in = connection.getInputStream()) {
+            final String output = CharStreams.toString(new InputStreamReader(in));
+            final JsonObject json = GSON.fromJson(output, JsonObject.class);
+
+            final UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
+            final String username = json.getAsJsonPrimitive("username").getAsString();
+            return new ProfileLookup(uuid, username);
+        }
     }
 
     public SettingsProxy getSettingsProxy() {

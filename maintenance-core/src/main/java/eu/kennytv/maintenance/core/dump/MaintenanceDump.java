@@ -18,7 +18,6 @@
 
 package eu.kennytv.maintenance.core.dump;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -46,7 +45,7 @@ public final class MaintenanceDump {
         configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());
 
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.add("plugins", new GsonBuilder().create().toJsonTree(plugin.getPlugins()));
+        jsonObject.add("plugins", MaintenancePlugin.GSON.toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;
     }
 }

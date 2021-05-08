@@ -21,6 +21,7 @@ package eu.kennytv.maintenance.core;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
@@ -61,6 +62,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class MaintenancePlugin implements IMaintenance {
+    public static final Gson GSON = new GsonBuilder().create();
     protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
@@ -279,27 +281,25 @@ public abstract class MaintenancePlugin implements IMaintenance {
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
             connection.setRequestProperty("Content-Type", "text/plain");
 
-            final GsonBuilder gsonBuilder = new GsonBuilder();
-            final OutputStream out = connection.getOutputStream();
-            out.write(gsonBuilder.disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
-            out.close();
+            try (final OutputStream out = connection.getOutputStream()) {
+                out.write(new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
+            }
 
             if (connection.getResponseCode() == 503) {
                 getLogger().warning("Could not paste dump, hastebin.com down?");
                 return null;
             }
 
-            final InputStream in = connection.getInputStream();
-            final String output = CharStreams.toString(new InputStreamReader(in));
-            in.close();
+            try (final InputStream in = connection.getInputStream()) {
+                final String output = CharStreams.toString(new InputStreamReader(in));
+                final JsonObject jsonOutput = GSON.fromJson(output, JsonObject.class);
+                if (!jsonOutput.has("key")) {
+                    getLogger().log(Level.WARNING, "Could not paste dump, there was no key returned :(");
+                    return null;
+                }
 
-            final JsonObject jsonOutput = gsonBuilder.create().fromJson(output, JsonObject.class);
-            if (!jsonOutput.has("key")) {
-                getLogger().log(Level.WARNING, "Could not paste dump, there was no key returned :(");
-                return null;
+                return jsonOutput.get("key").getAsString();
             }
-
-            return jsonOutput.get("key").getAsString();
         } catch (final IOException e) {
             getLogger().log(Level.WARNING, "Could not paste dump :(");
             e.printStackTrace();
@@ -435,6 +435,13 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 
+    /**
+     * Returns offline sender info of a player.
+     * This method may do a web lookup.
+     *
+     * @param name name of the player
+     * @return sender info if found, else null
+     */
     @Nullable
     public abstract SenderInfo getOfflinePlayer(String name);
 
