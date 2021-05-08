@@ -177,16 +177,26 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
-        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+        final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try (final InputStream in = connection.getInputStream()) {
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);
-
-            final UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
-            final String username = json.getAsJsonPrimitive("username").getAsString();
+            final UUID uuid = formatUUID(json.getAsJsonPrimitive("id").getAsString());
+            final String username = json.getAsJsonPrimitive("name").getAsString();
             return new ProfileLookup(uuid, username);
         }
+    }
+    
+    private UUID formatUUID(String uuid_o) {
+    	String uuid = "";
+		for(int i = 0; i < uuid_o.length(); i++) {
+			uuid += uuid_o.charAt(i);
+			if(i == 7 || i == 11 || i == 15 || i == 19) {
+				uuid += "-";
+			}
+		}
+		return UUID.fromString(uuid);
     }
 
     public SettingsProxy getSettingsProxy() {
