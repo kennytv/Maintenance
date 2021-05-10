@@ -57,7 +57,7 @@
         </repository>
         <repository>
             <id>dmulloy2</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
         <repository>
             <id>minecrell</id>
