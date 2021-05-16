@@ -23,15 +23,16 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyPingEvent;
-import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.event.connection.ProxyPingEvent;
+import com.velocitypowered.api.event.lifecycle.ProxyInitializeEvent;
+import com.velocitypowered.api.event.lifecycle.ProxyReloadEvent;
+import com.velocitypowered.api.event.lifecycle.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.connection.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.Favicon;
 import eu.kennytv.maintenance.api.proxy.Server;
@@ -58,13 +59,11 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -100,22 +99,23 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         final MaintenanceVelocityCommand command = new MaintenanceVelocityCommand(this, settingsProxy);
         commandManager = command;
-        server.getCommandManager().register(server.getCommandManager().metaBuilder("maintenance").aliases("maintenancevelocity", "mt").build(), command);
+        server.commandManager().register(server.commandManager().createMetaBuilder("maintenance").aliases("maintenancevelocity", "mt").build(), command);
 
-        final EventManager em = server.getEventManager();
+        final EventManager em = server.eventManager();
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, new ServerConnectListener(this, settingsProxy));
 
         continueLastEndtimer();
 
         // ServerListPlus integration
-        server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
-            serverListPlusHook = new ServerListPlusHook(serverListPlus);
+        PluginContainer serverListPlus = server.pluginManager().getPlugin("serverlistplus");
+        if (serverListPlus != null && serverListPlus.instance() != null) {
+            serverListPlusHook = new ServerListPlusHook(serverListPlus.instance());
             if (settings.isEnablePingMessages()) {
                 serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
             }
             logger.info("Enabled ServerListPlus integration!");
-        }));
+        }
     }
 
     @Subscribe
@@ -131,24 +131,21 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent tc1 = translate(getPrefix());
-        final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
-        final TextComponent click = translate(" §7§l§o(CLICK ME)");
-        click.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"));
-        click.hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
-        tc1.append(tc2);
-        tc1.append(click);
-        ((VelocitySenderInfo) sender).sendMessage(tc1);
+        final TextComponent component = translate(getPrefix()).append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
+        final TextComponent clickText = translate(" §7§l§o(CLICK ME)")
+                .clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"))
+                .hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
+        ((VelocitySenderInfo) sender).sendMessage(component.append(clickText));
     }
 
     public boolean isMaintenance(final RegisteredServer serverInfo) {
-        return settingsProxy.isMaintenance(serverInfo.getServerInfo().getName());
+        return settingsProxy.isMaintenance(serverInfo.serverInfo().name());
     }
 
     @Override
     protected void kickPlayersFromProxy() {
-        for (final Player p : server.getAllPlayers()) {
-            if (!hasPermission(p, "bypass") && !settingsProxy.isWhitelisted(p.getUniqueId())) {
+        for (final Player p : server.connectedPlayers()) {
+            if (!hasPermission(p, "bypass") && !settingsProxy.isWhitelisted(p.id())) {
                 p.disconnect(translate(settingsProxy.getKickMessage()));
             }
         }
@@ -158,8 +155,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayers(final Server server, final Server fallback) {
         final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
         final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
-        for (final Player player : ((VelocityServer) server).getServer().getPlayersConnected()) {
-            if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
+        for (final Player player : ((VelocityServer) server).getServer().connectedPlayers()) {
+            if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.id())) {
                 if (checkForFallback) {
                     player.sendMessage(translate(settingsProxy.getMessage("singleMaintenanceActivated").replace("%SERVER%", server.getName())));
                     // Kick the player if fallback server is not reachable
@@ -180,9 +177,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayersTo(final Server server) {
         final RegisteredServer waitingServer = ((VelocityServer) server).getServer();
         // Notifications done in global method
-        for (final Player player : this.server.getAllPlayers()) {
-            if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
-            if (player.getCurrentServer().isPresent() && player.getCurrentServer().get().getServerInfo().getName().equals(waitingServer.getServerInfo().getName()))
+        for (final Player player : this.server.connectedPlayers()) {
+            if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.id())) continue;
+            if (player.connectedServer() != null && player.connectedServer().serverInfo().name().equals(waitingServer.serverInfo().name()))
                 continue;
             if (!isMaintenance(waitingServer)) {
                 player.createConnectionRequest(waitingServer).connect().whenComplete((result, e) -> {
@@ -200,22 +197,22 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
-        return new VelocityTask(server.getScheduler().buildTask(this, runnable).repeat(1, TimeUnit.SECONDS).schedule());
+        return new VelocityTask(server.scheduler().buildTask(this, runnable).repeat(1, TimeUnit.SECONDS).schedule());
     }
 
     @Override
     @Nullable
     public Server getServer(final String server) {
-        final Optional<RegisteredServer> serverInfo = this.server.getServer(server);
-        return serverInfo.map(VelocityServer::new).orElse(null);
+        final RegisteredServer serverInfo = this.server.server(server);
+        return serverInfo != null ? new VelocityServer(serverInfo) : null;
     }
 
     @Override
     @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
-        final Optional<Player> player = server.getPlayer(name);
-        if (player.isPresent()) {
-            return new VelocitySenderInfo(player.get());
+        final Player player = server.player(name);
+        if (player != null) {
+            return new VelocitySenderInfo(player);
         }
 
         final ProfileLookup profile;
@@ -231,26 +228,26 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     @Nullable
     public SenderInfo getOfflinePlayer(final UUID uuid) {
-        final Optional<Player> player = server.getPlayer(uuid);
-        return player.map(VelocitySenderInfo::new).orElse(null);
+        final Player player = server.player(uuid);
+        return player != null ? new VelocitySenderInfo(player) : null;
     }
 
     @Override
     @Nullable
     public String getServerNameOf(final SenderInfo sender) {
-        final Optional<Player> player = server.getPlayer(sender.getUuid());
-        if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;
-        return player.get().getCurrentServer().get().getServerInfo().getName();
+        final Player player = server.player(sender.getUuid());
+        if (player == null || player.connectedServer() == null) return null;
+        return player.connectedServer().serverInfo().name();
     }
 
     @Override
     public void async(final Runnable runnable) {
-        server.getScheduler().buildTask(this, runnable).schedule();
+        server.scheduler().buildTask(this, runnable).schedule();
     }
 
     @Override
     protected void executeConsoleCommand(final String command) {
-        server.getCommandManager().executeAsync(server.getConsoleCommandSource(), command);
+        server.commandManager().execute(server.consoleCommandSource(), command);
     }
 
     @Override
@@ -265,19 +262,17 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public File getPluginFile() {
-        return server.getPluginManager().getPlugin("maintenance")
-                .orElseThrow(() -> new IllegalArgumentException("Couldn't get Maintenance instance. Custom/broken build?")).getDescription().getSource()
-                .orElseThrow(IllegalArgumentException::new).toFile();
+        return server.pluginManager().getPlugin("maintenance").description().file().toFile();
     }
 
     @Override
     protected int getOnlinePlayers() {
-        return server.getPlayerCount();
+        return server.countConnectedPlayers();
     }
 
     @Override
     protected int getMaxPlayers() {
-        return server.getConfiguration().getShowMaxPlayers();
+        return server.configuration().getShowMaxPlayers();
     }
 
     @Override
@@ -292,19 +287,19 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public String getServerVersion() {
-        return server.getVersion().getVersion();
+        return server.version().version();
     }
 
     @Override
     public List<PluginDump> getPlugins() {
-        return server.getPluginManager().getPlugins().stream().map(plugin ->
-                new PluginDump(plugin.getDescription().getId() + "/" + plugin.getDescription().getName().orElse("-"),
-                        plugin.getDescription().getVersion().orElse("-"), plugin.getDescription().getAuthors())).collect(Collectors.toList());
+        return server.pluginManager().plugins().stream().map(plugin ->
+                new PluginDump(plugin.description().id() + "/" + plugin.description().name(),
+                        plugin.description().version(), plugin.description().authors())).collect(Collectors.toList());
     }
 
     @Override
     protected void loadIcon(final File file) throws IOException {
-        favicon = Favicon.create(ImageIO.read(file));
+        favicon = Favicon.create(file.toPath());
     }
 
     public boolean hasPermission(final CommandSource sender, final String permission) {

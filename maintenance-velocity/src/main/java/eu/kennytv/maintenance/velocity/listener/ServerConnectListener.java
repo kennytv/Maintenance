@@ -21,10 +21,10 @@ package eu.kennytv.maintenance.velocity.listener;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.LoginEvent;
-import com.velocitypowered.api.event.connection.PostLoginEvent;
+import com.velocitypowered.api.event.player.LoginEvent;
+import com.velocitypowered.api.event.player.PostLoginEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
-import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.connection.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
@@ -34,8 +34,6 @@ import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
 import net.kyori.adventure.text.TextComponent;
-
-import java.util.Optional;
 
 public final class ServerConnectListener extends ProxyJoinListenerBase {
     private final MaintenanceVelocityPlugin plugin;
@@ -47,9 +45,9 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
     @Subscribe
     public void login(final LoginEvent event) {
-        if (!event.getResult().isAllowed()) return;
+        if (!event.result().isAllowed()) return;
 
-        final VelocitySenderInfo sender = new VelocitySenderInfo(event.getPlayer());
+        final VelocitySenderInfo sender = new VelocitySenderInfo(event.player());
         if (shouldKick(sender, false)) {
             final Server waitingServer = shouldConnectToWaitingServer(sender);
             // Do the actual connecting in the ServerPreConnectEvent handler if a waiting server exists
@@ -57,26 +55,26 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
             event.setResult(ResultedEvent.ComponentResult.denied(plugin.translate(settings.getKickMessage())));
             if (settings.isJoinNotifications()) {
-                broadcastJoinNotification(event.getPlayer().getUsername());
+                broadcastJoinNotification(event.player().username());
             }
         }
     }
 
     @Subscribe
     public void postLogin(final PostLoginEvent event) {
-        updateCheck(new VelocitySenderInfo(event.getPlayer()));
+        updateCheck(new VelocitySenderInfo(event.player()));
     }
 
     @Subscribe(order = PostOrder.LAST)
     public void preConnect(final ServerPreConnectEvent event) {
-        if (!event.getResult().isAllowed()) return;
+        if (!event.result().isAllowed()) return;
 
-        final Optional<RegisteredServer> optionalTarget = event.getResult().getServer();
-        if (!optionalTarget.isPresent()) return;
+        final RegisteredServer target = event.result().target();
+        if (target == null) return;
 
-        final Player player = event.getPlayer();
-        final boolean hasCurrentServer = player.getCurrentServer().isPresent();
-        final ServerConnectResult connectResult = serverConnect(new VelocitySenderInfo(player), new VelocityServer(optionalTarget.get()), hasCurrentServer);
+        final Player player = event.player();
+        final boolean hasCurrentServer = player.connectedServer() != null;
+        final ServerConnectResult connectResult = serverConnect(new VelocitySenderInfo(player), new VelocityServer(target), hasCurrentServer);
         if (connectResult.isCancelled()) {
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
 
@@ -92,12 +90,12 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
     @Override
     protected void broadcastJoinNotification(final String name) {
-        sendJoinMessage(plugin.getServer().getAllPlayers(), name);
+        sendJoinMessage(plugin.getServer().connectedPlayers(), name);
     }
 
     @Override
     protected void broadcastJoinNotification(final String name, final Server server) {
-        sendJoinMessage(((VelocityServer) server).getServer().getPlayersConnected(), name);
+        sendJoinMessage(((VelocityServer) server).getServer().connectedPlayers(), name);
     }
 
     private void sendJoinMessage(final Iterable<Player> players, final String name) {

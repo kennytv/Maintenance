@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.velocity.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
-import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.connection.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
@@ -80,8 +80,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     @Override
     public List<String> getServersCompletion(final String s) {
         final List<String> list = new ArrayList<>();
-        for (final RegisteredServer server : plugin.getServer().getAllServers()) {
-            final String name = server.getServerInfo().getName();
+        for (final RegisteredServer server : plugin.getServer().registeredServers()) {
+            final String name = server.serverInfo().name();
             if (name.toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(name)) {
                 list.add(name);
             }
@@ -92,8 +92,8 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     @Override
     public List<String> getPlayersCompletion() {
         final List<String> list = new ArrayList<>();
-        for (final Player player : plugin.getServer().getAllPlayers()) {
-            list.add(player.getUsername());
+        for (final Player player : plugin.getServer().connectedPlayers()) {
+            list.add(player.username());
         }
         return list;
     }

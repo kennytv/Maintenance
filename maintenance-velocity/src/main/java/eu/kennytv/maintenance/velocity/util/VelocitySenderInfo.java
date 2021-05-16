@@ -19,7 +19,7 @@
 package eu.kennytv.maintenance.velocity.util;
 
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.connection.Player;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import net.kyori.adventure.text.TextComponent;
@@ -36,12 +36,12 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
 
     @Override
     public UUID getUuid() {
-        return sender instanceof Player ? ((Player) sender).getUniqueId() : null;
+        return sender instanceof Player ? ((Player) sender).id() : null;
     }
 
     @Override
     public String getName() {
-        return sender instanceof Player ? ((Player) sender).getUsername() : null;
+        return sender instanceof Player ? ((Player) sender).username() : null;
     }
 
     @Override

@@ -18,7 +18,7 @@
 
 package eu.kennytv.maintenance.velocity.util;
 
-import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.connection.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
 import net.kyori.adventure.text.TextComponent;
@@ -33,18 +33,18 @@ public final class VelocityServer implements Server {
 
     @Override
     public String getName() {
-        return server.getServerInfo().getName();
+        return server.serverInfo().name();
     }
 
     @Override
     public boolean hasPlayers() {
-        return !server.getPlayersConnected().isEmpty();
+        return !server.connectedPlayers().isEmpty();
     }
 
     @Override
     public void broadcast(final String message) {
         final TextComponent s = LegacyComponentSerializer.legacySection().deserialize(message);
-        for (final Player p : server.getPlayersConnected()) {
+        for (final Player p : server.connectedPlayers()) {
             p.sendMessage(s);
         }
     }

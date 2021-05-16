@@ -19,7 +19,8 @@
 package eu.kennytv.maintenance.velocity.listener;
 
 import com.velocitypowered.api.event.EventHandler;
-import com.velocitypowered.api.event.proxy.ProxyPingEvent;
+import com.velocitypowered.api.event.EventTask;
+import com.velocitypowered.api.event.connection.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
@@ -37,10 +38,10 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
     }
 
     @Override
-    public void execute(final ProxyPingEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+    public EventTask execute(final ProxyPingEvent event) {
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return null;
 
-        final ServerPing ping = event.getPing();
+        final ServerPing ping = event.ping();
         final ServerPing.Builder builder = ping.asBuilder();
         if (settings.hasCustomPlayerCountMessage()) {
             builder.version(new ServerPing.Version(1, settings.getPlayerCountMessage()
@@ -62,5 +63,6 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         }
 
         event.setPing(builder.build());
+        return null;
     }
 }
