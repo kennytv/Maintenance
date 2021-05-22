@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core.proxy.mysql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,8 +50,20 @@ public final class MySQL {
         hikariConfig.addDataSourceProperty("url", urlProperty);
 
         hikariConfig.setJdbcUrl(urlProperty);
-        hikariConfig.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikariConfig.setDataSourceClassName(findDriver("com.mysql.jdbc.jdbc2.optional.MysqlDataSource", "com.mysql.cj.jdbc.MysqlDataSource", "org.mariadb.jdbc.MariaDbDataSource"));
         hikariDataSource = new HikariDataSource(hikariConfig);
+    }
+
+    @Nullable
+    private String findDriver(final String... classNames) {
+        for (final String name : classNames) {
+            try {
+                Class.forName(name);
+                return name;
+            } catch (final ClassNotFoundException ignored) {
+            }
+        }
+        throw new IllegalArgumentException("No sql driver class found");
     }
 
     public void executeUpdate(final String query, final Consumer<Integer> callback, final Object... objects) {
