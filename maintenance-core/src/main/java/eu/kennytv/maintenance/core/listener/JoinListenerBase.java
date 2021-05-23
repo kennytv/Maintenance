@@ -29,7 +29,6 @@ import java.util.UUID;
 public abstract class JoinListenerBase {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
-    protected final UUID notifyUuid = new UUID(-6334418481592579467L, -4779835342378829761L);
     private final Set<UUID> notifiedPlayers = new HashSet<>();
 
     protected JoinListenerBase(final MaintenancePlugin plugin, final Settings settings) {
@@ -59,10 +58,6 @@ public abstract class JoinListenerBase {
     }
 
     protected void updateCheck(final SenderInfo sender) {
-        if (sender.getUuid().equals(notifyUuid)) {
-            sender.sendMessage("§6Maintenance §aVersion " + plugin.getVersion());
-            return;
-        }
         if (!settings.hasUpdateChecks()) return;
         if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return;
         plugin.async(() -> {
