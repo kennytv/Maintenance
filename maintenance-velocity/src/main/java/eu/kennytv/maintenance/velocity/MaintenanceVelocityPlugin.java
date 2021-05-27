@@ -131,14 +131,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent tc1 = translate(getPrefix());
-        final TextComponent tc2 = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
-        final TextComponent click = translate(" §7§l§o(CLICK ME)");
-        click.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"));
-        click.hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
-        tc1.append(tc2);
-        tc1.append(click);
-        ((VelocitySenderInfo) sender).sendMessage(tc1);
+        final TextComponent component = translate(getPrefix()).append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
+        final TextComponent clickText = translate(" §7§l§o(CLICK ME)")
+                .clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"))
+                .hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
+        ((VelocitySenderInfo) sender).sendMessage(component.append(clickText));
     }
 
     public boolean isMaintenance(final RegisteredServer serverInfo) {
