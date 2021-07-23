@@ -77,6 +77,7 @@ helpNextPage: "&7Use &b/maintenance help %PAGE% &7para ir para a próxima págin
 helpAbortTimer: "&6/maintenance aborttimer &7(Se estiver a correr o temporizador vai ser abortado)"
 helpEndtimer: "&6/maintenance endtimer <minutes> &7(Depois do temporizador acabar a manutenção vai ser desativada)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &7(Depois do temporizador acabar a manutenção vai ser ativa)"
+helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &7(Discarta alguma informação do server, usado para bugs)"
 helpHelp: "&6/maintenance help [page] &7(Mostra o help da manutenção)"
 helpMotd: "&6/maintenance motd [timer] &7(Lista as motd currentes. Se usar 'timer', os temporizadores vão ser mostrados)"
