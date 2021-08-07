@@ -40,12 +40,12 @@
 
     <repositories>
         <repository>
-            <id>spigotmc</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>spigotmc</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
             <id>sponge</id>
@@ -69,13 +69,13 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
+            <version>21.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.6.2</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
