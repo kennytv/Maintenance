@@ -114,7 +114,8 @@ public abstract class MaintenanceCommand {
             final List<String> list = new ArrayList<>();
             for (final Map.Entry<String, CommandInfo> entry : commandExecutors.entrySet()) {
                 final String command = entry.getKey();
-                if (command.startsWith(s) && entry.getValue().hasPermission(sender)) {
+                final CommandInfo info = entry.getValue();
+                if (info.isVisible() && command.startsWith(s) && info.hasPermission(sender)) {
                     list.add(command);
                 }
             }

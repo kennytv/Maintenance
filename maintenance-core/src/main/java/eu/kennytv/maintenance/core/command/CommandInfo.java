@@ -30,16 +30,26 @@ public abstract class CommandInfo {
     protected final MaintenancePlugin plugin;
     private final String helpMessageKey;
     private final String permission;
+    private final boolean visible;
 
     protected CommandInfo(final MaintenancePlugin plugin, @Nullable final String permission) {
+        this(plugin, permission, true);
+    }
+
+    protected CommandInfo(final MaintenancePlugin plugin, @Nullable final String permission, final boolean visible) {
         this.plugin = plugin;
         this.permission = permission;
         // Just take the class name as the language key
         this.helpMessageKey = "help" + getClass().getSimpleName().replace("Command", "");
+        this.visible = visible;
     }
 
     public boolean hasPermission(final SenderInfo sender) {
         return sender.hasMaintenancePermission(permission);
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
     public String getHelpMessage() {

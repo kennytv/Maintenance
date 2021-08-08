@@ -8,6 +8,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Added config options `commands-on-maintenance-enable` and `commands-on-maintenance-disable` to define commands to be executed after maintenance has been toggled
 * Added config option `enable-pingmessages` to can change whether a custom maintenance motd should be displayed during maintenance
 * Added language fields `scheduletimerBroadcast` and `singleScheduletimerBroadcast` with the variables `%SERVER%`, `%TIME%`, and `%DURATION%` instead of using the normal starttimer broadcasts
+### Fixed
+* Fixed SQL loading issues on some platforms
+* Fixed missing language key warning for the debug command
+* Velocity: Fixed the update message
 ---
 ## 3.0.6 - February 17th 2021
 ### Changed

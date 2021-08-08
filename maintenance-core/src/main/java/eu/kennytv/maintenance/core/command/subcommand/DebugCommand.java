@@ -25,14 +25,13 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 public final class DebugCommand extends CommandInfo {
 
     public DebugCommand(final MaintenancePlugin plugin) {
-        super(plugin, "debug");
+        super(plugin, "debug", false);
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 1)) return;
 
-        //TODO put this and the help message into language files
         plugin.setDebug(!plugin.isDebug());
         sender.sendMessage("Debug mode is now " + (plugin.isDebug() ? "enabled" : "disabled"));
     }

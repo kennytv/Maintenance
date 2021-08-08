@@ -62,7 +62,7 @@ public final class HelpCommand extends CommandInfo {
         Preconditions.checkArgument(page > 0);
         final List<String> commands = new ArrayList<>();
         for (final CommandInfo cmd : plugin.getCommandManager().getCommands()) {
-            if (cmd.hasPermission(sender)) {
+            if (cmd.isVisible() && cmd.hasPermission(sender)) {
                 commands.add(cmd.getHelpMessage());
             }
         }
