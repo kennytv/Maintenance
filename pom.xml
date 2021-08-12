@@ -10,13 +10,13 @@
     <packaging>pom</packaging>
 
     <name>Maintenance</name>
-    <url>https://github.com/KennyTV/Maintenance</url>
+    <url>https://github.com/kennytv/Maintenance</url>
     <inceptionYear>2018</inceptionYear>
 
     <developers>
         <developer>
-            <id>KennyTV</id>
-            <url>https://github.com/KennyTV/</url>
+            <id>kennytv</id>
+            <url>https://github.com/kennytv/</url>
         </developer>
     </developers>
 

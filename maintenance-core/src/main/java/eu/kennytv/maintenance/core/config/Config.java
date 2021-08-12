@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.config;
 
 import com.google.common.collect.Sets;
@@ -37,7 +36,7 @@ import java.util.Set;
  * Further modified version of the SimpleConfig project of PSandro (https://github.com/PSandro/SimpleConfig).
  *
  * @author PSandro on 26.01.19
- * @author KennyTV
+ * @author kennytv
  */
 public final class Config extends ConfigSection {
 
@@ -50,7 +49,7 @@ public final class Config extends ConfigSection {
                     "#  |_|  |_|\\__,_|_|_| |_|\\__\\___|_| |_|\\__,_|_| |_|\\___\\___| |_.__/ \\__, | |_|\\_\\___|_| |_|_| |_|\\__, ||_|    \\_/     #\n" +
                     "#                                                                   |___/                        |___/                #\n" +
                     "#######################################################################################################################\n" +
-                    "# You can report bugs here: https://github.com/KennyTV/Maintenance/issues\n" +
+                    "# You can report bugs here: https://github.com/kennytv/Maintenance/issues\n" +
                     "# If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq\n";
     private final Yaml yaml = createYaml();
     private final File file;
