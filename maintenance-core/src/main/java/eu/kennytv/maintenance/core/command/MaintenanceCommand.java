@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.command;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
@@ -114,7 +113,8 @@ public abstract class MaintenanceCommand {
             final List<String> list = new ArrayList<>();
             for (final Map.Entry<String, CommandInfo> entry : commandExecutors.entrySet()) {
                 final String command = entry.getKey();
-                if (command.startsWith(s) && entry.getValue().hasPermission(sender)) {
+                final CommandInfo info = entry.getValue();
+                if (info.isVisible() && command.startsWith(s) && info.hasPermission(sender)) {
                     list.add(command);
                 }
             }
@@ -140,7 +140,7 @@ public abstract class MaintenanceCommand {
             return true;
         }
         if (minutes < 1) {
-            sender.sendMessage("§8§o[KennyTV whispers to you] §7§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §7§owell.");
+            sender.sendMessage("§8§o[kennytv whispers to you] §7§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §7§owell.");
             return true;
         }
         return false;

@@ -1,4 +1,4 @@
-# Maintenance Plugin by KennyTV
+# Maintenance Plugin by kennytv
 # Translators: Vixo_Ulises
 # Don't remove words inbetween the '%' if you don't exactly know why you're doing it
 
@@ -12,6 +12,7 @@ endtimerBroadcast: "&8[&eMaintenance&8] &7El modo mantenimiento se desactivara e
 endtimerStarted: "&8[&eMaintenance&8] &7Temporizador iniciado: El modo mantenimiento se desactivará en &6%TIME%&7."
 starttimerBroadcast: "&8[&eMaintenance&8] &7El modo mantenimiento se habilitara en &6%TIME%&7."
 starttimerStarted: "&8[&eMaintenance&8] &7Temporizador iniciado: El modo mantenimiento se activará en &6%TIME%&7."
+scheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 timerAlreadyRunning: "&8[&eMaintenance&8] &cYa hay un temporizador programado!"
 timerNotRunning: "&8[&eMaintenance&8] &7Actualmente no hay temporizador."
 timerCancelled: "&8[&eMaintenance&8] &cEl Temporizador actual ha sido deshabilitado."
@@ -53,6 +54,7 @@ singleTimerNotRunning: "&8[&eMaintenance&8] &cActualmente no hay ningún tempori
 singleTimerCancelled: "&8[&eMaintenance&8] &cEl temporizador actual para el servidor &6%SERVER% &cha sido desactivado."
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7El modo mantenimiento en el Servidor &6%SERVER% &7se desactivará en &a%TIME%&7."
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7El modo mantenimiento en el servidor &6%SERVER%&7 se activará en &a%TIME%&7"
+singleScheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 singleMaintenanceKick: "&8[&eMaintenance&8] &7El servidor &6%SERVER% &7se encuentra en mantenimiento&7! Intentalo mas tarde!"
 singleMaintenanceKickComplete: "&7El Servidor &6%SERVER% &7esta en mantenimiento&7!%NEWLINE%&cVuelve Mas Tarde!"
 singleMaintenanceActivated: "&8[&eMaintenance&8] &7El modo mantenimiento esta activado en el servidor &6%SERVER%&7."
@@ -75,6 +77,7 @@ helpNextPage: "&7Utilice &b/maintenance help %PAGE% &7Para pasar a la siguiente 
 helpAbortTimer: "&6/maintenance aborttimer &8(&7Si se ejecuta, se abortará el temporizador actual&8)"
 helpEndtimer: "&6/maintenance endtimer <minutes> &8(&7Después del tiempo en minutos, se desactivará el modo de mantenimiento&8)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &8(&7Después del tiempo en minutos, se habilitará el modo de mantenimiento&8)"
+helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &8(&7Descarga información del servidor, usada para informes de errores&8)"
 helpHelp: "&6/maintenance help [page] &8(&7Muestra la pagina de ayuda&8)"
 helpMotd: "&6/maintenance motd [timer] &8(&7Enumera los motivos de mantenimiento establecidos actualmente. Si se especifica el 'temporizador', se muestran los motivos del temporizador&8)"

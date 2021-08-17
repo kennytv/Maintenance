@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.proxy.mysql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,8 +49,20 @@ public final class MySQL {
         hikariConfig.addDataSourceProperty("url", urlProperty);
 
         hikariConfig.setJdbcUrl(urlProperty);
-        hikariConfig.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikariConfig.setDataSourceClassName(findDriver("com.mysql.jdbc.jdbc2.optional.MysqlDataSource", "com.mysql.cj.jdbc.MysqlDataSource", "org.mariadb.jdbc.MariaDbDataSource"));
         hikariDataSource = new HikariDataSource(hikariConfig);
+    }
+
+    @Nullable
+    private String findDriver(final String... classNames) {
+        for (final String name : classNames) {
+            try {
+                Class.forName(name);
+                return name;
+            } catch (final ClassNotFoundException ignored) {
+            }
+        }
+        throw new IllegalArgumentException("No sql driver class found");
     }
 
     public void executeUpdate(final String query, final Consumer<Integer> callback, final Object... objects) {
@@ -79,9 +91,9 @@ public final class MySQL {
                     current++;
                 }
 
-                final ResultSet resultSet = preparedStatement.executeQuery();
-                callback.accept(resultSet);
-                resultSet.close();
+                try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                    callback.accept(resultSet);
+                }
             }
         } catch (final SQLException e) {
             logger.log(Level.SEVERE, "Error while executing query method: " + query);

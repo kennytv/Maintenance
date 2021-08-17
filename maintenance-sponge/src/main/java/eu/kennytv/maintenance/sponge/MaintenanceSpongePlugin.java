@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.sponge;
 
 import com.google.inject.Inject;
@@ -72,10 +71,10 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * @author KennyTV
+ * @author kennytv
  * @since 3.0
  */
-@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "KennyTV",
+@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
         dependencies = @Dependency(id = "serverlistplus", optional = true))
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
@@ -112,7 +111,9 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
         // ServerListPlus integration
         game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settings.isMaintenance());
+            }
             logger.info("Enabled ServerListPlus integration!");
         }));
     }
@@ -141,6 +142,11 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Override
     public void async(final Runnable runnable) {
         game.getScheduler().createTaskBuilder().async().execute(runnable).submit(this);
+    }
+
+    @Override
+    protected void executeConsoleCommand(final String command) {
+        game.getCommandManager().process(game.getServer().getConsole(), command);
     }
 
     @Override

@@ -1,4 +1,4 @@
-# Maintenance Plugin by KennyTV
+# Maintenance Plugin by kennytv
 # Translators: En_0t_S
 # Don't remove words inbetween the '%' if you don't exactly know why you're doing it
 
@@ -12,6 +12,7 @@ endtimerBroadcast: "&aСервер будет открыт через &f%TIME%&a
 endtimerStarted: "&aТаймер успешно запущен! &aСервер будет открыт через &f%TIME%&a!"
 starttimerBroadcast: "&aСервер будет закрыт на технические работы через &f%TIME%&a!"
 starttimerStarted: "&aТаймер успешно запущен! &aСервер будет закрыт на технические работы через &f%TIME%&a!"
+scheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 timerAlreadyRunning: "&cТаймер уже запущен!"
 timerNotRunning: "&cТаймер не был запущен."
 timerCancelled: "&7Таймер был остановлен."
@@ -53,6 +54,7 @@ singleTimerCancelled: "&7Таймер сервера &f%SERVER% &7был ост�
 singleTimerNotRunning: "&cТаймер сервера &f%SERVER% &cне был запущен."
 singleEndtimerBroadcast: "&aСервер &f%SERVER% &aбудет открыт через &f%TIME%&a!"
 singleStarttimerBroadcast: "&cВнимание! Сервер &f%SERVER% &cбудет закрыт на технические работы через &f%TIME%&c!"
+singleScheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 singleMaintenanceKick: "&cДанный сервер закрыт на технические работы! Попробуйте позже."
 singleMaintenanceKickComplete: "&cДанный сервер закрыт на технические работы!%NEWLINE%&cПопробуйте позже."
 singleMaintenanceActivated: "&aРежим технических работ на сервере &f%SERVER% &aвключен!"
@@ -75,6 +77,7 @@ helpNextPage: "&fИспользуйте &6/maintenance help %PAGE% &fчтобы 
 helpAbortTimer: "&6/maintenance aborttimer &7- &fОстановить таймер включения/выключения режима технических работ."
 helpEndtimer: "&6/maintenance endtimer [время в минутах] &7- &fЗапустить таймер выключения режима технических работ."
 helpStarttimer: "&6/maintenance starttimer [время в минутах] &7- &fЗапустить таймер включения режима технических работ."
+helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &7- &fСоздать дамп."
 helpHelp: "&6/maintenance help [страница] &7- &fОтобразить список доступных команд."
 helpMotd: "&6/maintenance motd <timer> &7- &fОтобразить список титульных сообщений."

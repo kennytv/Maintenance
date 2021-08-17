@@ -2,6 +2,17 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## 3.0.7 - August 17th 2021
+### Changed
+* Bungee/Velocity: `/maintenance add <name>` now works for offline players as well
+* Added config options `commands-on-maintenance-enable` and `commands-on-maintenance-disable` to define commands to be executed after maintenance has been toggled
+* Added config option `enable-pingmessages` to can change whether a custom maintenance motd should be displayed during maintenance
+* Added language fields `scheduletimerBroadcast` and `singleScheduletimerBroadcast` with the variables `%SERVER%`, `%TIME%`, and `%DURATION%` instead of using the normal starttimer broadcasts
+### Fixed
+* Fixed SQL loading issues on some platforms
+* Fixed missing language key warning for the debug command
+* Velocity: Fixed the update message
+---
 ## 3.0.6 - February 17th 2021
 ### Changed
 * Updated the Velocity version to be compatible with Velocity 1.1.0 (use Maintenance 3.0.5 if you use an older version of Velocity)

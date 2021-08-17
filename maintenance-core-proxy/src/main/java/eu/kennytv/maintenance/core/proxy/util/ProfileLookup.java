@@ -15,33 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.bungee;
+package eu.kennytv.maintenance.core.proxy.util;
 
-import eu.kennytv.maintenance.api.IMaintenance;
-import eu.kennytv.maintenance.api.IMaintenanceBase;
-import net.md_5.bungee.api.plugin.Plugin;
+import java.util.UUID;
 
-import java.io.File;
+public final class ProfileLookup {
+    private final UUID uuid;
+    private final String name;
 
-public final class MaintenanceBungeeBase extends Plugin implements IMaintenanceBase {
-    private MaintenanceBungeePlugin maintenance;
-
-    @Override
-    public void onEnable() {
-        maintenance = new MaintenanceBungeePlugin(this);
+    public ProfileLookup(final UUID uuid, final String name) {
+        this.uuid = uuid;
+        this.name = name;
     }
 
-    @Override
-    public void onDisable() {
-        maintenance.disable();
+    public UUID getUuid() {
+        return uuid;
     }
 
-    @Override
-    public IMaintenance getApi() {
-        return maintenance;
-    }
-
-    File getPluginFile() {
-        return getFile();
+    public String getName() {
+        return name;
     }
 }

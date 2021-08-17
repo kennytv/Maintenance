@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core;
 
 import eu.kennytv.maintenance.api.ISettings;
@@ -38,7 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Settings implements ISettings {
-    private static final int CURRENT_CONFIG_VERSION = 4;
+    private static final int CURRENT_CONFIG_VERSION = 5;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -47,9 +46,12 @@ public class Settings implements ISettings {
     private Set<Integer> broadcastIntervals;
     private List<String> pingMessages;
     private List<String> timerSpecificPingMessages;
+    private List<String> commandsOnMaintenanceEnable;
+    private List<String> commandsOnMaintenanceDisable;
     private String playerCountMessage;
     private String playerCountHoverMessage;
     private String languageName;
+    private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
@@ -170,11 +172,14 @@ public class Settings implements ISettings {
     private void loadSettings() {
         updateConfig();
 
+        enablePingMessages = config.getBoolean("enable-pingmessages", true);
         pingMessages = config.getStringList("pingmessages");
         if (config.getBoolean("enable-timerspecific-messages")) {
             timerSpecificPingMessages = config.getStringList("timerspecific-pingmessages");
         }
         maintenance = config.getBoolean("maintenance-enabled");
+        commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
+        commandsOnMaintenanceDisable = config.getStringList("commands-on-maintenance-disable");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
@@ -399,6 +404,11 @@ public class Settings implements ISettings {
     }
 
     @Override
+    public boolean isEnablePingMessages() {
+        return enablePingMessages;
+    }
+
+    @Override
     public boolean isJoinNotifications() {
         return joinNotifications;
     }
@@ -447,6 +457,14 @@ public class Settings implements ISettings {
     // The ping messages still contain the %NEWLINE% (if they have 2 lines)
     public List<String> getPingMessages() {
         return pingMessages;
+    }
+
+    public List<String> getCommandsOnMaintenanceEnable() {
+        return commandsOnMaintenanceEnable;
+    }
+
+    public List<String> getCommandsOnMaintenanceDisable() {
+        return commandsOnMaintenanceDisable;
     }
 
     @Nullable

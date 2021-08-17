@@ -1,4 +1,4 @@
-# Maintenance 插件由 KennyTV 开发
+# Maintenance 插件由 kennytv 开发
 # 简体中文由 RinAfter 提供
 # 如果你不清楚请不要删除 '%' 之间的单词
 
@@ -12,6 +12,7 @@ endtimerBroadcast: "&8[&eMaintenance&8] &7维护模式将在&6%TIME%&7后关闭"
 endtimerStarted: "&8[&eMaintenance&8] &a开始计时: &7维护模式将在&6%TIME%&7后关闭"
 starttimerBroadcast: "&8[&eMaintenance&8] &7维护模式将在&6%TIME%&7后开启"
 starttimerStarted: "&8[&eMaintenance&8] &a开始计时: &7维护模式将在&6%TIME%&7后开启。"
+scheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 timerAlreadyRunning: "&8[&eMaintenance&8] &c当前已有计时正在执行！"
 timerNotRunning: "&8[&eMaintenance&8] &c当前没有正在运行的计时器。"
 timerCancelled: "&8[&eMaintenance&8] &c当前计时器已中止。"
@@ -53,6 +54,7 @@ singleTimerCancelled: "&8[&eMaintenance&8] &c服务器&e%SERVER%&c的计时器�
 singleTimerNotRunning: "&8[&eMaintenance&8] &c该服务器当前没有正在运行的计时器。"
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7服务器%SERVER%的维护模式将在&6%TIME%&7后关闭。"
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7服务器%SERVER%的维护模式将在&6%TIME%&7后开启。"
+singleScheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 singleMaintenanceKick: "&8[&eMaintenance&8] &c服务器%SERVER%正在维护！请稍后再试！"
 singleMaintenanceKickComplete: "&c服务器%SERVER%正在维护！%NEWLINE%&c你可以尝试重新加入另一个服务器！"
 singleMaintenanceActivated: "&8[&eMaintenance&8] &6服务器&e%SERVER%&6的维护模式已启用。"
@@ -75,6 +77,7 @@ helpNextPage: "&7使用&b/maintenance help %PAGE% &7切换到下一帮助页"
 helpAbortTimer: "&6/maintenance aborttimer &7(中止当前开启的计时器)"
 helpEndtimer: "&6/maintenance endtimer <minutes> &7(在以分钟为单位给定时间后将关闭维护模式)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &7(在以分钟为单位给定时间后将开启维护模式)"
+helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &7(转储一些服务器信息，用于错误报告)"
 helpHelp: "&6/maintenance help [page] &7(显示帮助信息)"
 helpMotd: "&6/maintenance motd [timer] &7(显示当前设置的维护模式MOTD。如果指定'timer'，则显示计时器MOTD)"

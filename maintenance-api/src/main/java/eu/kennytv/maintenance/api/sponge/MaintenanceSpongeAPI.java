@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.api.sponge;
 
 import com.google.common.base.Preconditions;
@@ -31,7 +30,7 @@ import java.util.Optional;
  * Only access this class if you're running the plugin on a Sponge server!
  * </p>
  *
- * @author KennyTV
+ * @author kennytv
  * @since 3.0
  */
 public final class MaintenanceSpongeAPI {

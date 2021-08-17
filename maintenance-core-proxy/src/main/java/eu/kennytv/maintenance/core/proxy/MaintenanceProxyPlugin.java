@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.proxy;
 
+import com.google.common.io.CharStreams;
+import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.event.proxy.ServerMaintenanceChangedEvent;
 import eu.kennytv.maintenance.api.proxy.IMaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
@@ -25,22 +26,29 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
+import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author KennyTV
+ * @author kennytv
  * @since 3.0
  */
 public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implements IMaintenanceProxy {
@@ -165,6 +173,19 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
         // If not set, kick players from proxy
         kickPlayersFromProxy();
+    }
+
+    protected ProfileLookup doUUIDLookup(final String name) throws IOException {
+        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        try (final InputStream in = connection.getInputStream()) {
+            final String output = CharStreams.toString(new InputStreamReader(in));
+            final JsonObject json = GSON.fromJson(output, JsonObject.class);
+
+            final UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
+            final String username = json.getAsJsonPrimitive("username").getAsString();
+            return new ProfileLookup(uuid, username);
+        }
     }
 
     public SettingsProxy getSettingsProxy() {

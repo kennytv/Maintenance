@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.spigot.listener;
 
 import com.comphenix.protocol.PacketType;
@@ -51,7 +50,7 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
 
     @Override
     public void onPacketSending(final PacketEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
         ping.setMotD(settings.getRandomPingMessage());

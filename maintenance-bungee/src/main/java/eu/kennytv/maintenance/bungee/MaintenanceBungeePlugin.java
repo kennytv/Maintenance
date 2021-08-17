@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.bungee;
 
 import eu.kennytv.maintenance.api.bungee.MaintenanceBungeeAPI;
@@ -33,6 +32,8 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
+import eu.kennytv.maintenance.core.proxy.util.ProxyOfflineSenderInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
@@ -61,7 +62,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * @author KennyTV
+ * @author kennytv
  * @since 1.0
  */
 public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
@@ -90,7 +91,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
+            }
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }
@@ -178,7 +181,18 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Nullable
     public SenderInfo getOfflinePlayer(final String name) {
         final ProxiedPlayer player = getProxy().getPlayer(name);
-        return player != null ? new BungeeSenderInfo(player) : null;
+        if (player != null) {
+            return new BungeeSenderInfo(player);
+        }
+
+        final ProfileLookup profile;
+        try {
+            profile = doUUIDLookup(name);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
     }
 
     @Override
@@ -199,6 +213,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public void async(final Runnable runnable) {
         getProxy().getScheduler().runAsync(plugin, runnable);
+    }
+
+    @Override
+    protected void executeConsoleCommand(final String command) {
+        getProxy().getPluginManager().dispatchCommand(getProxy().getConsole(), command);
     }
 
     @Override

@@ -1,7 +1,7 @@
 name: Maintenance
 version: ${project.version}
 main: eu.kennytv.maintenance.bungee.MaintenanceBungeeBase
-author: KennyTV
+author: kennytv
 description: Enable maintenance mode with a custom maintenance motd and icon.
 softDepends: [ServerListPlus]
 website: https://www.spigotmc.org/resources/maintenance.40699/

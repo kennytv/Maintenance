@@ -15,45 +15,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.bungee.util;
+package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public final class BungeeServer implements Server {
-    private final ServerInfo server;
+import java.util.UUID;
 
-    public BungeeServer(final ServerInfo server) {
-        this.server = server;
+public final class ProxyOfflineSenderInfo implements ProxySenderInfo {
+    private final UUID uuid;
+    private final String name;
+
+    public ProxyOfflineSenderInfo(final UUID uuid, final String name) {
+        this.uuid = uuid;
+        this.name = name;
+    }
+
+    @Override
+    public boolean canAccess(final Server server) {
+        return false;
+    }
+
+    @Override
+    public void disconnect(final String message) {
+    }
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
     }
 
     @Override
     public String getName() {
-        return server.getName();
+        return name;
     }
 
     @Override
-    public boolean hasPlayers() {
-        return !server.getPlayers().isEmpty();
+    public boolean hasPermission(final String permission) {
+        return false;
     }
 
     @Override
-    public void broadcast(final String message) {
-        final BaseComponent[] s = TextComponent.fromLegacyText(message);
-        for (final ProxiedPlayer p : server.getPlayers()) {
-            p.sendMessage(s);
-        }
+    public void sendMessage(final String message) {
     }
 
     @Override
-    public boolean isRegisteredServer() {
+    public boolean isPlayer() {
         return true;
-    }
-
-    public ServerInfo getServer() {
-        return server;
     }
 }

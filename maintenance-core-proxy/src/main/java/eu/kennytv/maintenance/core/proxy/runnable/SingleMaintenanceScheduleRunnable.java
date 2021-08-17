@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.proxy.runnable;
 
 import eu.kennytv.maintenance.api.proxy.Server;
@@ -37,5 +36,11 @@ public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRu
     protected void finish() {
         super.finish();
         ((MaintenanceProxyPlugin) plugin).startSingleMaintenanceRunnable(server, maintenanceDuration, TimeUnit.SECONDS, false);
+    }
+
+    @Override
+    protected String getStartMessage() {
+        return settings.getMessage("singleScheduletimerBroadcast").replace("%SERVER%", server.getName())
+                .replace("%TIME%", getTime()).replace("%DURATION%", plugin.getFormattedTime(maintenanceDuration));
     }
 }

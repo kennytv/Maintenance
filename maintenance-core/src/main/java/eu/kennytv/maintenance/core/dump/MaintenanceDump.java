@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,10 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.dump;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -46,7 +44,7 @@ public final class MaintenanceDump {
         configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());
 
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.add("plugins", new GsonBuilder().create().toJsonTree(plugin.getPlugins()));
+        jsonObject.add("plugins", MaintenancePlugin.GSON.toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;
     }
 }

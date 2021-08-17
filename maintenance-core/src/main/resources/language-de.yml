@@ -1,4 +1,4 @@
-# Maintenance Plugin by KennyTV
+# Maintenance Plugin by kennytv
 # Wörter zwischen dem '%'-Zeichen nur entfernen, wenn Du wirklich weißt, warum Du sie entfernen willst
 
 noPermission: "&cDu hast nicht die erforderliche Berechtigung für diesen Befehl."
@@ -11,6 +11,7 @@ endtimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus wird deaktiviert in:
 endtimerStarted: "&8[&eMaintenance&8] &aGestarteter Timer: &7Der Wartungsmodus wird deaktiviert in: &6%TIME%&7."
 starttimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus wird aktiviert in: &6%TIME%&7."
 starttimerStarted: "&8[&eMaintenance&8] &aGestarteter Timer: &7Der Wartungsmodus wird aktiviert in: &6%TIME%&7"
+scheduletimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus wird in &6%TIME% &7aktiviert und &6%DURATION% &7dauern."
 timerAlreadyRunning: "&8[&eMaintenance&8] &cMomentan läuft bereits ein Timer!"
 timerNotRunning: "&8[&eMaintenance&8] &cMomentan läuft kein Timer."
 timerCancelled: "&8[&eMaintenance&8] &cDer laufende Timer wurde beendet."
@@ -52,6 +53,7 @@ singleTimerNotRunning: "&8[&eMaintenance&8] &cMomentan läuft kein Timer auf die
 singleTimerCancelled: "&8[&eMaintenance&8] &cDer laufende Timer dieses Servers wurde beendet."
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird deaktiviert in: &6%TIME%&7."
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird aktiviert in: &6%TIME%&7."
+singleScheduletimerBroadcast: "&8[&eMaintenance&8] &7Der Wartungsmodus auf Server %SERVER% wird aktiviert in &6%TIME% &7und wird &6%DURATION% &7dauern."
 singleMaintenanceKick: "&8[&eMaintenance&8] &cDer Server %SERVER% befindet sich momentan im Wartungsmodus! Probier es später nochmal!"
 singleMaintenanceKickComplete: "&cDer Server %SERVER% befindet sich in Wartung!%NEWLINE%&cDu kannst versuchen zu rejoinen, um andere Server zu betreten!"
 singleMaintenanceActivated: "&8[&eMaintenance&8] &6Der Wartungsmodus wurde auf &e%SERVER% &6aktiviert."
@@ -74,6 +76,7 @@ helpNextPage: "&7Nutze &b/maintenance help %SEITE%&7, um zur nächsten Hilfeseit
 helpAbortTimer: "&6/maintenance aborttimer &7(Falls momentan ein Timer läuft, wird dieser abgebrochen)"
 helpEndtimer: "&6/maintenance endtimer <Minuten> &7(Sobald der Timer abläuft wird der Wartungsmodus deaktiviert)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &7(Sobald der Timer abläuft wird der Wartungsmodus aktiviert)"
+helpDebug: "&6/maintenance debug &7(Aktiviert Debug Nachrichten in der Konsole)"
 helpDump: "&6/maintenance dump &7(Sammelt wichtige Informationen für Bugreports)"
 helpHelp: "&6/maintenance help [Seite] &7(Zeigt diese wunderschöne Hilfe)"
 helpMotd: "&6/maintenance motd [timer] &7(Zeigt die momentan gesetzten Maintenance Motds an. Mit dem 'timer' Argument werden die timerspezifischen Motds angezeigt)"

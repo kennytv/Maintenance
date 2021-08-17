@@ -1,4 +1,4 @@
-# Plugin Maintenance par KennyTV, traduit en Français par Zendrique & Aurelien30000.
+# Plugin Maintenance par kennytv, traduit en Français par Zendrique & Aurelien30000.
 # Ne supprimez pas de mots entre les '%' si vous ne savez pas exactement pourquoi, ils correspondent à des référencements de valeurs changeantes.
 
 noPermission: "&cVous n'avez pas la permission d'exécuter cette commande."
@@ -11,6 +11,7 @@ endtimerBroadcast: "&8[&eMaintenance&8] &7Le mode maintenance sera désactivé d
 endtimerStarted: "&8[&eMaintenance&8] &aMinuterie : &7Le mode maintenance sera désactivé dans &6%TIME%&7."
 starttimerBroadcast: "&8[&eMaintenance&8] &7Le mode de maintenance sera activé dans &6%TIME%&7."
 starttimerStarted: "&8[&eMaintenance&8] &aMinuterie : &7Le mode maintenance sera activé dans &6%TIME%&7."
+scheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 timerAlreadyRunning: "&8[&eMaintenance&8] &cIl y a déjà un horaire prévu !"
 timerNotRunning: "&8[&eMaintenance&8] &cIl n'y a actuellement aucune maintenance prévue."
 timerCancelled: "&8[&eMaintenance&8] &cLa minuterie actuelle a été désactivée."
@@ -52,6 +53,7 @@ singleTimerNotRunning: "&8[&eMaintenance&8] &cIl n'y a actuellement aucune maint
 singleTimerCancelled: "&8[&eMaintenance&8] &cLa minuterie actuelle a été désactivée sur ce serveur."
 singleEndtimerBroadcast: "&8[&eMaintenance&8] &7La maintenance sur le serveur %SERVER% sera désactivée dans &6%TIME%&7."
 singleStarttimerBroadcast: "&8[&eMaintenance&8] &7La maintenance sur le serveur %SERVER% sera activée dans &6%TIME%&7."
+singleScheduletimerBroadcast: "&8[&eMaintenance&8] &7Maintenance mode on server %SERVER% will be enabled in &6%TIME% &7and will last for &6%DURATION%&7."
 singleMaintenanceKick: "&8[&eMaintenance&8] &cLe serveur %SERVER% est actuellement en maintenance ! Réessayez plus tard !"
 singleMaintenanceKickComplete: "&cLe serveur %SERVER% est en maintenance !%NEWLINE%&cVous pouvez essayer un autre serveur !"
 singleMaintenanceActivated: "&8[&eMaintenance&8] &6La maintenance est maintenant activée sur le serveur &e%SERVER%&6."
@@ -74,6 +76,7 @@ helpNextPage: "&7Utilisez &b/maintenance help %PAGE% &7pour accéder à la fenê
 helpAbortTimer: "&6/maintenance aborttimer &7(Si en cours d'exécution, le minuteur actuel sera abandonné)"
 helpEndtimer: "&6/maintenance endtimer <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera désactivé)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera activé)"
+helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &7(Enregistre certaines informations sur le serveur, utilisées pour les rapports de bug)"
 helpHelp: "&6/maintenance help [page] &7(Montre cette belle fenêtre d'aide)"
 helpMotd: "&6/maintenance motd [timer] &7(Répertorie les paramètres de maintenance actuellement définis. Si vous spécifiez 'timer', les mots de la minuterie seront affichés)"
@@ -90,6 +93,6 @@ helpWhitelistRemove: "&6/maintenance remove <name/uuid> &7(Supprime un joueur de
 helpAbortSingleTimer: "&6/maintenance aborttimer [server] &7(Si en cours d'exécution, le minuteur actuel sera abandonné)"
 helpSingleEndtimer: "&6/maintenance endtimer [server] <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera désactivé)"
 helpSingleStarttimer: "&6/maintenance starttimer [server] <minutes> &7(Après le temps imparti en minutes, le mode maintenance sera activé)"
-helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
+helpSingleScheduleTimer: "&6/maintenance scheduletimer [server] <timer minutes> <maintenance duration> &7(Après le temps imparti en minutes, le mode maintenance sera activé pour la durée spécifiée en minutes)"
 helpSingleToggle: "&6/maintenance <on/off> [server] &7(Active/désactive le mode maintenance)"
 helpStatus: "&6/maintenance status &7(Répertorie tous les serveurs mandatés actuellement en maintenance)"

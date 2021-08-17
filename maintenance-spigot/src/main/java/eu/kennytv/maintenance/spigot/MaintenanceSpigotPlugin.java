@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.IMaintenance;
@@ -59,7 +58,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * @author KennyTV
+ * @author kennytv
  * @since 2.0
  */
 public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
@@ -97,7 +96,9 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (pm.isPluginEnabled(serverListPlus)) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
-            serverListPlusHook.setEnabled(!settings.isMaintenance());
+            if (settings.isEnablePingMessages()) {
+                serverListPlusHook.setEnabled(!settings.isMaintenance());
+            }
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
     }
@@ -129,6 +130,11 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     @Override
     public void async(final Runnable runnable) {
         getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
+    }
+
+    @Override
+    protected void executeConsoleCommand(final String command) {
+        getServer().dispatchCommand(getServer().getConsoleSender(), command);
     }
 
     @Override

@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.kennytv.maintenance</groupId>
         <artifactId>maintenance-parent</artifactId>
-        <version>3.0.6</version>
+        <version>3.0.7</version>
     </parent>
 
     <artifactId>maintenance-velocity</artifactId>
@@ -22,8 +22,14 @@
         <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
-            <version>1.1.0</version>
+            <version>3.0.0-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.25</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -45,6 +51,14 @@
                                 <relocation>
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>eu.kennytv.lib.hikari</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mysql</pattern>
+                                    <shadedPattern>eu.kennytv.lib.mysql</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.protobuf</pattern>
+                                    <shadedPattern>eu.kennytv.lib.protobuf</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

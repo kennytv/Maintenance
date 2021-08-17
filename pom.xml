@@ -6,17 +6,17 @@
 
     <groupId>eu.kennytv.maintenance</groupId>
     <artifactId>maintenance-parent</artifactId>
-    <version>3.0.6</version>
+    <version>3.0.7</version>
     <packaging>pom</packaging>
 
     <name>Maintenance</name>
-    <url>https://github.com/KennyTV/Maintenance</url>
+    <url>https://github.com/kennytv/Maintenance</url>
     <inceptionYear>2018</inceptionYear>
 
     <developers>
         <developer>
-            <id>KennyTV</id>
-            <url>https://github.com/KennyTV/</url>
+            <id>kennytv</id>
+            <url>https://github.com/kennytv/</url>
         </developer>
     </developers>
 
@@ -40,16 +40,16 @@
 
     <repositories>
         <repository>
-            <id>spigotmc</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
+            <id>spigotmc</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>sponge</id>
-            <url>http://repo.spongepowered.org/maven</url>
+            <url>https://repo.spongepowered.org/repository/maven-public/</url>
         </repository>
         <repository>
             <id>velocity</id>
@@ -57,7 +57,7 @@
         </repository>
         <repository>
             <id>dmulloy2</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
         <repository>
             <id>minecrell</id>
@@ -69,13 +69,13 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
+            <version>21.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.6.2</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

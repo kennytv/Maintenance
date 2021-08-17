@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import eu.kennytv.maintenance.api.IMaintenance;
@@ -61,6 +61,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class MaintenancePlugin implements IMaintenance {
+    public static final Gson GSON = new GsonBuilder().create();
     protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
@@ -88,13 +89,22 @@ public abstract class MaintenancePlugin implements IMaintenance {
         settings.getConfig().set("maintenance-enabled", maintenance);
         settings.saveConfig();
         serverActions(maintenance);
+
+        for (final String command : (maintenance ? settings.getCommandsOnMaintenanceEnable() : settings.getCommandsOnMaintenanceDisable())) {
+            try {
+                executeConsoleCommand(command);
+            } catch (final Exception e) {
+                getLogger().severe("Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command);
+                e.printStackTrace();
+            }
+        }
     }
 
     public void serverActions(final boolean maintenance) {
         if (isTaskRunning()) {
             cancelTask();
         }
-        if (serverListPlusHook != null) {
+        if (serverListPlusHook != null && settings.isEnablePingMessages()) {
             serverListPlusHook.setEnabled(!maintenance);
         }
 
@@ -132,6 +142,26 @@ public abstract class MaintenancePlugin implements IMaintenance {
                 .replace("%HOURS%", String.format("%02d", preHours / 60))
                 .replace("%MINUTES%", String.format("%02d", minutes))
                 .replace("%SECONDS%", String.format("%02d", seconds));
+    }
+
+    public String getFormattedTime(final int timeSeconds) {
+        final int preHours = timeSeconds / 60;
+        final int minutes = preHours % 60;
+        final int seconds = timeSeconds % 60;
+
+        final StringBuilder buider = new StringBuilder();
+        append(buider, "hour", preHours / 60);
+        append(buider, "minute", minutes);
+        append(buider, "second", seconds);
+        return buider.toString();
+    }
+
+    private void append(final StringBuilder builder, final String timeUnit, final int time) {
+        if (time == 0) return;
+        if (builder.length() != 0) {
+            builder.append(' ');
+        }
+        builder.append(time).append(' ').append(settings.getMessage(time == 1 ? timeUnit : timeUnit + "s"));
     }
 
     public void startMaintenanceRunnable(final long duration, final TimeUnit unit, final boolean enable) {
@@ -189,7 +219,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
                 getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
             } else if (compare == 1) {
                 if (version.getTag().equalsIgnoreCase("snapshot")) {
-                    getLogger().info("§cYou're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/KennyTV/Maintenance/issues)");
+                    getLogger().info("§cYou're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/kennytv/Maintenance/issues)");
                 } else {
                     getLogger().info("§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!");
                 }
@@ -202,7 +232,7 @@ public abstract class MaintenancePlugin implements IMaintenance {
         Preconditions.checkArgument(serverType != ServerType.SPONGE);
         try {
             final String fileSuffix = serverType == ServerType.VELOCITY ? "Velocity" : "";
-            final URLConnection conn = new URL("https://github.com/KennyTV/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
+            final URLConnection conn = new URL("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
             writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
             final File file = new File(getPluginFolder() + "Maintenance.tmp");
             final long newlength = file.length();
@@ -250,27 +280,25 @@ public abstract class MaintenancePlugin implements IMaintenance {
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
             connection.setRequestProperty("Content-Type", "text/plain");
 
-            final GsonBuilder gsonBuilder = new GsonBuilder();
-            final OutputStream out = connection.getOutputStream();
-            out.write(gsonBuilder.disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
-            out.close();
+            try (final OutputStream out = connection.getOutputStream()) {
+                out.write(new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create().toJson(dump).getBytes(StandardCharsets.UTF_8));
+            }
 
             if (connection.getResponseCode() == 503) {
                 getLogger().warning("Could not paste dump, hastebin.com down?");
                 return null;
             }
 
-            final InputStream in = connection.getInputStream();
-            final String output = CharStreams.toString(new InputStreamReader(in));
-            in.close();
+            try (final InputStream in = connection.getInputStream()) {
+                final String output = CharStreams.toString(new InputStreamReader(in));
+                final JsonObject jsonOutput = GSON.fromJson(output, JsonObject.class);
+                if (!jsonOutput.has("key")) {
+                    getLogger().log(Level.WARNING, "Could not paste dump, there was no key returned :(");
+                    return null;
+                }
 
-            final JsonObject jsonOutput = gsonBuilder.create().fromJson(output, JsonObject.class);
-            if (!jsonOutput.has("key")) {
-                getLogger().log(Level.WARNING, "Could not paste dump, there was no key returned :(");
-                return null;
+                return jsonOutput.get("key").getAsString();
             }
-
-            return jsonOutput.get("key").getAsString();
         } catch (final IOException e) {
             getLogger().log(Level.WARNING, "Could not paste dump :(");
             e.printStackTrace();
@@ -398,12 +426,21 @@ public abstract class MaintenancePlugin implements IMaintenance {
 
     public abstract void async(Runnable runnable);
 
+    protected abstract void executeConsoleCommand(String command);
+
     public abstract void broadcast(String message);
 
     public abstract void sendUpdateNotification(SenderInfo sender);
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 
+    /**
+     * Returns offline sender info of a player.
+     * This method may do a web lookup.
+     *
+     * @param name name of the player
+     * @return sender info if found, else null
+     */
     @Nullable
     public abstract SenderInfo getOfflinePlayer(String name);
 

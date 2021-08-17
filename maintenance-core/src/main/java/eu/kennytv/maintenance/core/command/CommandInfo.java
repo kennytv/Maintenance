@@ -1,6 +1,6 @@
 /*
- * Maintenance - https://git.io/maintenancemode
- * Copyright (C) 2018-2021 KennyTV (https://github.com/KennyTV)
+ * This file is part of Maintenance - https://github.com/kennytv/Maintenance
+ * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package eu.kennytv.maintenance.core.command;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
@@ -30,16 +29,26 @@ public abstract class CommandInfo {
     protected final MaintenancePlugin plugin;
     private final String helpMessageKey;
     private final String permission;
+    private final boolean visible;
 
     protected CommandInfo(final MaintenancePlugin plugin, @Nullable final String permission) {
+        this(plugin, permission, true);
+    }
+
+    protected CommandInfo(final MaintenancePlugin plugin, @Nullable final String permission, final boolean visible) {
         this.plugin = plugin;
         this.permission = permission;
         // Just take the class name as the language key
         this.helpMessageKey = "help" + getClass().getSimpleName().replace("Command", "");
+        this.visible = visible;
     }
 
     public boolean hasPermission(final SenderInfo sender) {
         return sender.hasMaintenancePermission(permission);
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
     public String getHelpMessage() {
