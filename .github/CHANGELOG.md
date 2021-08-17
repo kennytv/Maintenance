@@ -2,7 +2,7 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## Unreleased
+## 3.0.7 - August 17th 2021
 ### Changed
 * Bungee/Velocity: `/maintenance add <name>` now works for offline players as well
 * Added config options `commands-on-maintenance-enable` and `commands-on-maintenance-disable` to define commands to be executed after maintenance has been toggled
