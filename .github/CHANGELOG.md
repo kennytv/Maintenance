@@ -2,6 +2,11 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## Unreleased
+### Changed
+### Fixed
+* Fixed missing language key warning for the scheduletimer command
+---
 ## 3.0.7 - August 17th 2021
 ### Changed
 * Bungee/Velocity: `/maintenance add <name>` now works for offline players as well

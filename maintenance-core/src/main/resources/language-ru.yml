@@ -77,6 +77,7 @@ helpNextPage: "&fИспользуйте &6/maintenance help %PAGE% &fчтобы 
 helpAbortTimer: "&6/maintenance aborttimer &7- &fОстановить таймер включения/выключения режима технических работ."
 helpEndtimer: "&6/maintenance endtimer [время в минутах] &7- &fЗапустить таймер выключения режима технических работ."
 helpStarttimer: "&6/maintenance starttimer [время в минутах] &7- &fЗапустить таймер включения режима технических работ."
+helpScheduleTimer: "&6/maintenance scheduletimer <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &7- &fСоздать дамп."
 helpHelp: "&6/maintenance help [страница] &7- &fОтобразить список доступных команд."

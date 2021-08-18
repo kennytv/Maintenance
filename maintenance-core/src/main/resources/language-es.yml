@@ -77,6 +77,7 @@ helpNextPage: "&7Utilice &b/maintenance help %PAGE% &7Para pasar a la siguiente 
 helpAbortTimer: "&6/maintenance aborttimer &8(&7Si se ejecuta, se abortará el temporizador actual&8)"
 helpEndtimer: "&6/maintenance endtimer <minutes> &8(&7Después del tiempo en minutos, se desactivará el modo de mantenimiento&8)"
 helpStarttimer: "&6/maintenance starttimer <minutes> &8(&7Después del tiempo en minutos, se habilitará el modo de mantenimiento&8)"
+helpScheduleTimer: "&6/maintenance scheduletimer <timer minutes> <maintenance duration> &7(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpDebug: "&6/maintenance debug &7(Enables some debug logging)"
 helpDump: "&6/maintenance dump &8(&7Descarga información del servidor, usada para informes de errores&8)"
 helpHelp: "&6/maintenance help [page] &8(&7Muestra la pagina de ayuda&8)"

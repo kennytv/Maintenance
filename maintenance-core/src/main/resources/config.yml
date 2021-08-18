@@ -34,7 +34,7 @@ pingmessages:
 # - "Other entry"
 enable-pingmessages: true
 
-# Any extra commands inside of the arrays will be executed when maintenance is enabled/disabled.
+# Any extra commands inside the arrays will be executed when maintenance is enabled/disabled.
 # Example: commands-on-maintenance-enable: ["say hello!", "stop"]
 commands-on-maintenance-enable: []
 commands-on-maintenance-disable: []
