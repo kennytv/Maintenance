@@ -15,7 +15,6 @@ local.properties
 .externalToolBuilders/
 *.launch
 *.pydevproject
-*.jar
 .cproject
 .classpath
 .factorypath
