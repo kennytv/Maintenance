@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.api.sponge.MaintenanceSpongeAPI;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.dump.PluginDump;
+import eu.kennytv.maintenance.core.hook.LuckPermsHook;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -51,6 +52,8 @@ import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -76,13 +79,17 @@ import java.util.stream.Collectors;
  */
 @Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
-        dependencies = @Dependency(id = "serverlistplus", optional = true))
+        dependencies = {@Dependency(id = "serverlistplus", optional = true), @Dependency(id = "luckperms", optional = true)})
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
+    @SuppressWarnings("SpongeLogging")
     private Logger logger;
     private Favicon favicon;
-    @Inject private Game game;
-    @Inject private PluginContainer container;
-    @Inject @ConfigDir(sharedRoot = false)
+    @Inject
+    private Game game;
+    @Inject
+    private PluginContainer container;
+    @Inject
+    @ConfigDir(sharedRoot = false)
     private File dataFolder;
 
     @Inject
@@ -108,14 +115,18 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
         continueLastEndtimer();
 
-        // ServerListPlus integration
-        game.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
+        final PluginManager pluginManager = game.getPluginManager();
+        pluginManager.getPlugin("serverlistplus").flatMap(PluginContainer::getInstance).ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             if (settings.isEnablePingMessages()) {
                 serverListPlusHook.setEnabled(!settings.isMaintenance());
             }
             logger.info("Enabled ServerListPlus integration!");
-        }));
+        });
+        if (pluginManager.getPlugin("luckperms").isPresent()) {
+            LuckPermsHook.<Subject>register(this);
+            logger.info("Registered LuckPerms context");
+        }
     }
 
     @Listener

@@ -64,6 +64,13 @@ public interface IMaintenanceProxy extends IMaintenance {
     Server getServer(String server);
 
     /**
+     * Returns the currently registered proxied servers.
+     *
+     * @return set of proxied servers
+     */
+    Set<String> getServers();
+
+    /**
      * @return immutable set with names of all proxied server that are currently under maintenance
      */
     Set<String> getMaintenanceServers();

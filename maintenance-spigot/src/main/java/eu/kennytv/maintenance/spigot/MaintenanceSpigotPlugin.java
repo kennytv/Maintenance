@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.api.spigot.MaintenanceSpigotAPI;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.dump.PluginDump;
+import eu.kennytv.maintenance.core.hook.LuckPermsHook;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -92,14 +93,18 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         continueLastEndtimer();
         new MetricsLite(plugin);
 
-        // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (pm.isPluginEnabled(serverListPlus)) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             if (settings.isEnablePingMessages()) {
                 serverListPlusHook.setEnabled(!settings.isMaintenance());
             }
-            plugin.getLogger().info("Enabled ServerListPlus integration!");
+            plugin.getLogger().info("Enabled ServerListPlus integration");
+        }
+
+        if (pm.isPluginEnabled("LuckPerms")) {
+            LuckPermsHook.<Player>register(this);
+            plugin.getLogger().info("Registered LuckPerms context");
         }
     }
 

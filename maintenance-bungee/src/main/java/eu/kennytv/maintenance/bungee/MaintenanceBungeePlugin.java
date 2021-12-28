@@ -32,6 +32,7 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.hook.LuckPermsProxyHook;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.proxy.util.ProxyOfflineSenderInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
@@ -44,6 +45,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -56,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -87,7 +90,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         continueLastEndtimer();
         new MetricsLite(plugin);
 
-        // ServerListPlus integration
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
@@ -95,6 +97,14 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
                 serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
             }
             plugin.getLogger().info("Enabled ServerListPlus integration!");
+        }
+
+        if (pm.getPlugin("LuckPerms") != null) {
+            LuckPermsProxyHook.<ProxiedPlayer>register(this, player -> {
+                final net.md_5.bungee.api.connection.Server server = player.getServer();
+                return server != null ? server.getInfo().getName() : null;
+            });
+            getLogger().info("Registered LuckPerms context");
         }
     }
 
@@ -109,7 +119,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
         final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
         click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenance.40699/"));
-        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
+        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new ComponentBuilder("§aDownload the latest version").create())));
         tc1.addExtra(tc2);
         tc1.addExtra(click);
         ((BungeeSenderInfo) sender).sendMessage(tc1);
@@ -175,6 +185,11 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     public Server getServer(final String server) {
         final ServerInfo serverInfo = getProxy().getServerInfo(server);
         return serverInfo != null ? new BungeeServer(serverInfo) : null;
+    }
+
+    @Override
+    public Set<String> getServers() {
+        return getProxy().getServers().keySet();
     }
 
     @Override

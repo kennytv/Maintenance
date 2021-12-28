@@ -28,6 +28,8 @@ import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -38,6 +40,7 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import eu.kennytv.maintenance.core.proxy.hook.LuckPermsProxyHook;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.proxy.util.ProxyOfflineSenderInfo;
 import eu.kennytv.maintenance.core.util.MaintenanceVersion;
@@ -64,6 +67,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -75,7 +79,7 @@ import java.util.stream.Collectors;
  */
 @Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://forums.velocitypowered.com/t/maintenance/129",
-        dependencies = @Dependency(id = "serverlistplus", optional = true))
+        dependencies = {@Dependency(id = "serverlistplus", optional = true), @Dependency(id = "luckperms", optional = true)})
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
     private final Logger logger;
@@ -107,14 +111,19 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         continueLastEndtimer();
 
-        // ServerListPlus integration
-        server.getPluginManager().getPlugin("serverlistplus").ifPresent(slpContainer -> slpContainer.getInstance().ifPresent(serverListPlus -> {
+        final PluginManager pluginManager = server.getPluginManager();
+        pluginManager.getPlugin("serverlistplus").flatMap(PluginContainer::getInstance).ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             if (settings.isEnablePingMessages()) {
                 serverListPlusHook.setEnabled(!settingsProxy.isMaintenance());
             }
             logger.info("Enabled ServerListPlus integration!");
-        }));
+        });
+
+        if (pluginManager.getPlugin("luckperms").isPresent()) {
+            LuckPermsProxyHook.<Player>register(this, player -> player.getCurrentServer().map(server -> server.getServerInfo().getName()).orElse(null));
+            logger.info("Registered LuckPerms context");
+        }
     }
 
     @Subscribe
@@ -204,6 +213,11 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     public Server getServer(final String server) {
         final Optional<RegisteredServer> serverInfo = this.server.getServer(server);
         return serverInfo.map(VelocityServer::new).orElse(null);
+    }
+
+    @Override
+    public Set<String> getServers() {
+        return server.getAllServers().stream().map(server -> server.getServerInfo().getName()).collect(Collectors.toSet());
     }
 
     @Override

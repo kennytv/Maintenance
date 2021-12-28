@@ -3,7 +3,7 @@ version: ${project.version}
 main: eu.kennytv.maintenance.spigot.MaintenanceSpigotBase
 author: kennytv
 description: Enable maintenance mode with a custom maintenance motd and icon.
-softdepend: [ProtocolLib, ServerListPlus, ProtocolSupport]
+softdepend: [ProtocolLib, ServerListPlus, ProtocolSupport, LuckPerms]
 website: https://www.spigotmc.org/resources/maintenance.40699/
 api-version: 1.13
 
