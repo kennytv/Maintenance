@@ -1,4 +1,6 @@
 .metadata
+build/
+.gradle
 bin/
 tmp/
 *.tmp
