@@ -41,8 +41,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
+    public static final String NEW_LINE_REPLACEMENT = "<br>";
     private static final int CONFIG_VERSION = 6;
-    private static final int LANGUAGE_FORMAT_VERSION = 1;
+    private static final int LANGUAGE_VERSION = 1;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -214,7 +215,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         }
 
         final File oldDir = new File(plugin.getDataFolder().getParentFile(), oldDirName);
-        if (!oldDir.exists()) return;
+        if (!oldDir.exists()) {
+            return;
+        }
 
         try {
             Files.move(oldDir.toPath(), plugin.getDataFolder().toPath());
@@ -226,9 +229,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     private void updateConfig() {
-        boolean changed = false;
-
-        // Update config to the latest version (config version included since 3.0.1)
         final int version = config.getInt("config-version");
         if (version != CONFIG_VERSION) {
             plugin.getLogger().info("Updating config to the latest version...");
@@ -255,21 +255,24 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             file.delete();
             tempConfig.clear();
 
-            changed = true;
-        }
-
-        if (changed) {
             saveConfig();
             plugin.getLogger().info("Done! Updated config!");
         }
     }
 
     private void updateLanguageFile() {
+        final int version = language.getInt("language-version");
+        if (version == LANGUAGE_VERSION) {
+            return;
+        }
+
+        plugin.getLogger().info("Updating language file to the latest version...");
         final String filePrefix = "language-" + languageName;
         try {
             createFile(filePrefix + "-new.yml", filePrefix + ".yml");
         } catch (final NullPointerException e) {
-            plugin.getLogger().info("Not checking for updated language strings, since there is no " + filePrefix + ".yml in the resource files (if your file is self translated and up to date, you can ignore this).");
+            plugin.getLogger().info("Not checking for updated language strings, since there is no "
+                    + filePrefix + ".yml in the resource files (if your file is self translated and up to date, you can ignore this).");
             return;
         } catch (final Exception e) {
             plugin.getLogger().warning("Couldn't update language file, as the " + filePrefix + ".yml could not be loaded from the resource files!");
@@ -284,39 +287,34 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         } catch (final IOException e) {
             e.printStackTrace();
             return;
+        } finally {
+            file.delete();
         }
 
-        boolean updated = language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
-        tempConfig.clear();
-        file.delete();
-
-        final int version = language.getInt("format-version");
-        if (version != LANGUAGE_FORMAT_VERSION) {
-            plugin.getLogger().info("Updating language file to the latest version...");
-            if (version < 1) {
-                for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
-                    if (!(entry.getValue() instanceof String)) {
-                        continue;
-                    }
-
-                    final String value = (String) entry.getValue();
-                    language.set(entry.getKey(), legacyToMinimessage(value));
+        if (version < 1) {
+            for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
+                if (!(entry.getValue() instanceof String)) {
+                    continue;
                 }
-            } else {
-                plugin.getLogger().warning("Unknown language format version: " + version + "; most recent is " + LANGUAGE_FORMAT_VERSION);
-            }
 
-            language.set("format-version", LANGUAGE_FORMAT_VERSION);
-            updated = true;
+                String value = (String) entry.getValue();
+                value = value.replace("&8[&eMaintenance&8] ", "<prefix>");
+                value = legacyToMinimessage(value);
+                value = value.replace("%NEWLINE%", NEW_LINE_REPLACEMENT);
+                language.set(entry.getKey(), value);
+            }
         }
 
-        if (updated) {
-            try {
-                language.save();
-                plugin.getLogger().info("Updated language file!");
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
+        language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+        tempConfig.clear();
+
+        language.set("language-version", LANGUAGE_VERSION);
+
+        try {
+            language.save();
+            plugin.getLogger().info("Updated language file!");
+        } catch (final IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -547,11 +545,12 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
      *      Second line text.
      *      ...
      *
-     * This also happens to string lists, making those practically unreadable (in partciular the motd list), as well as confusing for most users in general.
-     * Because of this, I replace %NEWLINE% manually, to spare users from these ugly breaks.
+     * This also happens to string lists, making those practically unreadable (in particular the motd list), as well as confusing for most users in general.
+     * Because of this, I replace <br> manually, to spare users from these ugly breaks (before I inevitably switch to a different configuration library).
      */
     protected String replaceNewlineVar(final String s) {
-        return s.replace("%NEWLINE%", "\n");
+        //TODO don't shade platform everywhere
+        return s.replace(NEW_LINE_REPLACEMENT, "\n");
     }
 
     protected void loadExtraSettings() {

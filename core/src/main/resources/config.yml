@@ -31,7 +31,7 @@ waiting-server: ""
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
 # If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
 pingmessages:
-  - "<red>Maintenance mode!%NEWLINE%<gold>We will be back soon!"
+  - "<red>Maintenance mode!<br><gold>We will be back soon!"
 # - "Other entry"
 enable-pingmessages: true
 
@@ -44,7 +44,7 @@ commands-on-maintenance-disable: []
 # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
 enable-timerspecific-messages: false
 timerspecific-pingmessages:
-  - "<red>Maintenance mode!%NEWLINE%<gold>We will be back in %TIMER%!"
+  - "<red>Maintenance mode!<br><gold>We will be back in %TIMER%!"
 # - "Other entry"
 
 # If set to true, the message below will be shown in the top right corner of the server in the serverlist, where the playercount would normally be displayed.
@@ -56,7 +56,7 @@ playercountmessage: "<dark_red>Maintenance"
 
 # Is shown when you move your mouse above the text in the top right corner of the server in the serverlist,
 # where the playercount would normally be displayed.
-playercounthovermessage: "<red>Currently under%NEWLINE%<red>maintenance"
+playercounthovermessage: "<red>Currently under<br><red>maintenance"
 
 # If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
 custom-maintenance-icon: false

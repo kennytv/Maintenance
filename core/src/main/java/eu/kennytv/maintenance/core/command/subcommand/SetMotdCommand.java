@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static eu.kennytv.maintenance.core.Settings.NEW_LINE_REPLACEMENT;
+
 public final class SetMotdCommand extends CommandInfo {
 
     public SetMotdCommand(final MaintenancePlugin plugin) {
@@ -79,15 +81,15 @@ public final class SetMotdCommand extends CommandInfo {
         final String oldMessage = index > pingMessages.size() ? "" : pingMessages.get(index - 1);
         final String newMessage;
         if (line == 1) {
-            newMessage = oldMessage.contains("%NEWLINE%") ?
-                    message + "%NEWLINE%" + oldMessage.split("%NEWLINE%", 2)[1] : message;
+            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT) ?
+                    message + NEW_LINE_REPLACEMENT + oldMessage.split(NEW_LINE_REPLACEMENT, 2)[1] : message;
         } else {
-            newMessage = oldMessage.contains("%NEWLINE%") ?
-                    oldMessage.split("%NEWLINE%", 2)[0] + "%NEWLINE%" + message : oldMessage + "%NEWLINE%" + message;
+            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT) ?
+                    oldMessage.split(NEW_LINE_REPLACEMENT, 2)[0] + NEW_LINE_REPLACEMENT + message : oldMessage + NEW_LINE_REPLACEMENT + message;
         }
 
         // Replace component in config and the cached list
-        final Component component = MiniMessage.miniMessage().deserialize(newMessage.replace("%NEWLINE%", "\n"));
+        final Component component = MiniMessage.miniMessage().deserialize(newMessage.replace(NEW_LINE_REPLACEMENT, "\n"));
         if (index > pingMessages.size()) {
             pingMessages.add(newMessage);
             pingComponents.add(component);
