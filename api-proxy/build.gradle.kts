@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api(projects.maintenanceApi)
-    compileOnly(projects.adventure) {
+    compileOnly(projects.adventure.adventureApi) {
         targetConfiguration = "shadow"
     }
 }

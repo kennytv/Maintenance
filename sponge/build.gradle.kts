@@ -1,5 +1,8 @@
 dependencies {
     implementation(projects.maintenanceCore)
-    compileOnly("org.spongepowered:spongeapi:7.1.0")
-    annotationProcessor("org.spongepowered:spongeapi:7.1.0")
+    implementation(projects.adventure.adventurePlatformSponge) {
+        targetConfiguration = "shadow"
+    }
+    compileOnly(libs.sponge)
+    annotationProcessor(libs.sponge)
 }

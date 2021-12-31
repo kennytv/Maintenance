@@ -9,14 +9,14 @@ blossom {
 
 dependencies {
     api(projects.maintenanceApi)
-    api(projects.adventure) {
+    api(projects.adventure.adventureApi) {
         targetConfiguration = "shadow"
     }
-    compileOnly("net.luckperms:api:5.3")
-    compileOnly("net.minecrell:ServerListPlus:3.4.9-SNAPSHOT")
-    compileOnly("com.google.guava:guava:29.0-jre")
-    compileOnly("com.google.code.gson:gson:2.8.5")
-    compileOnly("org.yaml:snakeyaml:1.23")
+    compileOnly(libs.luckperms)
+    compileOnly(libs.serverlistplus)
+    compileOnly(libs.guava)
+    compileOnly(libs.gson)
+    compileOnly(libs.snakeyaml)
 }
 
 java {

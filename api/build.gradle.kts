@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    compileOnlyApi("org.jetbrains:annotations:23.0.0")
+    compileOnlyApi(libs.jetbrainsAnnotations)
 }
 
 java {

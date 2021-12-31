@@ -1,4 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+enableFeaturePreview("VERSION_CATALOGS")
 
 dependencyResolutionManagement {
     repositories {
@@ -23,7 +24,8 @@ rootProject.name = "maintenance-parent"
 
 includeBuild("build-logic")
 
-include("adventure")
+include("adventure", "adventure:adventure-api",
+    "adventure:adventure-platform-bukkit", "adventure:adventure-platform-bungee", "adventure:adventure-platform-sponge")
 
 subproject("api")
 subproject("api-proxy")

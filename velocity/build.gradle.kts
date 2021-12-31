@@ -7,7 +7,7 @@ tasks {
 
 dependencies {
     implementation(projects.maintenanceCoreProxy)
-    implementation("mysql:mysql-connector-java:8.0.27")
-    compileOnly("com.velocitypowered:velocity-api:3.0.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.0.0-SNAPSHOT")
+    implementation(libs.mysqlConnector)
+    compileOnly(libs.velocity)
+    annotationProcessor(libs.velocity)
 }

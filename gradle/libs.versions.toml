@@ -1,0 +1,59 @@
+metadata.format.version = "1.1"
+
+[versions]
+
+# Shaded
+adventure = "4.10.0-SNAPSHOT"
+adventurePlatform = "4.0.1"
+mysqlConnector = "8.0.27"
+hikariCP = "4.0.3"
+
+# Provided
+gson = "2.8.8"
+guava = "29.0-jre"
+snakeyaml = "1.23"
+junit = "5.8.2"
+jetbrainsAnnotations = "23.0.0"
+
+protocollib = "4.4.0"
+authlib = "1.5.25"
+luckperms = "5.3"
+serverlistplus = "3.4.9-SNAPSHOT"
+
+paper = "1.16.5-R0.1-SNAPSHOT"
+bungee = "1.18-R0.1-SNAPSHOT"
+sponge = "7.1.0"
+velocity = "3.1.0"
+
+
+[libraries]
+
+adventureApi = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventureTextMinimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+adventureTextSerializerGson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure" }
+adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
+adventurePlatformBukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventurePlatform" }
+adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
+adventurePlatformSponge = { group = "net.kyori", name = "adventure-platform-spongeapi", version.ref = "adventurePlatform" }
+
+mysqlConnector = { group = "mysql", name = "mysql-connector-java", version.ref = "mysqlConnector" }
+jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+
+authlib =  { group = "com.mojang", name = "authlib", version.ref = "authlib" }
+protocollib =  { group = "com.comphenix.protocol", name = "ProtocolLib-API", version.ref = "protocollib" }
+hikariCP =  { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
+luckperms =  { group = "net.luckperms", name = "api", version.ref = "luckperms" }
+snakeyaml =  { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
+serverlistplus =  { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
+
+paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper" }
+bungee = { group = "net.md-5", name = "bungeecord-api", version.ref = "bungee" }
+sponge = { group = "org.spongepowered", name = "spongeapi", version.ref = "sponge" }
+velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
+
+
+[bundles]
+
+adventure = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerLegacy"]
