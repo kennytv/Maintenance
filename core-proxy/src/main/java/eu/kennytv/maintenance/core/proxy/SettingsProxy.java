@@ -1,6 +1,6 @@
 /*
  * This file is part of Maintenance - https://github.com/kennytv/Maintenance
- * Copyright (C) 2018-2021 kennytv (https://github.com/kennytv)
+ * Copyright (C) 2018-2022 kennytv (https://github.com/kennytv)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
