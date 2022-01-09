@@ -64,23 +64,25 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        final SenderInfo selected = plugin.getOfflinePlayer(name);
-        if (selected == null) {
-            sender.send(getMessage("playerNotOnline"));
-            return;
-        }
+        plugin.getOfflinePlayer(name, selected -> {
+            if (selected == null) {
+                sender.send(getMessage("playerNotOnline"));
+                return;
+            }
 
-        addPlayerToWhitelist(sender, selected);
+            addPlayerToWhitelist(sender, selected);
+        });
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
-        final SenderInfo selected = plugin.getOfflinePlayer(uuid);
-        if (selected == null) {
-            sender.send(getMessage("playerNotFoundUuid"));
-            return;
-        }
+        plugin.getOfflinePlayer(uuid, selected -> {
+            if (selected == null) {
+                sender.send(getMessage("playerNotFoundUuid"));
+                return;
+            }
 
-        addPlayerToWhitelist(sender, selected);
+            addPlayerToWhitelist(sender, selected);
+        });
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final SenderInfo selected) {

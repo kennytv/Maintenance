@@ -72,6 +72,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -219,28 +220,28 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final String name) {
+    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
         final Optional<Player> player = server.getPlayer(name);
         if (player.isPresent()) {
-            return new VelocitySenderInfo(player.get());
+            consumer.accept(new VelocitySenderInfo(player.get()));
+            return;
         }
 
-        final ProfileLookup profile;
-        try {
-            profile = doUUIDLookup(name);
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
+        async(() -> {
+            try {
+                final ProfileLookup profile = doUUIDLookup(name);
+                consumer.accept(new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName()));
+            } catch (final IOException e) {
+                e.printStackTrace();
+                consumer.accept(null);
+            }
+        });
     }
 
     @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final UUID uuid) {
+    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
         final Optional<Player> player = server.getPlayer(uuid);
-        return player.map(VelocitySenderInfo::new).orElse(null);
+        consumer.accept(player.map(VelocitySenderInfo::new).orElse(null));
     }
 
     @Override

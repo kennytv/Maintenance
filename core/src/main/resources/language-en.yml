@@ -102,4 +102,4 @@ helpSingleToggle: "&6/maintenance <on/off> [server] &7(Enables/disables maintena
 helpStatus: "&6/maintenance status &7(Lists all proxied servers, that are currently under maintenance)"
 
 # Used for autoupdating the language file, do not change this value.
-language-version: 1
+#language-version: 1

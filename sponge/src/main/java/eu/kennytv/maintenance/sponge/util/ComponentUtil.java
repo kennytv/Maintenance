@@ -17,18 +17,14 @@
  */
 package eu.kennytv.maintenance.sponge.util;
 
-import eu.kennytv.maintenance.core.util.Task;
-import org.spongepowered.api.scheduler.ScheduledTask;
+import com.google.gson.JsonElement;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-public final class SpongeTask implements Task {
-    private final ScheduledTask task;
+public final class ComponentUtil {
 
-    public SpongeTask(final ScheduledTask task) {
-        this.task = task;
-    }
-
-    @Override
-    public void cancel() {
-        task.cancel();
+    public static Component toSponge(final eu.kennytv.maintenance.lib.kyori.adventure.text.Component component) {
+        final JsonElement json = eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serializeToTree(component);
+        return GsonComponentSerializer.gson().deserializeFromTree(json);
     }
 }

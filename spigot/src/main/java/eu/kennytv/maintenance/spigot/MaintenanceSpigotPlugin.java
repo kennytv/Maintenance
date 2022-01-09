@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -127,6 +128,18 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     }
 
     @Override
+    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+        final OfflinePlayer player = getServer().getOfflinePlayer(name);
+        consumer.accept(player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null);
+    }
+
+    @Override
+    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+        final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
+        consumer.accept(player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null);
+    }
+
+    @Override
     public void async(final Runnable runnable) {
         getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
     }
@@ -151,20 +164,6 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         tc1.addExtra(tc2);
         tc1.addExtra(click);
         ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
-    }
-
-    @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final String name) {
-        final OfflinePlayer player = getServer().getOfflinePlayer(name);
-        return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
-    }
-
-    @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final UUID uuid) {
-        final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
-        return player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null;
     }
 
     @Override

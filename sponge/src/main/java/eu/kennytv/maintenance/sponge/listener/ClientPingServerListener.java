@@ -19,17 +19,16 @@ package eu.kennytv.maintenance.sponge.listener;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
+import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.text.Text;
 
 import java.util.List;
 import java.util.UUID;
 
 public final class ClientPingServerListener {
-    private final UUID uuid = new UUID(0, 0);
     private final MaintenanceSpongePlugin plugin;
     private final Settings settings;
 
@@ -42,19 +41,19 @@ public final class ClientPingServerListener {
     public void proxyPing(final ClientPingServerEvent event) {
         if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
-        final ClientPingServerEvent.Response response = event.getResponse();
+        final ClientPingServerEvent.Response response = event.response();
         if (settings.hasCustomPlayerCountMessage()) {
             //TODO versionmessage possible without much trouble?
             // (spoiler: no, it isn't)
-            response.getPlayers().ifPresent(players -> players.setMax(0));
+            response.players().ifPresent(players -> players.setMax(0));
         }
 
-        response.setDescription(Text.of(settings.getRandomPingMessage()));
-        response.getPlayers().ifPresent(players -> {
-            final List<GameProfile> profiles = players.getProfiles();
+        response.setDescription(ComponentUtil.toSponge(settings.getRandomPingMessage()));
+        response.players().ifPresent(players -> {
+            final List<GameProfile> profiles = players.profiles();
             profiles.clear();
             for (final String string : settings.getPlayerCountHoverMessage().split("\n")) {
-                profiles.add(GameProfile.of(uuid, string));
+                profiles.add(GameProfile.of(UUID.randomUUID(), string));
             }
         });
 

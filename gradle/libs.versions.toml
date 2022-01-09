@@ -22,7 +22,7 @@ serverlistplus = "3.4.9-SNAPSHOT"
 
 paper = "1.16.5-R0.1-SNAPSHOT"
 bungee = "1.18-R0.1-SNAPSHOT"
-sponge = "7.1.0"
+sponge = "8.0.0"
 velocity = "3.1.0"
 
 
@@ -34,7 +34,6 @@ adventureTextSerializerGson = { group = "net.kyori", name = "adventure-text-seri
 adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
 adventurePlatformBukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventurePlatform" }
 adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
-adventurePlatformSponge = { group = "net.kyori", name = "adventure-platform-spongeapi", version.ref = "adventurePlatform" }
 
 mysqlConnector = { group = "mysql", name = "mysql-connector-java", version.ref = "mysqlConnector" }
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }

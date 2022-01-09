@@ -22,26 +22,25 @@ import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandCallable;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.CommandCause;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@NonnullByDefault
-public final class MaintenanceSpongeCommand extends MaintenanceCommand implements CommandCallable {
+public final class MaintenanceSpongeCommand extends MaintenanceCommand implements Command.Raw {
     private final MaintenanceSpongePlugin plugin;
     private static final String[] EMPTY = new String[0];
+    private static final String[] EMPTY_SINGLE = {""};
 
     public MaintenanceSpongeCommand(final MaintenanceSpongePlugin plugin, final Settings settings) {
         super(plugin, settings);
@@ -50,53 +49,56 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     }
 
     @Override
-    public CommandResult process(final CommandSource source, final String arguments) {
-        execute(new SpongeSenderInfo(source), getArgs(arguments, 0));
+    public CommandResult process(final CommandCause cause, final ArgumentReader.Mutable argument) {
+        final String input = argument.input();
+        execute(new SpongeSenderInfo(cause), input.isEmpty() ? EMPTY : input.split(" ", 0));
         return CommandResult.success();
     }
 
     @Override
-    public List<String> getSuggestions(final CommandSource source, final String arguments, @Nullable final Location<World> targetPosition) {
-        return getSuggestions(new SpongeSenderInfo(source), getArgs(arguments, -1));
+    public List<CommandCompletion> complete(final CommandCause cause, final ArgumentReader.Mutable argument) {
+        final String input = argument.input();
+        return getSuggestions(new SpongeSenderInfo(cause), input.isEmpty() ? EMPTY_SINGLE : input.split(" ", -1)).stream().map(CommandCompletion::of).collect(Collectors.toList());
     }
 
     @Override
-    public boolean testPermission(final CommandSource source) {
-        return plugin.hasPermission(source, "command");
+    public boolean canExecute(final CommandCause cause) {
+        return plugin.hasPermission(cause, "command");
     }
 
     @Override
-    public Optional<Text> getShortDescription(final CommandSource source) {
-        return Optional.of(Text.of("Maintenance main-command"));
+    public Optional<Component> shortDescription(final CommandCause cause) {
+        return Optional.of(Component.text("Maintenance main-command"));
     }
 
     @Override
-    public Optional<Text> getHelp(final CommandSource source) {
+    public Optional<Component> extendedDescription(final CommandCause cause) {
+        return shortDescription(cause);
+    }
+
+    @Override
+    public Optional<Component> help(final CommandCause cause) {
         return Optional.empty();
     }
 
     @Override
-    public Text getUsage(final CommandSource source) {
+    public Component usage(final CommandCause cause) {
         return null;
     }
 
     @Override
     public void sendDumpMessage(final SenderInfo sender, final String url) {
         final SpongeSenderInfo spongeSender = ((SpongeSenderInfo) sender);
-        spongeSender.sendMessage(Text.builder(plugin.getPrefix() + "§7Click here to copy the link").onClick(TextActions.suggestCommand(url))
-                .onHover(TextActions.showText(plugin.translate("§aClick here to copy the link"))).build());
+        spongeSender.send(Component.text().append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link")).clickEvent(ClickEvent.suggestCommand(url))
+                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link"))).build());
     }
 
     @Override
     public List<String> getPlayersCompletion() {
         final List<String> list = new ArrayList<>();
-        for (final Player player : Sponge.getServer().getOnlinePlayers()) {
-            list.add(player.getName());
+        for (final Player player : plugin.getServer().onlinePlayers()) {
+            list.add(player.name());
         }
         return list;
-    }
-
-    private String[] getArgs(final String arguments, final int limit) {
-        return arguments.isEmpty() ? EMPTY : arguments.split(" ", limit);
     }
 }

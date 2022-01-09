@@ -21,12 +21,13 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
+import eu.kennytv.maintenance.sponge.util.ComponentUtil;
+import eu.kennytv.maintenance.sponge.util.SpongePlayer;
+import eu.kennytv.maintenance.sponge.util.SpongeUser;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 
 public final class ClientConnectionListener extends JoinListenerBase {
     private final MaintenanceSpongePlugin plugin;
@@ -37,28 +38,27 @@ public final class ClientConnectionListener extends JoinListenerBase {
     }
 
     @Listener
-    public void login(final ClientConnectionEvent.Login event) {
-        final Player player = event.getTargetUser().getPlayer().get();
-        if (shouldKick(new SpongeSenderInfo(player), false)) {
+    public void login(final ServerSideConnectionEvent.Login event) {
+        if (shouldKick(new SpongeUser(event.user()), false)) {
             event.setCancelled(true);
-            event.setMessage(Text.of(settings.getKickMessage()));
+            event.setMessage(ComponentUtil.toSponge(settings.getKickMessage()));
             if (settings.isJoinNotifications()) {
-                broadcastJoinNotification(player.getName());
+                broadcastJoinNotification(event.user().name());
             }
         }
     }
 
     @Listener
-    public void join(final ClientConnectionEvent.Join event) {
-        updateCheck(new SpongeSenderInfo(event.getTargetEntity()));
+    public void join(final ServerSideConnectionEvent.Join event) {
+        updateCheck(new SpongePlayer(event.player()));
     }
 
     @Override
     protected void broadcastJoinNotification(final String name) {
         final Component component = settings.getMessage("joinNotification", "%PLAYER%", name);
-        for (final Player player : Sponge.getServer().getOnlinePlayers()) {
+        for (final ServerPlayer player : Sponge.server().onlinePlayers()) {
             if (plugin.hasPermission(player, "joinnotification")) {
-                plugin.audiences().player(player).sendMessage(component);
+                player.sendMessage(ComponentUtil.toSponge(component));
             }
         }
     }

@@ -1,0 +1,34 @@
+{
+  "loader": {
+    "name": "java_plain",
+    "version": "1.0"
+  },
+  "license": "GNU GPLv3",
+  "global": {
+    "version": "${version}",
+    "links": {
+      "source": "https://github.com/kennytv/Maintenance",
+      "issues": "https://github.com/kennytv/Maintenance/issues"
+    },
+    "contributors": [
+      {
+        "name": "kennytv",
+        "description": "Author"
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "spongeapi",
+        "version": "8.0.0"
+      }
+    ]
+  },
+  "plugins": [
+    {
+      "id": "maintenance",
+      "name": "Maintenance",
+      "entrypoint": "eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin",
+      "description": "${description}"
+    }
+  ]
+}

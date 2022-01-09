@@ -17,18 +17,45 @@
  */
 package eu.kennytv.maintenance.sponge.util;
 
-import eu.kennytv.maintenance.core.util.Task;
-import org.spongepowered.api.scheduler.ScheduledTask;
+import eu.kennytv.maintenance.core.util.SenderInfo;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import org.spongepowered.api.entity.living.player.User;
 
-public final class SpongeTask implements Task {
-    private final ScheduledTask task;
+import java.util.UUID;
 
-    public SpongeTask(final ScheduledTask task) {
-        this.task = task;
+public final class SpongeUser implements SenderInfo {
+    private final User user;
+
+    public SpongeUser(final User user) {
+        this.user = user;
     }
 
     @Override
-    public void cancel() {
-        task.cancel();
+    public UUID getUuid() {
+        return user.uniqueId();
+    }
+
+    @Override
+    public String getName() {
+        return user.name();
+    }
+
+    @Override
+    public boolean hasPermission(final String permission) {
+        return user.hasPermission(permission);
+    }
+
+    @Override
+    @Deprecated
+    public void sendMessage(final String message) {
+    }
+
+    @Override
+    public void send(final Component component) {
+    }
+
+    @Override
+    public boolean isPlayer() {
+        return true;
     }
 }

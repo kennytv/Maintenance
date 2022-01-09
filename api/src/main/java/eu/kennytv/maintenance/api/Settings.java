@@ -84,7 +84,7 @@ public interface Settings {
      *
      * @param uuid uuid of the player to add
      * @param name of the player to add
-     * @return true if adding the player was successful
+     * @return true if adding the player was successful, false if already on the whitelist
      */
     boolean addWhitelistedPlayer(UUID uuid, String name);
 

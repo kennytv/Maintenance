@@ -58,6 +58,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -214,6 +215,7 @@ public abstract class MaintenancePlugin implements Maintenance {
 
             final int compare = version.compareTo(newestVersion);
             if (compare == -1) {
+                //TODO mmmmmmmm legacy chat
                 getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
             } else if (compare == 1) {
                 if (version.getTag().equalsIgnoreCase("snapshot")) {
@@ -433,17 +435,14 @@ public abstract class MaintenancePlugin implements Maintenance {
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 
     /**
-     * Returns offline sender info of a player.
+     * Gets the offline sender info of a player.
      * This method may do a web lookup.
      *
      * @param name name of the player
-     * @return sender info if found, else null
      */
-    @Nullable
-    public abstract SenderInfo getOfflinePlayer(String name);
+    public abstract void getOfflinePlayer(String name, Consumer<@Nullable SenderInfo> consumer);
 
-    @Nullable
-    public abstract SenderInfo getOfflinePlayer(UUID uuid);
+    public abstract void getOfflinePlayer(UUID uuid, Consumer<@Nullable SenderInfo> consumer);
 
     public abstract File getDataFolder();
 

@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -175,6 +176,31 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
+    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+        final ProxiedPlayer player = getProxy().getPlayer(name);
+        if (player != null) {
+            consumer.accept(new BungeeSenderInfo(player));
+            return;
+        }
+
+        getProxy().getScheduler().runAsync(plugin, () -> {
+            try {
+                final ProfileLookup profile = doUUIDLookup(name);
+                consumer.accept(new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName()));
+            } catch (final IOException e) {
+                e.printStackTrace();
+                consumer.accept(null);
+            }
+        });
+    }
+
+    @Override
+    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+        final ProxiedPlayer player = getProxy().getPlayer(uuid);
+        consumer.accept(player != null ? new BungeeSenderInfo(player) : null);
+    }
+
+    @Override
     @Nullable
     public Server getServer(final String server) {
         final ServerInfo serverInfo = getProxy().getServerInfo(server);
@@ -184,31 +210,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public Set<String> getServers() {
         return getProxy().getServers().keySet();
-    }
-
-    @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final String name) {
-        final ProxiedPlayer player = getProxy().getPlayer(name);
-        if (player != null) {
-            return new BungeeSenderInfo(player);
-        }
-
-        final ProfileLookup profile;
-        try {
-            profile = doUUIDLookup(name);
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
-    }
-
-    @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final UUID uuid) {
-        final ProxiedPlayer player = getProxy().getPlayer(uuid);
-        return player != null ? new BungeeSenderInfo(player) : null;
     }
 
     @Override

@@ -25,7 +25,7 @@ rootProject.name = "maintenance-parent"
 includeBuild("build-logic")
 
 include("adventure", "adventure:adventure-api",
-    "adventure:adventure-platform-bukkit", "adventure:adventure-platform-bungee", "adventure:adventure-platform-sponge")
+    "adventure:adventure-platform-bukkit", "adventure:adventure-platform-bungee")
 
 subproject("api")
 subproject("api-proxy")

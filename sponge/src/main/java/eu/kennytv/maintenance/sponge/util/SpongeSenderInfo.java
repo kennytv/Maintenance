@@ -17,38 +17,36 @@
  */
 package eu.kennytv.maintenance.sponge.util;
 
-import eu.kennytv.maintenance.api.MaintenanceProvider;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import org.spongepowered.api.command.CommandSource;
+import net.kyori.adventure.identity.Identity;
+import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Identifiable;
 
 import java.util.UUID;
 
 public final class SpongeSenderInfo implements SenderInfo {
-    private final CommandSource sender;
+    private final CommandCause cause;
 
-    public SpongeSenderInfo(final CommandSource sender) {
-        this.sender = sender;
+    public SpongeSenderInfo(final CommandCause cause) {
+        this.cause = cause;
     }
 
     @Override
     public UUID getUuid() {
-        return sender instanceof Player ? ((Identifiable) sender).getUniqueId() : null;
+        return cause instanceof Player ? ((Identifiable) cause).uniqueId() : null;
     }
 
     @Override
     public String getName() {
-        return sender.getName();
+        return cause.friendlyIdentifier().orElse(cause.identifier());
     }
 
     @Override
     public boolean hasPermission(final String permission) {
-        return sender.hasPermission(permission);
+        return cause.hasPermission(permission);
     }
 
     @Override
@@ -59,15 +57,15 @@ public final class SpongeSenderInfo implements SenderInfo {
 
     @Override
     public void send(final Component component) {
-        ((MaintenanceSpongePlugin) MaintenanceProvider.get()).audiences().receiver(sender).sendMessage(component);
+        cause.sendMessage(Identity.nil(), ComponentUtil.toSponge(component));
+    }
+
+    public void send(final net.kyori.adventure.text.Component component) {
+        cause.sendMessage(Identity.nil(), component);
     }
 
     @Override
     public boolean isPlayer() {
-        return sender instanceof Player;
-    }
-
-    public void sendMessage(final Text text) {
-        sender.sendMessage(text);
+        return cause instanceof Player;
     }
 }

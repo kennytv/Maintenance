@@ -27,37 +27,38 @@ import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
-import eu.kennytv.maintenance.lib.kyori.adventure.platform.spongeapi.SpongeAudiences;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
+import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
-import eu.kennytv.maintenance.sponge.util.SpongeOfflinePlayerInfo;
+import eu.kennytv.maintenance.sponge.util.SpongePlayer;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
+import eu.kennytv.maintenance.sponge.util.SpongeUser;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.GameReloadEvent;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingEvent;
+import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
+import org.spongepowered.api.event.lifecycle.StoppingEngineEvent;
 import org.spongepowered.api.network.status.Favicon;
-import org.spongepowered.api.plugin.Dependency;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.user.UserStorageService;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.plugin.PluginContainer;
+import org.spongepowered.plugin.builtin.jvm.Plugin;
+import org.spongepowered.plugin.metadata.PluginMetadata;
+import org.spongepowered.plugin.metadata.model.PluginContributor;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -70,152 +71,177 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://ore.spongepowered.org/KennyTV/Maintenance",
-        dependencies = {@Dependency(id = "serverlistplus", optional = true), @Dependency(id = "luckperms", optional = true)})
+@Plugin("maintenance")
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
+
     @SuppressWarnings("SpongeLogging")
-    private Logger logger;
+    private final Logger logger;
+    private final PluginContainer container;
+    private final Game game;
     private Favicon favicon;
     @Inject
-    private Game game;
-    @Inject
-    private PluginContainer container;
-    @Inject
     @ConfigDir(sharedRoot = false)
-    private File dataFolder;
-    private SpongeAudiences audiences;
+    private Path dataFolder;
 
+    @SuppressWarnings("SpongeInjection")
     @Inject
-    public MaintenanceSpongePlugin() {
+    public MaintenanceSpongePlugin(final PluginContainer container, final Game game, final org.apache.logging.log4j.Logger logger) {
         super(MaintenanceVersion.VERSION, ServerType.SPONGE);
+        this.container = container;
+        this.game = game;
+        this.logger = new LoggerWrapper(logger);
     }
 
     @Listener
-    public void onEnable(final GameInitializationEvent event) {
-        audiences = SpongeAudiences.create(container, game);
-        logger = new LoggerWrapper(container.getLogger());
-
+    public void onEnable(final StartingEngineEvent<Server> event) {
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
-                "playercountmessage", "enable-playercountmessage");
+                "playercountmessage");
 
         sendEnableMessage();
 
         final MaintenanceSpongeCommand command = new MaintenanceSpongeCommand(this, settings);
         commandManager = command;
-        game.getCommandManager().register(this, command, "maintenance", "maintenancesponge", "mt");
-        final EventManager em = game.getEventManager();
-        em.registerListeners(this, new ClientPingServerListener(this, settings));
-        em.registerListeners(this, new ClientConnectionListener(this, settings));
+        game.server().commandManager().registrar(Command.Raw.class).get().register(container, command, "maintenance", "maintenancesponge", "mt");
+        final EventManager em = game.eventManager();
+        em.registerListeners(container, new ClientPingServerListener(this, settings));
+        em.registerListeners(container, new ClientConnectionListener(this, settings));
 
         continueLastEndtimer();
 
-        final PluginManager pluginManager = game.getPluginManager();
-        pluginManager.getPlugin("serverlistplus").flatMap(PluginContainer::getInstance).ifPresent(serverListPlus -> {
+        final PluginManager pluginManager = game.pluginManager();
+        pluginManager.plugin("serverlistplus").map(PluginContainer::instance).ifPresent(serverListPlus -> {
             serverListPlusHook = new ServerListPlusHook(serverListPlus);
             if (settings.isEnablePingMessages()) {
                 serverListPlusHook.setEnabled(!settings.isMaintenance());
             }
             logger.info("Enabled ServerListPlus integration!");
         });
-        if (pluginManager.getPlugin("luckperms").isPresent()) {
+        if (pluginManager.plugin("luckperms").isPresent()) {
             LuckPermsHook.<Subject>register(this);
             logger.info("Registered LuckPerms context");
         }
     }
 
     @Listener
-    public void onDisable(final GameStoppingEvent event) {
+    public void onDisable(final StoppingEngineEvent<Server> event) {
         disable();
     }
 
-    @Listener
+    //TODO hello?
+    /*@Listener
     public void reload(final GameReloadEvent event) {
         settings.reloadConfigs();
         logger.info("Reloaded config files!");
-    }
+    }*/
 
     @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
-        return new SpongeTask(game.getScheduler().createTaskBuilder().execute(runnable).interval(1, TimeUnit.SECONDS).submit(this));
+        final org.spongepowered.api.scheduler.Task task = org.spongepowered.api.scheduler.Task.builder().plugin(container).execute(runnable).interval(1, TimeUnit.SECONDS).build();
+        return new SpongeTask(game.server().scheduler().submit(task));
     }
 
     @Override
     public void async(final Runnable runnable) {
-        game.getScheduler().createTaskBuilder().async().execute(runnable).submit(this);
+        final org.spongepowered.api.scheduler.Task task = org.spongepowered.api.scheduler.Task.builder().plugin(container).execute(runnable).build();
+        game.asyncScheduler().submit(task);
     }
 
     @Override
     protected void executeConsoleCommand(final String command) {
-        game.getCommandManager().process(game.getServer().getConsole(), command);
+        try {
+            game.server().commandManager().process(command);
+        } catch (final CommandException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
     public void broadcast(final Component component) {
-        audiences.all().sendMessage(component);
+        game.server().sendMessage(ComponentUtil.toSponge(component));
     }
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        Text text;
         try {
-            text = Text.builder(getPrefix())
+            net.kyori.adventure.text.Component component = net.kyori.adventure.text.Component.text().append(translate(getPrefix()))
                     .append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/ "))
-                    .append(Text.builder("§7§l§o(CLICK ME)")
-                            .onClick(TextActions.openUrl(new URL("https://www.spigotmc.org/resources/maintenance.40699/")))
-                            .onHover(TextActions.showText(translate("§7§l§o(CLICK ME)"))).build()).build();
+                    .append(translate("§7§l§o(CLICK ME)"))
+                    .clickEvent(ClickEvent.openUrl(new URL("https://www.spigotmc.org/resources/maintenance.40699/")))
+                    .hoverEvent(HoverEvent.showText(translate("§7§l§o(CLICK ME)"))).build();
+            ((SpongePlayer) sender).send(component);
         } catch (final MalformedURLException e) {
-            text = translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/");
             e.printStackTrace();
         }
-        ((SpongeSenderInfo) sender).sendMessage(text);
     }
 
     @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final String name) {
-        final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
-        return userStorage.get(name).map(SpongeOfflinePlayerInfo::new).orElse(null);
+    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+        final Optional<ServerPlayer> player = game.server().player(name);
+        if (player.isPresent()) {
+            consumer.accept(new SpongePlayer(player.get()));
+        } else {
+            game.server().userManager().load(name).whenComplete((optional, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    consumer.accept(null);
+                } else {
+                    consumer.accept(optional.map(SpongeUser::new).orElse(null));
+                }
+            });
+        }
     }
 
     @Override
-    @Nullable
-    public SenderInfo getOfflinePlayer(final UUID uuid) {
-        final UserStorageService userStorage = game.getServiceManager().provide(UserStorageService.class).get();
-        return userStorage.get(uuid).map(SpongeOfflinePlayerInfo::new).orElse(null);
+    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+        final Optional<ServerPlayer> player = game.server().player(uuid);
+        if (player.isPresent()) {
+            consumer.accept(new SpongePlayer(player.get()));
+        } else {
+            game.server().userManager().load(uuid).whenComplete((optional, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    consumer.accept(null);
+                } else {
+                    consumer.accept(optional.map(SpongeUser::new).orElse(null));
+                }
+            });
+        }
     }
 
     @Override
     protected void kickPlayers() {
-        for (final Player p : getServer().getOnlinePlayers()) {
-            if (!hasPermission(p, "bypass") && !settings.isWhitelisted(p.getUniqueId())) {
-                p.kick(Text.of(settings.getKickMessage()));
+        final net.kyori.adventure.text.Component component = ComponentUtil.toSponge(settings.getKickMessage());
+        for (final ServerPlayer player : getServer().onlinePlayers()) {
+            if (!hasPermission(player, "bypass") && !settings.isWhitelisted(player.uniqueId())) {
+                player.kick(component);
             }
         }
     }
 
     @Override
     public File getDataFolder() {
-        return dataFolder;
+        return dataFolder.toFile();
     }
 
     @Override
     public File getPluginFile() {
-        final Optional<Path> source = container.getSource();
-        return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));
+        throw new UnsupportedOperationException("grumbles");
+        /*final Optional<Path> source = container.getSource();
+        return source.map(Path::toFile).orElseThrow(() -> new RuntimeException("wHaT?"));*/
     }
 
     @Override
     protected int getOnlinePlayers() {
-        return getServer().getOnlinePlayers().size();
+        return getServer().onlinePlayers().size();
     }
 
     @Override
     protected int getMaxPlayers() {
-        return getServer().getMaxPlayers();
+        return getServer().maxPlayers();
     }
 
     @Override
@@ -235,26 +261,30 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     public String getServerVersion() {
-        return game.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("woop wooop");
+        return game.platform().container(Platform.Component.IMPLEMENTATION).toString();
     }
 
     @Override
     public List<PluginDump> getPlugins() {
-        return game.getPluginManager().getPlugins().stream().map(plugin ->
-                new PluginDump(plugin.getId() + "/" + plugin.getName(), plugin.getVersion().orElse("-"), plugin.getAuthors())).collect(Collectors.toList());
+        return game.pluginManager().plugins().stream().map(plugin -> {
+            final PluginMetadata metadata = plugin.metadata();
+            final List<String> contributors = metadata.contributors().stream().map(PluginContributor::name).collect(Collectors.toList());
+            final String id = metadata.id();
+            return new PluginDump(id + "/" + metadata.name().orElse(id), metadata.version().toString(), contributors);
+        }).collect(Collectors.toList());
     }
 
     @Override
     protected void loadIcon(final File file) throws IOException {
-        favicon = game.getRegistry().loadFavicon(ImageIO.read(file));
+        favicon = Favicon.load(ImageIO.read(file));
     }
 
-    public boolean hasPermission(final CommandSource sender, final String permission) {
+    public boolean hasPermission(final Subject sender, final String permission) {
         return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
     public Server getServer() {
-        return game.getServer();
+        return game.server();
     }
 
     public Favicon getFavicon() {
@@ -262,11 +292,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Deprecated
-    public Text translate(final String s) {
-        return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(s);
-    }
-
-    public SpongeAudiences audiences() {
-        return audiences;
+    public net.kyori.adventure.text.Component translate(final String s) {
+        return LegacyComponentSerializer.legacySection().deserialize(s);
     }
 }

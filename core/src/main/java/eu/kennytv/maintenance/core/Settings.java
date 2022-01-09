@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.TextReplacementConfig;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +57,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private List<String> commandsOnMaintenanceDisable;
     private Component playerCountMessage;
     private Component playerCountHoverMessage;
+    private Component prefix;
     private String languageName;
     private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
@@ -103,6 +105,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         try {
             language = new Config(new File(plugin.getDataFolder(), "language-" + languageName + ".yml"));
             language.load();
+            prefix = MiniMessage.miniMessage().deserialize(language.getString("prefix"))
+                    .replaceText(TextReplacementConfig.builder().matchLiteral("<prefix>").replacement(prefix).build());
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
@@ -208,7 +212,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     private void updatePluginDirectory() {
         // All plugin identifiers were changed to 'Maintenance' ('maintenance' for Sponge and Velocity) in 3.0.5
-        // Don't worry, this is only checked if no plugin folder is found
         String oldDirName = "Maintenance" + plugin.getServerType();
         if (plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY) {
             oldDirName = oldDirName.toLowerCase();
@@ -360,7 +363,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             }
         }
 
-        return MiniMessage.miniMessage().deserialize(replaceNewlineVar(s));
+        return MiniMessage.miniMessage().deserialize(replaceNewlineVar(s))
+                .replaceText(TextReplacementConfig.builder().matchLiteral("<prefix>").replacement(prefix).build());
     }
 
     public @Nullable Component getMessageOrNull(final String path, final String... replacements) {
@@ -391,8 +395,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     @Override
     public boolean removeWhitelistedPlayer(final UUID uuid) {
-        if (!whitelistedPlayers.containsKey(uuid)) return false;
-        whitelistedPlayers.remove(uuid);
+        if (whitelistedPlayers.remove(uuid) == null) {
+            return false;
+        }
+
         whitelist.remove(uuid.toString());
         saveWhitelistedPlayers();
         return true;
@@ -409,7 +415,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             }
         }
 
-        if (uuid == null) return false;
+        if (uuid == null) {
+            return false;
+        }
 
         whitelistedPlayers.remove(uuid);
         whitelist.remove(uuid.toString());
@@ -419,11 +427,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     @Override
     public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
-        final boolean contains = !whitelistedPlayers.containsKey(uuid);
-        whitelistedPlayers.put(uuid, name);
+        final boolean added = whitelistedPlayers.put(uuid, name) == null;
         whitelist.set(uuid.toString(), name);
         saveWhitelistedPlayers();
-        return contains;
+        return added;
     }
 
     @Override
@@ -549,7 +556,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
      * Because of this, I replace <br> manually, to spare users from these ugly breaks (before I inevitably switch to a different configuration library).
      */
     protected String replaceNewlineVar(final String s) {
-        //TODO don't shade platform everywhere
         return s.replace(NEW_LINE_REPLACEMENT, "\n");
     }
 
