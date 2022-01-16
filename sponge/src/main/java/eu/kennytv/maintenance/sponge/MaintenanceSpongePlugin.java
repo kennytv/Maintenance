@@ -34,7 +34,6 @@ import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
 import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongePlayer;
-import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import eu.kennytv.maintenance.sponge.util.SpongeUser;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -63,7 +62,6 @@ import org.spongepowered.plugin.metadata.model.PluginContributor;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -247,11 +245,6 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Override
     protected String getPluginFolder() {
         return "mods/";
-    }
-
-    @Override
-    public InputStream getResource(final String name) {
-        return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 
     @Override

@@ -109,7 +109,12 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
 
-        updateLanguageFile();
+        try {
+            updateLanguageFile();
+        } catch (final IOException e) {
+            plugin.getLogger().severe("Couldn't update language file");
+            e.printStackTrace();
+        }
 
         prefix = MiniMessage.miniMessage().deserialize(language.getString("prefix"));
 
@@ -269,37 +274,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         }
     }
 
-    private void updateLanguageFile() {
+    private void updateLanguageFile() throws IOException {
         final int version = language.getInt("language-version");
         if (version == LANGUAGE_VERSION) {
             return;
         }
 
         plugin.getLogger().info("Updating language file to the latest version...");
-        final String filePrefix = "language-" + languageName;
-        try {
-            createFile(filePrefix + "-new.yml", filePrefix + ".yml");
-        } catch (final NullPointerException e) {
-            plugin.getLogger().info("Not checking for updated language strings, since there is no "
-                    + filePrefix + ".yml in the resource files (if your file is self translated and up to date, you can ignore this).");
-            return;
-        } catch (final Exception e) {
-            plugin.getLogger().warning("Couldn't update language file, as the " + filePrefix + ".yml could not be loaded from the resource files!");
-            e.printStackTrace();
-            return;
-        }
-
-        final File file = new File(plugin.getDataFolder(), filePrefix + "-new.yml");
-        final Config tempConfig = new Config(file);
-        try {
-            tempConfig.load();
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return;
-        } finally {
-            file.delete();
-        }
-
         if (version < 1) {
             for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
                 if (!(entry.getValue() instanceof String)) {
@@ -314,17 +295,24 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             }
         }
 
+        final String filePrefix = "language-" + languageName;
+        createFile(filePrefix + "-new.yml", filePrefix + ".yml");
+
+        final File file = new File(plugin.getDataFolder(), filePrefix + "-new.yml");
+        final Config tempConfig = new Config(file);
+        try {
+            tempConfig.load();
+        } finally {
+            file.delete();
+        }
+
         language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
         tempConfig.clear();
 
         language.set("language-version", LANGUAGE_VERSION);
 
-        try {
-            language.save();
-            plugin.getLogger().info("Updated language file!");
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        language.save();
+        plugin.getLogger().info("Updated language file!");
     }
 
     private String legacyToMinimessage(final String s) {

@@ -65,7 +65,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -289,11 +288,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     protected int getMaxPlayers() {
         return server.getConfiguration().getShowMaxPlayers();
-    }
-
-    @Override
-    public InputStream getResource(final String name) {
-        return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 
     @Override

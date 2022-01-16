@@ -446,7 +446,10 @@ public abstract class MaintenancePlugin implements Maintenance {
 
     public abstract File getDataFolder();
 
-    public abstract InputStream getResource(String name);
+    @Nullable
+    public InputStream getResource(String name) {
+        return this.getClass().getClassLoader().getResourceAsStream(name);
+    }
 
     public abstract Logger getLogger();
 
