@@ -56,7 +56,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private List<String> commandsOnMaintenanceEnable;
     private List<String> commandsOnMaintenanceDisable;
     private Component playerCountMessage;
-    private Component playerCountHoverMessage;
+    private List<Component> playerCountHoverLines;
     private Component prefix;
     private String languageName;
     private boolean enablePingMessages;
@@ -105,13 +105,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         try {
             language = new Config(new File(plugin.getDataFolder(), "language-" + languageName + ".yml"));
             language.load();
-            prefix = MiniMessage.miniMessage().deserialize(language.getString("prefix"))
-                    .replaceText(TextReplacementConfig.builder().matchLiteral("<prefix>").replacement(prefix).build());
         } catch (final IOException e) {
             throw new RuntimeException("Unable to load Maintenance language file!", e);
         }
 
         updateLanguageFile();
+
+        prefix = MiniMessage.miniMessage().deserialize(language.getString("prefix"));
 
         plugin.getEventManager().callEvent(new MaintenanceReloadedEvent());
     }
@@ -184,7 +184,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         if (plugin.getServerType() != ServerType.SPONGE) {
             playerCountMessage = getConfigMessage("playercountmessage");
         }
-        playerCountHoverMessage = getConfigMessage("playercounthovermessage");
+
+        playerCountHoverLines = new ArrayList<>();
+        final String playerHoverMessage = config.getString("playercounthovermessage");
+        for (final String line : playerHoverMessage.split("<br>")) {
+            playerCountHoverLines.add(MiniMessage.miniMessage().deserialize(line));
+        }
+
         languageName = config.getString("language").toLowerCase();
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
@@ -529,8 +535,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return LegacyComponentSerializer.legacySection().serialize(plugin.replacePingVariables(playerCountMessage));
     }
 
-    public String getPlayerCountHoverMessage() {
-        return LegacyComponentSerializer.legacySection().serialize(plugin.replacePingVariables(playerCountHoverMessage));
+    public String[] getPlayerCountHoverLines() {
+        final String[] lines = new String[playerCountHoverLines.size()];
+        for (int i = 0; i < playerCountHoverLines.size(); i++) {
+            final Component component = plugin.replacePingVariables(playerCountHoverLines.get(i));
+            lines[i] = LegacyComponentSerializer.legacySection().serialize(component);
+        }
+        return lines;
     }
 
     public Component getKickMessage() {
