@@ -102,7 +102,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
             plugin.getLogger().info("Enabled ServerListPlus integration");
         }
 
-        if (pm.isPluginEnabled("LuckPerms")) {
+        if (false && pm.isPluginEnabled("LuckPerms")) {
             LuckPermsHook.<Player>register(this);
             plugin.getLogger().info("Registered LuckPerms context");
         }

@@ -65,6 +65,7 @@ singleServerAlreadyEnabled: "<prefix><red>Der Wartungsmodus ist bereits an auf <
 singleServerAlreadyDisabled: "<prefix><red>Der Wartungsmodus ist bereits aus auf <yellow>%SERVER%<red>!"
 singleServerMaintenanceList: "<prefix><gray>Unterserver, die im Wartungsmodus sind:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Es befindet sich momentan kein Unterserver im Wartungsmodus."
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "Sekunde"
 seconds: "Sekunden"

@@ -65,6 +65,7 @@ singleServerAlreadyEnabled: "<prefix><red>Tryb konserwacji jest już włączony 
 singleServerAlreadyDisabled: "<prefix><red>Tryb konserwacji jest już wyłączony na serwerze <yellow>%SERVER%<red>!"
 singleServerMaintenanceList: "<prefix><gray>Serwery z włączonym trybem konserwacji:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Brak serwerów pod nadzorem."
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "sekunda"
 seconds: "sekund"

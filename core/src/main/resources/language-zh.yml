@@ -66,6 +66,7 @@ singleServerAlreadyEnabled: "<prefix><red>服务器<yellow>%SERVER%<red>的维�
 singleServerAlreadyDisabled: "<prefix><red>服务器<yellow>%SERVER%<red>的维护模式已关闭！"
 singleServerMaintenanceList: "<prefix><gray>已开启维护的服务器有:"
 singleServerMaintenanceListEmpty: "<prefix><gray>没有正在维护的服务器"
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "秒"
 seconds: "秒"

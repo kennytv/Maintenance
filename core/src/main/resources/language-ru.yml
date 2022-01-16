@@ -66,6 +66,7 @@ singleServerAlreadyEnabled: "<red>Режим технических работ �
 singleServerAlreadyDisabled: "<red>Режим технических работ на сервере <white>%SERVER% <red>не был включен."
 singleServerMaintenanceList: "<gray>Сервера на которых включен режим технических работ:"
 singleServerMaintenanceListEmpty: "<gray>Сервера на которых включен режим технических работ: <white>пусто"
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "секунду"
 seconds: "секунд"

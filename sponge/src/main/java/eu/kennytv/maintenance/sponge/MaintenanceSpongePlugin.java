@@ -120,7 +120,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
             }
             logger.info("Enabled ServerListPlus integration!");
         });
-        if (pluginManager.plugin("luckperms").isPresent()) {
+        if (false && pluginManager.plugin("luckperms").isPresent()) {
             LuckPermsHook.<Subject>register(this);
             logger.info("Registered LuckPerms context");
         }

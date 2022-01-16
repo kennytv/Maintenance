@@ -4,8 +4,17 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ---
 ## Unreleased
 ### Changed
+* Added support for hex colors in messages and replaced the component parsing with adventure-minimessage
+  * This means that section symbols (`§`) are no longer the intended format
+  * You can use the following page to edit and preview formatted text: https://webui.adventure.kyori.net/
+  * You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more) here: https://docs.adventure.kyori.net/minimessage
+  * Your config and language file will be updated to the new format automatically, you won't have to change anything manually!
+* Added `singleServerMaintenanceListEntry` language string
+* Changed `%NEWLINE%` replacement to `<br>`
+* Updated Sponge module to SpongeAPI v8 (Minecraft 1.15+)
 ### Fixed
 * Fixed missing language key warning for the scheduletimer command
+* Fixed typo in `singleServerMaintenanceListEmpty` default language string
 ---
 ## 3.0.7 - August 17th 2021
 ### Changed

@@ -119,7 +119,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             logger.info("Enabled ServerListPlus integration!");
         });
 
-        if (pluginManager.getPlugin("luckperms").isPresent()) {
+        if (false && pluginManager.getPlugin("luckperms").isPresent()) {
             LuckPermsProxyHook.<Player>register(this, player -> player.getCurrentServer().map(server -> server.getServerInfo().getName()).orElse(null));
             logger.info("Registered LuckPerms context");
         }

@@ -66,6 +66,7 @@ singleServerAlreadyEnabled: "<prefix><gray>El modo mantenimiento se encuentra ha
 singleServerAlreadyDisabled: "<prefix><gray>El modo mantenimiento se encuentra deshabilitado en <gold>%SERVER%<gray>!"
 singleServerMaintenanceList: "<prefix><gray>Servidores proxy, que tienen habilitado el mantenimiento:"
 singleServerMaintenanceListEmpty: "<prefix><gray>No hay servidores proxy que están en mantenimiento."
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "Segundo"
 seconds: "Segundos"

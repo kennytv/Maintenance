@@ -99,7 +99,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             plugin.getLogger().info("Enabled ServerListPlus integration!");
         }
 
-        if (pm.getPlugin("LuckPerms") != null) {
+        if (false && pm.getPlugin("LuckPerms") != null) {
             LuckPermsProxyHook.<ProxiedPlayer>register(this, player -> {
                 final net.md_5.bungee.api.connection.Server server = player.getServer();
                 return server != null ? server.getInfo().getName() : null;

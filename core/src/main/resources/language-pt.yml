@@ -66,6 +66,7 @@ singleServerAlreadyEnabled: "<prefix><red>Manutencao ja esta ativada no <yellow>
 singleServerAlreadyDisabled: "<prefix><red>Manutencao ja esta desativada no <yellow>%SERVER%<red>!"
 singleServerMaintenanceList: "<prefix><gray>Servidores com manutencao ativa:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Nao existem servidores com a manutencao ativa."
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
 
 second: "segundo"
 seconds: "segundos"

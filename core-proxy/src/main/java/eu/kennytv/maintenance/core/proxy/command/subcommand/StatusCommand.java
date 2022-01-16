@@ -36,7 +36,7 @@ public final class StatusCommand extends ProxyCommandInfo {
 
         sender.send(getMessage("singleServerMaintenanceList"));
         for (final String server : getSettings().getMaintenanceServers()) {
-            sender.sendMessage("§8- §b" + server); //TODO
+            sender.send(getMessage("singleServerMaintenanceListEntry", "%SERVER%", server));
         }
     }
 }
