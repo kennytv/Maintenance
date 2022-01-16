@@ -15,7 +15,7 @@ snakeyaml = "1.23"
 junit = "5.8.2"
 jetbrainsAnnotations = "23.0.0"
 
-protocollib = "4.4.0"
+protocollib = "4.7.0"
 authlib = "1.5.25"
 luckperms = "5.3"
 serverlistplus = "3.4.9-SNAPSHOT"
@@ -41,7 +41,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
 authlib =  { group = "com.mojang", name = "authlib", version.ref = "authlib" }
-protocollib =  { group = "com.comphenix.protocol", name = "ProtocolLib-API", version.ref = "protocollib" }
+protocollib =  { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
 hikariCP =  { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
 luckperms =  { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml =  { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
