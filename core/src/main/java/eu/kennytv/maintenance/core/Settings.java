@@ -95,8 +95,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             config.resetAwesomeHeader();
             whitelist = new Config(new File(plugin.getDataFolder(), "WhitelistedPlayers.yml"));
             whitelist.load();
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to load Maintenance files!", e);
+        } catch (final Exception e) {
+            throw new RuntimeException("Unable to load Maintenance files - probably a malformed config file", e);
         }
 
         loadSettings();
@@ -106,7 +106,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             language = new Config(new File(plugin.getDataFolder(), "language-" + languageName + ".yml"));
             language.load();
         } catch (final IOException e) {
-            throw new RuntimeException("Unable to load Maintenance language file!", e);
+            throw new RuntimeException("Unable to load Maintenance language file - probably a malformed file", e);
         }
 
         try {

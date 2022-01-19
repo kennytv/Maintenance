@@ -9,9 +9,11 @@ This file contains update logs for this project. The top may contain a `Unreleas
   * You can use the following page to edit and preview formatted text: https://webui.adventure.kyori.net/
   * You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more) here: https://docs.adventure.kyori.net/minimessage
   * Your config and language file will be updated to the new format automatically, you won't have to change anything manually!
+  * The player count and player count hover messages do not support rgb components
 * Added `singleServerMaintenanceListEntry` language string
-* Changed `%NEWLINE%` replacement to `<br>`
 * Updated Sponge module to SpongeAPI v8 (Minecraft 1.15+)
+* Changed `%NEWLINE%` replacement to `<br>`
+* Changed `enable-timerspecific-messages` to be set to `true` in newly generated config files
 ### Fixed
 * Fixed missing language key warning for the scheduletimer command
 * Fixed typo in `singleServerMaintenanceListEmpty` default language string
