@@ -40,7 +40,7 @@ whitelistAdded: "<prefix><aqua>%PLAYER% <green>wurde zur Maintenance Whitelist h
 whitelistAlreadyAdded: "<prefix><aqua>%PLAYER% <red>ist bereits in der Maintenance Whitelist!"
 whitelistRemoved: "<prefix><aqua>%PLAYER% <green>wurde von der Maintenance Whitelist entfernt!"
 whitelistNotFound: "<prefix><red>Dieser Spieler ist nicht in der Maintenance Whitelist!"
-whitelistEmtpy: "<prefix><red>Die Maintenance Whitelist ist leer! Nutze <yellow>/maintenance add <Spieler/UUID><red>, um jemanden hinzuzufügen!"
+whitelistEmpty: "<prefix><red>Die Maintenance Whitelist ist leer! Nutze <yellow>/maintenance add <Spieler/UUID><red>, um jemanden hinzuzufügen!"
 playerNotFound: "<prefix><red>Bisher hat kein Spieler mit diesem Namen jemals auf diesem Server gespielt."
 playerNotFoundUuid: "<prefix><red>Es konnte kein Spieler mit dieser UUID gefunden werden."
 playerNotOnline: "<prefix><red>Es ist momentan kein Spieler mit diesem Namen online."
