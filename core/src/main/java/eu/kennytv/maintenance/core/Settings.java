@@ -324,10 +324,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     private void legacyToMinimessage(final List<String> list) {
         for (int i = 0; i < list.size(); i++) {
-            final TextComponent component = LegacyComponentSerializer.legacyAmpersand().deserialize(list.get(i));
-            final String serialized = MiniMessage.miniMessage().serialize(component);
-            //TODO hack to remove explicit closing until fixed in MM
-            list.set(i, serialized.replaceAll("</[a-z_]+>", ""));
+            list.set(i, legacyToMinimessage(list.get(i)));
         }
     }
 
