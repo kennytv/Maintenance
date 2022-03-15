@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.api;
+package eu.kennytv.maintenance.core;
+
+import eu.kennytv.maintenance.api.Maintenance;
 
 @FunctionalInterface
 public interface MaintenanceBase {

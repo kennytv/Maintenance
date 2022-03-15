@@ -5,18 +5,23 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ## Unreleased
 ### Changed
 * Added support for hex colors in messages and replaced the component parsing with adventure-minimessage
-  * This means that section symbols (`§`) are no longer the intended format
+  * This means that section symbols (`§`) are no longer the intended/supported format
   * You can use the following page to edit and preview formatted text: https://webui.adventure.kyori.net/
   * You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more) here: https://docs.adventure.kyori.net/minimessage
   * Your config and language file will be updated to the new format automatically, you won't have to change anything manually!
   * The player count and player count hover messages do not support rgb components
-* Added `singleServerMaintenanceListEntry` language string
 * Updated Sponge module to SpongeAPI v8 (Minecraft 1.15+)
 * Changed `%NEWLINE%` replacement to `<br>`
-* Changed `enable-timerspecific-messages` to be set to `true` in newly generated config files
+* Changed `enable-timerspecific-messages` to default to `true` in newly generated config files
+* Added `prefix` entry in language file to use the placeholder `<prefix>` instead of copy-pasting the actual prefix every time
+* Added `singleServerMaintenanceListEntry` language string
+* Added Polish translations (thanks to Slasherss1)
+* Updated French translations (thanks to Aurelien30000)
+* Updated Spanish translations (thanks to Jaximo)
 ### Fixed
 * Fixed missing language key warning for the scheduletimer command
 * Fixed typo in `singleServerMaintenanceListEmpty` default language string
+* Fixed typo in language key `whitelistEmpty` in the German language file (by Ceddix)
 ---
 ## 3.0.7 - August 17th 2021
 ### Changed

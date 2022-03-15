@@ -18,7 +18,7 @@
 package eu.kennytv.maintenance.spigot;
 
 import eu.kennytv.maintenance.api.Maintenance;
-import eu.kennytv.maintenance.api.MaintenanceBase;
+import eu.kennytv.maintenance.core.MaintenanceBase;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 

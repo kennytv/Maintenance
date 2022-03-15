@@ -18,7 +18,7 @@
 package eu.kennytv.maintenance.bungee;
 
 import eu.kennytv.maintenance.api.Maintenance;
-import eu.kennytv.maintenance.api.MaintenanceBase;
+import eu.kennytv.maintenance.core.MaintenanceBase;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;

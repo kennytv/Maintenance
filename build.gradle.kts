@@ -22,7 +22,10 @@ val special = setOf(
     projects.maintenance,
     projects.maintenanceApi,
     projects.maintenanceApiProxy,
-    projects.adventure
+    projects.adventure,
+    projects.adventure.adventureApi,
+    projects.adventure.adventurePlatformBukkit,
+    projects.adventure.adventurePlatformBungee,
 ).map { it.dependencyProject }
 
 subprojects {
