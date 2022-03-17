@@ -6,7 +6,7 @@ plugins {
 tasks {
     // Variable replacements
     processResources {
-        filesMatching(listOf("plugin.yml", "bungee.yml")) {
+        filesMatching(listOf("plugin.yml", "bungee.yml", "META-INF/sponge_plugins.json")) {
             expand("version" to project.version, "description" to project.description)
         }
     }
