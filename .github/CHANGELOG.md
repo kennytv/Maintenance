@@ -2,6 +2,10 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## Unreleased
+### Fixed
+* Fixed the config header partially breaking on saving
+---
 ## 4.0.0 - March 17th 2022
 ### Changed
 * Added support for hex colors in messages and replaced the component parsing with adventure-minimessage

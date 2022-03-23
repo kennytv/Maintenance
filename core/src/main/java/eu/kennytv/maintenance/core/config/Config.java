@@ -51,7 +51,8 @@ public final class Config extends ConfigSection {
                     "###################################################################################################################\n" +
                     "# You can report bugs here: https://github.com/kennytv/Maintenance/issues\n" +
                     "# If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq\n" +
-                    "# The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.";
+                    "# The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.\n" +
+                    "# For a full list of formats and fancy examples of MiniMessage, see https://docs.adventure.kyori.net/minimessage/format.html\n";
     private final Yaml yaml = createYaml();
     private final File file;
     private final Set<String> unsupportedFields;
