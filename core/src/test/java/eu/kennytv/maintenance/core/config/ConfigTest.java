@@ -17,6 +17,7 @@
  */
 package eu.kennytv.maintenance.core.config;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,6 +38,17 @@ class ConfigTest {
         delete("dirty-config-saved.yml");
         delete("dirty-config-upgraded.yml");
         copyOriginalToTest("config.yml", "config.yml");
+    }
+
+    @Test
+    void testHeader() throws Exception {
+        final Config config = new Config(getTestFile("config.yml"));
+        config.load();
+
+        final String header = config.getHeader();
+        config.resetAwesomeHeader();
+        Assertions.assertTrue(config.getHeader().endsWith("\n"), "Header needs to end with a new line");
+        Assertions.assertEquals(config.getHeader(), header);
     }
 
     @Test

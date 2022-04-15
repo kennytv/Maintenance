@@ -36,6 +36,7 @@ subprojects {
     }
 
     dependencies {
-        TEST_IMPLEMENTATION_CONFIGURATION_NAME("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+        TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.bundles.junit)
+        TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.snakeyaml)
     }
 }

@@ -18,6 +18,9 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
         options.compilerArgs.addAll(listOf("-nowarn", "-Xlint:-unchecked", "-Xlint:-deprecation"))
     }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 java {

@@ -25,6 +25,8 @@ bungee = "1.18-R0.1-SNAPSHOT"
 sponge = "8.0.0"
 velocity = "3.1.0"
 
+junitVer = "5.8.2"
+
 
 [libraries]
 
@@ -40,19 +42,23 @@ jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
-authlib =  { group = "com.mojang", name = "authlib", version.ref = "authlib" }
-protocollib =  { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
-hikariCP =  { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
-luckperms =  { group = "net.luckperms", name = "api", version.ref = "luckperms" }
-snakeyaml =  { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
-serverlistplus =  { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
+authlib = { group = "com.mojang", name = "authlib", version.ref = "authlib" }
+protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
+hikariCP = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
+luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
+snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
+serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
 
 paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper" }
 bungee = { group = "net.md-5", name = "bungeecord-api", version.ref = "bungee" }
 sponge = { group = "org.spongepowered", name = "spongeapi", version.ref = "sponge" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 
+jupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitVer" }
+jupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitVer" }
+
 
 [bundles]
 
 adventure = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerLegacy"]
+junit = ["jupiterApi", "jupiterEngine"]
