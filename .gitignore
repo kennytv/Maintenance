@@ -94,3 +94,4 @@ $RECYCLE.BIN/
 *.lnk
 !MaintenanceAPI.jar
 **/src/test/resources/
+!core/src/test/resources/dirty-config.yml

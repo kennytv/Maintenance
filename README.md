@@ -29,10 +29,9 @@ A full list of commands, permissions and configuration options can be found in t
 Other forum threads
 * [Spigot forums](https://www.spigotmc.org/resources/maintenance.40699/)
 * [Ore/Sponge Forums](https://ore.spongepowered.org/KennyTV/Maintenance)
-* [Velocity forums](https://forums.velocitypowered.com/t/maintenance/129)
 
 ## Compiling
-To create a working jar yourself, simply clone the project and compile it with maven (by using `mvn clean package` in your IDE console).
+To create a working jar yourself, simply clone the project and compile it with Gradle (`gradlew build`).
 
 ## License
 This project is licensed under the [GNU General Public License v3](LICENSE.txt).

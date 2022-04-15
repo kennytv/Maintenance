@@ -4,8 +4,8 @@ metadata.format.version = "1.1"
 
 # Shaded
 adventure = "4.10.1"
-adventurePlatform = "4.0.1"
-mysqlConnector = "8.0.27"
+adventurePlatform = "4.1.0"
+mysqlConnector = "8.0.28"
 hikariCP = "4.0.3"
 
 # Provided

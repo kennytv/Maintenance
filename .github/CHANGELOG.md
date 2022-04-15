@@ -2,9 +2,9 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## Unreleased
+## 4.0.1 - April 17th 2022
 ### Fixed
-* Fixed the config header partially breaking on saving
+* Fixed the config header sometimes breaking the config on upgrading/saving
 ---
 ## 4.0.0 - March 17th 2022
 ### Changed
