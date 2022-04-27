@@ -17,7 +17,6 @@
  */
 package eu.kennytv.maintenance.core.config;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +24,8 @@ import org.junit.jupiter.api.TestInstance;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // I'm sorry in advance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,15 +48,15 @@ class ConfigTest {
 
         final String header = config.getHeader();
         config.resetAwesomeHeader();
-        Assertions.assertTrue(config.getHeader().endsWith("\n"), "Header needs to end with a new line");
-        Assertions.assertEquals(config.getHeader(), header);
+        assertTrue(config.getHeader().endsWith("\n"), "Header needs to end with a new line");
+        assertEquals(config.getHeader(), header);
     }
 
     @Test
     void testDeep() throws IOException {
         final Config config = new Config(getTestFile("config.yml"));
         config.load();
-        assert config.getInt("mysql.port") == 3306;
+        assertEquals(3306, config.getInt("mysql.port"));
     }
 
     @Test
@@ -69,7 +70,7 @@ class ConfigTest {
         final Config newlyLoaded = new Config(saveTo);
         newlyLoaded.load();
 
-        assert newlyLoaded.toString().equals(config.toString());
+        assertEquals(config.toString(), newlyLoaded.toString());
     }
 
     @Test
@@ -97,13 +98,13 @@ class ConfigTest {
         final Config newlyLoaded = new Config(saveTo);
         newlyLoaded.load();
 
-        assert newlyLoaded.contains("waiting-server");
-        assert newlyLoaded.getComments().get("maintenance-enabled") != null;
-        assert newlyLoaded.getComments().get("mysql.use-ssl") != null;
-        assert newlyLoaded.getComments().get("update-checks") != null;
-        assert newlyLoaded.getHeader().equals(newestConfig.getHeader());
-        assert newlyLoaded.getSection("mysql").getString("username").equals("useer");
-        assert newlyLoaded.getInt("config-version") == 4;
+        assertTrue(newestConfig.contains("waiting-server"));
+        assertNotNull(newestConfig.getComments().get("maintenance-enabled"));
+        assertNotNull(newestConfig.getComments().get("mysql.use-ssl"));
+        assertNotNull(newestConfig.getComments().get("update-checks"));
+        assertEquals(newlyLoaded.getHeader(), newestConfig.getHeader());
+        assertEquals("useer", newlyLoaded.getSection("mysql").getString("username"));
+        assertEquals(4, newlyLoaded.getInt("config-version"));
     }
 
     @Test
@@ -112,11 +113,11 @@ class ConfigTest {
         config.load();
 
         // Test for pre-existing values
-        assert config.contains("fallback");
-        assert config.contains("mysql.password");
-        assert !config.contains("test");
-        assert config.getComments().containsKey("fallback");
-        assert config.getComments().containsKey("mysql.use-ssl");
+        assertTrue(config.contains("fallback"));
+        assertTrue(config.contains("mysql.password"));
+        assertFalse(config.contains("test"));
+        assertTrue(config.getComments().containsKey("fallback"));
+        assertTrue(config.getComments().containsKey("mysql.use-ssl"));
 
         config.set("test", "abc");
         config.remove("fallback");
@@ -124,12 +125,14 @@ class ConfigTest {
         section.set("port", 1000);
         section.remove("use-ssl");
 
-        assert config.contains("test") && config.getString("test").equals("abc");
-        assert config.getInt("mysql.port") == 1000;
-        assert !config.contains("mysql.use-ssl") && !config.getSection("mysql").contains("use-ssl");
-        assert !config.contains("fallback");
-        assert !config.getComments().containsKey("fallback");
-        assert !config.getComments().containsKey("mysql.use-ssl");
+        assertTrue(config.contains("test"));
+        assertEquals("abc", config.getString("test"));
+        assertEquals(1000, config.getInt("mysql.port"));
+        assertFalse(config.contains("mysql.use-ssl"));
+        assertFalse(config.getSection("mysql").contains("use-ssl"));
+        assertFalse(config.contains("fallback"));
+        assertFalse(config.getComments().containsKey("fallback"));
+        assertFalse(config.getComments().containsKey("mysql.use-ssl"));
     }
 
     private File getTestFile(final String path) {
