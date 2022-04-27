@@ -43,7 +43,7 @@ public final class PaperServerListPingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final PaperServerListPingEvent event) {
-        if (!settings.isMaintenance()) return;
+        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
 
         if (ComponentUtil.PAPER) {
             event.motd(ComponentUtil.toPaperComponent(settings.getRandomPingMessage()));

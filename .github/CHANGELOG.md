@@ -2,6 +2,10 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## Unreleased
+### Fixed
+* Fixed disabling the `enable-pingmessages` setting not being respected on Paper servers
+---
 ## 4.0.1 - April 17th 2022
 ### Fixed
 * Fixed the config header sometimes breaking the config on upgrading/saving
