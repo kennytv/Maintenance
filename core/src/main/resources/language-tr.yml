@@ -1,0 +1,117 @@
+###########################################
+##                                       ##
+## Foreda - Yazılım & Tasarım Hizmetleri ##
+##      © 2022 Tüm Hakları Saklıdır      ##
+##            Çeviri: Proomp#9980        ##
+##                                       ##
+##       Web: https://foreda.net/        ##
+## Discord: https://foreda.net/discord/  ##
+##                                       ##
+###########################################
+
+# Maintenance Plugin by kennytv
+# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+
+# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+prefix: "<yellow><bold>Sunucu<bold> <dark_gray>▸ "
+noPermission: "<red>Bunun için iznin yok!"
+kickmessage: "<red>Sunucuda bakım çalışması vardır!"
+maintenanceActivated: "<prefix><gold>Bakım modu aktif."
+maintenanceDeactivated: "<prefix><gold>Bakım modu deaktif."
+alreadyEnabled: "<prefix><red>Bakım modu zaten aktif!"
+alreadyDisabled: "<prefix><red>Bakım modu zaten deaktif!"
+endtimerBroadcast: "<prefix><gray>Bakım modu <gold>%TIME%<gray> içerisinde devre dışı olacak."
+endtimerStarted: "<prefix><green>Başlatılan zamanlayıcı: <gray>Bakım modu <gold>%TIME%<gray> içerisinde devre dışı olacak."
+starttimerBroadcast: "<prefix><gray>Bakım modu <gold>%TIME%<gray> içerisinde etkin olacak."
+starttimerStarted: "<prefix><green>Başlatılan zamanlayıcı: <gray>Bakım modu <gold>%TIME%<gray> içerisinde etkin olacak."
+scheduletimerBroadcast: "<prefix><gray>Bakım modu <gold>%TIME% <gray>içerisinde etkin olacak ve <gold>%DURATION%<gray> sürecek."
+timerAlreadyRunning: "<prefix><red>Zaten planlanmış bir zamanlayıcı var!"
+timerNotRunning: "<prefix><red>Şu anda çalışan bir zamanlayıcı yok."
+timerCancelled: "<prefix><red>Geçerli zamanlayıcı devre dışı bırakıldı."
+timerTooLong: "<prefix><red>Belirtilen sayı 40320'den küçük olmalıdır (28 güne tekabül)!"
+timerMotdDisabled: "<prefix><red>Zamanlayıcıya özgü motd'ları kullanmak/düzenlemek istiyorsanız, konfigürasyonda 'enable-timerspecial-messages' kısmını 'true' olarak ayarlamalısınız."
+motdTimer: "%HOURS%:%MINUTES%:%SECONDS%"
+motdTimerNotRunning: "-"
+joinNotification: "<prefix><yellow>%PLAYER% <red>sunucuya katılmaya çalıştı."
+motdList: "<prefix><gray>Bakım modu MOTD'leriniz:"
+motdListEmpty: "<prefix><red>Herhangi bir MOTD ayarlamadınız!"
+reload: "<prefix><green>Konfigürasyon dosyaları yeniden yüklendi."
+removedMotd: "<prefix><green>%INDEX% numaralı MOTD kaldırıldı."
+removeMotdError: "<prefix><red>Yalnızca bir MOTD'niz var, bu nedenle hiçbirini kaldıramazsınız!"
+setMotd: "<prefix><green>%LINE% satırını %INDEX% ayarlayın. Bakım MOTD'si %MOTD%"
+setMotdIndexError: "<prefix><red>Şu anda %MOTDS% motd'unuz var, bu yüzden 1 ile %NEWAMOUNT% arasında bir sayı seçmeniz gerekiyor."
+setMotdLineError: "<prefix><red>2. argüman satır numarası (1 veya 2) olmalıdır.!"
+updateDownloading: "<prefix><red><bold>Güncelleme indiriliyor..."
+updateFailed: "<prefix><dark_red><bold>Güncelleme hataya uğradı!"
+updateFinished: "<prefix><green><bold>Güncelleme başarılı oldu! Işleyişle ilgili sorunları önlemek ve güncellemeyi tamamlamak için sunucuyu yeniden başlatmanız gerekir!"
+whitelistedPlayers: "<prefix><gold>Bakım için beyaz listeye alınan oyuncular:"
+whitelistedPlayersFormat: "<dark_gray>- <yellow>%NAME% <dark_gray>(<gray>%UUID%<dark_gray>)"
+whitelistAdded: "<prefix><aqua>%PLAYER% <green>bakım için beyaz listeye eklendi!"
+whitelistAlreadyAdded: "<prefix><aqua>%PLAYER% <red>zaten bakım için beyaz listede yer alıyor!"
+whitelistRemoved: "<prefix><aqua>%PLAYER% <green>bakım için beyaz listeden kaldırıldı!"
+whitelistNotFound: "<prefix><red>Bu oyuncu bakım için beyaz listesinde değil!"
+whitelistEmpty: "<prefix><red>Bakım beyaz listesi boş! Eklemek için <yellow>/maintenance add <isim/uuid> <red>komutunu kullan!"
+playerNotFound: "<prefix><red>Bu sunucuda daha önce bu isimde hiçbir oyuncu oynamadı."
+playerNotFoundUuid: "<prefix><red>Bu UUID'ye sahip hiçbir oyuncu bulunamadı."
+playerNotOnline: "<prefix><red>Bu isimle çevrimiçi oyuncu yok."
+invalidUuid: "<prefix><red>Geçersiz UUID biçimi!"
+
+# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+sentToWaitingServer: "<prefix><red>Bekleme sunucusuna gönderildiniz!"
+forceWaitingServer: "<prefix><red>Bakım varken bekleme sunucusundan ayrılamazsınız!"
+serverNotFound: "<prefix><red>Bu ada sahip hiçbir sunucu BungeeCord'da kayıtlı değil!"
+
+singleTimerAlreadyRunning: "<prefix><red>Bu sunucu için planlanmış bir zamanlayıcı zaten var!"
+singleTimerCancelled: "<prefix><yellow>%SERVER% <red>sunucusu için zamanlayıcı devre dışı bırakıldı."
+singleTimerNotRunning: "<prefix><red>Şu anda o sunucu için çalışan bir zamanlayıcı yok."
+singleEndtimerBroadcast: "<prefix><gray>%SERVER% sunucusundaki bakım modu <gold>%TIME%<gray> içerisinde devre dışı olacaktır."
+singleStarttimerBroadcast: "<prefix><gray>%SERVER% sunucusunda <gold>%TIME%<gray> içerisinde bakım modu etkin olacaktır."
+singleScheduletimerBroadcast: "<prefix><gray%SERVER% sunucusunda <gold>%TIME% <gray> içerisinde bakım modu etkin olacaktır, süre: <gold>%DURATION%<gray>."
+singleMaintenanceKick: "<prefix><red>%SERVER% sunucusunda bakım modu aktif!"
+singleMaintenanceKickComplete: "<red>%SERVER% sunucusunda bakım modu aktif!"
+singleMaintenanceActivated: "<prefix><yellow>%SERVER%<gold> sunucusunda bakım modu aktifleştirildi."
+singleMaintenanceDeactivated: "<prefix><yellow>%SERVER%<gold> sunucusunda bakım modu devre dışı bırakıldı."
+singleServerAlreadyEnabled: "<prefix><yellow>%SERVER%<red> sunucusunda zaten bakım modu aktif!"
+singleServerAlreadyDisabled: "<prefix>%SERVER%<red> sunucusunda zaten bakım modu deaktif!"
+singleServerMaintenanceList: "<prefix><gray>Bakımı etkinleştirilmiş sunucular:"
+singleServerMaintenanceListEmpty: "<prefix><gray>Bakımda olan sunucu yok."
+singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
+
+second: "saniye"
+seconds: "saniye"
+minute: "dakika"
+minutes: "dakika"
+hour: "saat"
+hours: "saat"
+
+helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
+helpPageNotFound: "<prefix><red>Bu numaraya sahip bir sayfa yok!"
+helpNextPage: "<aqua>/maintenance help %PAGE% <gray>yazarak bir sonraki yardım sayfasına geçebilirsiniz."
+helpAbortTimer: "<gold>/maintenance aborttimer <gray>(Eğer çalışıyorsa mevcut zamanlayıcı iptal edilecektir.)"
+helpEndtimer: "<gold>/maintenance endtimer <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu devre dışı bırakılır)"
+helpStarttimer: "<gold>/maintenance starttimer <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu etkinleştirilecektir.)"
+helpScheduleTimer: "<gold>/maintenance scheduletimer <bakımın başlması için geçecek zaman> <bakım süresinin zamanı> <gray>(Dakika olarak verilen süreden sonra, dakika olarak verilen süre için bakım modu etkinleştirilecektir.)"
+helpDebug: "<gold>/maintenance debug <gray>(Bazı hata ayıklama kaydını etkinleştirir)"
+helpDump: "<gold>/maintenance dump <gray>(Hata raporları için kullanılan bazı sunucu bilgilerini atar)"
+helpHelp: "<gold>/maintenance help [sayfa] <gray>(Bu güzel yardım penceresini gösterir)"
+helpMotd: "<gold>/maintenance motd [zamanlayıcı] <gray>(Halihazırda ayarlanmış bakım MOTD'lerini listeler. Zamanlayıcı belirtilirse, zamanlayıcı modları gösterilir)"
+helpRemoveMotd: "<gold>/maintenance removemotd [zamanlayıcı] <dizin> <gray>(Bir bakım MOTD'sini kaldırır. Argüman olarak zamanlayıcı kullanılıyorsa, zamanlayıcıya özel bir MOTD mesajı kaldırılacaktır)"
+helpSetMotd: "<gold>/maintenance setmotd [zamanlayıcı] <dizin> <1/2> <mesaj> <gray>(Bakım modu için bir MOTD ayarlar. Argüman olarak zamanlayıcı kullanılıyorsa, zamanlayıcıya özel MOTD ping mesajı ayarlanır)"
+helpReload: "<gold>/maintenance reload <gray>(Konfigürasyon dosyasını, beyaz liste dosyasını ve sunucu simgesini yeniden yükler)"
+helpToggle: "<gold>/maintenance <on/off> <gray>(Bakım modunu etkinleştirir/devre dışı bırakır)"
+helpUpdate: "<gold>/maintenance update <gray>(Eklentinin en yeni sürümünü sunucunuza uzaktan indirir)"
+helpWhitelist: "<gold>/maintenance whitelist <gray>(Bakım modu için beyaz listedeki tüm oyuncuları gösterir)"
+helpWhitelistAdd: "<gold>/maintenance add <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesine ekler, böylece bakım etkin olsa bile sunucuya katılabilir)"
+helpWhitelistRemove: "<gold>/maintenance remove <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesinden kaldırır)"
+
+# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+helpAbortSingleTimer: "<gold>/maintenance aborttimer [sunucu] <gray>(Çalışıyorsa, mevcut zamanlayıcı iptal edilecektir.)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu devre dışı bırakılır)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu etkinleştirilecektir.)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [sunucu] <dakika> <maintenance duration> <gray>(Dakika olarak verilen süreden sonra, dakika olarak verilen süre için bakım modu etkinleştirilecektir.)"
+helpSingleToggle: "<gold>/maintenance <on/off> [sunucu] <gray>(Bakım modunu etkinleştirir/devre dışı bırakır)"
+helpStatus: "<gold>/maintenance status <gray>(Şu anda bakımda olan tüm sunucuları listeler)"
+
+# Used for autoupdating the language file, do not change this value.
+language-version: 1
