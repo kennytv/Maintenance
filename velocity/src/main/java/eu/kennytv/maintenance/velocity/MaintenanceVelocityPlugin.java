@@ -60,6 +60,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -85,11 +86,12 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private Favicon favicon;
 
     @Inject
-    public MaintenanceVelocityPlugin(final ProxyServer server, final org.slf4j.Logger logger, @DataDirectory final Path folder) {
+    public MaintenanceVelocityPlugin(final ProxyServer server, final org.slf4j.Logger logger, @DataDirectory final Path folder, final Metrics.Factory metricsFactory) {
         super(MaintenanceVersion.VERSION, ServerType.VELOCITY);
         this.server = server;
         this.logger = new LoggerWrapper(logger);
         this.dataFolder = folder.toFile();
+        metricsFactory.make(this, 16502);
     }
 
     @Subscribe

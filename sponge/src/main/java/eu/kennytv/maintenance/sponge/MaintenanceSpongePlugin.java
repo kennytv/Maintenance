@@ -39,6 +39,7 @@ import eu.kennytv.maintenance.sponge.util.SpongeUser;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bstats.sponge.Metrics;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
@@ -87,11 +88,12 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @SuppressWarnings("SpongeInjection")
     @Inject
-    public MaintenanceSpongePlugin(final PluginContainer container, final Game game, final org.apache.logging.log4j.Logger logger) {
+    public MaintenanceSpongePlugin(final PluginContainer container, final Game game, final org.apache.logging.log4j.Logger logger, final Metrics.Factory metricsFactory) {
         super(MaintenanceVersion.VERSION, ServerType.SPONGE);
         this.container = container;
         this.game = game;
         this.logger = new LoggerWrapper(logger);
+        metricsFactory.make(16501);
     }
 
     @Listener

@@ -32,7 +32,6 @@ import eu.kennytv.maintenance.spigot.listener.PaperServerListPingListener;
 import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
 import eu.kennytv.maintenance.spigot.listener.ServerInfoPacketListener;
 import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
-import eu.kennytv.maintenance.spigot.metrics.MetricsLite;
 import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitTask;
@@ -41,6 +40,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -91,7 +91,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         }
 
         continueLastEndtimer();
-        new MetricsLite(plugin);
+        new Metrics(plugin, 2205);
 
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (pm.isPluginEnabled(serverListPlus)) {

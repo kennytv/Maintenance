@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommand;
 import eu.kennytv.maintenance.bungee.command.MaintenanceBungeeCommandBase;
 import eu.kennytv.maintenance.bungee.listener.ProxyPingListener;
 import eu.kennytv.maintenance.bungee.listener.ServerConnectListener;
-import eu.kennytv.maintenance.bungee.metrics.MetricsLite;
 import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.bungee.util.BungeeServer;
 import eu.kennytv.maintenance.bungee.util.BungeeTask;
@@ -51,6 +50,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import org.bstats.bungeecord.Metrics;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -88,7 +88,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         pm.registerCommand(plugin, new MaintenanceBungeeCommandBase(commandManager));
 
         continueLastEndtimer();
-        new MetricsLite(plugin);
+        new Metrics(plugin, 742);
 
         final Plugin serverListPlus = pm.getPlugin("ServerListPlus");
         if (serverListPlus != null) {

@@ -8,6 +8,7 @@ tasks {
 dependencies {
     implementation(projects.maintenanceCoreProxy)
     implementation(libs.mysqlConnector)
+    implementation(libs.bstatsVelocity)
     compileOnly(libs.velocity)
     annotationProcessor(libs.velocity)
 }

@@ -3,10 +3,11 @@ metadata.format.version = "1.1"
 [versions]
 
 # Shaded
-adventure = "4.10.1"
-adventurePlatform = "4.1.0"
+adventure = "4.11.0"
+adventurePlatform = "4.1.2"
 mysqlConnector = "8.0.28"
 hikariCP = "4.0.3"
+bstats = "3.0.0"
 
 # Provided
 gson = "2.8.8"
@@ -15,13 +16,13 @@ snakeyaml = "1.23"
 junit = "5.8.2"
 jetbrainsAnnotations = "23.0.0"
 
-protocollib = "4.7.0"
+protocollib = "5.0.0-SNAPSHOT"
 authlib = "1.5.25"
 luckperms = "5.3"
 serverlistplus = "3.4.9-SNAPSHOT"
 
 paper = "1.16.5-R0.1-SNAPSHOT"
-bungee = "1.18-R0.1-SNAPSHOT"
+bungee = "1.19-R0.1-SNAPSHOT"
 sponge = "8.0.0"
 velocity = "3.1.0"
 
@@ -41,6 +42,10 @@ mysqlConnector = { group = "mysql", name = "mysql-connector-java", version.ref =
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+bstatsBukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
+bstatsBungee = { group = "org.bstats", name = "bstats-bungeecord", version.ref = "bstats" }
+bstatsSponge = { group = "org.bstats", name = "bstats-sponge", version.ref = "bstats" }
+bstatsVelocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bstats" }
 
 authlib = { group = "com.mojang", name = "authlib", version.ref = "authlib" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
