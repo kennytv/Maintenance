@@ -25,4 +25,5 @@ publishShadowJar()
 
 fun ShadowJar.configureRelocations() {
     relocate("com.zaxxer.hikari", "eu.kennytv.maintenance.lib.hikari")
+    relocate("org.bstats", "eu.kennytv.maintenance.lib.bstats")
 }
