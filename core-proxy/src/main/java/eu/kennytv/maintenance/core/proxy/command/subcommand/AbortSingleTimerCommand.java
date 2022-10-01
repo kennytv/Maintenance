@@ -60,7 +60,7 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
             }
 
             plugin.cancelSingleTask(server);
-            sender.send(getMessage("singleTimerCancelled"));
+            sender.send(getMessage("singleTimerCancelled", "%SERVER%", server.getName()));
         } else
             sender.send(getHelpMessage());
     }
