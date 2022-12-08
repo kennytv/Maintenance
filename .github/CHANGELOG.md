@@ -3,10 +3,14 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 ---
 ## Unreleased
+### Changed
+* Added Turkish translation file (thanks to Proomp)
+* Added Swedish translation file (thanks to Sup33r)
+* Added bStats metrics to Velocity and Sponge modules
+
 ### Fixed
 * Fixed disabling the `enable-pingmessages` setting not being respected on Paper servers
 * Fixed the message for cancelling proxied server timers not replacing the server argument
-* Added Turkish translation file (thanks to Proomp)
 ---
 ## 4.0.1 - April 17th 2022
 ### Fixed
