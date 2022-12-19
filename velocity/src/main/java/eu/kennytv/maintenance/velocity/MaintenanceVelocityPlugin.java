@@ -83,6 +83,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
     private final Logger logger;
     private final File dataFolder;
+    private final Metrics.Factory metricsFactory;
     private Favicon favicon;
 
     @Inject
@@ -91,13 +92,15 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         this.server = server;
         this.logger = new LoggerWrapper(logger);
         this.dataFolder = folder.toFile();
-        metricsFactory.make(this, 16502);
+        this.metricsFactory = metricsFactory;
     }
 
     @Subscribe
     public void onEnable(final ProxyInitializeEvent event) {
         settingsProxy = new SettingsProxy(this);
         settings = settingsProxy;
+
+        metricsFactory.make(this, 16502);
 
         sendEnableMessage();
 
