@@ -6,6 +6,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ### Changed
 * Added Turkish translation file (thanks to Proomp)
 * Added Swedish translation file (thanks to Sup33r)
+* Added Ukrainian translation file (thanks to Mrlucke)
 * Added bStats metrics to Velocity and Sponge modules
 
 ### Fixed
