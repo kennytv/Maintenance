@@ -36,6 +36,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.Favicon;
 import eu.kennytv.maintenance.api.proxy.Server;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
@@ -77,7 +78,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
-        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = "https://forums.velocitypowered.com/t/maintenance/129",
+        description = "Enable maintenance mode with a custom maintenance motd and icon.", url = MaintenancePlugin.HANGAR_URL,
         dependencies = {@Dependency(id = "serverlistplus", optional = true), @Dependency(id = "luckperms", optional = true)})
 public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private final ProxyServer server;
@@ -142,9 +143,9 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent component = translate(getPrefix()).append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
+        final TextComponent component = translate(getPrefix()).append(translate("§cDownload it at: §6" + HANGAR_URL));
         final TextComponent clickText = translate(" §7§l§o(CLICK ME)")
-                .clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/maintenance.40699/"))
+                .clickEvent(ClickEvent.openUrl(HANGAR_URL))
                 .hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
         ((VelocitySenderInfo) sender).sendMessage(component.append(clickText));
     }

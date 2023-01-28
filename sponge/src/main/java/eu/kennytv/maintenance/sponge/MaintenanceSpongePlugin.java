@@ -168,9 +168,9 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public void sendUpdateNotification(final SenderInfo sender) {
         try {
             net.kyori.adventure.text.Component component = net.kyori.adventure.text.Component.text().append(translate(getPrefix()))
-                    .append(translate("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/ "))
-                    .append(translate("§7§l§o(CLICK ME)"))
-                    .clickEvent(ClickEvent.openUrl(new URL("https://www.spigotmc.org/resources/maintenance.40699/")))
+                    .append(translate("§cDownload it at: §6" + HANGAR_URL))
+                    .append(translate(" §7§l§o(CLICK ME)"))
+                    .clickEvent(ClickEvent.openUrl(new URL(HANGAR_URL)))
                     .hoverEvent(HoverEvent.showText(translate("§7§l§o(CLICK ME)"))).build();
             ((SpongePlayer) sender).send(component);
         } catch (final MalformedURLException e) {

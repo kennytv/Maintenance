@@ -111,9 +111,9 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
-        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6https://www.spigotmc.org/resources/maintenance.40699/"));
+        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6" + HANGAR_URL));
         final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/maintenance.40699/"));
+        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, HANGAR_URL));
         click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new ComponentBuilder("§aDownload the latest version").create())));
         tc1.addExtra(tc2);
         tc1.addExtra(click);
