@@ -1,9 +1,7 @@
-# Maintenance Plugin by kennytv
-# Translators: TheViperShow
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-
-# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>Non hai i permessi necessari per eseguire quel comando."
 kickmessage: "<red>Il server è momentaneamente in manutenzione!<br>Riprova più tardi!"
@@ -46,12 +44,10 @@ playerNotFound: "<prefix><red>Nessun giocatore con questo username è mai entrat
 playerNotFoundUuid: "<prefix><red>Nessun player con quell'uuid è stato trovato."
 playerNotOnline: "<prefix><red>Non c'è nessun giocatore online con quell'username."
 invalidUuid: "<prefix><red>L'uuid presenta un formato invalido!"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Sei stato inviato su un server d'attesa!"
 forceWaitingServer: "<prefix><red>Non puoi abbandonare il server d'attesa durante una manutenzione!"
 serverNotFound: "<prefix><red>Nessun server con questo nome è registrato sulla proxy!"
-
 singleTimerAlreadyRunning: "<prefix><red>È già presente un timer pianificato per quel server!"
 singleTimerCancelled: "<prefix><red>Il timer attuale per il server <yellow>%SERVER% <red>è stato rimosso."
 singleTimerNotRunning: "<prefix><red>Non c'è nessun timer correntemente attivo per quel server."
@@ -67,14 +63,12 @@ singleServerAlreadyDisabled: "<prefix><red>La modalità manutenzione è già dis
 singleServerMaintenanceList: "<prefix><gray>Servers sotto proxy che hanno la modalità manutenzione attiva:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Nessun server sotto proxy ha la modalità manutenzione attiva."
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "secondo"
 seconds: "secondi"
 minute: "minuto"
 minutes: "minuti"
 hour: "ora"
 hours: "ore"
-
 helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
 helpPageNotFound: "<prefix><red>Non c'è alcuna pagina con quel numero!"
 helpNextPage: "<gray>Usa <aqua>/maintenance help %PAGE% <gray>per andare alla prossima pagina d'aiuto."
@@ -94,14 +88,12 @@ helpUpdate: "<gold>/maintenance update <gray>(Scarica dall'esterno l'ultima vers
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Elenca tutti i giocatori nella whitelist per la manutenzione)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Aggiunge il giocatore alla whitelist di manutenzione, così possono entrare in un server durante la manutenzione)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Rimuovi il player dalla whitelist della manutenzione)"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Se attivo, il timer attuale verrà fermato)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà rimossa)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà attivata)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/Disabilita la modalità manutenzione)"
 helpStatus: "<gold>/maintenance status <gray>(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"
-
-# Used for autoupdating the language file, do not change this value.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1
