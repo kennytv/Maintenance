@@ -1,9 +1,7 @@
-# Maintenance Plugin by kennytv
-# Translators: En_0t_S
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-
-# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>У вас недостаточно прав!"
 kickmessage: "<red>Сервер закрыт на технические работы!"
@@ -46,12 +44,10 @@ playerNotFound: "<red>Игрок не найден!"
 playerNotFoundUuid: "<red>Игрок с таким UUID не найден!"
 playerNotOnline: "<red>Игрок должен быть онлайн!"
 invalidUuid: "<red>Неверный формат UUID!"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<red>Вы были перемещены в лобби!"
 forceWaitingServer: "<red>Вы не можете покинуть лобби во время технических работ!"
 serverNotFound: "<red>Сервер не найден!"
-
 singleTimerAlreadyRunning: "<red>Таймер сервера <white>%SERVER% <red>уже запущен!"
 singleTimerCancelled: "<gray>Таймер сервера <white>%SERVER% <gray>был остановлен."
 singleTimerNotRunning: "<red>Таймер сервера <white>%SERVER% <red>не был запущен."
@@ -67,14 +63,12 @@ singleServerAlreadyDisabled: "<red>Режим технических работ 
 singleServerMaintenanceList: "<gray>Сервера на которых включен режим технических работ:"
 singleServerMaintenanceListEmpty: "<gray>Сервера на которых включен режим технических работ: <white>пусто"
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "секунду"
 seconds: "секунд"
 minute: "минуту"
 minutes: "минут"
 hour: "час"
 hours: "часов"
-
 helpHeader: "<gray>========[ <white>%NAME% <gray>| <gold>%PAGE%<white>/<gold>%MAX% <gray>]========"
 helpPageNotFound: "<red>Страница не найдена."
 helpNextPage: "<white>Используйте <gold>/maintenance help %PAGE% <white>чтобы перейти на следующую страницу."
@@ -94,14 +88,12 @@ helpUpdate: "<gold>/maintenance update <gray>- <white>Обновить плаг�
 helpWhitelist: "<gold>/maintenance whitelist <gray>- <white>Отобразить всех игроков из белого списка."
 helpWhitelistAdd: "<gold>/maintenance add [ник|uuid] <gray>- <white>Добавить игрока в белый список."
 helpWhitelistRemove: "<gold>/maintenance remove [ник|uuid] <gray>- <white>Удалить игрока из белого списка."
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [сервер] <gray>- <white>Остановить таймер включения/выключения режима технических работ."
 helpSingleEndtimer: "<gold>/maintenance endtimer [сервер] [время в минутах] <gray>- <white>Запустить таймер выключения режима технических работ."
 helpSingleStarttimer: "<gold>/maintenance starttimer [сервер] [время в минутах] <gray>- <white>Запустить таймер включения режима технических работ."
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "<gold>/maintenance [on|off] [сервер] <gray>- <white>Включить/выключить режим технических работы."
 helpStatus: "<gold>/maintenance status <gray>- <white>Список всех серверов закрытых на технические работы."
-
-# Used for autoupdating the language file, do not change this value.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1
