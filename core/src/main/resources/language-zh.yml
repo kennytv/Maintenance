@@ -1,9 +1,7 @@
-# Maintenance 插件由 kennytv 开发
-# 简体中文由 RinAfter 提供
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-
-# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>你没有执行该命令的权限。"
 kickmessage: "<red>服务器正在维护！<br>请稍后再试！"
@@ -46,12 +44,10 @@ playerNotFound: "<prefix><red>此服务器上从未出现该名称的玩家"
 playerNotFoundUuid: "<prefix><red>找不到具有该UUID的玩家。"
 playerNotOnline: "<prefix><red>没有使用该名称的在线玩家"
 invalidUuid: "<prefix><red>无效的UUID格式！"
-
-# Bungee/Velocity消息，如果在Spigot/Sponge上使用则可忽略以下内容
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>您已被传送到等待服务器！"
 forceWaitingServer: "<prefix><red>启用维护时，您不能离开等待服务器！"
 serverNotFound: "<prefix><red>未找到拥有此名称的服务器！"
-
 singleTimerAlreadyRunning: "<prefix><red>该服务器已有计时器正在运行！"
 singleTimerCancelled: "<prefix><red>服务器<yellow>%SERVER%<red>的计时器已中止"
 singleTimerNotRunning: "<prefix><red>该服务器当前没有正在运行的计时器。"
@@ -67,14 +63,12 @@ singleServerAlreadyDisabled: "<prefix><red>服务器<yellow>%SERVER%<red>的维�
 singleServerMaintenanceList: "<prefix><gray>已开启维护的服务器有:"
 singleServerMaintenanceListEmpty: "<prefix><gray>没有正在维护的服务器"
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "秒"
 seconds: "秒"
 minute: "分钟"
 minutes: "分钟"
 hour: "小时"
 hours: "小时"
-
 helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
 helpPageNotFound: "<prefix><red>没有此页码的帮助页！"
 helpNextPage: "<gray>使用<aqua>/maintenance help %PAGE% <gray>切换到下一帮助页"
@@ -94,14 +88,12 @@ helpUpdate: "<gold>/maintenance update <gray>(远程下载最新版本插件到�
 helpWhitelist: "<gold>/maintenance whitelist <gray>(显示所有维护玩家白名单)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(将玩家加入维护玩家白名单，这样即使开启了维护，他们也能加入服务器)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(将玩家从维护玩家白名单中移除)"
-
-# Bungee/Velocity消息，如果在Spigot/Sponge上使用则可忽略以下内容
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(中止指定服务器开启的计时器)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(在以分钟为单位给定时间后将关闭指定服务器的维护模式)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(在以分钟为单位给定时间后将开启指定服务器的维护模式)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(开启/关闭指定服务器的维护模式)"
 helpStatus: "<gold>/maintenance status <gray>(列出当前正在维护的所有服务器)"
-
-# Used for autoupdating the language file, do not change this value.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1

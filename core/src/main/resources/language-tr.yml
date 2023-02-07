@@ -1,19 +1,7 @@
-###########################################
-##                                       ##
-## Foreda - Yazılım & Tasarım Hizmetleri ##
-##      © 2022 Tüm Hakları Saklıdır      ##
-##            Çeviri: Proomp#9980        ##
-##                                       ##
-##       Web: https://foreda.net/        ##
-## Discord: https://foreda.net/discord/  ##
-##                                       ##
-###########################################
-
-# Maintenance Plugin by kennytv
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-
-# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<yellow><bold>Sunucu<bold> <dark_gray>▸ "
 noPermission: "<red>Bunun için iznin yok!"
 kickmessage: "<red>Sunucuda bakım çalışması vardır!"
@@ -56,12 +44,10 @@ playerNotFound: "<prefix><red>Bu sunucuda daha önce bu isimde hiçbir oyuncu oy
 playerNotFoundUuid: "<prefix><red>Bu UUID'ye sahip hiçbir oyuncu bulunamadı."
 playerNotOnline: "<prefix><red>Bu isimle çevrimiçi oyuncu yok."
 invalidUuid: "<prefix><red>Geçersiz UUID biçimi!"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Bekleme sunucusuna gönderildiniz!"
 forceWaitingServer: "<prefix><red>Bakım varken bekleme sunucusundan ayrılamazsınız!"
 serverNotFound: "<prefix><red>Bu ada sahip hiçbir sunucu BungeeCord'da kayıtlı değil!"
-
 singleTimerAlreadyRunning: "<prefix><red>Bu sunucu için planlanmış bir zamanlayıcı zaten var!"
 singleTimerCancelled: "<prefix><yellow>%SERVER% <red>sunucusu için zamanlayıcı devre dışı bırakıldı."
 singleTimerNotRunning: "<prefix><red>Şu anda o sunucu için çalışan bir zamanlayıcı yok."
@@ -77,14 +63,12 @@ singleServerAlreadyDisabled: "<prefix>%SERVER%<red> sunucusunda zaten bakım mod
 singleServerMaintenanceList: "<prefix><gray>Bakımı etkinleştirilmiş sunucular:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Bakımda olan sunucu yok."
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "saniye"
 seconds: "saniye"
 minute: "dakika"
 minutes: "dakika"
 hour: "saat"
 hours: "saat"
-
 helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
 helpPageNotFound: "<prefix><red>Bu numaraya sahip bir sayfa yok!"
 helpNextPage: "<aqua>/maintenance help %PAGE% <gray>yazarak bir sonraki yardım sayfasına geçebilirsiniz."
@@ -104,14 +88,12 @@ helpUpdate: "<gold>/maintenance update <gray>(Eklentinin en yeni sürümünü su
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Bakım modu için beyaz listedeki tüm oyuncuları gösterir)"
 helpWhitelistAdd: "<gold>/maintenance add <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesine ekler, böylece bakım etkin olsa bile sunucuya katılabilir)"
 helpWhitelistRemove: "<gold>/maintenance remove <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesinden kaldırır)"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [sunucu] <gray>(Çalışıyorsa, mevcut zamanlayıcı iptal edilecektir.)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu devre dışı bırakılır)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu etkinleştirilecektir.)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [sunucu] <dakika> <maintenance duration> <gray>(Dakika olarak verilen süreden sonra, dakika olarak verilen süre için bakım modu etkinleştirilecektir.)"
 helpSingleToggle: "<gold>/maintenance <on/off> [sunucu] <gray>(Bakım modunu etkinleştirir/devre dışı bırakır)"
 helpStatus: "<gold>/maintenance status <gray>(Şu anda bakımda olan tüm sunucuları listeler)"
-
-# Used for autoupdating the language file, do not change this value.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1
