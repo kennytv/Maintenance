@@ -1,7 +1,7 @@
-# Maintenance Plugin by kennytv
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-# Meddelanden som innehåller placeholdern "<prefix>" kommer vara utbytt med följande sträng
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Underhållsarbete<dark_gray>] "
 noPermission: "<red>Du har inte rättigheterna att utfärda det kommandot."
 kickmessage: "<red>Sevrern är just nu under underhåll!<br>Försök igen senare!"
@@ -44,12 +44,10 @@ playerNotFound: "<prefix><red>Ingen spelare med detta namn har spelat på server
 playerNotFoundUuid: "<prefix><red>Ingen spelare med det uuid hittades."
 playerNotOnline: "<prefix><red>Det finns ingen spelare med det namnet online."
 invalidUuid: "<prefix><red>Ogiltigt uuid format!"
-
-# Meddelanden för Bungee/Velocity delen, du kan ignorera detta om du använder pluginet för Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Du har blvitt skickad till en väntserver!"
 forceWaitingServer: "<prefix><red>Du kan inte lämna väntservern medans underhållsläget är aktiverat!"
 serverNotFound: "<prefix><red>Ingen server med det namnet är registerad på proxyn!"
-
 singleTimerAlreadyRunning: "<prefix><red>Det finns redan en timer schemalagd för den servern!"
 singleTimerCancelled: "<prefix><red>Den nuvarande timern för för server <yellow>%SERVER% <red>har blivit avaktiverad."
 singleTimerNotRunning: "<prefix><red>Det finns för närvarande ingen timer för den servern."
@@ -65,14 +63,12 @@ singleServerAlreadyDisabled: "<prefix><red>Underhåll är redan avaktiverat på 
 singleServerMaintenanceList: "<prefix><gray>Proxiade servrar, som är under underhåll:"
 singleServerMaintenanceListEmpty: "<prefix><gray>Det finns inga proxiade servrar som har underhåll aktiverat."
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "sekund"
 seconds: "sekunder"
 minute: "minut"
 minutes: "minuter"
 hour: "timme"
 hours: "timmar"
-
 helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
 helpPageNotFound: "<prefix><red>Det finns ingen sida med det numret!"
 helpNextPage: "<gray>Use <aqua>/maintenance help %PAGE% <gray>för att komma till nästa hjälpsida."
@@ -92,12 +88,12 @@ helpUpdate: "<gold>/maintenance update <gray>(Avlägset laddar ner senaste versi
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Visar alla vitlistade spelare för underhållsläget)"
 helpWhitelistAdd: "<gold>/maintenance add <namn/uuid> <gray>(Lägger till en spelare på vitlistan för underhållsläget, så de kan logga in även om underhåll är aktiverat)"
 helpWhitelistRemove: "<gold>/maintenance remove <namn/uuid> <gray>(Tar bort spelaren från vitlistan för underhållsläget)"
-# Meddelanden för Bungee/Velocity delen, du kan ignorera detta om du använder pluginet för Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Vid utfärdandet av detta kommando kommer den nuvarande timern bli avbruten)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minuter> <gray>(Efter den angivna tiden kommer underhållsläge avaktiveras)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minuter> <gray>(Efter den angivna tiden kommer underhållsläge aktiveras)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minuter> <maintenance duration> <gray>(Efter den angivna tiden i minuter kommer underhållsläge vara aktiverat i den specificerade tiden)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Aktiverar/avaktiverar underhållsläge)"
 helpStatus: "<gold>/maintenance status <gray>(Listar alla proxiade servrar som är i underhåll)"
-# Används för att autouppdatera språkfilen, ändra inte detta värde.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1
