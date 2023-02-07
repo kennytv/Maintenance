@@ -8,6 +8,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Added Swedish translation file (thanks to Sup33r)
 * Added Ukrainian translation file (thanks to Mrlucke)
 * Added bStats metrics to Velocity and Sponge modules
+* Removed platform specific command aliases (e.g. `maintenancevelocity`)
 
 ### Fixed
 * Fixed disabling the `enable-pingmessages` setting not being respected on Paper servers

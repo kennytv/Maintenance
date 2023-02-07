@@ -1,9 +1,8 @@
 # Maintenance
 [![Version](https://img.shields.io/github/release/kennytv/Maintenance.svg)](https://github.com/kennytv/Maintenance/releases)
 ![Build Status](https://github.com/kennytv/Maintenance/workflows/Build/badge.svg)
-[![GH Downloads](https://img.shields.io/github/downloads/kennytv/Maintenance/total)](https://github.com/kennytv/Maintenance/releases)
+[![Crowdin](https://badges.crowdin.net/maintenance/localized.svg)](https://crowdin.com/project/maintenance)
 [![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
-[![Twitter](https://img.shields.io/twitter/follow/kennytvn.svg?label=Twitter)](https://twitter.com/kennytvn)
 
 Maintenance is the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Spigot, BungeeCord, Sponge, as well as Velocity.
 
@@ -25,6 +24,13 @@ A full list of commands, permissions and configuration options can be found in t
 * [Issue tracker/bug reports](https://github.com/kennytv/Maintenance/issues)
 * [Discord](https://discord.gg/vGCUzHq)
 * [PlaceholderAPI addon](https://hangar.papermc.io/kennytv/MaintenanceAddon)
+
+
+## Localization
+The English base language file is localized using Crodwin. You can see and update translations here: https://crowdin.com/project/maintenance
+
+Join [our Discord](https://discord.gg/vGCUzHq) if you want to get the proofreader or translator role on the project.
+Adding translations for languages not yet listed is always appreciated as well!
 
 ## Compiling
 To create a working jar yourself, simply clone the project and compile it with Gradle (`gradlew build`).
