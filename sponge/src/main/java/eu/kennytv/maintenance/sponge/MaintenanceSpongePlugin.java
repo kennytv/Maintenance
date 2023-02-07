@@ -105,7 +105,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
         final MaintenanceSpongeCommand command = new MaintenanceSpongeCommand(this, settings);
         commandManager = command;
-        game.server().commandManager().registrar(Command.Raw.class).get().register(container, command, "maintenance", "maintenancesponge", "mt");
+        game.server().commandManager().registrar(Command.Raw.class).get().register(container, command, "maintenance", "mt");
         final EventManager em = game.eventManager();
         em.registerListeners(container, new ClientPingServerListener(this, settings));
         em.registerListeners(container, new ClientConnectionListener(this, settings));

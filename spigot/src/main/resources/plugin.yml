@@ -10,5 +10,5 @@ api-version: 1.13
 commands:
   maintenance:
     description: Maintenance main-command
-    aliases: [maintenancespigot, mt]
+    aliases: [mt]
     permission: maintenance.command
