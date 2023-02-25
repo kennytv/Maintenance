@@ -58,9 +58,7 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
 
         if (settings.hasCustomPlayerCountMessage()) {
             ping.setVersionProtocol(1);
-            ping.setVersionName(settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(plugin.getServer().getOnlinePlayers().size()))
-                    .replace("%MAX%", Integer.toString(plugin.getServer().getMaxPlayers())));
+            ping.setVersionName(settings.getPlayerCountMessage());
         }
 
         final List<WrappedGameProfile> players = new ArrayList<>();

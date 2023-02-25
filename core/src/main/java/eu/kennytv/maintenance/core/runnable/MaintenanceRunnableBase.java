@@ -25,8 +25,8 @@ import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 public abstract class MaintenanceRunnableBase implements Runnable {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
+    protected final boolean enable;
     private final Task task;
-    protected boolean enable;
     protected int seconds;
 
     protected MaintenanceRunnableBase(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {

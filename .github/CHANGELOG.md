@@ -11,6 +11,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Removed platform specific command aliases (e.g. `maintenancevelocity`)
 
 ### Fixed
+* Fixed variable replacement in messages with gradients
 * Fixed disabling the `enable-pingmessages` setting not being respected on Paper servers
 * Fixed the message for cancelling proxied server timers not replacing the server argument
 ---

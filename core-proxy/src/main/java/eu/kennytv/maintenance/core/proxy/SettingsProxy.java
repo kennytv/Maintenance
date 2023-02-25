@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
@@ -156,7 +155,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getLanguageString("singleMaintenanceKick", "%SERVER%", server);
         }
-        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(message));
+        return parse(plugin.replacePingVariables(message));
     }
 
     // Full = being kicked from the proxy, not just a proxied server
@@ -165,7 +164,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getLanguageString("singleMaintenanceKickComplete", "%SERVER%", server);
         }
-        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(message));
+        return parse(plugin.replacePingVariables(message));
     }
 
     public boolean hasMySQL() {

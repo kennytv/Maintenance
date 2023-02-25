@@ -21,9 +21,6 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -90,7 +87,6 @@ public final class SetMotdCommand extends CommandInfo {
 
         // Replace component in config and the cached list
         final String componentString = newMessage.replace(NEW_LINE_REPLACEMENT, "\n");
-        final Component component = MiniMessage.miniMessage().deserialize(componentString);
         if (index > pingMessages.size()) {
             pingMessages.add(newMessage);
             pingComponents.add(componentString);
@@ -101,9 +97,12 @@ public final class SetMotdCommand extends CommandInfo {
 
         settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
         settings.saveConfig();
-        sender.send(settings.getMessage("setMotd",
+        sender.send(settings.getMessage(
+                "setMotd",
                 "%LINE%", args[2],
-                "%INDEX%", args[1]).replaceText(builder -> builder.matchLiteral("%MOTD%").replacement(component)));
+                "%INDEX%", args[1],
+                "%MOTD%", componentString
+        ));
     }
 
     @Override

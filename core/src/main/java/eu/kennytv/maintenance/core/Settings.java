@@ -356,8 +356,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     public Component getMessage(final String path, final String... replacements) {
-        final String s = getLanguageString(path, replacements);
-        return MiniMessage.miniMessage().deserialize(s);
+        return parse(getLanguageString(path, replacements));
     }
 
     public Component getRandomPingMessage() {
@@ -370,7 +369,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     private Component getPingMessage(final List<String> list) {
         final String component = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
-        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(component));
+        return parse(plugin.replacePingVariables(component));
     }
 
     private List<String> loadPingMessages(final String path) {
@@ -514,20 +513,21 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     // Yikeseroo
     public String getPlayerCountMessage() {
-        return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(playerCountMessage)));
+        return LegacyComponentSerializer.legacySection().serialize(parse(plugin.replacePingVariables(playerCountMessage)));
     }
 
+    // Yikeseroo x2
     public String[] getPlayerCountHoverLines() {
         final String[] lines = new String[playerCountHoverLines.size()];
         for (int i = 0; i < playerCountHoverLines.size(); i++) {
             final String component = plugin.replacePingVariables(playerCountHoverLines.get(i));
-            lines[i] = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(component));
+            lines[i] = LegacyComponentSerializer.legacySection().serialize(parse(component));
         }
         return lines;
     }
 
     public Component getKickMessage() {
-        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(getLanguageString("kickmessage")));
+        return parse(plugin.replacePingVariables(getLanguageString("kickmessage")));
     }
 
     public String getLanguage() {
@@ -536,6 +536,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
+    }
+
+    protected Component parse(final String s) {
+        return MiniMessage.miniMessage().deserialize(s);
     }
 
     /*

@@ -45,9 +45,7 @@ public final class ProxyPingListener implements Listener {
         }
 
         if (settings.hasCustomPlayerCountMessage()) {
-            ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(players.getOnline()))
-                    .replace("%MAX%", Integer.toString(players.getMax())), 1));
+            ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage(), 1));
         }
 
         ping.setDescriptionComponent(ComponentUtil.toBadComponents(settings.getRandomPingMessage()));

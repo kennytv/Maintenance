@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Further modified version of the SimpleConfig project of PSandro (https://github.com/PSandro/SimpleConfig).
+ * Further modified version of the <a href="https://github.com/PSandro/SimpleConfig">SimpleConfig</a>SimpleConfig project of PSandro.
  *
  * @author PSandro on 26.01.19
  * @author kennytv

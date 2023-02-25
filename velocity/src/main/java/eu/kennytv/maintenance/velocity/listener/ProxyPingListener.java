@@ -43,9 +43,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         final ServerPing ping = event.getPing();
         final ServerPing.Builder builder = ping.asBuilder();
         if (settings.hasCustomPlayerCountMessage()) {
-            builder.version(new ServerPing.Version(1, settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(builder.getMaximumPlayers()))
-                    .replace("%MAX%", Integer.toString(builder.getOnlinePlayers()))));
+            builder.version(new ServerPing.Version(1, settings.getPlayerCountMessage()));
         }
 
         final String[] lines = settings.getPlayerCountHoverLines();

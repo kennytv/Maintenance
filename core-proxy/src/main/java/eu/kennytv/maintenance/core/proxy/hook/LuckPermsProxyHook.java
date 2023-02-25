@@ -31,7 +31,7 @@ import java.util.function.Function;
 public final class LuckPermsProxyHook {
 
     public static <T> void register(final MaintenanceProxyPlugin plugin, final Function<T, String> function) {
-        LuckPermsProvider.get().getContextManager().registerCalculator(new MaintenanceProxyCalculator<T>(plugin, function));
+        LuckPermsProvider.get().getContextManager().registerCalculator(new MaintenanceProxyCalculator<>(plugin, function));
     }
 
     public static final class MaintenanceProxyCalculator<T> implements ContextCalculator<T> {

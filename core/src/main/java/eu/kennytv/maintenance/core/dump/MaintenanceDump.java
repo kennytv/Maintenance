@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 public final class MaintenanceDump {
     private final ServerDump general;
     private final Map<String, Object> configuration;

@@ -19,6 +19,7 @@ package eu.kennytv.maintenance.core.dump;
 
 import java.util.List;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 public final class PluginDump {
     private final String name;
     private final String version;

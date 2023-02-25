@@ -53,9 +53,7 @@ public final class PaperServerListPingListener implements Listener {
 
         if (settings.hasCustomPlayerCountMessage()) {
             event.setProtocolVersion(-1);
-            event.setVersion(settings.getPlayerCountMessage()
-                    .replace("%ONLINE%", Integer.toString(plugin.getServer().getOnlinePlayers().size()))
-                    .replace("%MAX%", Integer.toString(plugin.getServer().getMaxPlayers())));
+            event.setVersion(settings.getPlayerCountMessage());
         }
 
         final List<PlayerProfile> sample = event.getPlayerSample();
@@ -138,12 +136,12 @@ public final class PaperServerListPingListener implements Listener {
         }
 
         @Override
-        public boolean completeFromCache(boolean b) {
+        public boolean completeFromCache(final boolean b) {
             return false;
         }
 
         @Override
-        public boolean completeFromCache(boolean b, boolean b1) {
+        public boolean completeFromCache(final boolean b, final boolean b1) {
             return false;
         }
 
@@ -153,11 +151,12 @@ public final class PaperServerListPingListener implements Listener {
         }
 
         @Override
-        public boolean complete(boolean b, boolean b1) {
+        public boolean complete(final boolean b, final boolean b1) {
             return false;
         }
 
         // Keep this here for backwards compatibility
+        @SuppressWarnings("unused")
         public GameProfile getGameProfile() {
             return null;
         }

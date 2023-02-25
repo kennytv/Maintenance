@@ -167,7 +167,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Override
     public void sendUpdateNotification(final SenderInfo sender) {
         try {
-            net.kyori.adventure.text.Component component = net.kyori.adventure.text.Component.text().append(translate(getPrefix()))
+            final net.kyori.adventure.text.Component component = net.kyori.adventure.text.Component.text().append(translate(getPrefix()))
                     .append(translate("§cDownload it at: §6" + HANGAR_URL))
                     .append(translate(" §7§l§o(CLICK ME)"))
                     .clickEvent(ClickEvent.openUrl(new URL(HANGAR_URL)))

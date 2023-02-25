@@ -42,8 +42,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,6 +50,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -181,7 +181,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     public boolean updateAvailable() {
         try {
             checkNewestVersion();
-            return version.compareTo(newestVersion) == -1;
+            return version.compareTo(newestVersion) < 0;
         } catch (final Exception e) {
             return false;
         }
@@ -217,10 +217,10 @@ public abstract class MaintenancePlugin implements Maintenance {
             }
 
             final int compare = version.compareTo(newestVersion);
-            if (compare == -1) {
+            if (compare < 0) {
                 //TODO mmmmmmmm legacy chat
                 getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
-            } else if (compare == 1) {
+            } else if (compare > 0) {
                 if (version.getTag().equalsIgnoreCase("snapshot")) {
                     getLogger().info("§cYou're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/kennytv/Maintenance/issues)");
                 } else {
@@ -236,7 +236,7 @@ public abstract class MaintenancePlugin implements Maintenance {
         try {
             final String fileSuffix = serverType == ServerType.VELOCITY ? "Velocity" : "";
             final URLConnection conn = new URL("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
-            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(new FileOutputStream(getPluginFolder() + "Maintenance.tmp")));
+            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(Files.newOutputStream(Paths.get(getPluginFolder() + "Maintenance.tmp"))));
             final File file = new File(getPluginFolder() + "Maintenance.tmp");
             final long newlength = file.length();
             if (newlength < 10000) {
@@ -244,7 +244,7 @@ public abstract class MaintenancePlugin implements Maintenance {
                 return false;
             }
 
-            writeFile(new FileInputStream(file), new BufferedOutputStream(new FileOutputStream(getPluginFile())));
+            writeFile(Files.newInputStream(file.toPath()), new BufferedOutputStream(Files.newOutputStream(getPluginFile().toPath())));
             file.delete();
             return true;
         } catch (final Exception e) {
@@ -450,7 +450,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     public abstract File getDataFolder();
 
     @Nullable
-    public InputStream getResource(String name) {
+    public InputStream getResource(final String name) {
         return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 

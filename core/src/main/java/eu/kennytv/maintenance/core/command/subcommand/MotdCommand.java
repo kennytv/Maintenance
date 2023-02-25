@@ -20,8 +20,6 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Collections;
 import java.util.List;
