@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
@@ -151,20 +152,20 @@ public final class SettingsProxy extends Settings {
     }
 
     public Component getServerKickMessage(final String server) {
-        Component message = getMessageOrNull("singleMaintenanceKicks." + server, "%SERVER%", server);
+        String message = getLanguageStringOrNull("singleMaintenanceKicks." + server, "%SERVER%", server);
         if (message == null) {
-            message = getMessage("singleMaintenanceKick", "%SERVER%", server);
+            message = getLanguageString("singleMaintenanceKick", "%SERVER%", server);
         }
-        return plugin.replacePingVariables(message);
+        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(message));
     }
 
     // Full = being kicked from the proxy, not just a proxied server
     public Component getFullServerKickMessage(final String server) {
-        Component message = getMessageOrNull("singleMaintenanceKicksComplete." + server, "%SERVER%", server);
+        String message = getLanguageStringOrNull("singleMaintenanceKicksComplete." + server, "%SERVER%", server);
         if (message == null) {
-            message = getMessage("singleMaintenanceKickComplete", "%SERVER%", server);
+            message = getLanguageString("singleMaintenanceKickComplete", "%SERVER%", server);
         }
-        return plugin.replacePingVariables(message);
+        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(message));
     }
 
     public boolean hasMySQL() {

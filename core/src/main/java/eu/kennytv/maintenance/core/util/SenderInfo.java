@@ -18,7 +18,7 @@
 package eu.kennytv.maintenance.core.util;
 
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-
+import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import java.util.UUID;
 
 public interface SenderInfo {
@@ -37,6 +37,10 @@ public interface SenderInfo {
     void sendMessage(String message);
 
     void send(Component component);
+
+    default void sendRich(final String message) {
+        send(MiniMessage.miniMessage().deserialize(message));
+    }
 
     boolean isPlayer();
 }

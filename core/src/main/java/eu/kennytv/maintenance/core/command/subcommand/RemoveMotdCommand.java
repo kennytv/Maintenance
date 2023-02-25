@@ -66,7 +66,7 @@ public final class RemoveMotdCommand extends CommandInfo {
             return;
         }
 
-        final List<Component> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
+        final List<String> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
         pingComponents.remove(index - 1);
         pingMessages.remove(index - 1);
         settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);

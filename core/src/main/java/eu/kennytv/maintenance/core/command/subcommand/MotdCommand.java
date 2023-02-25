@@ -48,7 +48,7 @@ public final class MotdCommand extends CommandInfo {
         }
     }
 
-    private void sendList(final SenderInfo sender, final List<Component> list) {
+    private void sendList(final SenderInfo sender, final List<String> list) {
         if (list == null || list.isEmpty()) {
             sender.send(getMessage("motdListEmpty"));
             return;
@@ -56,15 +56,17 @@ public final class MotdCommand extends CommandInfo {
 
         sender.send(getMessage("motdList"));
         for (int i = 0; i < list.size(); i++) {
-            sender.sendMessage("§b" + (i + 1) + "§8§m---------");
-            sender.send(list.get(i));
+            sender.sendRich("<aqua>" + (i + 1) + "<dark_gray><st>---------");
+            sender.sendRich(list.get(i));
         }
-        sender.sendMessage("§8§m----------");
+        sender.sendRich("<dark_gray><st>----------");
     }
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        if (args.length != 2 || !getSettings().hasTimerSpecificPingMessages()) return Collections.emptyList();
+        if (args.length != 2 || !getSettings().hasTimerSpecificPingMessages()) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList("timer");
     }
 }

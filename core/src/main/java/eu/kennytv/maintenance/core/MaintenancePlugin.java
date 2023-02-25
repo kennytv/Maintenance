@@ -38,8 +38,6 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -61,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
     public static final Gson GSON = new GsonBuilder().create();
@@ -124,21 +123,24 @@ public abstract class MaintenancePlugin implements Maintenance {
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
     }
 
-    public Component replacePingVariables(final Component component) {
-        return component.replaceText(builder -> builder.matchLiteral("%TIMER%").replacement(c -> getTimerMessage()))
-                .replaceText(builder -> builder.matchLiteral("%ONLINE%").replacement(c -> Component.text(getOnlinePlayers())))
-                .replaceText(builder -> builder.matchLiteral("%MAX%").replacement(c -> Component.text(getMaxPlayers())));
+    public String replacePingVariables(String component) {
+        if (component.contains("%TIMER%")) {
+            component = component.replace("%TIMER%", getTimerMessage());
+        }
+        component = component.replace("%ONLINE%", String.valueOf(getOnlinePlayers()));
+        component = component.replace("%MAX%", String.valueOf(getMaxPlayers()));
+        return component;
     }
 
-    public Component getTimerMessage() {
+    public String getTimerMessage() {
         if (!isTaskRunning()) {
-            return settings.getMessage("motdTimerNotRunning");
+            return settings.getLanguageString("motdTimerNotRunning");
         }
 
         final int preHours = runnable.getSecondsLeft() / 60;
         final int minutes = preHours % 60;
         final int seconds = runnable.getSecondsLeft() % 60;
-        return settings.getMessage("motdTimer",
+        return settings.getLanguageString("motdTimer",
                 "%HOURS%", String.format("%02d", preHours / 60),
                 "%MINUTES%", String.format("%02d", minutes),
                 "%SECONDS%", String.format("%02d", seconds));

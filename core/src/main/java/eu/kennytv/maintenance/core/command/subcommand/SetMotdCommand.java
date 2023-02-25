@@ -56,7 +56,7 @@ public final class SetMotdCommand extends CommandInfo {
         }
 
         final Settings settings = getSettings();
-        final List<Component> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
+        final List<String> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
         final List<String> pingMessages = settings.getConfig().getStringList(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages");
         final int index = Integer.parseInt(args[1]);
         if (index == 0 || index > pingMessages.size() + 1) {
@@ -89,13 +89,14 @@ public final class SetMotdCommand extends CommandInfo {
         }
 
         // Replace component in config and the cached list
-        final Component component = MiniMessage.miniMessage().deserialize(newMessage.replace(NEW_LINE_REPLACEMENT, "\n"));
+        final String componentString = newMessage.replace(NEW_LINE_REPLACEMENT, "\n");
+        final Component component = MiniMessage.miniMessage().deserialize(componentString);
         if (index > pingMessages.size()) {
             pingMessages.add(newMessage);
-            pingComponents.add(component);
+            pingComponents.add(componentString);
         } else {
             pingMessages.set(index - 1, newMessage);
-            pingComponents.set(index - 1, component);
+            pingComponents.set(index - 1, componentString);
         }
 
         settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);

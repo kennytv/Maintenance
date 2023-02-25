@@ -23,16 +23,14 @@ import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextReplacementConfig;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +38,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
@@ -51,13 +50,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private final String[] unsupportedFields;
     protected boolean maintenance;
     private Set<Integer> broadcastIntervals;
-    private List<Component> pingMessages;
-    private List<Component> timerSpecificPingMessages;
+    private List<String> pingMessages;
+    private List<String> timerSpecificPingMessages;
     private List<String> commandsOnMaintenanceEnable;
     private List<String> commandsOnMaintenanceDisable;
-    private Component playerCountMessage;
-    private List<Component> playerCountHoverLines;
-    private Component prefix;
+    private String playerCountMessage;
+    private List<String> playerCountHoverLines;
+    private String prefixString;
     private String languageName;
     private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
@@ -116,7 +115,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             e.printStackTrace();
         }
 
-        prefix = MiniMessage.miniMessage().deserialize(language.getString("prefix"));
+        prefixString = language.getString("prefix");
 
         plugin.getEventManager().callEvent(new MaintenanceReloadedEvent());
     }
@@ -192,9 +191,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
         playerCountHoverLines = new ArrayList<>();
         final String playerHoverMessage = config.getString("playercounthovermessage");
-        for (final String line : playerHoverMessage.split("<br>")) {
-            playerCountHoverLines.add(MiniMessage.miniMessage().deserialize(line));
-        }
+        Collections.addAll(playerCountHoverLines, playerHoverMessage.split("<br>"));
 
         languageName = config.getString("language").toLowerCase();
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
@@ -323,25 +320,23 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     private void legacyToMinimessage(final List<String> list) {
-        for (int i = 0; i < list.size(); i++) {
-            list.set(i, legacyToMinimessage(list.get(i)));
-        }
+        list.replaceAll(this::legacyToMinimessage);
     }
 
-    public Component getConfigMessage(final String path) {
+    public String getConfigMessage(final String path) {
         final String s = config.getString(path);
         if (s == null) {
             plugin.getLogger().warning("The config file is missing the following string: " + path);
-            return Component.text("null");
+            return path;
         }
-        return MiniMessage.miniMessage().deserialize(replaceNewlineVar(s));
+        return replaceNewlineVar(s);
     }
 
-    public Component getMessage(final String path, final String... replacements) {
+    public String getLanguageString(final String path, final String... replacements) {
         String s = language.getString(path);
         if (s == null) {
             plugin.getLogger().warning("The language file is missing the following string: " + path);
-            return Component.text("null");
+            return path;
         }
         if (replacements.length != 0) {
             if (replacements.length % 2 != 0) {
@@ -353,13 +348,16 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                 s = s.replace(key, replacements[i + 1]);
             }
         }
-
-        return MiniMessage.miniMessage().deserialize(replaceNewlineVar(s))
-                .replaceText(TextReplacementConfig.builder().matchLiteral("<prefix>").replacement(prefix).build());
+        return replaceNewlineVar(s).replace("<prefix>", prefixString);
     }
 
-    public @Nullable Component getMessageOrNull(final String path, final String... replacements) {
-        return language.contains(path) ? getMessage(path, replacements) : null;
+    public @Nullable String getLanguageStringOrNull(final String path, final String... replacements) {
+        return language.contains(path) ? getLanguageString(path, replacements) : null;
+    }
+
+    public Component getMessage(final String path, final String... replacements) {
+        final String s = getLanguageString(path, replacements);
+        return MiniMessage.miniMessage().deserialize(s);
     }
 
     public Component getRandomPingMessage() {
@@ -370,16 +368,16 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return pingMessages.isEmpty() ? Component.empty() : getPingMessage(pingMessages);
     }
 
-    private Component getPingMessage(final List<Component> list) {
-        final Component component = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
-        return plugin.replacePingVariables(component);
+    private Component getPingMessage(final List<String> list) {
+        final String component = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
+        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(component));
     }
 
-    private List<Component> loadPingMessages(final String path) {
+    private List<String> loadPingMessages(final String path) {
         final List<String> list = config.getStringList(path);
-        final List<Component> components = new ArrayList<>(list.size());
+        final List<String> components = new ArrayList<>(list.size());
         for (final String s : list) {
-            components.add(MiniMessage.miniMessage().deserialize(replaceNewlineVar(s)));
+            components.add(replaceNewlineVar(s));
         }
         return components;
     }
@@ -395,7 +393,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return true;
     }
 
-    @Deprecated
     @Override
     public boolean removeWhitelistedPlayer(final String name) {
         UUID uuid = null;
@@ -494,7 +491,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return config;
     }
 
-    public List<Component> getPingMessages() {
+    public List<String> getPingMessages() {
         return pingMessages;
     }
 
@@ -507,7 +504,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     @Nullable
-    public List<Component> getTimerSpecificPingMessages() {
+    public List<String> getTimerSpecificPingMessages() {
         return timerSpecificPingMessages;
     }
 
@@ -517,20 +514,20 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     // Yikeseroo
     public String getPlayerCountMessage() {
-        return LegacyComponentSerializer.legacySection().serialize(plugin.replacePingVariables(playerCountMessage));
+        return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(playerCountMessage)));
     }
 
     public String[] getPlayerCountHoverLines() {
         final String[] lines = new String[playerCountHoverLines.size()];
         for (int i = 0; i < playerCountHoverLines.size(); i++) {
-            final Component component = plugin.replacePingVariables(playerCountHoverLines.get(i));
-            lines[i] = LegacyComponentSerializer.legacySection().serialize(component);
+            final String component = plugin.replacePingVariables(playerCountHoverLines.get(i));
+            lines[i] = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(component));
         }
         return lines;
     }
 
     public Component getKickMessage() {
-        return plugin.replacePingVariables(getMessage("kickmessage"));
+        return MiniMessage.miniMessage().deserialize(plugin.replacePingVariables(getLanguageString("kickmessage")));
     }
 
     public String getLanguage() {
