@@ -93,7 +93,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [сервер] <gray>- <whi
 helpSingleEndtimer: "<gold>/maintenance endtimer [сервер] [время в минутах] <gray>- <white>Запустить таймер выключения режима технических работ."
 helpSingleStarttimer: "<gold>/maintenance starttimer [сервер] [время в минутах] <gray>- <white>Запустить таймер включения режима технических работ."
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
-helpSingleToggle: "<gold>/maintenance [on|off] [сервер] <gray>- <white>Включить/выключить режим технических работы."
+helpSingleToggle: "<gold>/maintenance [on|off] [сервер] <gray>- <white>Включить/выключить режим технических работ."
 helpStatus: "<gold>/maintenance status <gray>- <white>Список всех серверов закрытых на технические работы."
 #Used for autoupdating the language file, do not change this value.
 language-version: 1
