@@ -1,9 +1,7 @@
-# Maintenance Plugin by kennytv
-# Translators: Vixo_Ulises
-# You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
-# For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
-
-# Messages containing the placeholder "<prefix>" will have it replaced with the following string
+#Maintenance Plugin by kennytv
+#You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
+#For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<prefix><dark_red>No tienes permiso para ejecutar este comando."
 kickmessage: "<red>El servidor se encuentra en mantenimiento!<br>Intentalo de nuevo mas tarde!"
@@ -46,15 +44,13 @@ playerNotFound: "<prefix><gray>Ningun jugador con este nombre ha jugado en este 
 playerNotFoundUuid: "<prefix><red>No se pudo encontrar el jugador con ese UUID."
 playerNotOnline: "<prefix><gray>No hay jugador en línea con este nombre."
 invalidUuid: "<prefix><red>Formato inválido!"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><green>Has sido enviado a un servidor de espera!"
 forceWaitingServer: "<prefix><red>No puedes dejar el servidor de espera mientras el mantenimiento está activado!"
 serverNotFound: "<prefix><red>Ningún servidor con este nombre está registrado en el proxy!"
-
 singleTimerAlreadyRunning: "<prefix><red>Ya hay un temporizador programado!"
-singleTimerNotRunning: "<prefix><red>Actualmente no hay ningún temporizador en ejecución para ese servidor."
 singleTimerCancelled: "<prefix><red>El temporizador actual para el servidor <gold>%SERVER% <red>ha sido desactivado."
+singleTimerNotRunning: "<prefix><red>Actualmente no hay ningún temporizador en ejecución para ese servidor."
 singleEndtimerBroadcast: "<prefix><gray>El modo mantenimiento en el Servidor <gold>%SERVER% <gray>se desactivará en <green>%TIME%<gray>."
 singleStarttimerBroadcast: "<prefix><gray>El modo mantenimiento en el servidor <gold>%SERVER%<gray> se activará en <green>%TIME%<gray>"
 singleScheduletimerBroadcast: "<prefix><gray>El modo mantenimiento en el servidor %SERVER% se activará en <gold>%TIME% <gray>y durará <gold>%DURATION%<gray>."
@@ -67,14 +63,12 @@ singleServerAlreadyDisabled: "<prefix><gray>El modo mantenimiento se encuentra d
 singleServerMaintenanceList: "<prefix><gray>Servidores proxy, que tienen habilitado el mantenimiento:"
 singleServerMaintenanceListEmpty: "<prefix><gray>No hay servidores proxy que están en mantenimiento."
 singleServerMaintenanceListEntry: "<dark_grey>- <aqua>%SERVER%"
-
 second: "Segundo"
 seconds: "Segundos"
 minute: "Minuto"
 minutes: "Minutos"
 hour: "Hora"
 hours: "Horas"
-
 helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MAX% <dark_gray>]========"
 helpPageNotFound: "<prefix><gray>No hay pagina con ese número."
 helpNextPage: "<gray>Utilice <aqua>/maintenance help %PAGE% <gray>Para pasar a la siguiente ventana de ayuda."
@@ -94,14 +88,12 @@ helpUpdate: "<gold>/maintenance update <dark_gray>(<gray>Descarga de forma remot
 helpWhitelist: "<gold>/maintenance whitelist <dark_gray>(<gray>Muestra todos los jugadores en lista blanca para el modo de mantenimiento<dark_gray>)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <dark_gray>(<gray>Agrega al jugador a la lista blanca de mantenimiento, para que puedan unirse al servidor aunque el mantenimiento esté habilitado<dark_gray>)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <dark_gray>(<gray>Quita al jugador de la lista blanca de mantenimiento<dark_gray>)"
-
-# Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <dark_gray>(<gray>Si está funcionando, se abortará el temporizador actual<dark_gray>)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <dark_gray>(<gray>Después del tiempo en minutos, se desactivará el modo de mantenimiento<dark_gray>)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <dark_gray>(<gray>Después del tiempo en minutos, se activara el modo de mantenimiento<dark_gray>)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(Tras los minutos introducidos, el modo mantenimiento se activará durante la duración introducida.)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <dark_gray>(<gray>Habilita / deshabilita el modo de mantenimiento<dark_gray>)"
 helpStatus: "<gold>/maintenance status <dark_gray>(<gray>Enumera todos los servidores proxy, que están actualmente en mantenimiento<dark_gray>)"
-
-# Used for autoupdating the language file, do not change this value.
+#Used for autoupdating the language file, do not change this value.
 language-version: 1
