@@ -36,16 +36,20 @@ public final class ServerListPingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final ServerListPingEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+        if (!settings.isMaintenance()) {
+            return;
+        }
 
         if (settings.hasCustomPlayerCountMessage()) {
             event.setMaxPlayers(0);
         }
 
-        if (ComponentUtil.PAPER) {
-            event.motd(ComponentUtil.toPaperComponent(settings.getRandomPingMessage()));
-        } else {
-            event.setMotd(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+        if (settings.isEnablePingMessages()) {
+            if (ComponentUtil.PAPER) {
+                event.motd(ComponentUtil.toPaperComponent(settings.getRandomPingMessage()));
+            } else {
+                event.setMotd(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+            }
         }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

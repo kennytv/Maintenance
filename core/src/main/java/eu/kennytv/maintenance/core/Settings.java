@@ -60,6 +60,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private String languageName;
     private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
+    private boolean customPlayerCountHoverMessage;
     private boolean customMaintenanceIcon;
     private boolean joinNotifications;
     private boolean updateChecks;
@@ -182,6 +183,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
         commandsOnMaintenanceDisable = config.getStringList("commands-on-maintenance-disable");
         customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
+        customPlayerCountHoverMessage = config.getBoolean("enable-playercounthovermessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
         broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
@@ -536,6 +538,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     public boolean hasCustomPlayerCountMessage() {
         return customPlayerCountMessage;
+    }
+
+    public boolean hasCustomPlayerCountHoverMessage() {
+        return customPlayerCountHoverMessage;
     }
 
     protected Component parse(final String s) {

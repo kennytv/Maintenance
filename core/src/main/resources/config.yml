@@ -59,6 +59,7 @@ playercountmessage: "<dark_red>Maintenance"
 # Is shown when you move your mouse above the text in the top right corner of the server in the serverlist,
 # where the playercount would normally be displayed.
 # DOES NOT SUPPORT RGB!
+enable-playercounthovermessage: true
 playercounthovermessage: "<red>Currently under<br><red>maintenance"
 
 # If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
@@ -112,4 +113,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 6
+config-version: 7

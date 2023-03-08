@@ -23,7 +23,6 @@ import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.ComponentUtil;
-
 import java.util.UUID;
 
 public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
@@ -38,7 +37,9 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
 
     @Override
     public void execute(final ProxyPingEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+        if (!settings.isMaintenance()) {
+            return;
+        }
 
         final ServerPing ping = event.getPing();
         final ServerPing.Builder builder = ping.asBuilder();
@@ -46,14 +47,18 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
             builder.version(new ServerPing.Version(1, settings.getPlayerCountMessage()));
         }
 
-        final String[] lines = settings.getPlayerCountHoverLines();
-        final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[lines.length];
-        for (int i = 0; i < lines.length; i++) {
-            samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], uuid);
+        if (settings.hasCustomPlayerCountHoverMessage()) {
+            final String[] lines = settings.getPlayerCountHoverLines();
+            final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[lines.length];
+            for (int i = 0; i < lines.length; i++) {
+                samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], uuid);
+            }
+            builder.samplePlayers(samplePlayers);
         }
 
-        builder.description(ComponentUtil.toVelocity(settings.getRandomPingMessage()))
-                .samplePlayers(samplePlayers);
+        if (settings.isEnablePingMessages()) {
+            builder.description(ComponentUtil.toVelocity(settings.getRandomPingMessage()));
+        }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             builder.favicon(plugin.getFavicon());

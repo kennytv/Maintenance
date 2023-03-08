@@ -28,14 +28,13 @@ import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public final class ServerInfoPacketListener extends PacketAdapter implements Listener {
     private final UUID uuid = new UUID(0, 0);
@@ -51,21 +50,27 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
 
     @Override
     public void onPacketSending(final PacketEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+        if (!settings.isMaintenance()) {
+            return;
+        }
 
         final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-        ping.setMotD(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+        if (settings.isEnablePingMessages()) {
+            ping.setMotD(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+        }
 
         if (settings.hasCustomPlayerCountMessage()) {
             ping.setVersionProtocol(1);
             ping.setVersionName(settings.getPlayerCountMessage());
         }
 
-        final List<WrappedGameProfile> players = new ArrayList<>();
-        for (final String string : settings.getPlayerCountHoverLines()) {
-            players.add(new WrappedGameProfile(uuid, string));
+        if (settings.hasCustomPlayerCountHoverMessage()) {
+            final List<WrappedGameProfile> players = new ArrayList<>();
+            for (final String string : settings.getPlayerCountHoverLines()) {
+                players.add(new WrappedGameProfile(uuid, string));
+            }
+            ping.setPlayers(players);
         }
-        ping.setPlayers(players);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

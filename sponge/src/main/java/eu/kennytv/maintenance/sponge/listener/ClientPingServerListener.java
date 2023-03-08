@@ -20,13 +20,12 @@ package eu.kennytv.maintenance.sponge.listener;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.ComponentUtil;
+import java.util.List;
+import java.util.UUID;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 import org.spongepowered.api.profile.GameProfile;
-
-import java.util.List;
-import java.util.UUID;
 
 public final class ClientPingServerListener {
     private final MaintenanceSpongePlugin plugin;
@@ -39,7 +38,9 @@ public final class ClientPingServerListener {
 
     @Listener(order = Order.LAST)
     public void proxyPing(final ClientPingServerEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+        if (!settings.isMaintenance()) {
+            return;
+        }
 
         final ClientPingServerEvent.Response response = event.response();
         if (settings.hasCustomPlayerCountMessage()) {
@@ -48,14 +49,19 @@ public final class ClientPingServerListener {
             response.players().ifPresent(players -> players.setMax(0));
         }
 
-        response.setDescription(ComponentUtil.toSponge(settings.getRandomPingMessage()));
-        response.players().ifPresent(players -> {
-            final List<GameProfile> profiles = players.profiles();
-            profiles.clear();
-            for (final String string : settings.getPlayerCountHoverLines()) {
-                profiles.add(GameProfile.of(UUID.randomUUID(), string));
-            }
-        });
+        if (settings.isEnablePingMessages()) {
+            response.setDescription(ComponentUtil.toSponge(settings.getRandomPingMessage()));
+        }
+
+        if (settings.hasCustomPlayerCountHoverMessage()) {
+            response.players().ifPresent(players -> {
+                final List<GameProfile> profiles = players.profiles();
+                profiles.clear();
+                for (final String string : settings.getPlayerCountHoverLines()) {
+                    profiles.add(GameProfile.of(UUID.randomUUID(), string));
+                }
+            });
+        }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             response.setFavicon(plugin.getFavicon());

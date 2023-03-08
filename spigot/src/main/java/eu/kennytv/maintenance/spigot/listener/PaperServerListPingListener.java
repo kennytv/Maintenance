@@ -24,13 +24,16 @@ import com.mojang.authlib.GameProfile;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
 import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
 
 public final class PaperServerListPingListener implements Listener {
     private final MaintenanceSpigotPlugin plugin;
@@ -43,12 +46,16 @@ public final class PaperServerListPingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void serverListPing(final PaperServerListPingEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
+        if (!settings.isMaintenance()) {
+            return;
+        }
 
-        if (ComponentUtil.PAPER) {
-            event.motd(ComponentUtil.toPaperComponent(settings.getRandomPingMessage()));
-        } else {
-            event.setMotd(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+        if (settings.isEnablePingMessages()) {
+            if (ComponentUtil.PAPER) {
+                event.motd(ComponentUtil.toPaperComponent(settings.getRandomPingMessage()));
+            } else {
+                event.setMotd(ComponentUtil.toLegacy(settings.getRandomPingMessage()));
+            }
         }
 
         if (settings.hasCustomPlayerCountMessage()) {
@@ -56,10 +63,12 @@ public final class PaperServerListPingListener implements Listener {
             event.setVersion(settings.getPlayerCountMessage());
         }
 
-        final List<PlayerProfile> sample = event.getPlayerSample();
-        sample.clear();
-        for (final String string : settings.getPlayerCountHoverLines()) {
-            sample.add(new DummyProfile(string));
+        if (settings.hasCustomPlayerCountHoverMessage()) {
+            final List<PlayerProfile> sample = event.getPlayerSample();
+            sample.clear();
+            for (final String string : settings.getPlayerCountHoverLines()) {
+                sample.add(new DummyProfile(string));
+            }
         }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

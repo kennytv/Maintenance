@@ -4,16 +4,20 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ---
 ## Unreleased
 ### Changed
-* Added Turkish translation file (thanks to Proomp)
-* Added Swedish translation file (thanks to Sup33r)
-* Added Ukrainian translation file (thanks to Mrlucke)
-* Added bStats metrics to Velocity and Sponge modules
+* Added config option `enable-playercounthovermessage` to be able to toggle the player count hover message
 * Removed platform specific command aliases (e.g. `maintenancevelocity`)
+* Translations
+  * Moved translation editing to [Crowdin](https://crowdin.com/translate/maintenance)!
+  * Added Turkish translation file (thanks to Proomp)
+  * Added Swedish translation file (thanks to Sup33r)
+  * Added Ukrainian translation file (thanks to Mrlucke)
+  * Added bStats metrics to Velocity and Sponge modules
 
 ### Fixed
 * Fixed variable replacement in messages with gradients
 * Fixed disabling the `enable-pingmessages` setting not being respected on Paper servers
 * Fixed the message for cancelling proxied server timers not replacing the server argument
+* Setting `enable-pingmessages` to `false` no longer disables custom player and player hover messages
 ---
 ## 4.0.1 - April 17th 2022
 ### Fixed

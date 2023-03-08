@@ -36,26 +36,33 @@ public final class ProxyPingListener implements Listener {
 
     @EventHandler(priority = 80)
     public void proxyPing(final ProxyPingEvent event) {
-        if (!settings.isMaintenance() || !settings.isEnablePingMessages()) return;
-
-        final ServerPing ping = event.getResponse();
-        ServerPing.Players players = ping.getPlayers();
-        if (players == null) {
-            ping.setPlayers(players = new ServerPing.Players(0, 0, null));
+        if (!settings.isMaintenance()) {
+            return;
         }
 
+        final ServerPing ping = event.getResponse();
         if (settings.hasCustomPlayerCountMessage()) {
             ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage(), 1));
         }
 
-        ping.setDescriptionComponent(ComponentUtil.toBadComponents(settings.getRandomPingMessage()));
-
-        final String[] lines = settings.getPlayerCountHoverLines();
-        final ServerPing.PlayerInfo[] samplePlayers = new ServerPing.PlayerInfo[lines.length];
-        for (int i = 0; i < lines.length; i++) {
-            samplePlayers[i] = new ServerPing.PlayerInfo(lines[i], "");
+        if (settings.isEnablePingMessages()) {
+            ping.setDescriptionComponent(ComponentUtil.toBadComponents(settings.getRandomPingMessage()));
         }
-        players.setSample(samplePlayers);
+
+        if (settings.hasCustomPlayerCountHoverMessage()) {
+            ServerPing.Players players = ping.getPlayers();
+            if (players == null) {
+                players = new ServerPing.Players(0, 0, null);
+                ping.setPlayers(players);
+            }
+
+            final String[] lines = settings.getPlayerCountHoverLines();
+            final ServerPing.PlayerInfo[] samplePlayers = new ServerPing.PlayerInfo[lines.length];
+            for (int i = 0; i < lines.length; i++) {
+                samplePlayers[i] = new ServerPing.PlayerInfo(lines[i], "");
+            }
+            players.setSample(samplePlayers);
+        }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {
             ping.setFavicon(plugin.getFavicon());
