@@ -60,7 +60,9 @@ public abstract class JoinListenerBase {
         if (!settings.hasUpdateChecks()) return;
         if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return;
         plugin.async(() -> {
-            if (!plugin.updateAvailable()) return;
+            if (!plugin.updateAvailable()) {
+                return;
+            }
 
             notifiedPlayers.add(sender.getUuid());
             sender.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());

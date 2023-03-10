@@ -36,6 +36,15 @@ import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
 import eu.kennytv.maintenance.spigot.util.BukkitTask;
 import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -50,17 +59,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
+    private static final boolean FOLIA = hasClass("io.papermc.paper.threadedregions.RegionisedServer");
     private final MaintenanceSpigotBase plugin;
     private final BukkitAudiences audiences;
     private CachedServerIcon favicon;
@@ -108,6 +108,15 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         }
     }
 
+    private static boolean hasClass(final String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (final ReflectiveOperationException e) {
+            return false;
+        }
+    }
+
     private boolean canUsePaperListener() {
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
@@ -124,6 +133,9 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
     @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
+        if (FOLIA) {
+            throw new UnsupportedOperationException("Scheduling tasks is not yet supported on Folia");
+        }
         return new BukkitTask(getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20));
     }
 
@@ -141,6 +153,11 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
     @Override
     public void async(final Runnable runnable) {
+        if (FOLIA) {
+            // Preliminary Folia support
+            runnable.run();
+            return;
+        }
         getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
