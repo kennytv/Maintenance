@@ -2,7 +2,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {
     repositories {
-        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://repo.minecrell.net/snapshots")
         maven("https://repo.dmulloy2.net/repository/public/")
@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 pluginManagement {
     plugins {
         id("net.kyori.blossom") version "1.2.0"
-        id("com.github.johnrengelman.shadow") version "8.1.0"
+        id("com.github.johnrengelman.shadow") version "8.1.1"
     }
 }
 

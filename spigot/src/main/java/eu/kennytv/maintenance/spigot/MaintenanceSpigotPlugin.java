@@ -60,7 +60,7 @@ import org.bukkit.util.CachedServerIcon;
 import org.jetbrains.annotations.Nullable;
 
 public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
-    private static final boolean FOLIA = hasClass("io.papermc.paper.threadedregions.RegionisedServer");
+    private static final boolean FOLIA = hasClass("io.papermc.paper.threadedregions.RegionizedServer");
     private final MaintenanceSpigotBase plugin;
     private final BukkitAudiences audiences;
     private CachedServerIcon favicon;
