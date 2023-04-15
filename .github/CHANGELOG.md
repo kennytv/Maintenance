@@ -2,7 +2,7 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## Unreleased
+## 4.1.0 - April 17th 2023
 ### Changed
 * Added config option `enable-playercounthovermessage` to be able to toggle the player count hover message
 * Removed platform specific command aliases (e.g. `maintenancevelocity`)
