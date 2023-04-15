@@ -20,7 +20,6 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.core.util.ServerType;
 
 public final class UpdateCommand extends CommandInfo {
 
@@ -33,23 +32,24 @@ public final class UpdateCommand extends CommandInfo {
         if (checkArgs(sender, args, 1)) return;
         if (args[0].equalsIgnoreCase("update")) {
             plugin.async(() -> plugin.getCommandManager().checkForUpdate(sender));
-        } else {
-            if (!plugin.updateAvailable()) {
-                sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
-                return;
-            }
-            // Ore very sad :(
-            if (plugin.getServerType() == ServerType.SPONGE) {
-                sender.sendMessage(plugin.getPrefix() + "§cSorry, automated downloading of the plugin is not supported on Sponge! Please download the latest version manually! :(");
-                return;
-            }
+            return;
+        }
 
-            sender.send(getMessage("updateDownloading"));
+        if (!plugin.updateAvailable()) {
+            sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+            return;
+        }
+
+        sender.send(getMessage("updateDownloading"));
+        try {
             if (plugin.installUpdate()) {
                 sender.send(getMessage("updateFinished"));
             } else {
                 sender.send(getMessage("updateFailed"));
             }
+        } catch (Exception e) {
+            sender.send(getMessage("updateFailed"));
+            e.printStackTrace();
         }
     }
 }

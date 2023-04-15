@@ -17,7 +17,6 @@
  */
 package eu.kennytv.maintenance.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
@@ -51,6 +50,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -212,7 +212,6 @@ public abstract class MaintenancePlugin implements Maintenance {
             try {
                 checkNewestVersion();
             } catch (final Exception e) {
-                getLogger().warning("An error occured during update checking!");
                 return;
             }
 
@@ -230,27 +229,32 @@ public abstract class MaintenancePlugin implements Maintenance {
         });
     }
 
-    public boolean installUpdate() {
-        // Ore sad :(
-        Preconditions.checkArgument(serverType != ServerType.SPONGE);
-        try {
-            final String fileSuffix = serverType == ServerType.VELOCITY ? "Velocity" : "";
-            final URLConnection conn = new URL("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/Maintenance" + fileSuffix + ".jar").openConnection();
-            writeFile(new BufferedInputStream(conn.getInputStream()), new BufferedOutputStream(Files.newOutputStream(Paths.get(getPluginFolder() + "Maintenance.tmp"))));
-            final File file = new File(getPluginFolder() + "Maintenance.tmp");
-            final long newlength = file.length();
-            if (newlength < 10000) {
-                file.delete();
-                return false;
-            }
+    public boolean installUpdate() throws Exception {
+        // Sponge and Velocity need their own jar
+        final String platformInfix = serverType == ServerType.VELOCITY ? "Velocity-" : serverType == ServerType.SPONGE ? "Sponge-" : "";
+        final String fileName = "Maintenance-" + platformInfix + newestVersion + ".jar";
+        final Path tempFilePath = Paths.get(getPluginFolder() + "Maintenance.tmp");
+        final URLConnection connection = new URL("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/" + fileName).openConnection();
+        try (final BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
+             final BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(tempFilePath))) {
+            writeFile(is, os);
+        }
 
-            writeFile(Files.newInputStream(file.toPath()), new BufferedOutputStream(Files.newOutputStream(getPluginFile().toPath())));
+        final File file = tempFilePath.toFile();
+        final long newlength = file.length();
+        if (newlength < 10_000) {
+            // Sanity check the file length
             file.delete();
-            return true;
-        } catch (final Exception e) {
-            e.printStackTrace();
             return false;
         }
+
+        try (final InputStream is = Files.newInputStream(file.toPath());
+             final BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(getPluginFile().toPath()))) {
+            writeFile(is, os);
+        }
+
+        file.delete();
+        return true;
     }
 
     private void writeFile(final InputStream is, final OutputStream os) throws IOException {
@@ -259,13 +263,11 @@ public abstract class MaintenancePlugin implements Maintenance {
         while ((chunkSize = is.read(chunk)) != -1) {
             os.write(chunk, 0, chunkSize);
         }
-        is.close();
-        os.close();
     }
 
     private void checkNewestVersion() throws Exception {
-        final HttpURLConnection c = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=40699").openConnection();
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream()))) {
+        final HttpURLConnection connection = (HttpURLConnection) new URL("https://hangar.papermc.io/api/v1/projects/kennytv/Maintenance/latestrelease").openConnection();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             final String newVersionString = reader.readLine();
             final Version newVersion = new Version(newVersionString);
             if (!newVersion.equals(version)) {
