@@ -55,7 +55,7 @@ singleEndtimerBroadcast: "<prefix><gray>%SERVER% のメンテナンスモード�
 singleStarttimerBroadcast: "<prefix><gray>%SERVER% のメンテナンスモードは、<gold>%TIME%<gray> で有効になります。"
 singleScheduletimerBroadcast: "<prefix><gray>サーバ %SERVER% のメンテナンスモードは <gold>%TIME% <gray> で有効になり、<gold>%DURATION%<gray> の間持続します。"
 singleMaintenanceKick: "<prefix><red>%SERVER% はメンテナンス中です。むやみにアクセスしないでください。"
-singleMaintenanceKickComplete: "<red>The server %SERVER% is under maintenance!<br>You may try to rejoin to go onto another server!"
+singleMaintenanceKickComplete: "<red>サーバー %SERVER% はメンテナンス中です！<br>他のサーバーに再び参加することができます！"
 singleMaintenanceActivated: "<prefix><yellow>%SERVER%<green> のメンテナンスを有効にしました。"
 singleMaintenanceDeactivated: "<prefix><yellow>%SERVER%<yellow> のメンテナンスを解除しました。"
 singleServerAlreadyEnabled: "<prefix><yellow>%SERVER%<red> のメンテナンスは既に有効です。"
