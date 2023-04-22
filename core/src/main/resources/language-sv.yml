@@ -4,7 +4,7 @@
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Underhållsarbete<dark_gray>] "
 noPermission: "<red>Du har inte rättigheterna att utfärda det kommandot."
-kickmessage: "<red>Sevrern är just nu under underhåll!<br>Försök igen senare!"
+kickmessage: "<red>Servern är just nu under underhåll!<br>Försök igen senare!"
 maintenanceActivated: "<prefix><gold>Underhållsläge är aktiverat."
 maintenanceDeactivated: "<prefix><gold>Underhållsläge är avaktiverat."
 alreadyEnabled: "<prefix><red>Underhållsläge är redan aktiverat!"
