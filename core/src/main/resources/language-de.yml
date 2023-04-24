@@ -4,8 +4,8 @@
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>Du hast nicht die erforderliche Berechtigung, um diesen Befehl auszuführen."
-kickmessage: "<red>Der Server befindet sich momentan im Wartungsmodus!<br> Bitte es später nochmal!"
-maintenanceActivated: "<prefix><gold>Der Wartungsmodus ist jetzt aktiviert."
+kickmessage: "<red>Der Server befindet sich momentan im Wartungsmodus!<br>Bitte versuche es später nochmal!"
+maintenanceActivated: "<prefix><gold>Der Wartungsmodus ist nun aktiviert."
 maintenanceDeactivated: "<prefix><gold>Der Wartungsmodus ist nun deaktiviert."
 alreadyEnabled: "<prefix><red>Der Wartungsmodus ist bereits aktiviert!"
 alreadyDisabled: "<prefix><red>Der Wartungsmodus ist bereits deaktiviert!"
