@@ -81,7 +81,7 @@ helpDump: "<gold>/maintenance dump <gray>(Sammelt wichtige Informationen für Bu
 helpHelp: "<gold>/maintenance help [Seite] <gray>(Zeigt diese wunderschöne Hilfe)"
 helpMotd: "<gold>/maintenance motd [Timer] <gray>(Zeigt die momentan gesetzten Maintenance Motds an. Mit dem 'timer' Argument werden die timerspezifischen Motds angezeigt)"
 helpRemoveMotd: "<gold>/maintenance removemotd [Timer] <Index> <gray>(Entfernt eine Maintenance Motd. Mit dem 'timer' Argument wird eine timerspezifischen Motd entfernt)"
-helpSetMotd: "<gold>/maintenance setmotd [Timer] <Index> <1/2> <Nachricht> <gray>(Setzte eine Motd für den Wartungsmodus. Mit dem 'timer' Argument as an argument wird eine timerspezifische Motd gesetzt)"
+helpSetMotd: "<gold>/maintenance setmotd [Timer] <Index> <1/2> <Nachricht> <gray>(Setzte eine Motd für den Wartungsmodus. Mit dem 'timer' Argument wird eine timerspezifische Motd gesetzt)"
 helpReload: "<gold>/maintenance reload <gray>(Lädt Config, Language und Whitelist Dateien sowie das Maintenance Icon neu)"
 helpToggle: "<gold>/maintenance <on/off> <gray>(Aktiviert/deaktiviert den Wartungsmodus)"
 helpUpdate: "<gold>/maintenance update <gray>(Sucht nach neuen Updates für das Plugin und lädt diese auf den Server)"
