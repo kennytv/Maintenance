@@ -3,9 +3,9 @@ metadata.format.version = "1.1"
 [versions]
 
 # Shaded
-adventure = "4.13.1"
+adventure = "4.14.0"
 adventurePlatform = "4.3.0"
-mysqlConnector = "8.0.32"
+mysqlConnector = "8.0.33"
 hikariCP = "4.0.3"
 bstats = "3.0.2"
 
@@ -15,13 +15,13 @@ guava = "29.0-jre"
 snakeyaml = "1.23"
 jetbrainsAnnotations = "24.0.1"
 
-protocollib = "5.0.0-SNAPSHOT"
+protocollib = "5.0.0"
 authlib = "1.5.25"
 luckperms = "5.3"
 serverlistplus = "3.4.9-SNAPSHOT"
 
 paper = "1.16.5-R0.1-SNAPSHOT"
-bungee = "1.19-R0.1-SNAPSHOT"
+bungee = "1.20-R0.1-SNAPSHOT"
 sponge = "8.0.0"
 velocity = "3.1.0"
 
@@ -37,7 +37,7 @@ adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-se
 adventurePlatformBukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventurePlatform" }
 adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
 
-mysqlConnector = { group = "mysql", name = "mysql-connector-java", version.ref = "mysqlConnector" }
+mysqlConnector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysqlConnector" }
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
