@@ -99,7 +99,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Listener
     public void onEnable(final StartingEngineEvent<Server> event) {
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
-                "playercountmessage");
+                "playercountmessage", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
 
         sendEnableMessage();
 

@@ -37,6 +37,8 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -59,7 +61,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
     public static final Gson GSON = new GsonBuilder().create();

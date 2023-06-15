@@ -25,24 +25,17 @@ import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 6;
+    private static final int CONFIG_VERSION = 7;
     private static final int LANGUAGE_VERSION = 1;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
@@ -247,8 +240,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             plugin.getLogger().info("Updating config to the latest version...");
             if (version < 6) {
                 // Legacy text to MiniMessage
-                legacyToMinimessage(config.getStringList("pingmessages"));
-                legacyToMinimessage(config.getStringList("timerspecific-pingmessages"));
+                config.getStringList("pingmessages").replaceAll(this::legacyToMinimessage);
+                config.getStringList("timerspecific-pingmessages").replaceAll(this::legacyToMinimessage);
                 config.set("playercounthovermessage", legacyToMinimessage(config.getString("playercounthovermessage")));
                 config.set("playercountmessage", legacyToMinimessage(config.getString("playercountmessage")));
             }
@@ -319,10 +312,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         final String serialized = MiniMessage.miniMessage().serialize(component);
         //TODO hack to remove explicit closing until fixed in MM
         return serialized.replaceAll("</[a-z_]+>", "");
-    }
-
-    private void legacyToMinimessage(final List<String> list) {
-        list.replaceAll(this::legacyToMinimessage);
     }
 
     public String getConfigMessage(final String path) {
@@ -482,7 +471,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     public void setSavedEndtimer(final long millis) {
-        if (savedEndtimer == millis) return;
+        if (savedEndtimer == millis) {
+            return;
+        }
+
         this.savedEndtimer = millis;
         config.getSection("continue-endtimer-after-restart").set("end", millis);
         saveConfig();

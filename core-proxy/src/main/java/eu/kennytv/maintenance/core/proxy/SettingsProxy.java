@@ -27,8 +27,11 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public final class SettingsProxy extends Settings {
@@ -37,6 +40,8 @@ public final class SettingsProxy extends Settings {
     private List<String> fallbackServers;
     private String waitingServer;
 
+    private Map<String, List<String>> commandsOnMaintenanceEnable;
+    private Map<String, List<String>> commandsOnMaintenanceDisable;
     private String mySQLTable;
     private String serverTable;
     private String maintenanceQuery;
@@ -97,6 +102,18 @@ public final class SettingsProxy extends Settings {
         waitingServer = config.getString("waiting-server", "");
         if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
             waitingServer = null;
+        }
+
+        commandsOnMaintenanceEnable = new HashMap<>();
+        final ConfigSection enableCommandsSection = config.getSection("commands-on-single-maintenance-enable");
+        for (final String key : enableCommandsSection.getKeys()) {
+            commandsOnMaintenanceEnable.put(key.toLowerCase(Locale.ROOT), enableCommandsSection.getStringList(key));
+        }
+
+        commandsOnMaintenanceDisable = new HashMap<>();
+        final ConfigSection disableCommandsSection = config.getSection("commands-on-single-maintenance-disable");
+        for (final String key : disableCommandsSection.getKeys()) {
+            commandsOnMaintenanceDisable.put(key.toLowerCase(Locale.ROOT), disableCommandsSection.getStringList(key));
         }
 
         if (hasMySQL()) {
@@ -260,6 +277,24 @@ public final class SettingsProxy extends Settings {
     @Nullable
     public String getWaitingServer() {
         return waitingServer;
+    }
+
+    public List<String> getCommandsOnMaintenanceEnable(final Server server) {
+        final List<String> enableCommands = commandsOnMaintenanceEnable.getOrDefault("all", new ArrayList<>());
+        final List<String> serverEnableCommands = commandsOnMaintenanceEnable.get(server.getName().toLowerCase(Locale.ROOT));
+        if (serverEnableCommands != null) {
+            enableCommands.addAll(serverEnableCommands);
+        }
+        return enableCommands;
+    }
+
+    public List<String> getCommandsOnMaintenanceDisable(final Server server) {
+        final List<String> disableCommands = commandsOnMaintenanceDisable.getOrDefault("all", new ArrayList<>());
+        final List<String> serverDisableCommands = commandsOnMaintenanceDisable.get(server.getName().toLowerCase(Locale.ROOT));
+        if (serverDisableCommands != null) {
+            disableCommands.addAll(serverDisableCommands);
+        }
+        return disableCommands;
     }
 
     @Nullable

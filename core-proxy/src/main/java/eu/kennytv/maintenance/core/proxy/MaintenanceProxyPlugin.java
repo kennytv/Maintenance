@@ -36,8 +36,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,11 +83,23 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
         if (maintenance) {
-            if (!settingsProxy.addMaintenanceServer(server.getName())) return false;
-        } else {
-            if (!settingsProxy.removeMaintenanceServer(server.getName())) return false;
+            if (!settingsProxy.addMaintenanceServer(server.getName())) {
+                return false;
+            }
+        } else if (!settingsProxy.removeMaintenanceServer(server.getName())) {
+            return false;
         }
+
         serverActions(server, maintenance);
+
+        for (final String command : (maintenance ? settingsProxy.getCommandsOnMaintenanceEnable(server) : settingsProxy.getCommandsOnMaintenanceDisable(server))) {
+            try {
+                executeConsoleCommand(command.replace("%SERVER%", server.getName()));
+            } catch (final Exception e) {
+                getLogger().severe("Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command);
+                e.printStackTrace();
+            }
+        }
         return true;
     }
 
@@ -177,7 +189,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
         final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        final URLConnection connection = url.openConnection();
         try (final InputStream in = connection.getInputStream()) {
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);

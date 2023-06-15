@@ -41,6 +41,15 @@ enable-pingmessages: true
 commands-on-maintenance-enable: []
 commands-on-maintenance-disable: []
 
+# Any extra commands inside the "all" array will be executed when maintenance is enabled/disabled on a proxied server.
+# You can also add commands for specific servers by adding a new array with the server name as key.
+# In the commands, you can use the %SERVER% placeholder to get the server name.
+# Example: coolserver: ["say hello", "othercommand %SERVER%"]
+commands-on-single-maintenance-enable:
+  all: []
+commands-on-single-maintenance-disable:
+  all: []
+
 # If set to true and an endtimer is currently running, a pingmessage from this pool will be chosen
 # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
 enable-timerspecific-messages: true

@@ -70,7 +70,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
         this.plugin = plugin;
         this.audiences = BukkitAudiences.create(plugin);
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server");
+        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
 
         sendEnableMessage();
 
