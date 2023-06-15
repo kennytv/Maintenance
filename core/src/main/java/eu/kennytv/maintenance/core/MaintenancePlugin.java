@@ -266,7 +266,8 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     private void checkNewestVersion() throws Exception {
-        final HttpURLConnection connection = (HttpURLConnection) new URL("https://hangar.papermc.io/api/v1/projects/kennytv/Maintenance/latestrelease").openConnection();
+        final URLConnection connection = new URL("https://hangar.papermc.io/api/v1/projects/kennytv/Maintenance/latestrelease").openConnection();
+        connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             final String newVersionString = reader.readLine();
             final Version newVersion = new Version(newVersionString);
