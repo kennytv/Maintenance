@@ -54,7 +54,7 @@ singleTimerNotRunning: "<prefix><red>Der er i øjeblikket ingen kørende timer f
 singleEndtimerBroadcast: "<prefix><gray>Vedligeholdelsestilstand på server %SERVER% vil blive deaktiveret om <gold>%TIME%<gray>."
 singleStarttimerBroadcast: "<prefix><gray>Vedligeholdelsestilstand på server %SERVER% vil blive aktiveret om <gold>%TIME%<gray>."
 singleScheduletimerBroadcast: "<prefix><gray>Vedligeholdelsestilstand på server %SERVER% vil blive aktiveret om <gold>%TIME% <gray>og vil vare i <gold>%DURATION%<gray>."
-singleMaintenanceKick: "<prefix><red>Serveren %SERVER% er i øjeblikket under vedligeholdelse! prøv igen senere!"
+singleMaintenanceKick: "<prefix><red>Serveren %SERVER% er i øjeblikket under vedligeholdelse! Prøv igen senere!"
 singleMaintenanceKickComplete: "<red>Serveren %SERVER% er under vedligeholdelse!<br>Du kan prøve at forbinde igen for at gå ind på en anden server!"
 singleMaintenanceActivated: "<prefix><gold>Vedligeholdelsestilstand er nu aktiveret på serveren <yellow>%SERVER%<gold>."
 singleMaintenanceDeactivated: "<prefix><gold>Vedligeholdelsestilstand er nu deaktiveret på serveren <yellow>%SERVER%<gold>."
