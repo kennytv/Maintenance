@@ -18,7 +18,7 @@ jetbrainsAnnotations = "24.0.1"
 protocollib = "5.0.0"
 authlib = "1.5.25"
 luckperms = "5.3"
-serverlistplus = "3.4.9-SNAPSHOT"
+serverlistplus = "3.5.0"
 
 paper = "1.16.5-R0.1-SNAPSHOT"
 bungee = "1.20-R0.1-SNAPSHOT"
