@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    signing
 }
 
 tasks {
@@ -28,10 +29,40 @@ java {
     withSourcesJar()
 }
 
+signing {
+    useGpgCmd()
+    sign(publishing.publications)
+}
+
 publishing {
     publications.create<MavenPublication>("mavenJava") {
         groupId = rootProject.group as String
         artifactId = project.name
         version = rootProject.version as String
+        pom {
+            name.set("Maintenance")
+            description.set("Paper plugin to enable maintenance mode on your Minecraft server.")
+            url.set("https://github.com/kennytv/Maintenance")
+            licenses {
+                license {
+                    name.set("GNU GPLv3")
+                    url.set("https://www.gnu.org/licenses/gpl-3.0.html")
+                }
+            }
+            developers {
+                developer {
+                    id.set("kennytv")
+                    name.set("Nassim Jahnke")
+                }
+            }
+        }
+    }
+    repositories.maven {
+        name = "OSSRH"
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        credentials {
+            username = System.getenv("OSSRH_USERNAME")
+            password = System.getenv("OSSRH_PASSWORD")
+        }
     }
 }
