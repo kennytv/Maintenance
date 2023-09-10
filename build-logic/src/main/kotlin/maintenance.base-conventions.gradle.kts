@@ -57,12 +57,15 @@ publishing {
             }
         }
     }
-    repositories.maven {
-        name = "OSSRH"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        credentials {
-            username = System.getenv("OSSRH_USERNAME")
-            password = System.getenv("OSSRH_PASSWORD")
+
+    if (!name.startsWith("adventure")) {
+        repositories.maven {
+            name = "OSSRH"
+            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
         }
     }
 }
