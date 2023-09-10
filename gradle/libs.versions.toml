@@ -51,7 +51,7 @@ protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.
 hikariCP = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
 luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
-serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
+# serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
 
 paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper" }
 bungee = { group = "net.md-5", name = "bungeecord-api", version.ref = "bungee" }

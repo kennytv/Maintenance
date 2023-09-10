@@ -13,7 +13,7 @@ dependencies {
         targetConfiguration = "shadow"
     }
     compileOnly(libs.luckperms)
-    compileOnly(libs.serverlistplus)
+    // compileOnly(libs.serverlistplus)
     compileOnly(libs.guava)
     compileOnly(libs.gson)
     compileOnly(libs.snakeyaml)
