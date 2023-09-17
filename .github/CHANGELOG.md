@@ -2,7 +2,7 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## Unreleased
+## 4.2.0 - September 17th 2023
 ### Changed
 * Velocity/Bungee: Added `commands-on-single-maintenance-enable` and `commands-on-single-maintenance-disable` config options to define commands to be executed after maintenance has been toggled on a proxied server
   * Commands inside the `all` list will be executed for any proxied server, but you can also define commands for specific servers by adding arrays with the server names as keys
