@@ -1,10 +1,17 @@
 plugins {
     id("net.kyori.blossom")
+    id("org.jetbrains.gradle.plugin.idea-ext")
 }
 
-blossom {
-    replaceToken("\$VERSION", project.version)
-    replaceToken("\$IMPL_VERSION", "git-Maintenance-${project.version}:${rootProject.latestCommitHash()}")
+sourceSets {
+    main {
+        blossom {
+            javaSources {
+                property("version", project.version.toString())
+                property("impl_version", "git-Maintenance-${project.version}:${rootProject.latestCommitHash()}")
+            }
+        }
+    }
 }
 
 dependencies {
