@@ -51,8 +51,13 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), Integer.parseInt(args[2]), TimeUnit.MINUTES);
-            sender.send(getMessage("scheduletimerStarted", "%TIME%", plugin.getRunnable().getTime()));
+            final int duration = Integer.parseInt(args[2]);
+            plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), duration, TimeUnit.MINUTES);
+            sender.send(getMessage(
+                    "scheduletimerStarted",
+                    "%TIME%", plugin.getRunnable().getTime(),
+                    "%DURATION%", plugin.getFormattedTime(duration * 60)
+            ));
         } else if (args.length == 4) {
             if (checkPermission(sender, "singleserver.timer")) return;
             if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)
@@ -68,10 +73,12 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), Integer.parseInt(args[3]), TimeUnit.MINUTES);
+            final int duration = Integer.parseInt(args[3]);
+            final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), duration, TimeUnit.MINUTES);
             sender.send(getMessage(
                     "singleScheduletimerStarted",
                     "%TIME%", runnable.getTime(),
+                    "%DURATION%", plugin.getFormattedTime(duration * 60),
                     "%SERVER%", server.getName()
             ));
         } else {

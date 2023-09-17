@@ -20,7 +20,6 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-
 import java.util.concurrent.TimeUnit;
 
 public final class ScheduleTimerCommand extends CommandInfo {
@@ -42,7 +41,12 @@ public final class ScheduleTimerCommand extends CommandInfo {
             return;
         }
 
-        plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), Integer.parseInt(args[2]), TimeUnit.MINUTES);
-        sender.send(getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime()));
+        final int duration = Integer.parseInt(args[2]);
+        plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), duration, TimeUnit.MINUTES);
+        sender.send(getMessage(
+                "scheduletimerStarted",
+                "%TIME%", plugin.getRunnable().getTime(),
+                "%DURATION%", plugin.getFormattedTime(duration * 60)
+        ));
     }
 }
