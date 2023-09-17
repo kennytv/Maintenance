@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +67,11 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
             }
 
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), TimeUnit.MINUTES, false);
-            sender.send(getMessage("endtimerStarted", "%TIME%", runnable.getTime()));
+            sender.send(getMessage(
+                    "singleEndtimerStarted",
+                    "%TIME%", runnable.getTime(),
+                    "%SERVER%", server.getName()
+            ));
         } else {
             sender.send(getHelpMessage());
         }

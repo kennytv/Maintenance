@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +52,7 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
             }
 
             plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), Integer.parseInt(args[2]), TimeUnit.MINUTES);
-            sender.send(getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime()));
+            sender.send(getMessage("scheduletimerStarted", "%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 4) {
             if (checkPermission(sender, "singleserver.timer")) return;
             if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)
@@ -70,7 +69,11 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
             }
 
             final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), Integer.parseInt(args[3]), TimeUnit.MINUTES);
-            sender.send(getMessage("starttimerStarted", "%TIME%", runnable.getTime()));
+            sender.send(getMessage(
+                    "singleScheduletimerStarted",
+                    "%TIME%", runnable.getTime(),
+                    "%SERVER%", server.getName()
+            ));
         } else {
             sender.send(getHelpMessage());
         }
