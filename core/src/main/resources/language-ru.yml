@@ -57,7 +57,7 @@ singleEndtimerStarted: "<prefix><green>Начат таймер: <gray>Тех. р
 singleStarttimerBroadcast: "<red>Внимание! Сервер <white>%SERVER% <red>будет закрыт на технические работы через <white>%TIME%<red>!"
 singleStarttimerStarted: "<prefix><red>Внимание! <gray>Сервер <green>%SERVER%<gray> будет закрыт на технические работы через <gold>%TIME%<gray>."
 singleScheduletimerBroadcast: "<prefix><gray>Maintenance mode on server %SERVER% will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
-singleScheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode on server %SERVER% will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
+singleScheduletimerStarted: "<prefix><gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
 singleMaintenanceKick: "<red>Данный сервер закрыт на технические работы! Попробуйте позже."
 singleMaintenanceKickComplete: "<red>Данный сервер закрыт на технические работы!<br>Попробуйте позже."
 singleMaintenanceActivated: "<green>Режим технических работ на сервере <white>%SERVER% <green>включен!"
