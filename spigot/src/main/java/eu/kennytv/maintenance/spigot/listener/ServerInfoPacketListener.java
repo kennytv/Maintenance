@@ -37,7 +37,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public final class ServerInfoPacketListener extends PacketAdapter implements Listener {
-    private final UUID uuid = new UUID(0, 0);
+    private static final UUID ZERO_UUID = new UUID(0, 0);
     private final MaintenanceSpigotPlugin plugin;
     private final Settings settings;
 
@@ -61,13 +61,13 @@ public final class ServerInfoPacketListener extends PacketAdapter implements Lis
 
         if (settings.hasCustomPlayerCountMessage()) {
             ping.setVersionProtocol(1);
-            ping.setVersionName(settings.getPlayerCountMessage());
+            ping.setVersionName(settings.getLegacyParsedPlayerCountMessage());
         }
 
         if (settings.hasCustomPlayerCountHoverMessage()) {
             final List<WrappedGameProfile> players = new ArrayList<>();
-            for (final String string : settings.getPlayerCountHoverLines()) {
-                players.add(new WrappedGameProfile(uuid, string));
+            for (final String string : settings.getLegacyParsedPlayerCountHoverLines()) {
+                players.add(new WrappedGameProfile(ZERO_UUID, string));
             }
             ping.setPlayers(players);
         }

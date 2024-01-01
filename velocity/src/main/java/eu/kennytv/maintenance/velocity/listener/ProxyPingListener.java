@@ -26,9 +26,9 @@ import eu.kennytv.maintenance.velocity.util.ComponentUtil;
 import java.util.UUID;
 
 public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
+    private static final UUID ZERO_UUID = new UUID(0, 0);
     private final MaintenanceVelocityPlugin plugin;
     private final SettingsProxy settings;
-    private final UUID uuid = new UUID(0, 0);
 
     public ProxyPingListener(final MaintenanceVelocityPlugin plugin, final SettingsProxy settings) {
         this.plugin = plugin;
@@ -44,14 +44,14 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         final ServerPing ping = event.getPing();
         final ServerPing.Builder builder = ping.asBuilder();
         if (settings.hasCustomPlayerCountMessage()) {
-            builder.version(new ServerPing.Version(1, settings.getPlayerCountMessage()));
+            builder.version(new ServerPing.Version(1, settings.getLegacyParsedPlayerCountMessage()));
         }
 
         if (settings.hasCustomPlayerCountHoverMessage()) {
-            final String[] lines = settings.getPlayerCountHoverLines();
+            final String[] lines = settings.getLegacyParsedPlayerCountHoverLines();
             final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[lines.length];
             for (int i = 0; i < lines.length; i++) {
-                samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], uuid);
+                samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], ZERO_UUID);
             }
             builder.samplePlayers(samplePlayers);
         }

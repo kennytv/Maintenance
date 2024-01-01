@@ -60,13 +60,13 @@ public final class PaperServerListPingListener implements Listener {
 
         if (settings.hasCustomPlayerCountMessage()) {
             event.setProtocolVersion(-1);
-            event.setVersion(settings.getPlayerCountMessage());
+            event.setVersion(settings.getLegacyParsedPlayerCountMessage());
         }
 
         if (settings.hasCustomPlayerCountHoverMessage()) {
             final List<PlayerProfile> sample = event.getPlayerSample();
             sample.clear();
-            for (final String string : settings.getPlayerCountHoverLines()) {
+            for (final String string : settings.getLegacyParsedPlayerCountHoverLines()) {
                 sample.add(new DummyProfile(string));
             }
         }

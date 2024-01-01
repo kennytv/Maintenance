@@ -25,13 +25,19 @@ import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
@@ -47,8 +53,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private List<String> timerSpecificPingMessages;
     private List<String> commandsOnMaintenanceEnable;
     private List<String> commandsOnMaintenanceDisable;
-    private String playerCountMessage;
-    private List<String> playerCountHoverLines;
+    private String legacyParsedPlayerCountMessage;
+    private List<String> legacyParsedPlayerCountHoverLines;
     private String prefixString;
     private String languageName;
     private boolean enablePingMessages;
@@ -168,6 +174,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         updateConfig();
 
         enablePingMessages = config.getBoolean("enable-pingmessages", true);
+        // Can't store these two already parsed as components because gradients will break replacements
         pingMessages = loadPingMessages("pingmessages");
         if (config.getBoolean("enable-timerspecific-messages")) {
             timerSpecificPingMessages = loadPingMessages("timerspecific-pingmessages");
@@ -180,13 +187,16 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
         broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
+
+        // Player count and player count hover messages are only accepted and rendered as legacy chat
         if (plugin.getServerType() != ServerType.SPONGE) {
-            playerCountMessage = getConfigMessage("playercountmessage");
+            legacyParsedPlayerCountMessage = toLegacy(parse(getConfigMessage("playercountmessage")));
         }
 
-        playerCountHoverLines = new ArrayList<>();
-        final String playerHoverMessage = config.getString("playercounthovermessage");
-        Collections.addAll(playerCountHoverLines, playerHoverMessage.split("<br>"));
+        legacyParsedPlayerCountHoverLines = new ArrayList<>();
+        for (final String line : config.getString("playercounthovermessage").split("<br>")) {
+            legacyParsedPlayerCountHoverLines.add(toLegacy(parse(line)));
+        }
 
         languageName = config.getString("language").toLowerCase();
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
@@ -350,6 +360,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return parse(getLanguageString(path, replacements));
     }
 
+    // TODO Cache platform components if there are no replacements
     public Component getRandomPingMessage() {
         if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable()
                 && hasTimerSpecificPingMessages() && !timerSpecificPingMessages.isEmpty()) {
@@ -505,17 +516,14 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return broadcastIntervals;
     }
 
-    // Yikeseroo
-    public String getPlayerCountMessage() {
-        return LegacyComponentSerializer.legacySection().serialize(parse(plugin.replacePingVariables(playerCountMessage)));
+    public String getLegacyParsedPlayerCountMessage() {
+        return plugin.replacePingVariables(legacyParsedPlayerCountMessage);
     }
 
-    // Yikeseroo x2
-    public String[] getPlayerCountHoverLines() {
-        final String[] lines = new String[playerCountHoverLines.size()];
-        for (int i = 0; i < playerCountHoverLines.size(); i++) {
-            final String component = plugin.replacePingVariables(playerCountHoverLines.get(i));
-            lines[i] = LegacyComponentSerializer.legacySection().serialize(parse(component));
+    public String[] getLegacyParsedPlayerCountHoverLines() {
+        final String[] lines = new String[legacyParsedPlayerCountHoverLines.size()];
+        for (int i = 0; i < legacyParsedPlayerCountHoverLines.size(); i++) {
+            lines[i] = plugin.replacePingVariables(legacyParsedPlayerCountHoverLines.get(i));
         }
         return lines;
     }
@@ -538,6 +546,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     protected Component parse(final String s) {
         return MiniMessage.miniMessage().deserialize(s);
+    }
+
+    protected String toLegacy(final Component component) {
+        return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
     /*

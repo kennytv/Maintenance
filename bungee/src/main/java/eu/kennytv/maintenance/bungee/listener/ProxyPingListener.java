@@ -42,7 +42,7 @@ public final class ProxyPingListener implements Listener {
 
         final ServerPing ping = event.getResponse();
         if (settings.hasCustomPlayerCountMessage()) {
-            ping.setVersion(new ServerPing.Protocol(settings.getPlayerCountMessage(), 1));
+            ping.setVersion(new ServerPing.Protocol(settings.getLegacyParsedPlayerCountMessage(), 1));
         }
 
         if (settings.isEnablePingMessages()) {
@@ -56,7 +56,7 @@ public final class ProxyPingListener implements Listener {
                 ping.setPlayers(players);
             }
 
-            final String[] lines = settings.getPlayerCountHoverLines();
+            final String[] lines = settings.getLegacyParsedPlayerCountHoverLines();
             final ServerPing.PlayerInfo[] samplePlayers = new ServerPing.PlayerInfo[lines.length];
             for (int i = 0; i < lines.length; i++) {
                 samplePlayers[i] = new ServerPing.PlayerInfo(lines[i], "");

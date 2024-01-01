@@ -65,7 +65,7 @@ import java.util.logging.Logger;
 public abstract class MaintenancePlugin implements Maintenance {
     public static final Gson GSON = new GsonBuilder().create();
     public static final String HANGAR_URL = "https://hangar.papermc.io/kennytv/Maintenance";
-    protected final eu.kennytv.maintenance.core.event.EventManager eventManager;
+    protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
     protected ServerListPlusHook serverListPlusHook;

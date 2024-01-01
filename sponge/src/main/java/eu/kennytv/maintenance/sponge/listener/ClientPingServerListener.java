@@ -57,7 +57,7 @@ public final class ClientPingServerListener {
             response.players().ifPresent(players -> {
                 final List<GameProfile> profiles = players.profiles();
                 profiles.clear();
-                for (final String string : settings.getPlayerCountHoverLines()) {
+                for (final String string : settings.getLegacyParsedPlayerCountHoverLines()) {
                     profiles.add(GameProfile.of(UUID.randomUUID(), string));
                 }
             });
