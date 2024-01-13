@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -187,15 +188,30 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         kickPlayersFromProxy();
     }
 
+    @Nullable
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
-        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
-        final URLConnection connection = url.openConnection();
+        final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int status = connection.getResponseCode();
+        if (status == 404) {
+            // Return null if profile not found
+            return null;
+        }
+
         try (final InputStream in = connection.getInputStream()) {
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);
 
-            final UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
-            final String username = json.getAsJsonPrimitive("username").getAsString();
+
+            final UUID uuid = UUID.fromString(
+                json.getAsJsonPrimitive("id").getAsString()
+                    .replaceFirst(
+                        "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"
+                    )
+            );
+            final String username = json.getAsJsonPrimitive("name").getAsString();
             return new ProfileLookup(uuid, username);
         }
     }

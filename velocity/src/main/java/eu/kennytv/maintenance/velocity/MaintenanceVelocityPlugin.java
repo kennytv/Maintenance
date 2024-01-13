@@ -67,6 +67,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -234,7 +235,12 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         async(() -> {
             try {
-                final ProfileLookup profile = doUUIDLookup(name);
+                ProfileLookup profile = doUUIDLookup(name);
+                if (profile == null) {
+                    // Use offline uuid
+                    profile = new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
+                }
+
                 consumer.accept(new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName()));
             } catch (final IOException e) {
                 e.printStackTrace();
