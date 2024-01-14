@@ -14,7 +14,7 @@ endtimerStarted: "<prefix><green>Timer avviato: <gray>La modalità manutenzione 
 starttimerBroadcast: "<prefix><gray>La modalità manutenzione verrà attivata tra <gold>%TIME%<gray>."
 starttimerStarted: "<prefix><green>Timer avviato: <gray>La modalità manutenzione verrà attivata tra <gold>%TIME%<gray>."
 scheduletimerBroadcast: "<prefix><gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
-scheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
+scheduletimerStarted: "<prefix><green>Timer avviato: la modalità di manutenzione <gray>sarà abilitata in <gold>%TIME% <gray>e durerà per <gold>%DURATION%<gray>."
 timerAlreadyRunning: "<prefix><red>C'è già un timer programmato!"
 timerNotRunning: "<prefix><red>Non c'è nessun timer attivo al momento."
 timerCancelled: "<prefix><red>Il timer attuale è stato disattivato."
@@ -57,7 +57,7 @@ singleEndtimerStarted: "<prefix><green>Timer avviato: <gray>La modalità manuten
 singleStarttimerBroadcast: "<prefix><gray>La modalità manutenzione per il server %SERVER% verrà disabilitata tra <gold>%TIME%<gray>."
 singleStarttimerStarted: "<prefix><green>Timer avviato: <gray>La modalità manutenzione per il server %SERVER% verrà attivata tra <gold>%TIME%<gray>."
 singleScheduletimerBroadcast: "<prefix><gray>Maintenance mode on server %SERVER% will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
-singleScheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode on server %SERVER% will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
+singleScheduletimerStarted: "<prefix><green>Timer avviato: <gray>Modalità di manutenzione sul server %SERVER% sarà attivato in <gold>%TIME% <gray>e durerà per <gold>%DURATION%<gray>."
 singleMaintenanceKick: "<prefix><red>Il server %SERVER% è in manutenzione al momento! Ritenta più tardi!"
 singleMaintenanceKickComplete: "<red>Il server %SERVER% è in manutenzione!<br>Prova a rientrare per accedere ad un'altro server!"
 singleMaintenanceActivated: "<prefix><gold>La modalità manutenzione è ora attiva sul server <yellow>%SERVER%<gold>."
@@ -97,7 +97,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Se attivo, 
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà rimossa)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà attivata)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/Disabilita la modalità manutenzione)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/disabilita la modalità di manutenzione)"
 helpStatus: "<gold>/maintenance status <gray>(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 1
