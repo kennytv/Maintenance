@@ -204,7 +204,6 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);
 
-
             final UUID uuid = UUID.fromString(
                 json.getAsJsonPrimitive("id").getAsString()
                     .replaceFirst(
