@@ -59,7 +59,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     }
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final String name) {
-        plugin.getOfflinePlayer(name, selected -> {
+        plugin.getOfflinePlayer(name).whenComplete((selected, ex) -> {
             if (selected == null) {
                 if (getSettings().removeWhitelistedPlayer(name)) {
                     sender.send(getMessage("whitelistRemoved", "%PLAYER%", name));
@@ -74,7 +74,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     }
 
     private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid) {
-        plugin.getOfflinePlayer(uuid, selected -> {
+        plugin.getOfflinePlayer(uuid).whenComplete((selected, ex) -> {
             if (selected == null) {
                 removePlayerFromWhitelist(sender, uuid, uuid.toString());
             } else {

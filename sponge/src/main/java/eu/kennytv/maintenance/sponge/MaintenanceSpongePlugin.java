@@ -69,8 +69,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -179,36 +179,24 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
-    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final String name) {
         final Optional<ServerPlayer> player = game.server().player(name);
         if (player.isPresent()) {
-            consumer.accept(new SpongePlayer(player.get()));
+            return CompletableFuture.completedFuture(new SpongePlayer(player.get()));
         } else {
-            game.server().userManager().load(name).whenComplete((optional, ex) -> {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    consumer.accept(null);
-                } else {
-                    consumer.accept(optional.map(SpongeUser::new).orElse(null));
-                }
-            });
+            return game.server().userManager().load(name)
+                    .thenApply(optional -> optional.map(SpongeUser::new).orElse(null));
         }
     }
 
     @Override
-    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final UUID uuid) {
         final Optional<ServerPlayer> player = game.server().player(uuid);
         if (player.isPresent()) {
-            consumer.accept(new SpongePlayer(player.get()));
+            return CompletableFuture.completedFuture(new SpongePlayer(player.get()));
         } else {
-            game.server().userManager().load(uuid).whenComplete((optional, ex) -> {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    consumer.accept(null);
-                } else {
-                    consumer.accept(optional.map(SpongeUser::new).orElse(null));
-                }
-            });
+            return game.server().userManager().load(uuid)
+                    .thenApply(optional -> optional.map(SpongeUser::new).orElse(null));
         }
     }
 

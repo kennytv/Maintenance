@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public final class WhitelistAddCommand extends CommandInfo {
 
@@ -64,7 +65,13 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final String name) {
-        plugin.getOfflinePlayer(name, selected -> {
+        plugin.getOfflinePlayer(name).whenComplete((selected, ex) -> {
+            if (ex != null) {
+                plugin.getLogger().log(Level.SEVERE, "Error while fetching offline player", ex);
+                sender.send(getMessage("offLinePlayerFetchError"));
+                return;
+            }
+
             if (selected == null) {
                 sender.send(getMessage("playerNotOnline"));
                 return;
@@ -75,7 +82,13 @@ public final class WhitelistAddCommand extends CommandInfo {
     }
 
     private void addPlayerToWhitelist(final SenderInfo sender, final UUID uuid) {
-        plugin.getOfflinePlayer(uuid, selected -> {
+        plugin.getOfflinePlayer(uuid).whenComplete((selected, ex) -> {
+            if (ex != null) {
+                plugin.getLogger().log(Level.SEVERE, "Error while fetching offline player", ex);
+                sender.send(getMessage("offLinePlayerFetchError"));
+                return;
+            }
+
             if (selected == null) {
                 sender.send(getMessage("playerNotFoundUuid"));
                 return;
