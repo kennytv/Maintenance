@@ -68,7 +68,7 @@ public final class WhitelistAddCommand extends CommandInfo {
         plugin.getOfflinePlayer(name).whenComplete((selected, ex) -> {
             if (ex != null) {
                 plugin.getLogger().log(Level.SEVERE, "Error while fetching offline player", ex);
-                sender.send(getMessage("offLinePlayerFetchError"));
+                sender.send(getMessage("offlinePlayerFetchError"));
                 return;
             }
 
@@ -85,7 +85,7 @@ public final class WhitelistAddCommand extends CommandInfo {
         plugin.getOfflinePlayer(uuid).whenComplete((selected, ex) -> {
             if (ex != null) {
                 plugin.getLogger().log(Level.SEVERE, "Error while fetching offline player", ex);
-                sender.send(getMessage("offLinePlayerFetchError"));
+                sender.send(getMessage("offlinePlayerFetchError"));
                 return;
             }
 
