@@ -101,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Enables/disables maintenance mode)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

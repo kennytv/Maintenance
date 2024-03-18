@@ -31,6 +31,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -188,7 +189,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         kickPlayersFromProxy();
     }
 
-    @Nullable
+    @Blocking
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
         final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -196,8 +197,13 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
         int status = connection.getResponseCode();
         if (status == 404) {
-            // Return null if profile not found
-            return null;
+            if (settingsProxy.isFallbackToOfflineUUID()) {
+                // Use offline uuid
+                return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
+            } else {
+                // Return null if profile not found
+                return null;
+            }
         }
 
         try (final InputStream in = connection.getInputStream()) {

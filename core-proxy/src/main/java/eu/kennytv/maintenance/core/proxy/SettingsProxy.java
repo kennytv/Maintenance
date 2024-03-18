@@ -39,6 +39,7 @@ public final class SettingsProxy extends Settings {
     private Set<String> maintenanceServers;
     private List<String> fallbackServers;
     private String waitingServer;
+    private boolean fallbackToOfflineUUID;
 
     private Map<String, List<String>> commandsOnMaintenanceEnable;
     private Map<String, List<String>> commandsOnMaintenanceDisable;
@@ -103,6 +104,7 @@ public final class SettingsProxy extends Settings {
         if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
             waitingServer = null;
         }
+        fallbackToOfflineUUID = config.getBoolean("fallback-to-offline-uuid", false);
 
         commandsOnMaintenanceEnable = new HashMap<>();
         final ConfigSection enableCommandsSection = config.getSection("commands-on-single-maintenance-enable");
@@ -277,6 +279,10 @@ public final class SettingsProxy extends Settings {
     @Nullable
     public String getWaitingServer() {
         return waitingServer;
+    }
+
+    public boolean isFallbackToOfflineUUID() {
+        return fallbackToOfflineUUID;
     }
 
     public List<String> getCommandsOnMaintenanceEnable(final Server server) {

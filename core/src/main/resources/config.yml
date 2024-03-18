@@ -82,6 +82,9 @@ send-join-notification: false
 # ... I don't know why you would want that, but you can disable it. :p
 kick-online-players: true
 
+# When fetched player does not exist then fallback to offline uuid. Only works on proxies like Velocity or BungeeCord
+fallback-to-offline-uuid: false
+
 # Changes the language of command feedback/messages.
 # If you find missing translations or want to contribute a new language file, you are very welcome to message me on Spigot or my Discord server! :)
 # Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian), zh (Chinese), it (Italian),
@@ -123,4 +126,4 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 7
+config-version: 8

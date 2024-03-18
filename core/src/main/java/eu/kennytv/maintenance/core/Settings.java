@@ -41,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 7;
-    private static final int LANGUAGE_VERSION = 1;
+    private static final int CONFIG_VERSION = 8;
+    private static final int LANGUAGE_VERSION = 2;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();

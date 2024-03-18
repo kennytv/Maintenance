@@ -184,13 +184,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                ProfileLookup profile = doUUIDLookup(name);
-
-                if (profile == null) {
-                    // Use offline uuid
-                    profile = new ProfileLookup(UUID.fromString("OfflinePlayer:" + name), name);
-                }
-
+                final ProfileLookup profile = doUUIDLookup(name);
                 return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
             } catch (IOException e) {
                 throw new RuntimeException(e);

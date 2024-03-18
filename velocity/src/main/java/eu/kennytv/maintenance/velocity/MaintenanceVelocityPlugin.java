@@ -234,13 +234,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                ProfileLookup profile = doUUIDLookup(name);
-
-                if (profile == null) {
-                    // Use offline uuid
-                    profile = new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
-                }
-
+                final ProfileLookup profile = doUUIDLookup(name);
                 return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
             } catch (IOException e) {
                 throw new RuntimeException(e);
