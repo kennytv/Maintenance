@@ -190,6 +190,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Blocking
+    @Nullable
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
         final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
