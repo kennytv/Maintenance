@@ -211,13 +211,13 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);
 
-            final UUID uuid = toUUIDWithoutDashes(json.getAsJsonPrimitive("id").getAsString());
+            final UUID uuid = fromStringUUIDWithoutDashes(json.getAsJsonPrimitive("id").getAsString());
             final String username = json.getAsJsonPrimitive("name").getAsString();
             return new ProfileLookup(uuid, username);
         }
     }
 
-    private UUID toUUIDWithoutDashes(String undashedUUID) {
+    private UUID fromStringUUIDWithoutDashes(String undashedUUID) {
         return UUID.fromString(
             undashedUUID.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5")
         );
