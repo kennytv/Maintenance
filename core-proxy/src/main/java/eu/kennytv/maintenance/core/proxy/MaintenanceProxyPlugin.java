@@ -219,7 +219,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     private UUID fromStringUUIDWithoutDashes(String undashedUUID) {
         return UUID.fromString(
-            undashedUUID.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5")
+            undashedUUID.substring(0, 8) + "-" + undashedUUID.substring(8, 12) + "-" +
+                undashedUUID.substring(12, 16) + "-" + undashedUUID.substring(16, 20) + "-" +
+                undashedUUID.substring(20, 32)
         );
     }
 
