@@ -23,6 +23,9 @@ import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.ComponentUtil;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
@@ -37,7 +40,27 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
 
     @Override
     public void execute(final ProxyPingEvent event) {
-        if (!settings.isMaintenance()) {
+        Map<String, List<String>> forcedHosts = plugin.getServer().getConfiguration().getForcedHosts();
+
+        boolean maintenanceEnabledOnHost = false;
+
+        if (event.getConnection().getVirtualHost().isPresent()) {
+            String host = event.getConnection().getVirtualHost().get().getHostName();
+
+            if (forcedHosts.containsKey(host)) {
+                List<String> forcedHostTargets = forcedHosts.get(host);
+                Set<String> maintenanceServers = settings.getMaintenanceServers();
+
+                for (String forcedHostTarget : forcedHostTargets) {
+                    if (maintenanceServers.contains(forcedHostTarget)) {
+                        maintenanceEnabledOnHost = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!settings.isMaintenance() && !maintenanceEnabledOnHost) {
             return;
         }
 
