@@ -50,8 +50,9 @@ public final class WhitelistRemoveCommand extends CommandInfo {
         if (args.length != 2) return Collections.emptyList();
 
         final List<String> list = new ArrayList<>();
+        String matchNameLowerCase = args[1].toLowerCase();
         for (final String name : getSettings().getWhitelistedPlayers().values()) {
-            if (name.toLowerCase().startsWith(args[1])) {
+            if (name.toLowerCase().startsWith(matchNameLowerCase)) {
                 list.add(name);
             }
         }
