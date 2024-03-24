@@ -201,7 +201,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             profileLookup = doUUIDLookupAshconAPI(name);
         }
 
-        if (profileLookup == null && settingsProxy.isFallbackToOfflineUUID()) {
+        if (settingsProxy.isFallbackToOfflineUUID() && profileLookup == null) {
             // Use offline uuid
             return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
         }
