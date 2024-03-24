@@ -28,6 +28,7 @@ import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.RateLimitedException;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
@@ -192,19 +193,38 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Blocking
     @Nullable
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
+        ProfileLookup profileLookup;
+        try {
+            profileLookup = doUUIDLookupMojangAPI(name);
+        } catch (RateLimitedException e) {
+            // Use fallback API if rate limit is reached
+            profileLookup = doUUIDLookupAshconAPI(name);
+        }
+
+        if (profileLookup == null && settingsProxy.isFallbackToOfflineUUID()) {
+            // Use offline uuid
+            return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
+        }
+
+        return profileLookup;
+    }
+
+    /**
+     * Official Mojang API
+     */
+    @Nullable
+    private ProfileLookup doUUIDLookupMojangAPI(final String name) throws IOException {
         final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
         int status = connection.getResponseCode();
+        if (status == 429) {
+            throw new RateLimitedException();
+        }
         if (status == 404) {
-            if (settingsProxy.isFallbackToOfflineUUID()) {
-                // Use offline uuid
-                return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
-            } else {
-                // Return null if profile not found
-                return null;
-            }
+            // Return null if profile not found
+            return null;
         }
 
         try (final InputStream in = connection.getInputStream()) {
@@ -213,6 +233,29 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
             final UUID uuid = fromStringUUIDWithoutDashes(json.getAsJsonPrimitive("id").getAsString());
             final String username = json.getAsJsonPrimitive("name").getAsString();
+            return new ProfileLookup(uuid, username);
+        }
+    }
+
+    /**
+     * Fallback API (Ashcon API)
+     */
+    @Nullable
+    private ProfileLookup doUUIDLookupAshconAPI(final String name) throws IOException {
+        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        if (connection.getResponseCode() == 403) {
+            // Return null if profile not found
+            return null;
+        }
+
+        try (final InputStream in = connection.getInputStream()) {
+            final String output = CharStreams.toString(new InputStreamReader(in));
+            final JsonObject json = GSON.fromJson(output, JsonObject.class);
+
+            final UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
+            final String username = json.getAsJsonPrimitive("username").getAsString();
             return new ProfileLookup(uuid, username);
         }
     }
