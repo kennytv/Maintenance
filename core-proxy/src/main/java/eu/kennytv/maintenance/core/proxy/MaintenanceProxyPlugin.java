@@ -28,16 +28,19 @@ import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.RateLimitedException;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
+import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -187,9 +190,66 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         kickPlayersFromProxy();
     }
 
+    @Blocking
+    @Nullable
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
+        ProfileLookup profileLookup;
+        try {
+            profileLookup = doUUIDLookupMojangAPI(name);
+        } catch (RateLimitedException e) {
+            // Use fallback API if rate limit is reached
+            profileLookup = doUUIDLookupAshconAPI(name);
+        }
+
+        if (settingsProxy.isFallbackToOfflineUUID() && profileLookup == null) {
+            // Use offline uuid
+            return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
+        }
+
+        return profileLookup;
+    }
+
+    /**
+     * Official Mojang API
+     */
+    @Nullable
+    private ProfileLookup doUUIDLookupMojangAPI(final String name) throws IOException {
+        final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int status = connection.getResponseCode();
+        if (status == 429) {
+            throw new RateLimitedException();
+        }
+        if (status == 404) {
+            // Return null if profile not found
+            return null;
+        }
+
+        try (final InputStream in = connection.getInputStream()) {
+            final String output = CharStreams.toString(new InputStreamReader(in));
+            final JsonObject json = GSON.fromJson(output, JsonObject.class);
+
+            final UUID uuid = fromStringUUIDWithoutDashes(json.getAsJsonPrimitive("id").getAsString());
+            final String username = json.getAsJsonPrimitive("name").getAsString();
+            return new ProfileLookup(uuid, username);
+        }
+    }
+
+    /**
+     * Fallback API (Ashcon API)
+     */
+    @Nullable
+    private ProfileLookup doUUIDLookupAshconAPI(final String name) throws IOException {
         final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
-        final URLConnection connection = url.openConnection();
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        if (connection.getResponseCode() == 403) {
+            // Return null if profile not found
+            return null;
+        }
+
         try (final InputStream in = connection.getInputStream()) {
             final String output = CharStreams.toString(new InputStreamReader(in));
             final JsonObject json = GSON.fromJson(output, JsonObject.class);
@@ -198,6 +258,14 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
             final String username = json.getAsJsonPrimitive("username").getAsString();
             return new ProfileLookup(uuid, username);
         }
+    }
+
+    private UUID fromStringUUIDWithoutDashes(String undashedUUID) {
+        return UUID.fromString(
+            undashedUUID.substring(0, 8) + "-" + undashedUUID.substring(8, 12) + "-" +
+            undashedUUID.substring(12, 16) + "-" + undashedUUID.substring(16, 20) + "-" +
+            undashedUUID.substring(20, 32)
+        );
     }
 
     public SettingsProxy getSettingsProxy() {

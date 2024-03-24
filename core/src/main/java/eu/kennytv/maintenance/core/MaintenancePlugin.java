@@ -57,8 +57,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -447,9 +447,9 @@ public abstract class MaintenancePlugin implements Maintenance {
      *
      * @param name name of the player
      */
-    public abstract void getOfflinePlayer(String name, Consumer<@Nullable SenderInfo> consumer);
+    public abstract CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(String name);
 
-    public abstract void getOfflinePlayer(UUID uuid, Consumer<@Nullable SenderInfo> consumer);
+    public abstract CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(UUID uuid);
 
     public abstract File getDataFolder();
 

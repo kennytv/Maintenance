@@ -61,8 +61,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -176,28 +176,26 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final String name) {
         final ProxiedPlayer player = getProxy().getPlayer(name);
         if (player != null) {
-            consumer.accept(new BungeeSenderInfo(player));
-            return;
+            return CompletableFuture.completedFuture(new BungeeSenderInfo(player));
         }
 
-        getProxy().getScheduler().runAsync(plugin, () -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 final ProfileLookup profile = doUUIDLookup(name);
-                consumer.accept(new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName()));
-            } catch (final IOException e) {
-                e.printStackTrace();
-                consumer.accept(null);
+                return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }
 
     @Override
-    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final UUID uuid) {
         final ProxiedPlayer player = getProxy().getPlayer(uuid);
-        consumer.accept(player != null ? new BungeeSenderInfo(player) : null);
+        return CompletableFuture.completedFuture(player != null ? new BungeeSenderInfo(player) : null);
     }
 
     @Override

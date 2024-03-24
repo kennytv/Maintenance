@@ -67,13 +67,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -225,28 +226,26 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     }
 
     @Override
-    public void getOfflinePlayer(final String name, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final String name) {
         final Optional<Player> player = server.getPlayer(name);
         if (player.isPresent()) {
-            consumer.accept(new VelocitySenderInfo(player.get()));
-            return;
+            return CompletableFuture.completedFuture(new VelocitySenderInfo(player.get()));
         }
 
-        async(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 final ProfileLookup profile = doUUIDLookup(name);
-                consumer.accept(new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName()));
-            } catch (final IOException e) {
-                e.printStackTrace();
-                consumer.accept(null);
+                return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }
 
     @Override
-    public void getOfflinePlayer(final UUID uuid, final Consumer<@Nullable SenderInfo> consumer) {
+    public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final UUID uuid) {
         final Optional<Player> player = server.getPlayer(uuid);
-        consumer.accept(player.map(VelocitySenderInfo::new).orElse(null));
+        return CompletableFuture.completedFuture(player.map(VelocitySenderInfo::new).orElse(null));
     }
 
     @Override
