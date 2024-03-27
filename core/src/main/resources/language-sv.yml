@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>Underhållsvitlistan är tom! Använd <yellow>/mai
 playerNotFound: "<prefix><red>Ingen spelare med detta namn har spelat på servern tidigare."
 playerNotFoundUuid: "<prefix><red>Ingen spelare med det uuid hittades."
 playerNotOnline: "<prefix><red>Det finns ingen spelare med det namnet online."
+offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Ogiltigt uuid format!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Du har blvitt skickad till en väntserver!"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Aktiverar/avaktiverar underhållsläge)"
 helpStatus: "<gold>/maintenance status <gray>(Listar alla proxiade servrar som är i underhåll)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

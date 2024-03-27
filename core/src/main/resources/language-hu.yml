@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>A lista üres!"
 playerNotFound: "<prefix><red>Ez a játékos soha nem lépett fel a szerverre."
 playerNotFoundUuid: "<prefix><red>A játékos nem található."
 playerNotOnline: "<prefix><red>A játékos nincs online."
+offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Rossz UUID!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>El lettél küldve egy várakozós szerverre!"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Ki-be kapcsolja a karbantartás módot)"
 helpStatus: "<gold>/maintenance status <gray>(Kiírja az összes proxy szervert,ami karbantartás alatt van)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>维护玩家白名单为空！使用<yellow>/maint
 playerNotFound: "<prefix><red>此服务器上从未出现该名称的玩家"
 playerNotFoundUuid: "<prefix><red>找不到具有该UUID的玩家。"
 playerNotOnline: "<prefix><red>没有使用该名称的在线玩家"
+offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>无效的UUID格式！"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>您已被传送到等待服务器！"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(开启/关闭指定服务器的维护模式)"
 helpStatus: "<gold>/maintenance status <gray>(列出当前正在维护的所有服务器)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

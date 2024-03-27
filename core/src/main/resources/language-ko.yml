@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>유지 관리 화이트리스트가 비어 있습�
 playerNotFound: "<prefix><red>이 이름을 가진 플레이어가 이 서버에서 플레이한 적이 없습니다."
 playerNotFoundUuid: "<prefix><red>해당 UUID를 가진 플레이어를 찾을 수 없습니다."
 playerNotOnline: "<prefix><red>해당 이름을 가진 플레이어가 온라인이 아닙니다."
+offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>유효하지 않은 UUID 형식입니다!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>You have been sent to a waiting server!"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Enables/disables maintenance mode)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2
