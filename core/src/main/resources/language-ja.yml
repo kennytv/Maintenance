@@ -44,7 +44,7 @@ whitelistEmpty: "<prefix><red>使用方法が違います。<yellow>/maintenance
 playerNotFound: "<prefix><red>不明なユーザーです。"
 playerNotFoundUuid: "<prefix><red>不明なUUIDです。"
 playerNotOnline: "<prefix><red>このユーザーはオンラインではありません。"
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: "<prefix><red>オフラインプレイヤーの取得中にエラーが発生しました。しばらく経ってからもう一度お試しください。"
 invalidUuid: "<prefix><red>UUID形式が無効です。"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>待機サーバーに転送されました！"
