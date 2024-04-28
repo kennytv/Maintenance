@@ -12,6 +12,9 @@ val platforms = setOf(
 
 tasks {
     shadowJar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
         archiveClassifier.set("")
         archiveFileName.set("Maintenance-${project.version}.jar")
         destinationDirectory.set(rootProject.projectDir.resolve("build/libs"))
