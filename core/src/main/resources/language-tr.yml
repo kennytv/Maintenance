@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>Bakım beyaz listesi boş! Eklemek için <yellow>/
 playerNotFound: "<prefix><red>Bu sunucuda daha önce bu isimde hiçbir oyuncu oynamadı."
 playerNotFoundUuid: "<prefix><red>Bu UUID'ye sahip hiçbir oyuncu bulunamadı."
 playerNotOnline: "<prefix><red>Bu isimle çevrimiçi oyuncu yok."
+offlinePlayerFetchError: "<prefix><red>Çevrimdışı oyuncu getirilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
 invalidUuid: "<prefix><red>Geçersiz UUID biçimi!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Bekleme sunucusuna gönderildiniz!"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [sunucu] <dakika> <ma
 helpSingleToggle: "<gold>/maintenance <on/off> [sunucu] <gray>(Bakım modunu etkinleştirir/devre dışı bırakır)"
 helpStatus: "<gold>/maintenance status <gray>(Şu anda bakımda olan tüm sunucuları listeler)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>使用方法が違います。<yellow>/maintenance
 playerNotFound: "<prefix><red>不明なユーザーです。"
 playerNotFoundUuid: "<prefix><red>不明なUUIDです。"
 playerNotOnline: "<prefix><red>このユーザーはオンラインではありません。"
+offlinePlayerFetchError: "<prefix><red>オフラインプレイヤーの取得中にエラーが発生しました。しばらく経ってからもう一度お試しください。"
 invalidUuid: "<prefix><red>UUID形式が無効です。"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>待機サーバーに転送されました！"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <タイマ�
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(メンテナンスモードの有効化/無効化を設定します。)"
 helpStatus: "<gold>/maintenance status <gray>(現在メンテナンス中のプロキシサーバーをすべてリストアップします。)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2

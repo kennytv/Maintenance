@@ -44,6 +44,7 @@ whitelistEmpty: "<prefix><red>La whitelist di manutenzione è vuota! Usa <yellow
 playerNotFound: "<prefix><red>Nessun giocatore con questo username è mai entrato nel server."
 playerNotFoundUuid: "<prefix><red>Nessun player con quell'uuid è stato trovato."
 playerNotOnline: "<prefix><red>Non c'è nessun giocatore online con quell'username."
+offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>L'uuid presenta un formato invalido!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Sei stato inviato su un server d'attesa!"
@@ -100,4 +101,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minut
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/disabilita la modalità di manutenzione)"
 helpStatus: "<gold>/maintenance status <gray>(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 1
+language-version: 2
