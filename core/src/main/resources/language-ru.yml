@@ -44,7 +44,7 @@ whitelistEmpty: "<red>Белый лист пуст! Используйте /main
 playerNotFound: "<red>Игрок не найден!"
 playerNotFoundUuid: "<red>Игрок с таким UUID не найден!"
 playerNotOnline: "<red>Игрок должен быть онлайн!"
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: "<prefix><red>Произошла ошибка при получении игрока в автономном режиме. Пожалуйста, повторите попытку позже."
 invalidUuid: "<red>Неверный формат UUID!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<red>Вы были перемещены в лобби!"
