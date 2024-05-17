@@ -2,6 +2,18 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## 4.2.1 - May 17th 2024
+### Changed
+* The proxied maintenance status is now also shown for forced hosts (thanks to alec-jensen)
+* Offline player fetching improvements (thanks to EpicPlayerA10)
+  * Added the setting `fallback-to-offline-uuid` to use offline player uuids in maintenance whitelist commands (defaults to false)
+* Maintenance now skips the plugin remapping process on 1.20.5+ Paper servers
+* Small optimizations
+* Updated language files from [Crowdin](https://crowdin.com/translate/maintenance)
+  * Massive thank you to all the contributors! These include: vortix22, xdalul, CodeZhangBorui, jesusskye, Doc94,
+    Texider_, marvin2k0, leonard.bausenwein, pro.timeo.kerjean, meviper, troev5, Murka124, jhqwqmc, Pryzinho,
+    raysetratyboy, Kolja07, and rikunightcore
+---
 ## 4.2.0 - September 17th 2023
 ### Changed
 * Velocity/Bungee: Added `commands-on-single-maintenance-enable` and `commands-on-single-maintenance-disable` config options to define commands to be executed after maintenance has been toggled on a proxied server
