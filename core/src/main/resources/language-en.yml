@@ -14,7 +14,7 @@ endtimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will be d
 starttimerBroadcast: "<prefix><gray>Maintenance mode will be enabled in <gold>%TIME%<gray>."
 starttimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will be activated in <gold>%TIME%<gray>."
 scheduletimerBroadcast: "<prefix><gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
-scheduletimerStarted: ""
+scheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
 timerAlreadyRunning: "<prefix><red>There is already a timer scheduled!"
 timerNotRunning: "<prefix><red>There is currently no running timer."
 timerCancelled: "<prefix><red>The current timer has been disabled."
