@@ -44,7 +44,7 @@ whitelistEmpty: "<prefix><red>La whitelist di manutenzione è vuota! Usa <yellow
 playerNotFound: "<prefix><red>Nessun giocatore con questo username è mai entrato nel server."
 playerNotFoundUuid: "<prefix><red>Nessun player con quell'uuid è stato trovato."
 playerNotOnline: "<prefix><red>Non c'è nessun giocatore online con quell'username."
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: "<prefix><red>C'è stato un errore cercando il player offline. Riprova più tardi."
 invalidUuid: "<prefix><red>L'uuid presenta un formato invalido!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>Sei stato inviato su un server d'attesa!"
