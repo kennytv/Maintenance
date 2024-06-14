@@ -3,7 +3,7 @@
 #For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
-noPermission: "<red>Bạn không có quyền thực hiện lệnh đóBạn không có quyền thực hiện lệnh đó."
+noPermission: "<red>Bạn không có quyền thực hiện lệnh đó."
 kickmessage: "<red>Máy chủ hiện đang được bảo trì!<br>Hãy thử lại sau!"
 maintenanceActivated: "<prefix><gold>Chế độ bảo trì hiện đã được kích hoạt."
 maintenanceDeactivated: "<prefix><gold>Chế độ bảo trì hiện đã bị vô hiệu hóa."
