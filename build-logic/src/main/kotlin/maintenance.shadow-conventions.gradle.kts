@@ -4,7 +4,7 @@ import org.gradle.kotlin.dsl.named
 
 plugins {
     id("maintenance.base-conventions")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 tasks {

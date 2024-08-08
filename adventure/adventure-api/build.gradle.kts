@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 // Shade and relocate adventure in an extra module, so that common/the rest can directly depend on a
