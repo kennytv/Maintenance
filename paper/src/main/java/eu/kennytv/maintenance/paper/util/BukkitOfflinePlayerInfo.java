@@ -15,63 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot.util;
+package eu.kennytv.maintenance.paper.util;
 
-import eu.kennytv.maintenance.api.MaintenanceProvider;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public final class BukkitSenderInfo implements SenderInfo {
-    private final CommandSender sender;
+public final class BukkitOfflinePlayerInfo implements SenderInfo {
+    private final OfflinePlayer player;
 
-    public BukkitSenderInfo(final CommandSender sender) {
-        this.sender = sender;
+    public BukkitOfflinePlayerInfo(final OfflinePlayer player) {
+        this.player = player;
     }
 
     @Override
     public UUID getUuid() {
-        return sender instanceof Player ? ((Entity) sender).getUniqueId() : null;
+        return player.getUniqueId();
     }
 
     @Override
     public String getName() {
-        return sender.getName();
+        return player.getName();
     }
 
     @Override
     public boolean hasPermission(final String permission) {
-        return sender.hasPermission(permission);
+        return false;
     }
 
     @Override
     public void sendMessage(final String message) {
-        sender.sendMessage(message);
     }
 
     @Override
     public void send(final Component component) {
-        ((MaintenanceSpigotPlugin) MaintenanceProvider.get()).audiences().sender(sender).sendMessage(component);
     }
 
     @Override
     public boolean isPlayer() {
-        return sender instanceof Player;
-    }
-
-    public void sendMessage(final TextComponent textComponent, final String backup) {
-        try {
-            sender.spigot().sendMessage(textComponent);
-        } catch (final NoSuchMethodError ignored) {
-            if (backup != null) {
-                sender.sendMessage(backup);
-            }
-        }
+        return true;
     }
 }

@@ -36,8 +36,17 @@ import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongePlayer;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
 import eu.kennytv.maintenance.sponge.util.SpongeUser;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bstats.sponge.Metrics;
 import org.jetbrains.annotations.Nullable;
@@ -59,20 +68,6 @@ import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 import org.spongepowered.plugin.metadata.PluginMetadata;
 import org.spongepowered.plugin.metadata.model.PluginContributor;
-
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Plugin("maintenance")
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
@@ -162,20 +157,6 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     @Override
     public void broadcast(final Component component) {
         game.server().sendMessage(ComponentUtil.toSponge(component));
-    }
-
-    @Override
-    public void sendUpdateNotification(final SenderInfo sender) {
-        try {
-            final net.kyori.adventure.text.Component component = net.kyori.adventure.text.Component.text().append(translate(getPrefix()))
-                    .append(translate("§cDownload it at: §6" + HANGAR_URL))
-                    .append(translate(" §7§l§o(CLICK ME)"))
-                    .clickEvent(ClickEvent.openUrl(new URL(HANGAR_URL)))
-                    .hoverEvent(HoverEvent.showText(translate("§7§l§o(CLICK ME)"))).build();
-            ((SpongePlayer) sender).send(component);
-        } catch (final MalformedURLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

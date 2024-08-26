@@ -22,15 +22,14 @@ import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
     private final MaintenanceBungeePlugin plugin;
@@ -60,15 +59,6 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
             }
         }
         return list;
-    }
-
-    @Override
-    public void sendDumpMessage(final SenderInfo sender, final String url) {
-        final BungeeSenderInfo bungeeSender = ((BungeeSenderInfo) sender);
-        final TextComponent clickText = new TextComponent(plugin.getPrefix() + "§7Click here to copy the link");
-        clickText.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
-        clickText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to copy the link")));
-        bungeeSender.sendMessage(clickText);
     }
 
     @Override

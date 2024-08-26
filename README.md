@@ -4,7 +4,7 @@
 [![Crowdin](https://badges.crowdin.net/maintenance/localized.svg)](https://crowdin.com/project/maintenance)
 [![Discord](https://img.shields.io/discord/489135856284729384.svg?label=Discord&logo=discord&logoColor=fff)](https://discord.gg/vGCUzHq)
 
-Maintenance is the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Spigot, BungeeCord, Sponge, as well as Velocity.
+Maintenance is the most customizable free maintenance plugin for your Minecraft server you can find. It runs on Paper (also Spigot, but with limited functionality), BungeeCord, Sponge, as well as Velocity.
 
 Its features include:
 * A custom motd as well as server icon, that will be shown during maintenance

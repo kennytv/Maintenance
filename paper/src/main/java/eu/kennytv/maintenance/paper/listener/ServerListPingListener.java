@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot.listener;
+package eu.kennytv.maintenance.paper.listener;
 
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
+import eu.kennytv.maintenance.paper.util.ComponentUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public final class ServerListPingListener implements Listener {
-    private final MaintenanceSpigotPlugin plugin;
+    private final MaintenancePaperPlugin plugin;
     private final Settings settings;
 
-    public ServerListPingListener(final MaintenanceSpigotPlugin plugin, final Settings settings) {
+    public ServerListPingListener(final MaintenancePaperPlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

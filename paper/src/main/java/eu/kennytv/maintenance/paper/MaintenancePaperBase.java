@@ -15,46 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot.util;
+package eu.kennytv.maintenance.paper;
 
-import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
+import eu.kennytv.maintenance.api.Maintenance;
+import eu.kennytv.maintenance.core.MaintenanceBase;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.UUID;
+import java.io.File;
 
-public final class BukkitOfflinePlayerInfo implements SenderInfo {
-    private final OfflinePlayer player;
+public final class MaintenancePaperBase extends JavaPlugin implements MaintenanceBase {
+    private MaintenancePlugin maintenance;
 
-    public BukkitOfflinePlayerInfo(final OfflinePlayer player) {
-        this.player = player;
+    @Override
+    public void onEnable() {
+        maintenance = new MaintenancePaperPlugin(this);
     }
 
     @Override
-    public UUID getUuid() {
-        return player.getUniqueId();
+    public void onDisable() {
+        maintenance.disable();
     }
 
     @Override
-    public String getName() {
-        return player.getName();
+    public Maintenance getApi() {
+        return maintenance;
     }
 
-    @Override
-    public boolean hasPermission(final String permission) {
-        return false;
-    }
-
-    @Override
-    public void sendMessage(final String message) {
-    }
-
-    @Override
-    public void send(final Component component) {
-    }
-
-    @Override
-    public boolean isPlayer() {
-        return true;
+    File getPluginFile() {
+        return getFile();
     }
 }

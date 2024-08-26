@@ -6,7 +6,7 @@ plugins {
 
 // Not actually universal:tm:
 val platforms = setOf(
-    rootProject.projects.maintenanceSpigot,
+    rootProject.projects.maintenancePaper,
     rootProject.projects.maintenanceBungee,
 ).map { it.dependencyProject }
 

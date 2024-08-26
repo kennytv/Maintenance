@@ -26,13 +26,12 @@ import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements SimpleCommand {
     private final MaintenanceVelocityPlugin plugin;
@@ -66,14 +65,6 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
                 .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to update the plugin")))
                 .append(plugin.translate(" §8(§7Or use the command §c/maintenance forceupdate§8)"));
         ((VelocitySenderInfo) sender).sendMessage(tc);
-    }
-
-    @Override
-    public void sendDumpMessage(final SenderInfo sender, final String url) {
-        final TextComponent clickText = Component.text("").append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link."))
-                .clickEvent(ClickEvent.suggestCommand(url))
-                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link")));
-        ((VelocitySenderInfo) sender).sendMessage(clickText);
     }
 
     @Override

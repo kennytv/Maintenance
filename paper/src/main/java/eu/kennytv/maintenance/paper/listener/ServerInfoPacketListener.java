@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot.listener;
+package eu.kennytv.maintenance.paper.listener;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -25,9 +25,9 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotBase;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.MaintenancePaperBase;
+import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
+import eu.kennytv.maintenance.paper.util.ComponentUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,10 +38,10 @@ import org.bukkit.event.server.ServerListPingEvent;
 
 public final class ServerInfoPacketListener extends PacketAdapter implements Listener {
     private static final UUID ZERO_UUID = new UUID(0, 0);
-    private final MaintenanceSpigotPlugin plugin;
+    private final MaintenancePaperPlugin plugin;
     private final Settings settings;
 
-    public ServerInfoPacketListener(final MaintenanceSpigotPlugin plugin, final MaintenanceSpigotBase base, final Settings settings) {
+    public ServerInfoPacketListener(final MaintenancePaperPlugin plugin, final MaintenancePaperBase base, final Settings settings) {
         super(base, ListenerPriority.HIGHEST, PacketType.Status.Server.SERVER_INFO);
         this.plugin = plugin;
         this.settings = settings;

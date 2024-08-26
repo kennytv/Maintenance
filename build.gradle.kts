@@ -12,7 +12,7 @@ allprojects {
 }
 
 val platforms = setOf(
-    projects.maintenanceSpigot,
+    projects.maintenancePaper,
     projects.maintenanceBungee,
     projects.maintenanceSponge,
     projects.maintenanceVelocity

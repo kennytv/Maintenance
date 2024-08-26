@@ -15,34 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot;
+package eu.kennytv.maintenance.paper.util;
 
-import eu.kennytv.maintenance.api.Maintenance;
-import eu.kennytv.maintenance.core.MaintenanceBase;
-import eu.kennytv.maintenance.core.MaintenancePlugin;
-import org.bukkit.plugin.java.JavaPlugin;
+import eu.kennytv.maintenance.core.util.Task;
+import org.bukkit.Bukkit;
 
-import java.io.File;
+public final class BukkitTask implements Task {
+    private final int id;
 
-public final class MaintenanceSpigotBase extends JavaPlugin implements MaintenanceBase {
-    private MaintenancePlugin maintenance;
-
-    @Override
-    public void onEnable() {
-        maintenance = new MaintenanceSpigotPlugin(this);
+    public BukkitTask(final int id) {
+        this.id = id;
     }
 
     @Override
-    public void onDisable() {
-        maintenance.disable();
-    }
-
-    @Override
-    public Maintenance getApi() {
-        return maintenance;
-    }
-
-    File getPluginFile() {
-        return getFile();
+    public void cancel() {
+        Bukkit.getScheduler().cancelTask(id);
     }
 }

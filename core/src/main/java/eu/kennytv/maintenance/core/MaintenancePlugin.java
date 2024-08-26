@@ -37,8 +37,11 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Nullable;
-
+import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.format.TextDecoration;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -61,6 +64,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
     public static final Gson GSON = new GsonBuilder().create();
@@ -71,7 +75,8 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected ServerListPlusHook serverListPlusHook;
     protected MaintenanceRunnable runnable;
     protected MaintenanceCommand commandManager;
-    private final String prefix;
+    private final Component prefix;
+    private final String legacyPrefix;
     private final ServerType serverType;
     private Version newestVersion;
     private boolean debug;
@@ -79,7 +84,13 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;
-        this.prefix = "§8[§eMaintenance" + serverType + "§8] ";
+        this.legacyPrefix = "§8[§eMaintenance" + serverType + "§8] ";
+        this.prefix = Component.text()
+                .append(Component.text().content("[").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text().content("Maintenance").color(NamedTextColor.YELLOW))
+                .append(Component.text().content("]").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(" "))
+                .build();
         this.eventManager = new eu.kennytv.maintenance.core.event.EventManager();
         MaintenanceProvider.setMaintenance(this);
     }
@@ -406,7 +417,12 @@ public abstract class MaintenancePlugin implements Maintenance {
         return newestVersion;
     }
 
+    @Deprecated
     public String getPrefix() {
+        return legacyPrefix;
+    }
+
+    public Component prefix() {
         return prefix;
     }
 
@@ -436,7 +452,15 @@ public abstract class MaintenancePlugin implements Maintenance {
 
     public abstract void broadcast(Component component);
 
-    public abstract void sendUpdateNotification(SenderInfo sender);
+    public void sendUpdateNotification(final SenderInfo sender) {
+        final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
+                .append(Component.text().content(HANGAR_URL).color(NamedTextColor.GOLD))
+                .append(Component.text().content(" (CLICK ME)").color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD))
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, HANGAR_URL))
+                .hoverEvent(HoverEvent.showText(Component.text("Download the latest version").color(NamedTextColor.GREEN)))
+                .build();
+        sender.send(Component.text().append(this.prefix).append(text).build());
+    }
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 

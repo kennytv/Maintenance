@@ -1,6 +1,6 @@
 name: Maintenance
 version: ${version}
-main: eu.kennytv.maintenance.spigot.MaintenanceSpigotBase
+main: eu.kennytv.maintenance.paper.MaintenancePaperBase
 author: kennytv
 description: ${description}
 softdepend: [ProtocolLib, ServerListPlus, ProtocolSupport, LuckPerms]

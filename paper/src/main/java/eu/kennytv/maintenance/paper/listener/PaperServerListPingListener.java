@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot.listener;
+package eu.kennytv.maintenance.paper.listener;
 
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.spigot.MaintenanceSpigotPlugin;
-import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
+import eu.kennytv.maintenance.paper.util.ComponentUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -36,10 +36,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public final class PaperServerListPingListener implements Listener {
-    private final MaintenanceSpigotPlugin plugin;
+    private final MaintenancePaperPlugin plugin;
     private final Settings settings;
 
-    public PaperServerListPingListener(final MaintenanceSpigotPlugin plugin, final Settings settings) {
+    public PaperServerListPingListener(final MaintenancePaperPlugin plugin, final Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

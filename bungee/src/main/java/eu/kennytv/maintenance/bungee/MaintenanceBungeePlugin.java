@@ -38,22 +38,6 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.lib.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.Favicon;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
-import org.bstats.bungeecord.Metrics;
-import org.jetbrains.annotations.Nullable;
-
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +49,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.Favicon;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginManager;
+import org.bstats.bungeecord.Metrics;
+import org.jetbrains.annotations.Nullable;
 
 public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     private final MaintenanceBungeeBase plugin;
@@ -106,18 +100,6 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             });
             getLogger().info("Registered LuckPerms context");
         }
-    }
-
-    @Override
-    public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
-        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6" + HANGAR_URL));
-        final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, HANGAR_URL));
-        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new ComponentBuilder("§aDownload the latest version").create())));
-        tc1.addExtra(tc2);
-        tc1.addExtra(click);
-        ((BungeeSenderInfo) sender).sendMessage(tc1);
     }
 
     public boolean isMaintenance(final ServerInfo serverInfo) {

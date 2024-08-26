@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.spigot;
+package eu.kennytv.maintenance.paper;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -27,15 +27,14 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.lib.kyori.adventure.platform.bukkit.BukkitAudiences;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.spigot.command.MaintenanceSpigotCommand;
-import eu.kennytv.maintenance.spigot.listener.PaperServerListPingListener;
-import eu.kennytv.maintenance.spigot.listener.PlayerLoginListener;
-import eu.kennytv.maintenance.spigot.listener.ServerInfoPacketListener;
-import eu.kennytv.maintenance.spigot.listener.ServerListPingListener;
-import eu.kennytv.maintenance.spigot.util.BukkitOfflinePlayerInfo;
-import eu.kennytv.maintenance.spigot.util.BukkitSenderInfo;
-import eu.kennytv.maintenance.spigot.util.BukkitTask;
-import eu.kennytv.maintenance.spigot.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.command.MaintenancePaperCommand;
+import eu.kennytv.maintenance.paper.listener.PaperServerListPingListener;
+import eu.kennytv.maintenance.paper.listener.PlayerLoginListener;
+import eu.kennytv.maintenance.paper.listener.ServerInfoPacketListener;
+import eu.kennytv.maintenance.paper.listener.ServerListPingListener;
+import eu.kennytv.maintenance.paper.util.BukkitOfflinePlayerInfo;
+import eu.kennytv.maintenance.paper.util.BukkitTask;
+import eu.kennytv.maintenance.paper.util.ComponentUtil;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -45,10 +44,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -59,13 +54,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.CachedServerIcon;
 import org.jetbrains.annotations.Nullable;
 
-public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
+public final class MaintenancePaperPlugin extends MaintenancePlugin {
     private static final boolean FOLIA = hasClass("io.papermc.paper.threadedregions.RegionizedServer");
-    private final MaintenanceSpigotBase plugin;
+    private final MaintenancePaperBase plugin;
     private final BukkitAudiences audiences;
     private CachedServerIcon favicon;
 
-    MaintenanceSpigotPlugin(final MaintenanceSpigotBase plugin) {
+    MaintenancePaperPlugin(final MaintenancePaperBase plugin) {
         super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
         this.plugin = plugin;
         this.audiences = BukkitAudiences.create(plugin);
@@ -74,7 +69,7 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
 
         sendEnableMessage();
 
-        final MaintenanceSpigotCommand command = new MaintenanceSpigotCommand(this, settings);
+        final MaintenancePaperCommand command = new MaintenancePaperCommand(this, settings);
         commandManager = command;
         plugin.getCommand("maintenance").setExecutor(command);
 
@@ -169,18 +164,6 @@ public final class MaintenanceSpigotPlugin extends MaintenancePlugin {
     @Override
     public void broadcast(final Component component) {
         audiences.all().sendMessage(component);
-    }
-
-    @Override
-    public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent tc1 = new TextComponent(TextComponent.fromLegacyText(getPrefix()));
-        final TextComponent tc2 = new TextComponent(TextComponent.fromLegacyText("§cDownload it at: §6" + HANGAR_URL));
-        final TextComponent click = new TextComponent(TextComponent.fromLegacyText(" §7§l§o(CLICK ME)"));
-        click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, HANGAR_URL));
-        click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aDownload the latest version").create()));
-        tc1.addExtra(tc2);
-        tc1.addExtra(click);
-        ((BukkitSenderInfo) sender).sendMessage(tc1, getPrefix() + "§cDownload it at: §6" + HANGAR_URL);
     }
 
     @Override

@@ -19,23 +19,19 @@ package eu.kennytv.maintenance.sponge.command;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
 import eu.kennytv.maintenance.sponge.util.SpongeSenderInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.entity.living.player.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public final class MaintenanceSpongeCommand extends MaintenanceCommand implements Command.Raw {
     private final MaintenanceSpongePlugin plugin;
@@ -84,13 +80,6 @@ public final class MaintenanceSpongeCommand extends MaintenanceCommand implement
     @Override
     public Component usage(final CommandCause cause) {
         return null;
-    }
-
-    @Override
-    public void sendDumpMessage(final SenderInfo sender, final String url) {
-        final SpongeSenderInfo spongeSender = ((SpongeSenderInfo) sender);
-        spongeSender.send(Component.text().append(plugin.translate(plugin.getPrefix() + "§7Click here to copy the link")).clickEvent(ClickEvent.suggestCommand(url))
-                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to copy the link"))).build());
     }
 
     @Override

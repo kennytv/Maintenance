@@ -57,17 +57,8 @@ import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
 import eu.kennytv.maintenance.velocity.util.VelocityTask;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bstats.velocity.Metrics;
-import org.jetbrains.annotations.Nullable;
-
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +68,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bstats.velocity.Metrics;
+import org.jetbrains.annotations.Nullable;
 
 @Plugin(id = "maintenance", name = "Maintenance", version = MaintenanceVersion.VERSION, authors = "kennytv",
         description = "Enable maintenance mode with a custom maintenance motd and icon.", url = MaintenancePlugin.HANGAR_URL,
@@ -140,15 +136,6 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Subscribe
     public void onDisable(final ProxyShutdownEvent event) {
         disable();
-    }
-
-    @Override
-    public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent component = translate(getPrefix()).append(translate("§cDownload it at: §6" + HANGAR_URL));
-        final TextComponent clickText = translate(" §7§l§o(CLICK ME)")
-                .clickEvent(ClickEvent.openUrl(HANGAR_URL))
-                .hoverEvent(HoverEvent.showText(translate("§aDownload the latest version")));
-        ((VelocitySenderInfo) sender).sendMessage(component.append(clickText));
     }
 
     public boolean isMaintenance(final RegisteredServer serverInfo) {
