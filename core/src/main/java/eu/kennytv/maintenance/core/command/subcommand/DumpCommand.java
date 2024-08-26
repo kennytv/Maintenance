@@ -49,7 +49,7 @@ public final class DumpCommand extends CommandInfo {
                 return;
             }
 
-            final String url = "https://hastebin.com/" + key;
+            final String url = "https://pastes.dev/" + key;
             sender.sendMessage(plugin.getPrefix() + "§c" + url);
             if (sender.isPlayer()) {
                 plugin.getCommandManager().sendDumpMessage(sender, url);

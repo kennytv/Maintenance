@@ -281,7 +281,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     public String pasteDump() {
         final MaintenanceDump dump = new MaintenanceDump(this, settings);
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL("https://hastebin.com/documents").openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL("https://api.pastes.dev/post").openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
@@ -292,7 +292,7 @@ public abstract class MaintenancePlugin implements Maintenance {
             }
 
             if (connection.getResponseCode() == 503) {
-                getLogger().warning("Could not paste dump, hastebin.com down?");
+                getLogger().warning("Could not paste dump, pastes.dev down?");
                 return null;
             }
 
@@ -307,8 +307,7 @@ public abstract class MaintenancePlugin implements Maintenance {
                 return jsonOutput.get("key").getAsString();
             }
         } catch (final IOException e) {
-            getLogger().log(Level.WARNING, "Could not paste dump :(");
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "Could not paste dump :(", e);
             return null;
         }
     }

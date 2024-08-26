@@ -2,6 +2,13 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## Unreleased
+### Changed
+* Updated language files from [Crowdin](https://crowdin.com/translate/maintenance)
+
+### Fixed
+* Fixed the maintenance dump command
+---
 ## 4.2.1 - May 17th 2024
 ### Changed
 * The proxied maintenance status is now also shown for forced hosts (thanks to alec-jensen)
