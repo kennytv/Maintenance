@@ -21,6 +21,12 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
+import eu.kennytv.maintenance.lib.kyori.adventure.text.format.TextDecoration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -66,7 +72,14 @@ public abstract class JoinListenerBase {
 
             notifiedPlayers.add(sender.getUuid());
             sender.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
-            plugin.sendUpdateNotification(sender);
+
+            final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
+                    .append(Component.text().content(MaintenancePlugin.HANGAR_URL).color(NamedTextColor.GOLD))
+                    .append(Component.text().content(" (CLICK ME)").color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD))
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, MaintenancePlugin.HANGAR_URL))
+                    .hoverEvent(HoverEvent.showText(Component.text("Download the latest version").color(NamedTextColor.GREEN)))
+                    .build();
+            sender.send(plugin.prefix().append(text));
         });
     }
 

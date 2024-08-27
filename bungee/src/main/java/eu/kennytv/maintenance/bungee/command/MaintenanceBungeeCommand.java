@@ -18,16 +18,11 @@
 package eu.kennytv.maintenance.bungee.command;
 
 import eu.kennytv.maintenance.bungee.MaintenanceBungeePlugin;
-import eu.kennytv.maintenance.bungee.util.BungeeSenderInfo;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -38,15 +33,6 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
         super(plugin, settings);
         this.plugin = plugin;
         registerCommands();
-    }
-
-    @Override
-    protected void sendUpdateMessage(final SenderInfo sender) {
-        final TextComponent tc = new TextComponent("§6× §8[§aUpdate§8]");
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maintenance forceupdate"));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClick here to update the plugin")));
-        tc.addExtra(" §8< §7Or use the command §c/maintenance forceupdate");
-        ((BungeeSenderInfo) sender).sendMessage(tc);
     }
 
     @Override

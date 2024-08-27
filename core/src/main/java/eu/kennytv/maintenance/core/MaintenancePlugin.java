@@ -37,11 +37,7 @@ import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.TextDecoration;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -64,11 +60,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
     public static final Gson GSON = new GsonBuilder().create();
     public static final String HANGAR_URL = "https://hangar.papermc.io/kennytv/Maintenance";
+    private static final Pattern INT_PATTERN = Pattern.compile("[0-9]+");
     protected final EventManager eventManager;
     protected final Version version;
     protected Settings settings;
@@ -229,13 +227,12 @@ public abstract class MaintenancePlugin implements Maintenance {
 
             final int compare = version.compareTo(newestVersion);
             if (compare < 0) {
-                //TODO mmmmmmmm legacy chat
-                getLogger().info("§cNewest version available: §aVersion " + newestVersion + "§c, you're on §a" + version);
+                getLogger().warning("Newest version available: Version " + newestVersion + ", you're on " + version);
             } else if (compare > 0) {
                 if (version.getTag().equalsIgnoreCase("snapshot")) {
-                    getLogger().info("§cYou're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/kennytv/Maintenance/issues)");
+                    getLogger().info("You're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/kennytv/Maintenance/issues)");
                 } else {
-                    getLogger().info("§cYou're running a version, that doesn't exist! §cN§ai§dc§ee§5!");
+                    getLogger().info("You're running a version, that doesn't exist!");
                 }
             }
         });
@@ -366,7 +363,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     public boolean isNumeric(final String string) {
-        return string.matches("[0-9]+");
+        return INT_PATTERN.matcher(string).matches();
     }
 
     @Override
@@ -451,16 +448,6 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected abstract void executeConsoleCommand(String command);
 
     public abstract void broadcast(Component component);
-
-    public void sendUpdateNotification(final SenderInfo sender) {
-        final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
-                .append(Component.text().content(HANGAR_URL).color(NamedTextColor.GOLD))
-                .append(Component.text().content(" (CLICK ME)").color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD))
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, HANGAR_URL))
-                .hoverEvent(HoverEvent.showText(Component.text("Download the latest version").color(NamedTextColor.GREEN)))
-                .build();
-        sender.send(Component.text().append(this.prefix).append(text).build());
-    }
 
     public abstract Task startMaintenanceRunnable(Runnable runnable);
 

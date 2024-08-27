@@ -36,11 +36,6 @@ import eu.kennytv.maintenance.core.command.subcommand.WhitelistAddCommand;
 import eu.kennytv.maintenance.core.command.subcommand.WhitelistCommand;
 import eu.kennytv.maintenance.core.command.subcommand.WhitelistRemoveCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -162,20 +157,6 @@ public abstract class MaintenanceCommand {
         add(new AbortTimerCommand(plugin), "aborttimer", "abort");
     }
 
-    public void checkForUpdate(final SenderInfo sender) {
-        if (plugin.updateAvailable()) {
-            sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
-            sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
-            sendUpdateMessage(sender);
-        } else {
-            sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
-        }
-    }
-
-    protected void sendUpdateMessage(final SenderInfo sender) {
-        sender.sendMessage(plugin.getPrefix() + "§eUse §c§l/maintenance forceupdate §eto update!");
-    }
-
     public List<String> getServersCompletion(final String s) {
         return null;
     }
@@ -186,14 +167,6 @@ public abstract class MaintenanceCommand {
 
     public List<String> getPlayersCompletion() {
         return null;
-    }
-
-    public void sendDumpMessage(final SenderInfo sender, final String url) {
-        final TextComponent text = Component.text().content("Click here to copy the link").color(NamedTextColor.GRAY)
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, url))
-                .hoverEvent(HoverEvent.showText(Component.text("Click here to copy the link").color(NamedTextColor.GREEN)))
-                .build();
-        sender.send(Component.text().append(plugin.prefix()).append(text).build());
     }
 
     public List<CommandInfo> getCommands() {

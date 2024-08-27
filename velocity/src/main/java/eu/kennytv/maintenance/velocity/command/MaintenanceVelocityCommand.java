@@ -23,15 +23,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
-import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import java.util.ArrayList;
 import java.util.List;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements SimpleCommand {
     private final MaintenanceVelocityPlugin plugin;
@@ -56,15 +51,6 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
     public boolean hasPermission(final Invocation invocation) {
         final CommandSource source = invocation.source();
         return source.hasPermission("maintenance.admin") || source.hasPermission("maintenance.command");
-    }
-
-    @Override
-    protected void sendUpdateMessage(final SenderInfo sender) {
-        final TextComponent tc = Component.text("").append(plugin.translate("§6× §8[§aUpdate§8]"))
-                .clickEvent(ClickEvent.runCommand("/maintenance forceupdate"))
-                .hoverEvent(HoverEvent.showText(plugin.translate("§aClick here to update the plugin")))
-                .append(plugin.translate(" §8(§7Or use the command §c/maintenance forceupdate§8)"));
-        ((VelocitySenderInfo) sender).sendMessage(tc);
     }
 
     @Override
