@@ -98,7 +98,7 @@ public final class SettingsProxy extends Settings {
         }
 
         final Object fallback = config.getObject("fallback");
-        fallbackServers = fallback instanceof String ? Collections.singletonList((String) fallback) : config.getStringList("fallback");
+        fallbackServers = fallback instanceof String ? Collections.singletonList((String) fallback) : config.getStringList("fallback", Collections.emptyList());
 
         waitingServer = config.getString("waiting-server", "");
         if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
