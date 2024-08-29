@@ -57,7 +57,7 @@ singleEndtimerBroadcast: "<prefix><gray>A karbantartás a(z) %SERVER% szerveren 
 singleEndtimerStarted: "<prefix><green>Időzítő elindítva: <gray>A karbantartás mód a %SERVER% szerveren ki lesz kapcsolva <gold>%TIME% múlva<gray>."
 singleStarttimerBroadcast: "<prefix>A karbantartás a(z) %SERVER% szerveren engedélyezve lesz <gold>%TIME%<gray> múlva."
 singleStarttimerStarted: "<prefix><green>Időzítő elindítva: <gray>A karbantartás mód a %SERVER% szerveren be lesz kapcsolva <gold>%TIME% múlva<gray>."
-singleScheduletimerBroadcast: "<prefix><gray>A karbantartás a(z) %SERVER% szerveren le lesz tiltva <gold>%TIME%<gray> múlva,és <gold>%DURATION<gray>-ig fog tartani."
+singleScheduletimerBroadcast: "<prefix><gray>A karbantartás a(z) %SERVER% szerveren le lesz tiltva <gold>%TIME%<gray> múlva, és <gold>%DURATION%<gray>-ig fog tartani."
 singleScheduletimerStarted: "<prefix><green>Időzítő Elindítva: <gray>A karbantartás a(z) %SERVER% szerveren le lesz tiltva <gold>%TIME%<gray> múlva,és <gold>%DURATION<gray>-ig fog tartani."
 singleMaintenanceKick: "<prefix><red>A(z) %SERVER% szerver jelenleg karbantartás alatt van! Próbáld újra később!"
 singleMaintenanceKickComplete: "<red>A(z) %SERVER% karbantartás alatt van!<br>Megpróbálhatsz belépni újra!"
