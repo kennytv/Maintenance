@@ -12,6 +12,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Fixed the original player sample not being cleared in Velocity
 * Velocity: Fixed the console getting broadcasts twice
 * Velocity: Don't log legacy color codes to the console
+* Paper: Fixed the player count messages on Paper 1.21
 ---
 ## 4.2.1 - May 17th 2024
 ### Changed

@@ -95,10 +95,9 @@ public final class PaperServerListPingListener implements Listener {
             return this.name;
         }
 
-        @Nullable
         @Override
         public UUID getId() {
-            return null;
+            return UUID.randomUUID();
         }
 
         @Override
