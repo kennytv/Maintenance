@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Nie można znaleźć gracza z tym uuid."
 playerNotOnline: "<prefix><red>Nie ma gracza online z tym nickiem."
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Nieprawidłowy format uuid!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Zostałeś wysłany do poczekalni!"
 forceWaitingServer: "<prefix><red>Nie możesz opuścić poczekalni gdy tryb konserwacji jest włączony!"
 serverNotFound: "<prefix><red>Brak serwera z tą nazwą!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Pobiera najnowszą wersję plugina
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Pokazuje białą listę trybu konserwacji)"
 helpWhitelistAdd: "<gold>/maintenance add <nazwa/uuid> <gray>(Dodaje gracza do listy konserwacji, aby mogli dołączyć do serwera w trakcie konserwacji)"
 helpWhitelistRemove: "<gold>/maintenance remove <nazwa/uuid> <gray>(Usuwa gracza z listy trybu konserwacji)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [serwer] <gray>(Jeśli aktywny, timer zostanie anulowany)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [serwer] <minuty> <gray>(Po czasie podanym w minutach, tryb konserwacji zostanie wyłączony)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [serwer] <minuty> <gray>(Po czasie podanym w minutach, tryb konserwacji zostanie włączony)"

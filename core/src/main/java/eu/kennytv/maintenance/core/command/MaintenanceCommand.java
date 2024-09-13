@@ -36,13 +36,19 @@ import eu.kennytv.maintenance.core.command.subcommand.WhitelistAddCommand;
 import eu.kennytv.maintenance.core.command.subcommand.WhitelistCommand;
 import eu.kennytv.maintenance.core.command.subcommand.WhitelistRemoveCommand;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenanceCommand {
+    private static final long MAX_TASK_DURATION_SECONDS = TimeUnit.DAYS.toSeconds(28);
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
     private final Map<String, CommandInfo> commandExecutors = new LinkedHashMap<>();
@@ -123,29 +129,41 @@ public abstract class MaintenanceCommand {
         return info != null && info.hasPermission(sender) ? info.getTabCompletion(sender, args) : Collections.emptyList();
     }
 
-    public boolean checkTimerArgs(final SenderInfo sender, final String time, final boolean taskCheck) {
-        if (!plugin.isNumeric(time)) return true;
-        if (taskCheck) {
-            if (plugin.isTaskRunning()) {
-                sender.send(settings.getMessage("timerAlreadyRunning"));
-                return true;
+    public @Nullable Duration parseDurationAndCheckTask(final SenderInfo sender, final String time, final boolean taskCheck) {
+        final Duration duration;
+        if (plugin.isNumeric(time)) {
+            // Assume minutes by default as per old command behavior
+            duration = Duration.ofMinutes(Integer.parseInt(time));
+        } else {
+            try {
+                // Only accept hours, minutes, and seconds
+                duration = Duration.parse("PT" + time.toUpperCase(Locale.ROOT));
+            } catch (final DateTimeParseException e) {
+                return null;
             }
         }
 
-        final int minutes = Integer.parseInt(time);
-        if (minutes > 40320) {
+        if (taskCheck) {
+            if (plugin.isTaskRunning()) {
+                sender.send(settings.getMessage("timerAlreadyRunning"));
+                return null;
+            }
+        }
+
+        final long seconds = duration.getSeconds();
+        if (seconds > MAX_TASK_DURATION_SECONDS) {
             sender.send(settings.getMessage("timerTooLong"));
-            return true;
+            return null;
         }
-        if (minutes < 1) {
+        if (seconds < 1) {
             sender.sendRich("<i><dark_gray>[kennytv whispers to you] <gray>Think about running a timer for a negative amount of minutes. Doesn't work <b>that</b> <gray>well.");
-            return true;
+            return null;
         }
-        return false;
+        return duration;
     }
 
-    public boolean checkTimerArgs(final SenderInfo sender, final String time) {
-        return checkTimerArgs(sender, time, true);
+    public @Nullable Duration parseDurationAndCheckTask(final SenderInfo sender, final String time) {
+        return parseDurationAndCheckTask(sender, time, true);
     }
 
     protected void addToggleAndTimerCommands() {

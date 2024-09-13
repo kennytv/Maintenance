@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>找不到具有该UUID的玩家。"
 playerNotOnline: "<prefix><red>没有使用该名称的在线玩家"
 offlinePlayerFetchError: "<prefix><red>获取离线玩家时出现错误。请稍后再试。"
 invalidUuid: "<prefix><red>无效的UUID格式！"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>您已被传送到等待服务器！"
 forceWaitingServer: "<prefix><red>启用维护时，您不能离开等待服务器！"
 serverNotFound: "<prefix><red>未找到拥有此名称的服务器！"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(远程下载最新版本插件到�
 helpWhitelist: "<gold>/maintenance whitelist <gray>(显示所有维护玩家白名单)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(将玩家加入维护玩家白名单，这样即使开启了维护，他们也能加入服务器)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(将玩家从维护玩家白名单中移除)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(中止指定服务器开启的计时器)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(在以分钟为单位给定时间后将关闭指定服务器的维护模式)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(在以分钟为单位给定时间后将开启指定服务器的维护模式)"

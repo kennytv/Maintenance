@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>해당 UUID를 가진 플레이어를 찾을 �
 playerNotOnline: "<prefix><red>해당 이름을 가진 플레이어가 온라인이 아닙니다."
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>유효하지 않은 UUID 형식입니다!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>You have been sent to a waiting server!"
 forceWaitingServer: "<prefix><red>You cannot leave the waiting server while maintenance is enabled!"
 serverNotFound: "<prefix><red>No server with this name is registered on the proxy!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Remotely downloads the newest vers
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Shows all whitelisted players for the maintenance mode)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Removes the player from the maintenance whitelist)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(If running, the current timer will be aborted)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(After the given time in minutes, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(After the given time in minutes, maintenance mode will be enabled)"

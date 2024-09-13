@@ -22,9 +22,9 @@ import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
@@ -41,7 +41,9 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length == 2) {
             if (checkPermission(sender, "timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
+
+            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[1]);
+            if (duration == null) {
                 sender.send(getHelpMessage());
                 return;
             }
@@ -50,11 +52,13 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), TimeUnit.MINUTES, true);
+            plugin.startMaintenanceRunnable(duration, true);
             sender.send(getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime()));
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;
-            if (plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
+
+            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[2], false);
+            if (duration == null) {
                 sender.send(getHelpMessage());
                 return;
             }
@@ -66,7 +70,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, Integer.parseInt(args[2]), TimeUnit.MINUTES, true);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, true);
             sender.send(getMessage(
                     "singleStarttimerStarted",
                     "%TIME%", runnable.getTime(),

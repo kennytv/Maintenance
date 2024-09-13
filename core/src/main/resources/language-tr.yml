@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Bu UUID'ye sahip hiçbir oyuncu bulunamadı."
 playerNotOnline: "<prefix><red>Bu isimle çevrimiçi oyuncu yok."
 offlinePlayerFetchError: "<prefix><red>Çevrimdışı oyuncu getirilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
 invalidUuid: "<prefix><red>Geçersiz UUID biçimi!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Bekleme sunucusuna gönderildiniz!"
 forceWaitingServer: "<prefix><red>Bakım varken bekleme sunucusundan ayrılamazsınız!"
 serverNotFound: "<prefix><red>Bu ada sahip hiçbir sunucu BungeeCord'da kayıtlı değil!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Eklentinin en yeni sürümünü su
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Bakım modu için beyaz listedeki tüm oyuncuları gösterir)"
 helpWhitelistAdd: "<gold>/maintenance add <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesine ekler, böylece bakım etkin olsa bile sunucuya katılabilir)"
 helpWhitelistRemove: "<gold>/maintenance remove <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesinden kaldırır)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [sunucu] <gray>(Çalışıyorsa, mevcut zamanlayıcı iptal edilecektir.)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu devre dışı bırakılır)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [sunucu] <dakika> <gray>(Dakika olarak verilen süreden sonra bakım modu etkinleştirilecektir.)"

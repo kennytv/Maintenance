@@ -53,6 +53,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -173,16 +174,16 @@ public abstract class MaintenancePlugin implements Maintenance {
         builder.append(time).append(' ').append(settings.language.getString(time == 1 ? timeUnit : timeUnit + "s"));
     }
 
-    public void startMaintenanceRunnable(final long duration, final TimeUnit unit, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, settings, (int) unit.toSeconds(duration), enable);
+    public void startMaintenanceRunnable(final Duration duration, final boolean enable) {
+        runnable = new MaintenanceRunnable(this, settings, (int) duration.getSeconds(), enable);
         // Save the endtimer to be able to continue it after a server stop
         if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
         }
     }
 
-    public void scheduleMaintenanceRunnable(final long duration, final int maintenanceDuration, final TimeUnit unit) {
-        runnable = new MaintenanceScheduleRunnable(this, settings, (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration));
+    public void scheduleMaintenanceRunnable(final Duration enableIn, final Duration maintenanceDuration) {
+        runnable = new MaintenanceScheduleRunnable(this, settings, (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds());
     }
 
     public boolean updateAvailable() {
@@ -208,7 +209,7 @@ public abstract class MaintenancePlugin implements Maintenance {
             setMaintenance(false);
             settings.setSavedEndtimer(0);
         } else {
-            startMaintenanceRunnable(settings.getSavedEndtimer() - current, TimeUnit.MILLISECONDS, false);
+            startMaintenanceRunnable(Duration.ofMillis(settings.getSavedEndtimer() - current), false);
             getLogger().info("The timer has been continued - maintenance will be disabled in: " + getTimerMessage());
         }
     }

@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Nessun player con quell'uuid è stato trovato.
 playerNotOnline: "<prefix><red>Non c'è nessun giocatore online con quell'username."
 offlinePlayerFetchError: "<prefix><red>C'è stato un errore cercando il player offline. Riprova più tardi."
 invalidUuid: "<prefix><red>L'uuid presenta un formato invalido!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Sei stato inviato su un server d'attesa!"
 forceWaitingServer: "<prefix><red>Non puoi abbandonare il server d'attesa durante una manutenzione!"
 serverNotFound: "<prefix><red>Nessun server con questo nome è registrato sulla proxy!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Scarica dall'esterno l'ultima vers
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Elenca tutti i giocatori nella whitelist per la manutenzione)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Aggiunge il giocatore alla whitelist di manutenzione, così possono entrare in un server durante la manutenzione)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Rimuovi il player dalla whitelist della manutenzione)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Se attivo, il timer attuale verrà fermato)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà rimossa)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(Dopo il tempo fornito in minuti, la modalità manutenzione sarà attivata)"

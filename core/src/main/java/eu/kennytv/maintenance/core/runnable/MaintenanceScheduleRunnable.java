@@ -20,8 +20,7 @@ package eu.kennytv.maintenance.core.runnable;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
     private final int maintenanceDuration;
@@ -36,7 +35,7 @@ public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
         super.finish();
 
         // Start the timer to disable maintenance again
-        plugin.startMaintenanceRunnable(maintenanceDuration, TimeUnit.SECONDS, false);
+        plugin.startMaintenanceRunnable(Duration.ofSeconds(maintenanceDuration), false);
     }
 
     @Override

@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>不明なUUIDです。"
 playerNotOnline: "<prefix><red>このユーザーはオンラインではありません。"
 offlinePlayerFetchError: "<prefix><red>オフラインプレイヤーの取得中にエラーが発生しました。しばらく経ってからもう一度お試しください。"
 invalidUuid: "<prefix><red>UUID形式が無効です。"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>待機サーバーに転送されました！"
 forceWaitingServer: "<prefix><red>メンテナンスが有効な間は、待機中のサーバーから離れることはできません。"
 serverNotFound: "<prefix><red>この名前のサーバーはプロキシに登録されていません。"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(最新版のプラグインをサ�
 helpWhitelist: "<gold>/maintenance whitelist <gray>(メンテナンスモードのホワイトリストに登録されているすべてのプレーヤーを表示します。)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(メンテナンスのホワイトリストにユーザーを追加し、メンテナンスが有効な状態でもサーバーに参加できるようにします。)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(メンテナンスのホワイトリストからプレーヤーを削除します。)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(もし、タイマーが実行中の場合、現在のタイマーを中止します。)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(分単位で指定された時間が経過すると、メンテナンスモードは無効になります。)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(分単位で指定された時間経過後、メンテナンスモードが有効になります。)"

@@ -21,7 +21,7 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public final class StarttimerCommand extends CommandInfo {
 
@@ -32,7 +32,9 @@ public final class StarttimerCommand extends CommandInfo {
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 2)) return;
-        if (plugin.getCommandManager().checkTimerArgs(sender, args[1])) {
+
+        final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[1]);
+        if (duration == null) {
             sender.send(getHelpMessage());
             return;
         }
@@ -41,7 +43,7 @@ public final class StarttimerCommand extends CommandInfo {
             return;
         }
 
-        plugin.startMaintenanceRunnable(Integer.parseInt(args[1]), TimeUnit.MINUTES, true);
+        plugin.startMaintenanceRunnable(duration, true);
         sender.send(getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime()));
     }
 }

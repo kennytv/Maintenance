@@ -22,27 +22,26 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRunnable {
-    private final int maintenanceDuration;
+    private final int maintenanceDurationSeconds;
 
     public SingleMaintenanceScheduleRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final int maintenanceDuration, final Server server) {
         super(plugin, settings, seconds, true, server);
-        this.maintenanceDuration = maintenanceDuration;
+        this.maintenanceDurationSeconds = maintenanceDuration;
     }
 
     @Override
     protected void finish() {
         super.finish();
-        ((MaintenanceProxyPlugin) plugin).startSingleMaintenanceRunnable(server, maintenanceDuration, TimeUnit.SECONDS, false);
+        ((MaintenanceProxyPlugin) plugin).startSingleMaintenanceRunnable(server, Duration.ofSeconds(maintenanceDurationSeconds), false);
     }
 
     @Override
     protected Component getStartMessage() {
         return settings.getMessage("singleScheduletimerBroadcast",
                 "%SERVER%", server.getName(),
-                "%TIME%", getTime(), "%DURATION%", plugin.getFormattedTime(maintenanceDuration));
+                "%TIME%", getTime(), "%DURATION%", plugin.getFormattedTime(maintenanceDurationSeconds));
     }
 }

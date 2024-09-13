@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Ingen spiller med den uuid kunne findes."
 playerNotOnline: "<prefix><red>Der er ingen spiller online med det navn."
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Ugyldigt uuid-format!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Du er blevet sendt til en venteserver!"
 forceWaitingServer: "<prefix><red>Du kan ikke forlade venteserveren, mens vedligeholdelsetilstand er aktiveret!"
 serverNotFound: "<prefix><red>Ingen server med dette navn er registreret på proxyen!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Downloader den nyeste version af p
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Viser alle hvidlistede spillere for vedligeholdelsestilstand)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Tilføjer spilleren til vedligeholdelseshvidlisten, så de kan forbinde til serveren, selvom vedligeholdelsestilstand er aktiveret)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Sletter spilleren fra vedligeholdelseshvidlisten)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Hvis timeren kører, vil den blive afbrudt)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(Efter den givne tid i minutter deaktiveres vedligeholdelsestilstanden)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(Efter den givne tid i minutter, vil vedligeholdelsestilstand blive aktiveret)"

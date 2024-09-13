@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Ingen spelare med det uuid hittades."
 playerNotOnline: "<prefix><red>Det finns ingen spelare med det namnet online."
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Ogiltigt uuid format!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Du har blvitt skickad till en väntserver!"
 forceWaitingServer: "<prefix><red>Du kan inte lämna väntservern medans underhållsläget är aktiverat!"
 serverNotFound: "<prefix><red>Ingen server med det namnet är registerad på proxyn!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Avlägset laddar ner senaste versi
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Visar alla vitlistade spelare för underhållsläget)"
 helpWhitelistAdd: "<gold>/maintenance add <namn/uuid> <gray>(Lägger till en spelare på vitlistan för underhållsläget, så de kan logga in även om underhåll är aktiverat)"
 helpWhitelistRemove: "<gold>/maintenance remove <namn/uuid> <gray>(Tar bort spelaren från vitlistan för underhållsläget)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Vid utfärdandet av detta kommando kommer den nuvarande timern bli avbruten)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minuter> <gray>(Efter den angivna tiden kommer underhållsläge avaktiveras)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minuter> <gray>(Efter den angivna tiden kommer underhållsläge aktiveras)"

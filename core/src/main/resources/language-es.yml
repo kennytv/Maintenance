@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>No se pudo encontrar el jugador con ese UUID."
 playerNotOnline: "<prefix><gray>No hay jugador en línea con este nombre."
 offlinePlayerFetchError: "<prefix><red>Hubo un error al obtener el jugador sin conexión. Por favor, inténtalo de nuevo más tarde."
 invalidUuid: "<prefix><red>Formato inválido!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><green>Has sido enviado a un servidor de espera!"
 forceWaitingServer: "<prefix><red>No puedes dejar el servidor de espera mientras el mantenimiento está activado!"
 serverNotFound: "<prefix><red>Ningún servidor con este nombre está registrado en el proxy!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <dark_gray>(<gray>Descarga de forma remot
 helpWhitelist: "<gold>/maintenance whitelist <dark_gray>(<gray>Muestra todos los jugadores en lista blanca para el modo de mantenimiento<dark_gray>)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <dark_gray>(<gray>Agrega al jugador a la lista blanca de mantenimiento, para que puedan unirse al servidor aunque el mantenimiento esté habilitado<dark_gray>)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <dark_gray>(<gray>Quita al jugador de la lista blanca de mantenimiento<dark_gray>)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <dark_gray>(<gray>Si está funcionando, se abortará el temporizador actual<dark_gray>)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <dark_gray>(<gray>Después del tiempo en minutos, se desactivará el modo de mantenimiento<dark_gray>)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <dark_gray>(<gray>Después del tiempo en minutos, se activara el modo de mantenimiento<dark_gray>)"

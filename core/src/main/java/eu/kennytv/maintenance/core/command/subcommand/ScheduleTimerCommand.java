@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public final class ScheduleTimerCommand extends CommandInfo {
 
@@ -31,8 +31,10 @@ public final class ScheduleTimerCommand extends CommandInfo {
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 3)) return;
-        if (plugin.getCommandManager().checkTimerArgs(sender, args[1])
-                || plugin.getCommandManager().checkTimerArgs(sender, args[2], false)) {
+
+        final Duration enableIn = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[1]);
+        final Duration maintenanceDuration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[2], false);
+        if (enableIn == null || maintenanceDuration == null) {
             sender.send(getHelpMessage());
             return;
         }
@@ -41,12 +43,11 @@ public final class ScheduleTimerCommand extends CommandInfo {
             return;
         }
 
-        final int duration = Integer.parseInt(args[2]);
-        plugin.scheduleMaintenanceRunnable(Integer.parseInt(args[1]), duration, TimeUnit.MINUTES);
+        plugin.scheduleMaintenanceRunnable(enableIn, maintenanceDuration);
         sender.send(getMessage(
                 "scheduletimerStarted",
                 "%TIME%", plugin.getRunnable().getTime(),
-                "%DURATION%", plugin.getFormattedTime(duration * 60)
+                "%DURATION%", plugin.getFormattedTime((int) maintenanceDuration.getSeconds())
         ));
     }
 }

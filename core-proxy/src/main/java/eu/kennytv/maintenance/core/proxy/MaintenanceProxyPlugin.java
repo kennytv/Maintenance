@@ -32,15 +32,13 @@ import eu.kennytv.maintenance.core.util.RateLimitedException;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
-import org.jetbrains.annotations.Blocking;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author kennytv
@@ -146,15 +145,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         }
     }
 
-    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final long duration, final TimeUnit unit, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) unit.toSeconds(duration), enable, server);
+    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) duration.getSeconds(), enable, server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
 
-    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final long duration, final long maintenanceDuration, final TimeUnit unit) {
+    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final Duration enableIn, final Duration maintenanceDuration) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
-                (int) unit.toSeconds(duration), (int) unit.toSeconds(maintenanceDuration), server);
+                (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), server);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
@@ -262,9 +261,9 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     private UUID fromStringUUIDWithoutDashes(String undashedUUID) {
         return UUID.fromString(
-            undashedUUID.substring(0, 8) + "-" + undashedUUID.substring(8, 12) + "-" +
-            undashedUUID.substring(12, 16) + "-" + undashedUUID.substring(16, 20) + "-" +
-            undashedUUID.substring(20, 32)
+                undashedUUID.substring(0, 8) + "-" + undashedUUID.substring(8, 12) + "-" +
+                        undashedUUID.substring(12, 16) + "-" + undashedUUID.substring(16, 20) + "-" +
+                        undashedUUID.substring(20, 32)
         );
     }
 

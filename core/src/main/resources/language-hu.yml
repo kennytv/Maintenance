@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>A játékos nem található."
 playerNotOnline: "<prefix><red>A játékos nincs online."
 offlinePlayerFetchError: "<prefix><red>Hiba történt az offline játékos lekérése közben. Kérlek, próbáld újra később!"
 invalidUuid: "<prefix><red>Rossz UUID!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>El lettél küldve egy várakozós szerverre!"
 forceWaitingServer: "<prefix><red>Ezt a szervert a karbantartás végéig nem hagyhatod el!"
 serverNotFound: "<prefix><red>Nincs a proxy-n ilyen nevű szerver regisztrálva!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Frissíti a plugin verziót)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Megmutatja a karbantartás fehérlistázottak listáját)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Hozzáadja a játékost a karbantartás fehérlistához)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Kitörli a játékost a karbantartás fehérlistáról)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Ha van karbantartás,akkor figyelmen kívül veszi az időzítőt)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(Egy megadott idővallum múlva kikapcsol a karbantartás mód)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(Egy megadott idővallum múlva bekapcsol a karbantartás mód)"

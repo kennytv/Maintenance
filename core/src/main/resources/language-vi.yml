@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>Không tìm thấy người chơi nào có uui
 playerNotOnline: "<prefix><red>Không có người chơi trực tuyến nào có tên đó."
 offlinePlayerFetchError: "<prefix><red>Đã xảy ra lỗi khi tìm Người Chơi Ngoại Tuyến. Vui lòng thử lại sau."
 invalidUuid: "<prefix><red>Định dạng uuid không hợp lệ!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Bạn đã được gửi đến một máy chủ đang chờ!"
 forceWaitingServer: "<prefix><red>Bạn không thể rời khỏi máy chủ đang chờ trong khi bảo trì được kích hoạt!"
 serverNotFound: "<prefix><red>Không có máy chủ nào có tên này được đăng ký trên proxy!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>(Tải từ xa phiên bản mới n
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Hiển thị tất cả người chơi trong danh sách trắng cho chế độ bảo trì)"
 helpWhitelistAdd: "<gold>/maintenance add <Tên Người Chơi Hoặc uuid> <gray>(Thêm người chơi vào danh sách trắng bảo trì, để họ có thể tham gia máy chủ ngay cả khi bảo trì được bật)"
 helpWhitelistRemove: "<gold>/maintenance remove <Tên Người Chơi Hoặc uuid> <gray>(Xóa Người Chơi khỏi danh sách trắng bảo trì)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Nếu chạy, bộ đếm thời gian hiện tại sẽ bị hủy bỏ)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <phút> <gray>(Sau thời gian nhất định tính bằng phút, chế độ bảo trì sẽ bị tắt)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <phút> <gray>(Sau thời gian nhất định tính bằng phút, chế độ bảo trì sẽ được bật)"

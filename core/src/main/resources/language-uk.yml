@@ -46,7 +46,7 @@ playerNotFoundUuid: "<red>Гравець з таким UUID не знайден!
 playerNotOnline: "<red>Гравець повинен бути онлайн!"
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<red>Невірний формат UUID!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<red>Ви були переміщені у лобі!"
 forceWaitingServer: "<red>Ви не можете залишити лобі під час технічних робіт!"
 serverNotFound: "<red>Сервер не знайдено!"
@@ -93,7 +93,7 @@ helpUpdate: "<gold>/maintenance update <gray>- <white>Оновити плагі�
 helpWhitelist: "<gold>/maintenance whitelist <gray>- <white>Відобразити всіх гравців із білого листа."
 helpWhitelistAdd: "<gold>/maintenance add [ник|uuid] <gray>- <white>Додати гравця до білого листа."
 helpWhitelistRemove: "<gold>/maintenance remove [ник|uuid] <gray>- <white>Видалити гравця із білого листа."
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [сервер] <gray>- <white>Зупинити таймер увімкнення/вимкнення режиму технічних робіт."
 helpSingleEndtimer: "<gold>/maintenance endtimer [сервер] [время в минутах] <gray>- <white>Запустити таймер вимкнення режиму технічних робіт."
 helpSingleStarttimer: "<gold>/maintenance starttimer [сервер] [время в минутах] <gray>- <white>Запустити таймер увімкнення режиму технічних робіт."
