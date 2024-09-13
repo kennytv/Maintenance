@@ -46,7 +46,7 @@ playerNotFoundUuid: "<prefix><red>No player with that uuid could be found."
 playerNotOnline: "<prefix><red>There is no player online with that name."
 offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
 invalidUuid: "<prefix><red>Invalid uuid format!"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 sentToWaitingServer: "<prefix><red>You have been sent to a waiting server!"
 forceWaitingServer: "<prefix><red>You cannot leave the waiting server while maintenance is enabled!"
 serverNotFound: "<prefix><red>No server with this name is registered on the proxy!"
@@ -78,9 +78,9 @@ helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MA
 helpPageNotFound: "<prefix><red>There is no page with that number!"
 helpNextPage: "<gray>Use <aqua>/maintenance help %PAGE% <gray>to get to the next help window."
 helpAbortTimer: "<gold>/maintenance aborttimer <gray>(If running, the current timer will be aborted)"
-helpEndtimer: "<gold>/maintenance endtimer <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
-helpStarttimer: "<gold>/maintenance starttimer <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpEndtimer: "<gold>/maintenance endtimer <minutes> <gray>(After the given time in minutes, maintenance mode will be disabled)"
+helpStarttimer: "<gold>/maintenance starttimer <minutes> <gray>(After the given time in minutes, maintenance mode will be enabled)"
+helpScheduleTimer: "<gold>/maintenance scheduletimer <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpDebug: "<gold>/maintenance debug <gray>(Enables some debug logging)"
 helpDump: "<gold>/maintenance dump <gray>(Dumps some server information, used for bug reports)"
 helpHelp: "<gold>/maintenance help [page] <gray>(Shows this beautiful help window)"
@@ -93,11 +93,11 @@ helpUpdate: "<gold>/maintenance update <gray>(Remotely downloads the newest vers
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Shows all whitelisted players for the maintenance mode)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)"
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Removes the player from the maintenance whitelist)"
-#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
+#Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Spigot/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(If running, the current timer will be aborted)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server] <minutes> <gray>(After the given time in minutes, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server] <minutes> <gray>(After the given time in minutes, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <timer minutes> <maintenance duration> <gray>(After the given time in minutes, maintenance mode will be enabled for the given duration in minutes)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Enables/disables maintenance mode)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
