@@ -4,10 +4,12 @@ This file contains update logs for this project. The top may contain a `Unreleas
 ---
 ## Unreleased
 ### Changed
+* The `fallback` field now also null values next to an empty array for disabling the feature
 * Updated language files from [Crowdin](https://crowdin.com/translate/maintenance)
 
 ### Fixed
 * Fixed the maintenance dump command
+* Fixed the original player sample not being cleared in Velocity
 ---
 ## 4.2.1 - May 17th 2024
 ### Changed
@@ -110,7 +112,7 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Bungee/Velocity: Added language fields to choose custom kickmessages for individual proxied servers
   * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Configuration#language-file) for an example setting
 * Added Chinese language file (thanks to Spigot user yeban)
-* Added Italian language file (thanks to @TheViperShow)
+* Added Italian language file
 * Updated Russian language file (thanks to Spigot user En_0t_S)
 * Removed automated config migration from 2.x->3.0
   * See [**HERE**](https://github.com/KennyTV/Maintenance/wiki/Updates#updating-from-2x) on how to do that manually - virtually noone should be using such old versions anymore

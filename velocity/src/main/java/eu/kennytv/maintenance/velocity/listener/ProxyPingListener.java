@@ -76,6 +76,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
             for (int i = 0; i < lines.length; i++) {
                 samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], ZERO_UUID);
             }
+            builder.clearSamplePlayers(); // samplePlayers adds
             builder.samplePlayers(samplePlayers);
         }
 
