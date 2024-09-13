@@ -18,7 +18,7 @@ scheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will
 timerAlreadyRunning: "<prefix><red>There is already a timer scheduled!"
 timerNotRunning: "<prefix><red>There is currently no running timer."
 timerCancelled: "<prefix><red>The current timer has been disabled."
-timerTooLong: "<prefix><red>The number has to be less than 40320 (28 days)!"
+timerTooLong: "<prefix><red>The duration has to be less than 28 days!"
 timerMotdDisabled: "<prefix><red>You have to set 'enable-timerspecific-messages' in the config to 'true', if you want to use/edit timerspecific motds."
 motdTimer: "%HOURS%:%MINUTES%:%SECONDS%"
 motdTimerNotRunning: "-"
