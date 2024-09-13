@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 8;
+    private static final int CONFIG_VERSION = 9;
     private static final int LANGUAGE_VERSION = 2;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
@@ -175,41 +175,44 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private void loadSettings() {
         updateConfig();
 
-        enablePingMessages = config.getBoolean("enable-pingmessages", true);
-        // Can't store these two already parsed as components because gradients will break replacements
-        pingMessages = loadPingMessages("pingmessages");
-        if (config.getBoolean("enable-timerspecific-messages")) {
-            timerSpecificPingMessages = loadPingMessages("timerspecific-pingmessages");
+        final ConfigSection pingMessageSection = config.getSection("ping-message");
+        enablePingMessages = pingMessageSection.getBoolean("enabled", true);
+        // Can't store this pre-parsed as components because gradients will break replacements
+        pingMessages = loadPingMessages(pingMessageSection.getStringList("messages"));
+        if (pingMessageSection.getBoolean("enable-timer-specific-messages")) {
+            timerSpecificPingMessages = loadPingMessages(pingMessageSection.getStringList("timer-messages"));
         } else {
             timerSpecificPingMessages = null;
         }
+
         maintenance = config.getBoolean("maintenance-enabled");
         commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
         commandsOnMaintenanceDisable = config.getStringList("commands-on-maintenance-disable");
-        customPlayerCountMessage = config.getBoolean("enable-playercountmessage");
-        customPlayerCountHoverMessage = config.getBoolean("enable-playercounthovermessage");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
         joinNotifications = config.getBoolean("send-join-notification");
         broadcastIntervals = new HashSet<>(config.getIntList("timer-broadcast-for-seconds"));
 
-        // Player count and player count hover messages are only accepted and rendered as legacy chat
+        // Player count and player list hover messages are only accepted and rendered as legacy chat
         if (plugin.getServerType() != ServerType.SPONGE) {
-            legacyParsedPlayerCountMessage = toLegacy(parse(getConfigMessage("playercountmessage")));
-            if (config.getBoolean("enable-timerspecific-playercountmessage")) {
-                legacyParsedTimerPlayerCountMessage = toLegacy(parse(getConfigMessage("timer-playercountmessage")));
+            final ConfigSection playerCountMessageSection = config.getSection("player-count-message");
+            customPlayerCountMessage = playerCountMessageSection.getBoolean("enabled");
+            legacyParsedPlayerCountMessage = toLegacy(parse(getConfigMessage(playerCountMessageSection, "message")));
+            if (playerCountMessageSection.getBoolean("enable-timer-specific-message")) {
+                legacyParsedTimerPlayerCountMessage = toLegacy(parse(getConfigMessage(playerCountMessageSection, "timer-message")));
             } else {
                 legacyParsedTimerPlayerCountMessage = null;
             }
         }
 
+        final ConfigSection listHoverMessageSection = config.getSection("player-list-hover-message");
+        customPlayerCountHoverMessage = listHoverMessageSection.getBoolean("enabled");
         legacyParsedPlayerCountHoverLines = new ArrayList<>();
-        for (final String line : config.getString("playercounthovermessage").split("<br>")) {
+        for (final String line : listHoverMessageSection.getString("message").split("<br>")) {
             legacyParsedPlayerCountHoverLines.add(toLegacy(parse(line)));
         }
-
-        if (config.getBoolean("enable-timerspecific-playercounthovermessage")) {
+        if (listHoverMessageSection.getBoolean("enable-timer-specific-message")) {
             legacyParsedTimerPlayerCountHoverLines = new ArrayList<>();
-            for (final String line : config.getString("timer-playercounthovermessage").split("<br>")) {
+            for (final String line : listHoverMessageSection.getString("timer-message").split("<br>")) {
                 legacyParsedTimerPlayerCountHoverLines.add(toLegacy(parse(line)));
             }
         } else {
@@ -272,6 +275,18 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                 config.set("playercounthovermessage", legacyToMinimessage(config.getString("playercounthovermessage")));
                 config.set("playercountmessage", legacyToMinimessage(config.getString("playercountmessage")));
             }
+            if (version < 9) {
+                config.move("enable-pingmessages", "ping-message.enabled");
+                config.move("pingmessages", "ping-message.messages");
+                config.move("enable-timerspecific-messages", "ping-message.enable-timer-specific-messages");
+                config.move("timerspecific-pingmessages", "ping-message.timer-messages");
+
+                config.move("enable-playercountmessage", "player-count-message.enabled");
+                config.move("playercountmessage", "player-count-message.message");
+
+                config.move("enable-playercounthovermessage", "player-list-hover-message.enabled");
+                config.move("playercounthovermessage", "player-list-hover-message.message");
+            }
 
             createFile("config-new.yml", "config.yml");
             final File file = new File(plugin.getDataFolder(), "config-new.yml");
@@ -282,7 +297,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                 e.printStackTrace();
             }
 
-            config.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+            config.addMissingFields(tempConfig);
+            config.replaceComments(tempConfig);
             config.set("config-version", CONFIG_VERSION);
 
             file.delete();
@@ -325,7 +341,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             file.delete();
         }
 
-        language.addMissingFields(tempConfig.getValues(), tempConfig.getComments());
+        language.addMissingFields(tempConfig);
+        language.replaceComments(tempConfig);
         tempConfig.clear();
 
         language.set("language-version", LANGUAGE_VERSION);
@@ -341,13 +358,17 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return serialized.replaceAll("</[a-z_]+>", "");
     }
 
-    public String getConfigMessage(final String path) {
-        final String s = config.getString(path);
+    private String getConfigMessage(final ConfigSection section, final String path) {
+        final String s = section.getString(path);
         if (s == null) {
             plugin.getLogger().warning("The config file is missing the following string: " + path);
             return path;
         }
         return replaceNewlineVar(s);
+    }
+
+    public String getConfigMessage(final String path) {
+        return getConfigMessage(config, path);
     }
 
     public String getLanguageString(final String path, final String... replacements) {
@@ -391,8 +412,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return parse(plugin.replacePingVariables(component));
     }
 
-    private List<String> loadPingMessages(final String path) {
-        final List<String> list = config.getStringList(path);
+    private List<String> loadPingMessages(final List<String> list) {
         final List<String> components = new ArrayList<>(list.size());
         for (final String s : list) {
             components.add(replaceNewlineVar(s));

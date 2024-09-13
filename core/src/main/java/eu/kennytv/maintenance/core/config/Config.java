@@ -18,10 +18,6 @@
 package eu.kennytv.maintenance.core.config;
 
 import com.google.common.collect.Sets;
-import org.jetbrains.annotations.Nullable;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +27,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Further modified version of the <a href="https://github.com/PSandro/SimpleConfig">SimpleConfig</a>SimpleConfig project of PSandro.
@@ -110,30 +109,8 @@ public final class Config extends ConfigSection {
         Files.write(file.toPath(), bytes);
     }
 
-    public boolean addMissingFields(final Map<String, Object> fields, final Map<String, String[]> comments) {
-        // Note: Only scans for the first two levels
-        boolean changed = false;
-        for (final Map.Entry<String, Object> entry : fields.entrySet()) {
-            final Object o = values.get(entry.getKey());
-            if (o != null) {
-                final Object o2 = entry.getValue();
-                if (!(o instanceof Map) || !(o2 instanceof Map)) continue;
-
-                final Map<String, Object> deepMap = (Map<String, Object>) o2;
-                for (final Map.Entry<String, Object> deepEntry : ((Map<String, Object>) o2).entrySet()) {
-                    if (deepMap.containsKey(deepEntry.getKey())) continue;
-                    deepMap.put(deepEntry.getKey(), deepEntry.getValue());
-                    changed = true;
-                }
-                continue;
-            }
-
-            values.put(entry.getKey(), entry.getValue());
-            changed = true;
-        }
-
-        this.comments = new HashMap<>(comments);
-        return changed;
+    public void replaceComments(final Config fromConfig) {
+        this.comments = new HashMap<>(fromConfig.comments);
     }
 
     private static Yaml createYaml() {

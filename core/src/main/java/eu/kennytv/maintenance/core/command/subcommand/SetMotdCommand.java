@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,8 @@ public final class SetMotdCommand extends CommandInfo {
 
         final Settings settings = getSettings();
         final List<String> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
-        final List<String> pingMessages = settings.getConfig().getStringList(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages");
+        final ConfigSection section = settings.getConfig().getSection("ping-message");
+        final List<String> pingMessages = section.getStringList(timerPingMessages ? "timer-messages" : "messages");
         final int index = Integer.parseInt(args[1]);
         if (index == 0 || index > pingMessages.size() + 1) {
             sender.send(getMessage("setMotdIndexError",
@@ -95,7 +97,7 @@ public final class SetMotdCommand extends CommandInfo {
             pingComponents.set(index - 1, componentString);
         }
 
-        settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
+        section.set(timerPingMessages ? "timer-messages" : "messages", pingMessages);
         settings.saveConfig();
         sender.send(settings.getMessage(
                 "setMotd",

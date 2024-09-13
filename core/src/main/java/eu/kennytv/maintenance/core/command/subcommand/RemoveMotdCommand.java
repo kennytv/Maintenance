@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.ArrayList;
@@ -51,7 +52,8 @@ public final class RemoveMotdCommand extends CommandInfo {
         }
 
         final Settings settings = getSettings();
-        final List<String> pingMessages = settings.getConfig().getStringList(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages");
+        final ConfigSection section = settings.getConfig().getSection("ping-message");
+        final List<String> pingMessages = section.getStringList(timerPingMessages ? "timer-messages" : "messages");
         if (pingMessages.size() < 2) {
             sender.send(getMessage("removeMotdError"));
             return;
@@ -68,7 +70,7 @@ public final class RemoveMotdCommand extends CommandInfo {
         final List<String> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
         pingComponents.remove(index - 1);
         pingMessages.remove(index - 1);
-        settings.getConfig().set(timerPingMessages ? "timerspecific-pingmessages" : "pingmessages", pingMessages);
+        section.set(timerPingMessages ? "timer-messages" : "messages", pingMessages);
         settings.saveConfig();
         sender.send(getMessage("removedMotd", "%INDEX%", args[1]));
     }

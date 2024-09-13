@@ -11,12 +11,18 @@
 # The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.
 # For a full list of formats and fancy examples of MiniMessage, see https://docs.adventure.kyori.net/minimessage/format.html
 
+# Changes the language of command feedback/messages.
+# If you find missing translations or want to contribute, see https://crowdin.com/project/maintenance
+# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian), zh (Chinese), it (Italian),
+#  pl (Polish), tr (Turkish), sv (Swedish), uk (Ukrainian), ja (Japanese), da (Danish), ko (Korean), hu (Hungarian), vi (Vietnamese)
+language: en
+
 # Enables maintenance mode.
 maintenance-enabled: false
 
 # Enables maintenance on certain servers managed by your proxy instance(s).
 proxied-maintenance-servers:
-  - SpigotServer1
+  - PaperServer1
 # - AnotherServer
 
 # If maintenance is enabled on a proxied server with players on it, they will be sent to the fallback server instead of being kicked off the network.
@@ -28,13 +34,37 @@ fallback: lobby
 # Leave this empty to disable.
 waiting-server: ""
 
-# The message shown in the multiplayer server list motd when maintenance is enabled.
+# The message (MOTD) shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
-# If running an endtimer, the time left can be displayed by including '%TIMER%' in a pingmessage (also works in playercount(-hover) message).
-pingmessages:
-  - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
-# - "Other entry"
-enable-pingmessages: true
+# If running an endtimer, the time left can be displayed by including '%TIMER%' in a ping message.
+ping-message:
+  enabled: true
+  messages:
+    - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
+  # If set to true and an endtimer is currently running, a message from this pool will be chosen
+  # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
+  enable-timer-specific-messages: true
+  timer-messages:
+    - "<red>Currently under maintenance<br><gradient:#fbffc2:#fffff>Come back in:</gradient> <color:#aa55ee>%TIMER%"
+
+# If enabled, the message below will be shown in the top right corner of the server in the server list, where the player count would normally be displayed.
+# You can use '%ONLINE%' and '%MAX%' if you want to include the player count in a custom message (e.g. "Maintenance %ONLINE%/%MAX%").
+# DOES NOT SUPPORT RGB!
+player-count-message:
+  enabled: true
+  message: "<dark_red>Maintenance"
+  # If set to true and an endtimer is currently running, the timer message will be used instead of the normal one.
+  enable-timer-specific-message: false
+  timer-message: "<dark_red>Come back in: <yellow>%TIMER%"
+
+# Is shown when you move your mouse above the text in the top right corner of the server in the server list, where the player count would normally be displayed.
+# DOES NOT SUPPORT RGB!
+player-list-hover-message:
+  enabled: true
+  message: "<red>Currently under<br><red>maintenance"
+  # If set to true and an endtimer is currently running, the timer message will be used instead of the normal one.
+  enable-timer-specific-message: false
+  timer-message: "<red>Come back in:<br><red><yellow>%TIMER%"
 
 # Any extra commands inside the arrays will be executed when maintenance is enabled/disabled.
 # Example: commands-on-maintenance-enable: ["say hello!", "stop"]
@@ -50,33 +80,6 @@ commands-on-single-maintenance-enable:
 commands-on-single-maintenance-disable:
   all: []
 
-# If set to true and an endtimer is currently running, a pingmessage from this pool will be chosen
-# instead of the ones above, so you can have different messages for when an endtimer is running/not running.
-enable-timerspecific-messages: true
-timerspecific-pingmessages:
-  - "<red>Currently under maintenance<br><gradient:#fbffc2:#fffff>Come back in:</gradient> <color:#aa55ee>%TIMER%"
-# - "Other entry"
-
-# If set to true, the message below will be shown in the top right corner of the server in the serverlist, where the playercount would normally be displayed.
-# If set to false, the normal playercount will be shown.
-#
-# Alternatively you can use '%ONLINE%' and '%MAX%' if you want to include the playercount in a custom message (e.g. "Maintenance %ONLINE%/%MAX%").
-# You may also set a different message for when a maintenance endtimer is running.
-# DOES NOT SUPPORT RGB!
-enable-playercountmessage: true
-enable-timerspecific-playercountmessage: false
-playercountmessage: "<dark_red>Maintenance"
-timer-playercountmessage: "<dark_red>Maintenance: <yellow>%TIMER%"
-
-# Is shown when you move your mouse above the text in the top right corner of the server in the serverlist,
-# where the playercount would normally be displayed.
-# You may also set a different message for when a maintenance endtimer is running.
-# DOES NOT SUPPORT RGB!
-enable-playercounthovermessage: true
-enable-timerspecific-playercounthovermessage: false
-playercounthovermessage: "<red>Currently under<br><red>maintenance"
-timer-playercounthovermessage: "<red>Currently under<br><red>maintenance: <yellow>%TIMER%"
-
 # If set to true, the server icon will be changed to the 'maintenance-icon.png' file in the plugin's folder during maintenance.
 custom-maintenance-icon: false
 
@@ -90,11 +93,16 @@ kick-online-players: true
 # When fetched player does not exist then fallback to offline uuid. Only works on proxies like Velocity or BungeeCord
 fallback-to-offline-uuid: false
 
-# Changes the language of command feedback/messages.
-# If you find missing translations or want to contribute a new language file, you are very welcome to message me on Spigot or my Discord server! :)
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian), zh (Chinese), it (Italian),
-#  pl (Polish), tr (Turkish), sv (Swedish), uk (Ukrainian), ja (Japanese), da (Danish), ko (Korean), hu (Hungarian)
-language: en
+# If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
+# If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.
+continue-endtimer-after-restart:
+  enabled: false
+  # This value is set everytime an endtimer is started, cancelled or ended.
+  # Do not manually change this value.
+  end: 0
+
+# If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
+timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies
 # have the same maintenance status, so you won't have to enable/disable it on every proxy by hand.
@@ -114,21 +122,10 @@ mysql:
   # If you for some reason cannot establish SSL connections to your database, you may disable it here (not recommended).
   use-ssl: true
 
-# If enabled and the server is restarted while running an endtimer, the timer will be continued after the restart.
-# If the timer ends while the server is offline, maintenance will be disabled as soon as the server starts again.
-continue-endtimer-after-restart:
-  enabled: false
-  # This value is set everytime an endtimer is started, cancelled or ended.
-  # Do not manually change this value.
-  end: 0
-
-# If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
-timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
-
 # If disabled, you will no longer receive any messages if there is an update.
 # Not recommended to disable, as new versions generally tend to run better and with fewer bugs.
 # However, you can always check for updates manually using the '/maintenance update' command.
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 8
+config-version: 9

@@ -89,7 +89,8 @@ class ConfigTest {
         final Config newestConfig = new Config(getTestFile("config.yml"));
         newestConfig.load();
 
-        config.addMissingFields(newestConfig.getValues(), newestConfig.getComments());
+        config.addMissingFields(newestConfig);
+        config.replaceComments(newestConfig);
         config.set("config-version", 4);
         final File saveTo = getTestFile("dirty-config-upgraded.yml");
         config.resetAwesomeHeader();

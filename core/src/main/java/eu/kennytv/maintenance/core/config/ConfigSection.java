@@ -17,12 +17,12 @@
  */
 package eu.kennytv.maintenance.core.config;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Further modified version of the <a href="https://github.com/PSandro/SimpleConfig">SimpleConfig</a>SimpleConfig project of PSandro.
@@ -63,15 +63,15 @@ public class ConfigSection {
 
     @Nullable
     public Object getObject(final String key, final Object def) {
-        int i1 = -1;
-        int i2;
+        int nextSeparatorIndex = -1;
+        int sectionStartIndex;
         ConfigSection section = this;
-        while ((i1 = key.indexOf('.', i2 = i1 + 1)) != -1) {
-            section = section.getSection(key.substring(i2, i1));
+        while ((nextSeparatorIndex = key.indexOf('.', sectionStartIndex = nextSeparatorIndex + 1)) != -1) {
+            section = section.getSection(key.substring(sectionStartIndex, nextSeparatorIndex));
             if (section == null) return def;
         }
 
-        final String subKey = key.substring(i2);
+        final String subKey = key.substring(sectionStartIndex);
         if (section == this) {
             final Object result = values.get(subKey);
             return result != null ? result : def;
@@ -97,17 +97,41 @@ public class ConfigSection {
         return new ConfigSection(getRoot(), getFullKeyInPath(key), (Map<String, Object>) o);
     }
 
+    public ConfigSection getOrCreateSection(final String key) {
+        final Object o = getObject(key);
+        if (!(o instanceof Map)) {
+            set(key, new LinkedHashMap<>());
+            return getSection(key);
+        }
+        return new ConfigSection(getRoot(), getFullKeyInPath(key), (Map<String, Object>) o);
+    }
+
     public boolean contains(final String key) {
         return getObject(key) != null;
     }
 
     public void set(final String key, @Nullable final Object value) {
-        //TODO go deep if necessary
+        int nextSeparatorIndex = -1;
+        int sectionStartIndex;
+        ConfigSection section = this;
+        while ((nextSeparatorIndex = key.indexOf('.', sectionStartIndex = nextSeparatorIndex + 1)) != -1) {
+            section = section.getOrCreateSection(key.substring(sectionStartIndex, nextSeparatorIndex));
+        }
+
+        final String sectionKey = key.substring(sectionStartIndex);
         if (value == null) {
-            values.remove(key);
+            section.values.remove(sectionKey);
             getRoot().getComments().remove(getFullKeyInPath(key));
         } else {
-            values.put(key, value);
+            section.values.put(sectionKey, value);
+        }
+    }
+
+    public void move(final String key, final String toKey) {
+        final Object o = getObject(key);
+        if (o != null) {
+            remove(key);
+            set(toKey, o);
         }
     }
 
@@ -190,6 +214,28 @@ public class ConfigSection {
     public List<Integer> getIntList(final String key, @Nullable final List<Integer> def) {
         final List<Integer> list = get(key);
         return list != null ? list : def;
+    }
+
+    public boolean addMissingFields(final ConfigSection fromSection) {
+        boolean changed = false;
+        for (final Map.Entry<String, Object> entry : fromSection.values.entrySet()) {
+            final String key = entry.getKey();
+            final Object value = this.values.get(key);
+            if (value != null) {
+                // Go deeper for sections
+                final Object newValue = entry.getValue();
+                if (!(value instanceof Map) || !(newValue instanceof Map)) {
+                    continue;
+                }
+
+                changed |= this.getSection(key).addMissingFields(fromSection.getSection(key));
+            } else {
+                // Value is missing
+                this.values.put(key, entry.getValue());
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     /**

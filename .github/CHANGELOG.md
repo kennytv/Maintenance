@@ -2,8 +2,11 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
+## 4.3.0 - September 17th 2024
 ## Unreleased
 ### Changed
+* Added alternative player count and player list hover message for when endtimers are running, similar to the existing ping messages setting. They are disabled by default and can be found in their `player-count-message` and `player-list-hover-message` config sections
+* Slightly reorganized the configuration file (it will be automatically migrated on startup, but new sections will be slapped at the bottom of the file)
 * The `fallback` field now also null values next to an empty array for disabling the feature
 * Updated language files from [Crowdin](https://crowdin.com/translate/maintenance)
 
