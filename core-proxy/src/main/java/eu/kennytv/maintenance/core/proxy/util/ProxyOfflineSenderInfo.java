@@ -56,11 +56,6 @@ public final class ProxyOfflineSenderInfo implements ProxySenderInfo {
     }
 
     @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-    }
-
-    @Override
     public void send(final Component component) {
     }
 

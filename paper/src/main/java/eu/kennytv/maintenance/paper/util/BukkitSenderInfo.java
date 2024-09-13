@@ -49,11 +49,6 @@ public final class BukkitSenderInfo implements SenderInfo {
     }
 
     @Override
-    public void sendMessage(final String message) {
-        sender.sendMessage(message);
-    }
-
-    @Override
     public void send(final Component component) {
         ((MaintenancePaperPlugin) MaintenanceProvider.get()).audiences().sender(sender).sendMessage(component);
     }

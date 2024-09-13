@@ -71,7 +71,7 @@ public abstract class JoinListenerBase {
             }
 
             notifiedPlayers.add(sender.getUuid());
-            sender.sendMessage(plugin.getPrefix() + "§cThere is a newer version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
+            sender.sendPrefixedRich("<red>There is a newer version available: <green>Version " + plugin.getNewestVersion() + "<red>, you're on <green>" + plugin.getVersion());
 
             final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
                     .append(Component.text().content(MaintenancePlugin.HANGAR_URL).color(NamedTextColor.GOLD))

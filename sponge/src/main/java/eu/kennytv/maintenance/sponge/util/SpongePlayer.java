@@ -19,11 +19,8 @@ package eu.kennytv.maintenance.sponge.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.identity.Identity;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-
 import java.util.UUID;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 public final class SpongePlayer implements SenderInfo {
     private final ServerPlayer player;
@@ -48,18 +45,12 @@ public final class SpongePlayer implements SenderInfo {
     }
 
     @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-        send(LegacyComponentSerializer.legacySection().deserialize(message));
-    }
-
-    @Override
     public void send(final Component component) {
-        player.sendMessage(Identity.nil(), ComponentUtil.toSponge(component));
+        player.sendMessage(ComponentUtil.toSponge(component));
     }
 
     public void send(final net.kyori.adventure.text.Component component) {
-        player.sendMessage(Identity.nil(), component);
+        player.sendMessage(component);
     }
 
     @Override

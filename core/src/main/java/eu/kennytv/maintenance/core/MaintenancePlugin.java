@@ -74,7 +74,6 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected MaintenanceRunnable runnable;
     protected MaintenanceCommand commandManager;
     private final Component prefix;
-    private final String legacyPrefix;
     private final ServerType serverType;
     private Version newestVersion;
     private boolean debug;
@@ -82,7 +81,6 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected MaintenancePlugin(final String version, final ServerType serverType) {
         this.version = new Version(version);
         this.serverType = serverType;
-        this.legacyPrefix = "§8[§eMaintenance" + serverType + "§8] ";
         this.prefix = Component.text()
                 .append(Component.text().content("[").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text().content("Maintenance").color(NamedTextColor.YELLOW))
@@ -107,8 +105,7 @@ public abstract class MaintenancePlugin implements Maintenance {
             try {
                 executeConsoleCommand(command);
             } catch (final Exception e) {
-                getLogger().severe("Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command);
-                e.printStackTrace();
+                getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
             }
         }
     }
@@ -412,11 +409,6 @@ public abstract class MaintenancePlugin implements Maintenance {
 
     public Version getNewestVersion() {
         return newestVersion;
-    }
-
-    @Deprecated
-    public String getPrefix() {
-        return legacyPrefix;
     }
 
     public Component prefix() {

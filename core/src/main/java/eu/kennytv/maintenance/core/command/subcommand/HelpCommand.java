@@ -22,7 +22,6 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +85,7 @@ public final class HelpCommand extends CommandInfo {
         if (page * COMMANDS_PER_PAGE < commands.size()) {
             sender.send(getMessage("helpNextPage", "%PAGE%", Integer.toString(page + 1)));
         } else {
-            sender.sendMessage("§8× §eVersion " + plugin.getVersion() + " §7by §bkennytv");
+            sender.sendRich("<dark_gray>× <yellow>Version: " + plugin.getVersion() + " <gray>by <aqua>kennytv");
         }
 
         sender.send(header);

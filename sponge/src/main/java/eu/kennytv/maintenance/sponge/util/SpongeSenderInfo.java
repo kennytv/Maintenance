@@ -50,12 +50,6 @@ public final class SpongeSenderInfo implements SenderInfo {
     }
 
     @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-        send(LegacyComponentSerializer.legacySection().deserialize(message));
-    }
-
-    @Override
     public void send(final Component component) {
         cause.sendMessage(Identity.nil(), ComponentUtil.toSponge(component));
     }

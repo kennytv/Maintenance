@@ -46,11 +46,6 @@ public final class SpongeUser implements SenderInfo {
     }
 
     @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-    }
-
-    @Override
     public void send(final Component component) {
     }
 

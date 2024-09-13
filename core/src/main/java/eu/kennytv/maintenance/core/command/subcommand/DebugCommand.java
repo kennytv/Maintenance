@@ -32,6 +32,6 @@ public final class DebugCommand extends CommandInfo {
         if (checkArgs(sender, args, 1)) return;
 
         plugin.setDebug(!plugin.isDebug());
-        sender.sendMessage("Debug mode is now " + (plugin.isDebug() ? "enabled" : "disabled"));
+        sender.sendPrefixedRich("<gray>Debug mode is now " + (plugin.isDebug() ? "<green>enabled" : "<red>disabled"));
     }
 }

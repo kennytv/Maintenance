@@ -38,27 +38,27 @@ public final class DumpCommand extends CommandInfo {
     public void execute(final SenderInfo sender, final String[] args) {
         if (checkArgs(sender, args, 1)) return;
         if (System.currentTimeMillis() - lastDump < TimeUnit.MINUTES.toMillis(5)) {
-            sender.sendMessage(plugin.getPrefix() + "§cYou can only create a dump every 5 minutes!");
+            sender.sendPrefixedRich("<red>You can only create a dump every 5 minutes!");
             return;
         }
 
         lastDump = System.currentTimeMillis();
-        sender.sendMessage(plugin.getPrefix() + "§7The dump is being created, this might take a moment.");
+        sender.sendPrefixedRich("<gray>The dump is being created, this might take a moment.");
         plugin.async(() -> {
             final String key = plugin.pasteDump();
             if (key == null) {
                 if (sender.isPlayer()) {
-                    sender.sendMessage(plugin.getPrefix() + "§cCould not paste dump (see the console for details)");
+                    sender.sendPrefixedRich("<red>Could not paste dump (see the console for details)");
                 }
                 return;
             }
 
             final String url = "https://pastes.dev/" + key;
-            sender.sendMessage(plugin.getPrefix() + "§c" + url);
+            sender.sendPrefixedRich("<red><click:open_url:'" + url + "'>" + url + "</click>");
             if (sender.isPlayer()) {
                 final TextComponent text = Component.text().content("Click here to copy the link").color(NamedTextColor.GRAY)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, url))
-                        .hoverEvent(HoverEvent.showText(Component.text("Click here to copy the link").color(NamedTextColor.GREEN)))
+                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click here to copy the link to your clipboard").color(NamedTextColor.GREEN)))
                         .build();
                 sender.send(plugin.prefix().append(text));
             }

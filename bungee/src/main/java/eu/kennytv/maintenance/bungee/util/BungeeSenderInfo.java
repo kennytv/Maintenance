@@ -52,12 +52,6 @@ public final class BungeeSenderInfo implements ProxySenderInfo {
     }
 
     @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-        sender.sendMessage(message);
-    }
-
-    @Override
     public void send(final Component component) {
         ((MaintenanceBungeePlugin) MaintenanceProvider.get()).audiences().sender(sender).sendMessage(component);
     }

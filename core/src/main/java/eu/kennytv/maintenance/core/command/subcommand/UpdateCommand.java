@@ -41,7 +41,7 @@ public final class UpdateCommand extends CommandInfo {
         }
 
         if (!plugin.updateAvailable()) {
-            sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+            sender.sendPrefixedRich("<green>You already have the latest version of the plugin!");
             return;
         }
 
@@ -52,7 +52,7 @@ public final class UpdateCommand extends CommandInfo {
             } else {
                 sender.send(getMessage("updateFailed"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             sender.send(getMessage("updateFailed"));
             e.printStackTrace();
         }
@@ -60,12 +60,12 @@ public final class UpdateCommand extends CommandInfo {
 
     private void checkForUpdate(final SenderInfo sender) {
         if (!plugin.updateAvailable()) {
-            sender.sendMessage(plugin.getPrefix() + "§aYou already have the latest version of the plugin!");
+            sender.sendPrefixedRich("<green>You already have the latest version of the plugin!");
             return;
         }
 
-        sender.sendMessage(plugin.getPrefix() + "§cNewest version available: §aVersion " + plugin.getNewestVersion() + "§c, you're on §a" + plugin.getVersion());
-        sender.sendMessage(plugin.getPrefix() + "§c§lWARNING: §cYou will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
+        sender.sendPrefixedRich("<red>Newest version available: <green>Version " + plugin.getNewestVersion() + "<red>, you're on <green>" + plugin.getVersion());
+        sender.sendPrefixedRich("<b><red>WARNING: <red>You will have to restart the server to prevent further issues and to complete the update! If you can't do that, don't update!");
 
         sender.send(Component.text().append(MiniMessage.miniMessage().deserialize("<gold>× <dark_gray>[<green>Update<dark_gray>]"))
                 .clickEvent(ClickEvent.runCommand("/maintenance forceupdate"))

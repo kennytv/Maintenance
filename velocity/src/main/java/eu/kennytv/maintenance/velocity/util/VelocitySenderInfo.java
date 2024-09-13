@@ -22,10 +22,8 @@ import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-
 import java.util.UUID;
+import net.kyori.adventure.text.TextComponent;
 
 public final class VelocitySenderInfo implements ProxySenderInfo {
     private final CommandSource sender;
@@ -47,12 +45,6 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
     @Override
     public boolean hasPermission(final String permission) {
         return sender.hasPermission(permission);
-    }
-
-    @Override
-    @Deprecated
-    public void sendMessage(final String message) {
-        sender.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
     }
 
     @Override

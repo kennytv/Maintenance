@@ -8,8 +8,9 @@ This file contains update logs for this project. The top may contain a `Unreleas
 * Updated language files from [Crowdin](https://crowdin.com/translate/maintenance)
 
 ### Fixed
-* Fixed the maintenance dump command
+* Fixed the `/maintenance dump` command
 * Fixed the original player sample not being cleared in Velocity
+* Don't log legacy color codes to the console
 ---
 ## 4.2.1 - May 17th 2024
 ### Changed

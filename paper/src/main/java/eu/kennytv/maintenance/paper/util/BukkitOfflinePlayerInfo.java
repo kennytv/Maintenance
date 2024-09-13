@@ -46,10 +46,6 @@ public final class BukkitOfflinePlayerInfo implements SenderInfo {
     }
 
     @Override
-    public void sendMessage(final String message) {
-    }
-
-    @Override
     public void send(final Component component) {
     }
 

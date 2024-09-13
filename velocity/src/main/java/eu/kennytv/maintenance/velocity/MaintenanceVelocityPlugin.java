@@ -69,8 +69,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.Nullable;
 
@@ -314,10 +312,5 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     public Favicon getFavicon() {
         return favicon;
-    }
-
-    @Deprecated
-    public TextComponent translate(final String s) {
-        return LegacyComponentSerializer.legacySection().deserialize(s);
     }
 }

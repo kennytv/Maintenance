@@ -138,7 +138,7 @@ public abstract class MaintenanceCommand {
             return true;
         }
         if (minutes < 1) {
-            sender.sendMessage("§8§o[kennytv whispers to you] §7§oThink about running a timer for a negative amount of minutes. Doesn't work §lthat §7§owell.");
+            sender.sendRich("<i><dark_gray>[kennytv whispers to you] <gray>Think about running a timer for a negative amount of minutes. Doesn't work <b>that</b> <gray>well.");
             return true;
         }
         return false;

@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bstats.sponge.Metrics;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
@@ -253,10 +252,5 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     public Favicon getFavicon() {
         return favicon;
-    }
-
-    @Deprecated
-    public net.kyori.adventure.text.Component translate(final String s) {
-        return LegacyComponentSerializer.legacySection().deserialize(s);
     }
 }
