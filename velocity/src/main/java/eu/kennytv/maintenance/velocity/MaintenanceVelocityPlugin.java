@@ -253,9 +253,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void broadcast(final Component component) {
-        final net.kyori.adventure.text.Component message = ComponentUtil.toVelocity(component);
-        server.getConsoleCommandSource().sendMessage(message);
-        server.sendMessage(message);
+        server.sendMessage(ComponentUtil.toVelocity(component));
     }
 
     @Override
