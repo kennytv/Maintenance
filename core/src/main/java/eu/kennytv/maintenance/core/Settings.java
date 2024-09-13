@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
@@ -54,7 +55,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private List<String> commandsOnMaintenanceEnable;
     private List<String> commandsOnMaintenanceDisable;
     private String legacyParsedPlayerCountMessage;
+    private String legacyParsedTimerPlayerCountMessage;
     private List<String> legacyParsedPlayerCountHoverLines;
+    private List<String> legacyParsedTimerPlayerCountHoverLines;
     private String prefixString;
     private String languageName;
     private boolean enablePingMessages;
@@ -111,8 +114,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         try {
             updateLanguageFile();
         } catch (final IOException e) {
-            plugin.getLogger().severe("Couldn't update language file");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Couldn't update language file", e);
         }
 
         prefixString = language.getString("prefix");
@@ -124,7 +126,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         try {
             config.save();
         } catch (final IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Couldn't save the config file!", e);
         }
     }
 
@@ -148,7 +150,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         try {
             whitelist.save();
         } catch (final IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Couldn't save the whitelisted players file!", e);
         }
     }
 
@@ -178,6 +180,8 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         pingMessages = loadPingMessages("pingmessages");
         if (config.getBoolean("enable-timerspecific-messages")) {
             timerSpecificPingMessages = loadPingMessages("timerspecific-pingmessages");
+        } else {
+            timerSpecificPingMessages = null;
         }
         maintenance = config.getBoolean("maintenance-enabled");
         commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
@@ -191,11 +195,25 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         // Player count and player count hover messages are only accepted and rendered as legacy chat
         if (plugin.getServerType() != ServerType.SPONGE) {
             legacyParsedPlayerCountMessage = toLegacy(parse(getConfigMessage("playercountmessage")));
+            if (config.getBoolean("enable-timerspecific-playercountmessage")) {
+                legacyParsedTimerPlayerCountMessage = toLegacy(parse(getConfigMessage("timer-playercountmessage")));
+            } else {
+                legacyParsedTimerPlayerCountMessage = null;
+            }
         }
 
         legacyParsedPlayerCountHoverLines = new ArrayList<>();
         for (final String line : config.getString("playercounthovermessage").split("<br>")) {
             legacyParsedPlayerCountHoverLines.add(toLegacy(parse(line)));
+        }
+
+        if (config.getBoolean("enable-timerspecific-playercounthovermessage")) {
+            legacyParsedTimerPlayerCountHoverLines = new ArrayList<>();
+            for (final String line : config.getString("timer-playercounthovermessage").split("<br>")) {
+                legacyParsedTimerPlayerCountHoverLines.add(toLegacy(parse(line)));
+            }
+        } else {
+            legacyParsedTimerPlayerCountHoverLines = null;
         }
 
         languageName = config.getString("language").toLowerCase();
@@ -214,9 +232,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         whitelistedPlayers.clear();
         for (final Map.Entry<String, Object> entry : whitelist.getValues().entrySet()) {
             try {
-                whitelistedPlayers.put(UUID.fromString(entry.getKey()), (String) entry.getValue());
-            } catch (final Exception e) {
-                plugin.getLogger().warning("invalid WhitelistedPlayers entry: " + entry.getKey());
+                whitelistedPlayers.put(UUID.fromString(entry.getKey()), String.valueOf(entry.getValue()));
+            } catch (final IllegalArgumentException e) {
+                plugin.getLogger().warning("Invalid WhitelistedPlayers entry: " + entry.getKey());
             }
         }
 
@@ -239,8 +257,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             Files.move(oldDir.toPath(), plugin.getDataFolder().toPath());
             plugin.getLogger().info("Moved old " + oldDirName + " to new " + plugin.getDataFolder().getName() + " directory!");
         } catch (final IOException e) {
-            plugin.getLogger().severe("Error while copying " + oldDirName + " to new " + plugin.getDataFolder().getName() + " directory!");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Error while copying " + oldDirName + " to new " + plugin.getDataFolder().getName() + " directory!", e);
         }
     }
 
@@ -507,8 +524,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return commandsOnMaintenanceDisable;
     }
 
-    @Nullable
-    public List<String> getTimerSpecificPingMessages() {
+    public @Nullable List<String> getTimerSpecificPingMessages() {
         return timerSpecificPingMessages;
     }
 
@@ -517,15 +533,21 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     public String getLegacyParsedPlayerCountMessage() {
-        return plugin.replacePingVariables(legacyParsedPlayerCountMessage);
+        final String message = timerDependent(legacyParsedPlayerCountMessage, legacyParsedTimerPlayerCountMessage);
+        return plugin.replacePingVariables(message);
     }
 
     public String[] getLegacyParsedPlayerCountHoverLines() {
-        final String[] lines = new String[legacyParsedPlayerCountHoverLines.size()];
-        for (int i = 0; i < legacyParsedPlayerCountHoverLines.size(); i++) {
-            lines[i] = plugin.replacePingVariables(legacyParsedPlayerCountHoverLines.get(i));
+        final List<String> lines = timerDependent(legacyParsedPlayerCountHoverLines, legacyParsedTimerPlayerCountHoverLines);
+        final String[] parsedLines = new String[lines.size()];
+        for (int i = 0; i < lines.size(); i++) {
+            parsedLines[i] = plugin.replacePingVariables(lines.get(i));
         }
-        return lines;
+        return parsedLines;
+    }
+
+    private <T> T timerDependent(final T normal, final @Nullable T timerSpecific) {
+        return timerSpecific != null && plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable() ? timerSpecific : normal;
     }
 
     public Component getKickMessage() {

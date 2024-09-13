@@ -71,6 +71,11 @@ import org.spongepowered.plugin.metadata.model.PluginContributor;
 @Plugin("maintenance")
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
+    private static final String[] UNSUPPORTED_FIELDS = {
+            "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
+            "playercountmessage", "enable-timerspecific-playercountmessage", "timer-playercountmessage",
+            "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable",
+    };
     @SuppressWarnings("SpongeLogging")
     private final Logger logger;
     private final PluginContainer container;
@@ -92,8 +97,8 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Listener
     public void onEnable(final StartingEngineEvent<Server> event) {
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
-                "playercountmessage", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
+
+        settings = new Settings(this, UNSUPPORTED_FIELDS);
 
         sendEnableMessage();
 
