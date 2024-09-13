@@ -3,7 +3,7 @@
 #For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<yellow><bold>Sunucu<bold> <dark_gray>▸ "
-noPermission: "<red>You do not have the permission to execute that command."
+noPermission: "<red>Bunun için iznin yok!"
 kickmessage: "<red>Sunucuda bakım çalışması vardır!"
 maintenanceActivated: "<prefix><gold>Bakım modu aktif."
 maintenanceDeactivated: "<prefix><gold>Bakım modu deaktif."
