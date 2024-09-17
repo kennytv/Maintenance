@@ -82,7 +82,7 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
             pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
         } else {
             pm.registerEvents(new ServerListPingListener(this, settings), plugin);
-            getLogger().warning("To use this plugin on Spigot to its full extend, you need the plugin ProtocolLib!");
+            getLogger().warning("To use this plugin on Spigot to its full extent, you need the plugin ProtocolLib!");
         }
 
         continueLastEndtimer();

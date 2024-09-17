@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -248,7 +249,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         // All plugin identifiers were changed to 'Maintenance' ('maintenance' for Sponge and Velocity) in 3.0.5
         String oldDirName = "Maintenance" + plugin.getServerType();
         if (plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY) {
-            oldDirName = oldDirName.toLowerCase();
+            oldDirName = oldDirName.toLowerCase(Locale.ROOT);
+        } else if (plugin.getServerType() == ServerType.SPIGOT) {
+            oldDirName = "MaintenanceSpigot";
         }
 
         final File oldDir = new File(plugin.getDataFolder().getParentFile(), oldDirName);
