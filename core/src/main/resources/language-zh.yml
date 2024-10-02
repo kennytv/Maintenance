@@ -80,7 +80,7 @@ helpNextPage: "<gray>使用<aqua>/maintenance help %PAGE% <gray>切换到下一�
 helpAbortTimer: "<gold>/maintenance aborttimer <gray>(中止当前开启的计时器)"
 helpEndtimer: ""
 helpStarttimer: ""
-helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpScheduleTimer: ""
 helpDebug: "<gold>/maintenance debug <gray>(Enables some debug logging)"
 helpDump: "<gold>/maintenance dump <gray>(转储一些服务器信息，用于错误报告)"
 helpHelp: "<gold>/maintenance help [page] <gray>(显示帮助信息)"
@@ -95,9 +95,9 @@ helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(将玩家加入维�
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(将玩家从维护玩家白名单中移除)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(中止指定服务器开启的计时器)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleEndtimer: ""
+helpSingleStarttimer: ""
+helpSingleScheduleTimer: ""
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(开启/关闭指定服务器的维护模式)"
 helpStatus: "<gold>/maintenance status <gray>(列出当前正在维护的所有服务器)"
 #Used for autoupdating the language file, do not change this value.
