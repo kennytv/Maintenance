@@ -44,7 +44,7 @@ whitelistEmpty: "<prefix><red>Biała lista konserwacji jest pusta! Użyj <yellow
 playerNotFound: "<prefix><red>Ten gracz nigdy nie grał na serwerze."
 playerNotFoundUuid: "<prefix><red>Nie można znaleźć gracza z tym uuid."
 playerNotOnline: "<prefix><red>Nie ma gracza online z tym nickiem."
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: ""
 invalidUuid: "<prefix><red>Nieprawidłowy format uuid!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Zostałeś wysłany do poczekalni!"
