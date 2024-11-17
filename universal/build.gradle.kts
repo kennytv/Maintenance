@@ -8,7 +8,7 @@ plugins {
 val platforms = setOf(
     rootProject.projects.maintenancePaper,
     rootProject.projects.maintenanceBungee,
-).map { it.dependencyProject }
+).map { it.path }
 
 tasks {
     shadowJar {
@@ -19,10 +19,11 @@ tasks {
         archiveFileName.set("Maintenance-${project.version}.jar")
         destinationDirectory.set(rootProject.projectDir.resolve("build/libs"))
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        platforms.forEach { platform ->
-            val shadowJarTask = platform.tasks.named<ShadowJar>("shadowJar").get()
+        platforms.forEach { platformPath ->
+            val platformProject = project(platformPath)
+            val shadowJarTask = platformProject.tasks.named<ShadowJar>("shadowJar").get()
             dependsOn(shadowJarTask)
-            dependsOn(platform.tasks.withType<Jar>())
+            dependsOn(platformProject.tasks.withType<Jar>())
             from(zipTree(shadowJarTask.archiveFile))
         }
     }

@@ -30,12 +30,9 @@ private fun Project.configurePublication(configurer: MavenPublication.() -> Unit
 }
 
 fun Project.latestCommitHash(): String {
-    val byteOut = ByteArrayOutputStream()
-    exec {
+    return providers.exec {
         commandLine = listOf("git", "rev-parse", "--short", "HEAD")
-        standardOutput = byteOut
-    }
-    return byteOut.toString(Charsets.UTF_8.name()).trim()
+    }.standardOutput.asBytes.get().toString(Charsets.UTF_8).trim()
 }
 
 fun JavaPluginExtension.javaTarget(version: Int) {

@@ -16,7 +16,7 @@ val platforms = setOf(
     projects.maintenanceBungee,
     projects.maintenanceSponge,
     projects.maintenanceVelocity
-).map { it.dependencyProject }
+).map { it.path }
 
 val special = setOf(
     projects.maintenance,
@@ -26,10 +26,10 @@ val special = setOf(
     projects.adventure.adventureApi,
     projects.adventure.adventurePlatformBukkit,
     projects.adventure.adventurePlatformBungee,
-).map { it.dependencyProject }
+).map { it.path }
 
 subprojects {
-    when (this) {
+    when (path) {
         in platforms -> plugins.apply("maintenance.platform-conventions")
         in special -> plugins.apply("maintenance.base-conventions")
         else -> plugins.apply("maintenance.standard-conventions")
