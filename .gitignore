@@ -2,6 +2,7 @@
 build/
 .gradle
 bin/
+run/
 tmp/
 *.tmp
 *.bak
