@@ -7,8 +7,10 @@ plugins {
 tasks {
     // Variable replacements
     processResources {
+        val ver = project.version.toString()
+        val desc = project.description
         filesMatching(listOf("plugin.yml", "bungee.yml", "META-INF/sponge_plugins.json")) {
-            expand("version" to project.version, "description" to project.description)
+            expand("version" to ver, "description" to desc)
         }
     }
     javadoc {
