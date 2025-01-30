@@ -87,6 +87,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
     private void removePlayerFromWhitelist(final SenderInfo sender, final UUID uuid, final String toReplace) {
         if (getSettings().removeWhitelistedPlayer(uuid)) {
             sender.send(getMessage("whitelistRemoved", "%PLAYER%", toReplace));
+            plugin.removeWhitelist(uuid);
         } else {
             sender.send(getMessage("whitelistNotFound"));
         }
