@@ -64,15 +64,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public void disable() {
         super.disable();
-        if (settingsProxy.getMySQL() != null) {
-            settingsProxy.getMySQL().close();
+        if (settingsProxy.getRedisHandler() != null) {
+            settingsProxy.getRedisHandler().close();
         }
     }
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.hasMySQL()) {
-            settingsProxy.setMaintenanceToSQL(maintenance);
+        if (settingsProxy.hasRedis()) {
+            settingsProxy.setMaintenanceToRedis(maintenance);
         }
         super.setMaintenance(maintenance);
     }
