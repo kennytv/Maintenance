@@ -38,6 +38,9 @@ import java.util.Map;
 import java.util.Set;
 
 public final class SettingsProxy extends Settings {
+
+    public static String REDIS_CHANNEL = "MAINTENANCE:ALL";
+
     private final MaintenanceProxyPlugin proxyPlugin;
     private Set<String> maintenanceServers;
     private List<String> fallbackServers;
@@ -58,18 +61,26 @@ public final class SettingsProxy extends Settings {
     }
 
     private void setupRedis() {
-        plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
-        final ConfigSection section = config.getSection("redis");
-        if (section == null) {
-            plugin.getLogger().warning("Section missing: redis");
-            return;
+        try {
+            plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
+            final ConfigSection section = config.getSection("redis");
+            if (section == null) {
+                plugin.getLogger().warning("Section missing: redis");
+                return;
+            }
+
+            redisHandler = new RedisHandler(section.getString("redis-uri"));
+            redisHandler.registerReceiver(new RedisPacketReceiver(REDIS_CHANNEL));
+
+            plugin.getLogger().info("Connected to redis!");
+
+            redisHandler.set("maintenance", String.valueOf(maintenance));
+            redisHandler.setList("maintenance-servers", new ArrayList<>());
+
+            plugin.getLogger().info("Creating base info on redis!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        redisHandler = new RedisHandler(
-                section.getString("redis-uri")
-        );
-
-        redisHandler.registerReceiver(new RedisPacketReceiver("MAINTENANCE:ALL"));
     }
 
     @Override
@@ -180,6 +191,7 @@ public final class SettingsProxy extends Settings {
 
     void setMaintenanceToRedis(final boolean maintenance) {
         redisHandler.sendPacket(new MaintenanceUpdatePacket(maintenance));
+        redisHandler.set("maintenance", String.valueOf(maintenance));
         lastRedisCheck = System.currentTimeMillis();
     }
 
@@ -188,7 +200,7 @@ public final class SettingsProxy extends Settings {
             maintenanceServers = loadMaintenanceServersFromRedis();
             if (!maintenanceServers.add(server)) return false;
             redisHandler.sendPacket(new MaintenanceAddServerPacket(server));
-            redisHandler.set(server, "true");
+            redisHandler.setList("maintenance-servers", new ArrayList<>(maintenanceServers));
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.add(server)) return false;
@@ -202,7 +214,8 @@ public final class SettingsProxy extends Settings {
             maintenanceServers = loadMaintenanceServersFromRedis();
             if (!maintenanceServers.remove(server)) return false;
             redisHandler.sendPacket(new MaintenanceRemoveServerPacket(server));
-            redisHandler.delete(server);
+            redisHandler.setList("maintenance-servers", new ArrayList<>(maintenanceServers));
+
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.remove(server)) return false;

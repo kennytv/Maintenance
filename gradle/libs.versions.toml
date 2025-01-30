@@ -46,7 +46,6 @@ bstatsVelocity = { group = "org.bstats", name = "bstats-velocity", version.ref =
 
 authlib = { group = "com.mojang", name = "authlib", version.ref = "authlib" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
-hikariCP = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
 lettuce = {group = "io.lettuce", name = "lettuce-core", version.ref = "lettuce"}
 luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }

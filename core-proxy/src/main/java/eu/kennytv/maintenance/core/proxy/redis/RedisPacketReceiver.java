@@ -12,7 +12,8 @@ public class RedisPacketReceiver extends PubSubListener<String, Object> {
     @Override
     public void message(String redisChannel, Object givenObject) {
         if (redisChannel.equals(this.redisChannel())) {
-            if (givenObject instanceof RedisPacket packet) packet.execute();
+            if (givenObject instanceof RedisPacket packet)
+                packet.execute();
         }
     }
 

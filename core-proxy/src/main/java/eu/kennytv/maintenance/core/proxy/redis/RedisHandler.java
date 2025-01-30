@@ -18,26 +18,29 @@ public class RedisHandler {
     private StatefulRedisConnection<String, String> connection;
     private RedisReactiveCommands<String, String> reactiveCommands;
 
-    public RedisHandler(String uri){
-        ClientResources clientResources = ClientResources.builder()
-                .ioThreadPoolSize(2)
-                .build();
+    private RedisClient redisClient;
 
-        RedisClient client =  RedisClient.create(clientResources, RedisURI.create(uri));
+    public RedisHandler(String uri) {
+        redisClient =  RedisClient.create(
+                ClientResources.builder()
+                    .ioThreadPoolSize(2)
+                    .build(),
+                RedisURI.create(uri)
+        );
 
-        connection = client.connect();
+        connection = redisClient.connect();
         reactiveCommands = connection.reactive();
         connection.async();
 
-        this.commandsPublisher = client.connectPubSub(new RedisSerializer()).async();
-        this.commandsReceiver = client.connectPubSub(new RedisSerializer()).async();
+        this.commandsPublisher = redisClient.connectPubSub(new RedisSerializer()).async();
+        this.commandsReceiver = redisClient.connectPubSub(new RedisSerializer()).async();
     }
 
     public String get(String key) {
         try (StatefulRedisConnection<String, String> connection = getConnection()) {
             return connection.sync().get(key);
         } catch (Exception e) {
-            System.out.println("Errore durante una query redis key: " + key);
+            System.out.println("Error while getting redis key: " + key);
             e.printStackTrace();
             return null;
         }
@@ -57,7 +60,7 @@ public class RedisHandler {
         try (StatefulRedisConnection<String, String> connection = getConnection()) {
             return connection.sync().set(key, value);
         } catch (Exception e) {
-            System.out.println("Errore durante una query redis key: " + key);
+            System.out.println("Error while getting redis key: " + key);
             e.printStackTrace();
             return null;
         }
@@ -67,25 +70,30 @@ public class RedisHandler {
         try (StatefulRedisConnection<String, String> connection = getConnection()) {
             return connection.sync().lrange(key, 0, -1);
         } catch (Exception e) {
-            System.out.println("Errore durante il recupero della lista da Redis, key: " + key);
+            System.out.println("Error while getting list from Redis, key: " + key);
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
     public void setList(String key, List<String> values) {
-        try (StatefulRedisConnection<String, String> connection = getConnection()) {
+        try {
+            StatefulRedisConnection<String, String> connection = getConnection();
+
+            // Controlla se la connessione è chiusa e riaprila se necessario
+            if (connection == null || !connection.isOpen()) {
+                connection = reconnect(); // Assicurati di avere un metodo per riaprire la connessione
+            }
+
             RedisCommands<String, String> commands = connection.sync();
-            commands.del(key);
-            for (String value : values) {
-                commands.rpush(key, value);
+            commands.del(key); // Elimina la lista esistente
+            if (!values.isEmpty()) {
+                commands.rpush(key, values.toArray(new String[0]));
             }
         } catch (Exception e) {
-            System.out.println("Errore durante il salvataggio della lista su Redis, key: " + key);
             e.printStackTrace();
         }
     }
-
 
     public void sendPacket(RedisPacket packet){
         sendPacket(packet.redisChannel(), packet);
@@ -102,10 +110,28 @@ public class RedisHandler {
 
     public void close() {
         commandsPublisher.getStatefulConnection().closeAsync(); // close the publisher
-        commandsReceiver.getStatefulConnection().closeAsync(); // close the receiver
+        commandsReceiver.getStatefulConnection().closeAsync();
+        connection.close();// close the receiver
+    }
+
+    public synchronized StatefulRedisConnection<String, String> reconnect() {
+        if (connection != null && connection.isOpen()) {
+            return connection;
+        }
+
+        try {
+            connection = redisClient.connect();
+            return connection;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public StatefulRedisConnection<String, String> getConnection() {
+        if (connection == null || !connection.isOpen()) {
+            connection = redisClient.connect();
+        }
         return connection;
     }
 }
