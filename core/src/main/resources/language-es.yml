@@ -80,7 +80,7 @@ helpNextPage: "<gray>Utilice <aqua>/maintenance help %PAGE% <gray>Para pasar a l
 helpAbortTimer: "<gold>/maintenance aborttimer <dark_gray>(<gray>Si se ejecuta, se abortará el temporizador actual<dark_gray>)"
 helpEndtimer: ""
 helpStarttimer: ""
-helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpScheduleTimer: ""
 helpDebug: "<gold>/maintenance debug <gray>(Activa algunos registros de depuración)"
 helpDump: "<gold>/maintenance dump <dark_gray>(<gray>Descarga información del servidor, usada para informes de errores<dark_gray>)"
 helpHelp: "<gold>/maintenance help [page] <dark_gray>(<gray>Muestra la pagina de ayuda<dark_gray>)"
