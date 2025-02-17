@@ -96,8 +96,8 @@ helpWhitelistRemove: "<gold>/maintenance remove <nome/uuid> <gray>(Remove o joga
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <gray>(Se estiver em execução, o temporizador atual será abortado)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [servidor] <desabilitar em> <gray>(Depois do tempo fornecido, exemplo: 1h5m, o modo manutenção será desabilitado)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [servidor] <habilitar em> <gray>(Depois do tempo fornecido, exemplo: 1h5m, o modo de manutenção será habilitado)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [servidor] <habilitar em> <duração da manutenção> <gray>(Depois do tempo fornecido, exemplo: 1h5m, o modo de manutenção será habilitado)"
 helpSingleToggle: "<gold>/maintenance <on/off> [servidor] <gray>(Ativa/desativa o modo de manutenção)"
 helpStatus: "<gold>/maintenance status <gray>(Lista todos os servidores proxy que estão atualmente em manutenção)"
 #Used for autoupdating the language file, do not change this value.
