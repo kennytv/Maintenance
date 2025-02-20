@@ -80,7 +80,7 @@ helpNextPage: "<gray>Usa <aqua>/maintenance help %PAGE% <gray>per andare alla pr
 helpAbortTimer: "<gold>/maintenance aborttimer <gray>(Se attivo, l'attuale timer verrà fermato)"
 helpEndtimer: ""
 helpStarttimer: "x"
-helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, verrà attivata la modalità di manutenzione)"
 helpDebug: "<gold>/maintenance debug <gray>(Enables some debug logging)"
 helpDump: "<gold>/maintenance dump <gray>(Copia alcune informazioni dal server, usato per segnalare problemi)"
 helpHelp: "<gold>/maintenance help [page] <gray>(Mostra questa fantastica pagina d'aiuto)"
@@ -95,9 +95,9 @@ helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Aggiunge il giocato
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Rimuovi il player dalla whitelist della manutenzione)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Se attivo, il timer attuale verrà fermato)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, la modalità di manutenzione verrà disabilitata)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, verrà attivata la modalità di manutenzione)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, verrà attivata la modalità di manutenzione)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/disabilita la modalità di manutenzione)"
 helpStatus: "<gold>/maintenance status <gray>(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"
 #Used for autoupdating the language file, do not change this value.
