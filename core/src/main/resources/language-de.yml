@@ -26,7 +26,7 @@ joinNotification: "<prefix><yellow>%PLAYER% <red>hat versucht dem Server beizutr
 motdList: "<prefix><gray>Liste deiner Motds, die während Maintenance angezeigt werden:"
 motdListEmpty: "<prefix><red>Du hast keine Maintenance MOTDs gesetzt!"
 reload: "<prefix><green>Die Config, die Liste der Spieler die während Maintenance beitreten können, die Sprachdateien und das Icon, das während der Maintenance angezeigt wird, wurden reloaded."
-removedMotd: "<prefix><green>Removed motd number %INDEX%."
+removedMotd: "<prefix><green>Die %INDEX%. Wartungs-MOTD wurde entfernt."
 removeMotdError: "<prefix><red>Du hast nur eine Maintenance MOTD eingestellt, daher kannst du auch keine entfernen!"
 setMotd: "<prefix><green>Die %LINE%. Zeile der %INDEX%. Maintenance MOTD wurde geändert zu: %MOTD%"
 setMotdIndexError: "<prefix><red>Momentan gibt es %MOTDS% MOTDs, du musst also eine Zahl, die zwischen 1 und %NEWAMOUNT% liegt, wählen."
