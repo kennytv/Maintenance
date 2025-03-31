@@ -13,8 +13,8 @@
 
 # Changes the language of command feedback/messages.
 # If you find missing translations or want to contribute, see https://crowdin.com/project/maintenance
-# Currently available are: en (English), de (German), fr (French), pt (Portuguese), es (Spanish), ru (Russian), zh (Chinese), it (Italian),
-#  pl (Polish), tr (Turkish), sv (Swedish), uk (Ukrainian), ja (Japanese), da (Danish), ko (Korean), hu (Hungarian), vi (Vietnamese)
+# Currently available are: en (English), ca (Catalan), da (Danish), de (German), es (Spanish), fr (French), hu (Hungarian), it (Italian), ja (Japanese),
+# ko (Korean), pl (Polish), pt (Portuguese), ru (Russian), sv (Swedish), tr (Turkish), uk (Ukrainian), vi (Vietnamese) and zh (Chinese).
 language: en
 
 # Enables maintenance mode.
