@@ -95,7 +95,7 @@ helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <dark_gray>(<gray>Agrega a
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <dark_gray>(<gray>Quita al jugador de la lista blanca de mantenimiento<dark_gray>)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <dark_gray>(<gray>Si está funcionando, se abortará el temporizador actual<dark_gray>)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleEndtimer: ""
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <dark_gray>(<gray>Habilita / deshabilita el modo de mantenimiento<dark_gray>)"
