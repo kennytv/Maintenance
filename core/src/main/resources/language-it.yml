@@ -97,7 +97,7 @@ helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(Rimuovi il pl
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Se attivo, il timer attuale verrà fermato)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, la modalità di manutenzione verrà disabilitata)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, verrà attivata la modalità di manutenzione)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(Trascorso il tempo prestabilito, ad esempio 1h5m, verrà attivata la modalità di manutenzione)"
+helpSingleScheduleTimer: "\"<gold>/maintenance scheduletimer [server] <tempo di attivazione> <durata manutenzione> <gray>(Dopo il tempo specificato, es. 1h5m, la modalità manutenzione verrà attivata e durerà per il tempo indicato)\""
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Abilita/disabilita la modalità di manutenzione)"
 helpStatus: "<gold>/maintenance status <gray>(Elenca tutti i server sotto proxy che hanno la modalità manutenzione attiva)"
 #Used for autoupdating the language file, do not change this value.
