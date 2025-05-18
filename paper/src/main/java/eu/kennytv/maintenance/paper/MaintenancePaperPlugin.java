@@ -201,6 +201,16 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
     }
 
     @Override
+    public void addWhitelist(UUID uuid, String player) {
+
+    }
+
+    @Override
+    public void removeWhitelist(UUID uuid) {
+
+    }
+
+    @Override
     public InputStream getResource(final String name) {
         return plugin.getResource(name);
     }

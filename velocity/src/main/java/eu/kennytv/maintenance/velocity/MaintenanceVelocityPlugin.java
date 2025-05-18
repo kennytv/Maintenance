@@ -304,6 +304,16 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         return sender.hasPermission("maintenance." + permission) || sender.hasPermission("maintenance.admin");
     }
 
+    @Override
+    public void removeWhitelist(UUID uuid) {
+        super.removeWhitelist(uuid);
+    }
+
+    @Override
+    public void addWhitelist(UUID uuid, String player) {
+        super.addWhitelist(uuid, player);
+    }
+
     public ProxyServer getServer() {
         return server;
     }

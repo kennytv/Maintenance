@@ -106,21 +106,15 @@ timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3,
 
 # If you have 2 or more proxy instances, the database connection will make sure all proxies
 # have the same maintenance status, so you won't have to enable/disable it on every proxy by hand.
-mysql:
-  use-mysql: false
-  host: host
-  port: 3306
-  database: database
-  username: username
-  password: password
+redis:
+  use-redis: false
+  redis-uri: ""
   # Requests to the database will only be made at least x seconds after the last request,
   # so there won't be a request on every single ping on a server with many players.
   #
   # Set this to 0 to make a database request on (almost) every single ping.
   # (0 is not recommended if having more than a hundred concurrent players, then I'd recommend keeping it from 10-60).
   update-interval: 15
-  # If you for some reason cannot establish SSL connections to your database, you may disable it here (not recommended).
-  use-ssl: true
 
 # If disabled, you will no longer receive any messages if there is an update.
 # Not recommended to disable, as new versions generally tend to run better and with fewer bugs.

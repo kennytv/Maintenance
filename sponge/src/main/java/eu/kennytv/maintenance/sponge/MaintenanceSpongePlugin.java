@@ -218,6 +218,16 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     }
 
     @Override
+    public void addWhitelist(UUID uuid, String player) {
+
+    }
+
+    @Override
+    public void removeWhitelist(UUID uuid) {
+
+    }
+
+    @Override
     protected String getPluginFolder() {
         return "mods/";
     }
