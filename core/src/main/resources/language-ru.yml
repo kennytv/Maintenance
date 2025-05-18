@@ -78,7 +78,7 @@ helpHeader: "<gray>========[ <white>%NAME% <gray>| <gold>%PAGE%<white>/<gold>%MA
 helpPageNotFound: "<red>Страница не найдена."
 helpNextPage: "<white>Используйте <gold>/maintenance help %PAGE% <white>чтобы перейти на следующую страницу."
 helpAbortTimer: "<gold>/maintenance aborttimer <gray>- <white>Остановить таймер включения/выключения режима технических работ."
-helpEndtimer: ""
+helpEndtimer: "<gold>/maintenance endtimer <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpStarttimer: "<gold>/maintenance starttimer <enable in> <gray>(По истечению заданного времени, например 1h5m, режим технических работ будет включен)"
 helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(По истечению заданного времени, например 1h5m, режим технических работ будет включен)"
 helpDebug: "<gold>/maintenance debug <gray>(Enables some debug logging)"
