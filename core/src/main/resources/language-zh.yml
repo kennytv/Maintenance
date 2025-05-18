@@ -1,6 +1,6 @@
-#Maintenance Plugin by kennytv
 #You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
 #For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#If you want to contribute changes to the default messages, you can do so via https://crowdin.com/project/maintenance
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>你没有执行该命令的权限。"
@@ -17,7 +17,7 @@ scheduletimerBroadcast: "<prefix><gray>维护模式将在 <gold>%TIME%<gray> 后
 scheduletimerStarted: "<prefix><green>正在运行的计时器： <gray>维护模式将在 <gold>%TIME% <gray> 后启用，并持续 <gold>%DURATION%<gray>."
 timerAlreadyRunning: "<prefix><red>当前已有计时正在执行！"
 timerNotRunning: "<prefix><red>当前没有正在运行的计时器。"
-timerCancelled: ""
+timerCancelled: "<prefix><red>当前计时器已中止。"
 timerTooLong: "<prefix><red>数值必须小于40320(28天)！"
 timerMotdDisabled: "<prefix><red>如果要使用/编辑特定于计时器的MOTD，你必须在Config.yml配置中将'enable-timerspecific-messages'设置为'true'"
 motdTimer: "%HOURS%:%MINUTES%:%SECONDS%"
@@ -78,9 +78,9 @@ helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MA
 helpPageNotFound: "<prefix><red>没有此页码的帮助页！"
 helpNextPage: "<gray>使用<aqua>/maintenance help %PAGE% <gray>切换到下一帮助页"
 helpAbortTimer: "<gold>/maintenance aborttimer <gray>(中止当前开启的计时器)"
-helpEndtimer: ""
-helpStarttimer: ""
-helpScheduleTimer: ""
+helpEndtimer: "<gold>/maintenance endtimer <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpStarttimer: "<gold>/maintenance starttimer <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpDebug: "<gold>/maintenance debug <gray>(Enables some debug logging)"
 helpDump: "<gold>/maintenance dump <gray>(转储一些服务器信息，用于错误报告)"
 helpHelp: "<gold>/maintenance help [page] <gray>(显示帮助信息)"
@@ -95,9 +95,9 @@ helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(将玩家加入维�
 helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(将玩家从维护玩家白名单中移除)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(中止指定服务器开启的计时器)"
-helpSingleEndtimer: ""
-helpSingleStarttimer: ""
-helpSingleScheduleTimer: ""
+helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(开启/关闭指定服务器的维护模式)"
 helpStatus: "<gold>/maintenance status <gray>(列出当前正在维护的所有服务器)"
 #Used for autoupdating the language file, do not change this value.
