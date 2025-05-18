@@ -1,6 +1,6 @@
-#Maintenance Plugin by kennytv
 #You can use https://webui.adventure.kyori.net/ to edit and preview the formatted text
 #For a full list of formats and fancy examples, see https://docs.adventure.kyori.net/minimessage/format.html
+#If you want to contribute changes to the default messages, you can do so via https://crowdin.com/project/maintenance
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<prefix><dark_red>No tienes permiso para ejecutar este comando."
@@ -15,8 +15,8 @@ starttimerBroadcast: "<prefix><gray>El modo mantenimiento se habilitara en <gold
 starttimerStarted: "<prefix><gray>Temporizador iniciado: El modo mantenimiento se activará en <gold>%TIME%<gray>."
 scheduletimerBroadcast: "<prefix><gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
 scheduletimerStarted: "<prefix><gray>Temporizador iniciado: El modo mantenimiento se activará en <gold>%TIME% <gray>y durará <gold>%DURATION%<gray>."
-timerAlreadyRunning: "<prefix><red>Ya hay un temporizador programado!"
-timerNotRunning: "<prefix><gray>Actualmente no hay temporizador."
+timerAlreadyRunning: "<prefix><red>¡Ya hay un temporizador programado!"
+timerNotRunning: "<prefix>Actualmente no hay ningún temporizador."
 timerCancelled: "<prefix><red>El Temporizador actual ha sido deshabilitado."
 timerTooLong: "<prefix><gray>El numero debe ser menor a 40320 <dark_gray>(<gold>28 días<dark_gray>)"
 timerMotdDisabled: "<prefix><red>Tienes que configurar <green>'enable-timerspecific-messages'<red> en la configuración en <green>'true'<red>, si quieres usar / editar motdspecers específicos."
@@ -24,7 +24,7 @@ motdTimer: "%HOURS%:%MINUTES%:%SECONDS%"
 motdTimerNotRunning: "-"
 joinNotification: "<prefix><red>%PLAYER% <gray>Intenta unirse al servidor."
 motdList: "<prefix><gray>Lista de motds de mantenimiento:"
-motdListEmpty: "<prefix><red>¡No tiene ningún motd(s<dark_gray>) de mantenimiento establecido!"
+motdListEmpty: "<prefix><red>¡No tienes ningún motd(s) de mantenimiento establecido!"
 reload: "<prefix><green>Configuracion recargada"
 removedMotd: "<prefix><green>Numero de motd eliminado <gold>%INDEX%<green>."
 removeMotdError: "<prefix>&Solo tienes un motd, por lo que no puedes eliminar ninguno!"
