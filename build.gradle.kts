@@ -1,4 +1,5 @@
 import org.gradle.api.plugins.JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME
+import org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_ONLY_CONFIGURATION_NAME
 
 plugins {
     base
@@ -38,5 +39,6 @@ subprojects {
     dependencies {
         TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.bundles.junit)
         TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.snakeyaml)
+        TEST_RUNTIME_ONLY_CONFIGURATION_NAME("org.junit.platform:junit-platform-launcher")
     }
 }
