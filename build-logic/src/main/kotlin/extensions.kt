@@ -6,7 +6,6 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
-import java.io.ByteArrayOutputStream
 
 fun Project.publishShadowJar() {
     configurePublication {

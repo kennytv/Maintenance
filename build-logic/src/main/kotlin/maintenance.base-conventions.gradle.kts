@@ -1,7 +1,10 @@
+import dev.lukebemish.centralportalpublishing.CentralPortalRepositoryHandlerExtension
+
 plugins {
     `java-library`
     `maven-publish`
     signing
+    id("dev.lukebemish.central-portal-publishing")
 }
 
 tasks {
@@ -24,6 +27,9 @@ tasks {
     test {
         useJUnitPlatform()
     }
+    publish {
+        dependsOn(tasks.named("publishMaintenanceCentralPortalBundle"))
+    }
 }
 
 java {
@@ -34,6 +40,11 @@ java {
 signing {
     useGpgCmd()
     sign(publishing.publications)
+}
+
+centralPortalPublishing.bundle("maintenance") {
+    username = System.getenv("MAVEN_CENTRAL_USERNAME")
+    password = System.getenv("MAVEN_CENTRAL_PASSWORD")
 }
 
 publishing {
@@ -61,13 +72,9 @@ publishing {
     }
 
     if (!name.startsWith("adventure")) {
-        repositories.maven {
-            name = "OSSRH"
-            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-            credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD")
-            }
+        repositories {
+            val portal = (this as ExtensionAware).extensions.getByType(CentralPortalRepositoryHandlerExtension::class)
+            portal.portalBundle(":", "maintenance")
         }
     }
 }
