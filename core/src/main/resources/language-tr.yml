@@ -4,7 +4,7 @@
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<yellow><bold>Sunucu<bold> <dark_gray>▸ "
 noPermission: "<red>Bunun için iznin yok."
-kickmessage: "<red>Sunucuda bakım çalışması vardır!<br>Lütfen daha sonra tekrar deneyin!"
+kickmessage: "<red>The server is currently under maintenance!<br>Try again later!"
 maintenanceActivated: "<prefix><gold>Bakım modu aktifleştirildi."
 maintenanceDeactivated: "<prefix><gold>Bakım modu deaktifleştirildi."
 alreadyEnabled: "<prefix><red>Bakım modu zaten aktif!"
