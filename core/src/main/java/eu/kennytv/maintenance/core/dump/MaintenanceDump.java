@@ -35,11 +35,11 @@ public final class MaintenanceDump {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServersDump());
 
         configuration = new LinkedHashMap<>(settings.getConfig().getValues());
-        final Object o = configuration.get("mysql");
+        final Object o = configuration.get("redis");
         if (o instanceof Map) {
             final Map<String, Object> map = new LinkedHashMap<>(((Map<String, Object>) o));
-            map.keySet().removeIf(key -> !key.equals("use-mysql") && !key.equals("update-interval"));
-            configuration.put("mysql", map);
+            map.keySet().removeIf(key -> !key.equals("use-redis") && !key.equals("update-interval"));
+            configuration.put("redis", map);
         }
         configuration.put("whitelisted-players", settings.getWhitelistedPlayers());
         configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());

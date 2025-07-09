@@ -21,6 +21,7 @@ import eu.kennytv.maintenance.api.Maintenance;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
 
 public interface MaintenanceProxy extends Maintenance {
 
@@ -70,4 +71,5 @@ public interface MaintenanceProxy extends Maintenance {
      * @return immutable set with names of all proxied server that are currently under maintenance
      */
     Set<String> getMaintenanceServers();
+
 }

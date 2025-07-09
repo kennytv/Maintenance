@@ -101,6 +101,7 @@ public final class WhitelistAddCommand extends CommandInfo {
     private void addPlayerToWhitelist(final SenderInfo sender, final SenderInfo selected) {
         if (getSettings().addWhitelistedPlayer(selected.getUuid(), selected.getName())) {
             sender.send(getMessage("whitelistAdded", "%PLAYER%", selected.getName()));
+            plugin.addWhitelist(selected.getUuid(), selected.getName());
         } else {
             sender.send(getMessage("whitelistAlreadyAdded", "%PLAYER%", selected.getName()));
         }

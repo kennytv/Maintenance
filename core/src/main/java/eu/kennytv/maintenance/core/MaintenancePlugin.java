@@ -476,4 +476,8 @@ public abstract class MaintenancePlugin implements Maintenance {
     protected abstract int getOnlinePlayers();
 
     protected abstract int getMaxPlayers();
+
+    public abstract void addWhitelist(UUID uuid, String player);
+
+    public abstract void removeWhitelist(UUID uuid);
 }
