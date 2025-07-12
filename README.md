@@ -33,7 +33,7 @@ Join [our Discord](https://discord.gg/vGCUzHq) if you want to get the proofreade
 Adding translations for languages not yet listed is always appreciated as well!
 
 ## Compiling
-To create a working jar yourself, simply clone the project and compile it with Gradle (`gradlew build`).
+To create a working jar yourself, simply clone the project and compile it with Gradle (`gradlew build`). To compile, you need a JDK 21+ (although it targets 17).
 
 ## License
 This project is licensed under the [GNU General Public License v3](LICENSE.txt).
