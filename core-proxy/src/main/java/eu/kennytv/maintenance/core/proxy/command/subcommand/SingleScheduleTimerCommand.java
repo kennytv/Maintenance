@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            plugin.scheduleMaintenanceRunnable(duration, enableIn);
+            plugin.scheduleMaintenanceRunnable(enableIn, duration);
             sender.send(getMessage(
                     "scheduletimerStarted",
                     "%TIME%", plugin.getRunnable().getTime(),
