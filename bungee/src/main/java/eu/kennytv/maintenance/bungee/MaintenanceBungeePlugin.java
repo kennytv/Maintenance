@@ -157,6 +157,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         return new BungeeTask(getProxy().getScheduler().schedule(plugin, runnable, 0, 1, TimeUnit.SECONDS).getId());
     }
 
+
     @Override
     public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final String name) {
         final ProxiedPlayer player = getProxy().getPlayer(name);
@@ -248,6 +249,16 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     public String getServerVersion() {
         return getProxy().getVersion();
+    }
+
+    @Override
+    public void removeWhitelist(UUID uuid) {
+        super.removeWhitelist(uuid);
+    }
+
+    @Override
+    public void addWhitelist(UUID uuid, String player) {
+        super.addWhitelist(uuid, player);
     }
 
     @Override

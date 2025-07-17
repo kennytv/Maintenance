@@ -23,6 +23,7 @@ dependencies {
     compileOnly(libs.serverlistplus)
     compileOnly(libs.guava)
     compileOnly(libs.gson)
+
     compileOnly(libs.snakeyaml)
 }
 

@@ -33,7 +33,7 @@ tasks {
 }
 
 java {
-    javaTarget(8)
+    javaTarget(21)
     withSourcesJar()
 }
 

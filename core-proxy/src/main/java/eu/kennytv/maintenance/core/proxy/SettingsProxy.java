@@ -20,11 +20,14 @@ package eu.kennytv.maintenance.core.proxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
-import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
+import eu.kennytv.maintenance.core.proxy.redis.RedisHandler;
+import eu.kennytv.maintenance.core.proxy.redis.RedisPacketReceiver;
+import eu.kennytv.maintenance.core.proxy.redis.impl.MaintenanceAddServerPacket;
+import eu.kennytv.maintenance.core.proxy.redis.impl.MaintenanceRemoveServerPacket;
+import eu.kennytv.maintenance.core.proxy.redis.impl.MaintenanceUpdatePacket;
 import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +38,9 @@ import java.util.Map;
 import java.util.Set;
 
 public final class SettingsProxy extends Settings {
+
+    public static String REDIS_CHANNEL = "MAINTENANCE:ALL";
+
     private final MaintenanceProxyPlugin proxyPlugin;
     private Set<String> maintenanceServers;
     private List<String> fallbackServers;
@@ -43,14 +49,10 @@ public final class SettingsProxy extends Settings {
 
     private Map<String, List<String>> commandsOnMaintenanceEnable;
     private Map<String, List<String>> commandsOnMaintenanceDisable;
-    private String mySQLTable;
-    private String serverTable;
-    private String maintenanceQuery;
-    private String serverQuery;
-    private MySQL mySQL;
+    private RedisHandler redisHandler;
 
     private long millisecondsToCheck;
-    private long lastMySQLCheck;
+    private long lastRedisCheck;
     private long lastServerCheck;
 
     public SettingsProxy(final MaintenanceProxyPlugin plugin) {
@@ -58,40 +60,37 @@ public final class SettingsProxy extends Settings {
         this.proxyPlugin = plugin;
     }
 
-    private void setupMySQL() {
-        plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
-        final ConfigSection section = config.getSection("mysql");
-        if (section == null) {
-            plugin.getLogger().warning("Section missing: mysql");
-            return;
+    private void setupRedis() {
+        try {
+            plugin.getLogger().info("Trying to open database connection... (also, you can simply ignore the SLF4J soft-warning if it shows up)");
+            final ConfigSection section = config.getSection("redis");
+            if (section == null) {
+                plugin.getLogger().warning("Section missing: redis");
+                return;
+            }
+
+            redisHandler = new RedisHandler(section.getString("redis-uri"));
+            redisHandler.registerReceiver(new RedisPacketReceiver(REDIS_CHANNEL));
+
+            plugin.getLogger().info("Connected to redis!");
+
+            redisHandler.set("maintenance", String.valueOf(maintenance));
+            redisHandler.setList("maintenance-servers", new ArrayList<>());
+
+            plugin.getLogger().info("Creating base info on redis!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        mySQL = new MySQL(plugin.getLogger(),
-                section.getString("host"),
-                section.getInt("port"),
-                section.getString("username"),
-                section.getString("password"),
-                section.getString("database"),
-                section.getBoolean("use-ssl", true));
-
-        // Varchar as the value regarding the possibility of saving stuff like the motd as well in future updates
-        mySQLTable = section.getString("table", "maintenance_settings");
-        serverTable = section.getString("servertable", "maintenance_servers");
-        mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + mySQLTable + " (setting VARCHAR(16) PRIMARY KEY, value VARCHAR(255))");
-        mySQL.executeUpdate("CREATE TABLE IF NOT EXISTS " + serverTable + " (server VARCHAR(64) PRIMARY KEY)");
-        maintenanceQuery = "SELECT * FROM " + mySQLTable + " WHERE setting = ?";
-        serverQuery = "SELECT * FROM " + serverTable;
-        plugin.getLogger().info("Done!");
     }
 
     @Override
     protected void loadExtraSettings() {
         // Open database connection if enabled and not already done
-        if (!hasMySQL() && config.getBoolean("mysql.use-mysql")) {
+        if (!hasRedis() && config.getBoolean("redis.use-redis")) {
             try {
-                setupMySQL();
+                setupRedis();
             } catch (final Exception e) {
-                mySQL = null;
+                redisHandler = null;
                 plugin.getLogger().warning("Error while trying do open database connection!");
                 e.printStackTrace();
             }
@@ -118,14 +117,14 @@ public final class SettingsProxy extends Settings {
             commandsOnMaintenanceDisable.put(key.toLowerCase(Locale.ROOT), disableCommandsSection.getStringList(key));
         }
 
-        if (hasMySQL()) {
+        if (hasRedis()) {
             maintenance = loadMaintenance();
-            maintenanceServers = loadMaintenanceServersFromSQL();
+            maintenanceServers = loadMaintenanceServersFromRedis();
 
-            final long configValue = config.getInt("mysql.update-interval");
+            final long configValue = config.getInt("redis.update-interval");
             // Even if set to 0, only check every 500 millis
             millisecondsToCheck = configValue > 0 ? configValue * 1000 : 500;
-            lastMySQLCheck = System.currentTimeMillis();
+            lastRedisCheck = System.currentTimeMillis();
             lastServerCheck = System.currentTimeMillis();
         } else {
             final List<String> list = config.getStringList("proxied-maintenance-servers");
@@ -135,20 +134,20 @@ public final class SettingsProxy extends Settings {
 
     @Override
     public boolean isMaintenance() {
-        if (hasMySQL() && System.currentTimeMillis() - lastMySQLCheck > millisecondsToCheck) {
+        if (hasRedis() && System.currentTimeMillis() - lastRedisCheck > millisecondsToCheck) {
             final boolean databaseValue = loadMaintenance();
             if (databaseValue != maintenance) {
                 maintenance = databaseValue;
                 plugin.serverActions(maintenance);
             }
-            lastMySQLCheck = System.currentTimeMillis();
+            lastRedisCheck = System.currentTimeMillis();
         }
         return maintenance;
     }
 
     public boolean isMaintenance(final String serverName) {
-        if (hasMySQL() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
-            final Set<String> databaseValue = loadMaintenanceServersFromSQL();
+        if (hasRedis() && System.currentTimeMillis() - lastServerCheck > millisecondsToCheck) {
+            final Set<String> databaseValue = loadMaintenanceServersFromRedis();
             if (!maintenanceServers.equals(databaseValue)) {
                 // Enable maintenance on yet unlisted servers
                 for (final String s : databaseValue) {
@@ -186,23 +185,22 @@ public final class SettingsProxy extends Settings {
         return parse(plugin.replacePingVariables(message));
     }
 
-    public boolean hasMySQL() {
-        return mySQL != null;
+    public boolean hasRedis() {
+        return redisHandler != null;
     }
 
-    void setMaintenanceToSQL(final boolean maintenance) {
-        plugin.async(() -> {
-            final String s = String.valueOf(maintenance);
-            mySQL.executeUpdate("INSERT INTO " + mySQLTable + " (setting, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", "maintenance", s, s);
-            lastMySQLCheck = System.currentTimeMillis();
-        });
+    void setMaintenanceToRedis(final boolean maintenance) {
+        redisHandler.sendPacket(new MaintenanceUpdatePacket(maintenance));
+        redisHandler.set("maintenance", String.valueOf(maintenance));
+        lastRedisCheck = System.currentTimeMillis();
     }
 
     boolean addMaintenanceServer(final String server) {
-        if (hasMySQL()) {
-            maintenanceServers = loadMaintenanceServersFromSQL();
+        if (hasRedis()) {
+            maintenanceServers = loadMaintenanceServersFromRedis();
             if (!maintenanceServers.add(server)) return false;
-            plugin.async(() -> mySQL.executeUpdate("INSERT INTO " + serverTable + " (server) VALUES (?)", server));
+            redisHandler.sendPacket(new MaintenanceAddServerPacket(server));
+            redisHandler.setList("maintenance-servers", new ArrayList<>(maintenanceServers));
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.add(server)) return false;
@@ -212,11 +210,12 @@ public final class SettingsProxy extends Settings {
     }
 
     boolean removeMaintenanceServer(final String server) {
-        if (hasMySQL()) {
-            maintenanceServers = loadMaintenanceServersFromSQL();
+        if (hasRedis()) {
+            maintenanceServers = loadMaintenanceServersFromRedis();
             if (!maintenanceServers.remove(server)) return false;
+            redisHandler.sendPacket(new MaintenanceRemoveServerPacket(server));
+            redisHandler.setList("maintenance-servers", new ArrayList<>(maintenanceServers));
 
-            plugin.async(() -> mySQL.executeUpdate("DELETE FROM " + serverTable + " WHERE server = ?", server));
             lastServerCheck = System.currentTimeMillis();
         } else {
             if (!maintenanceServers.remove(server)) return false;
@@ -226,34 +225,21 @@ public final class SettingsProxy extends Settings {
         return true;
     }
 
-    private Set<String> loadMaintenanceServersFromSQL() {
-        final Set<String> maintenanceServers = new HashSet<>();
-        mySQL.executeQuery(serverQuery, rs -> {
-            try {
-                while (rs.next()) {
-                    maintenanceServers.add(rs.getString("server"));
-                }
-            } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the list of single servers with maintenance!");
-                e.printStackTrace();
-            }
-        });
-        return maintenanceServers;
+    private Set<String> loadMaintenanceServersFromRedis() {
+        return new HashSet<>(redisHandler.getList("maintenance-servers"));
     }
 
     private boolean loadMaintenance() {
-        final boolean[] databaseValue = {false};
-        mySQL.executeQuery(maintenanceQuery, rs -> {
-            try {
-                if (rs.next()) {
-                    databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
-                }
-            } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the maintenance value from the database!");
-                e.printStackTrace();
-            }
-        }, "maintenance");
-        return databaseValue[0];
+        boolean maintenance;
+
+        try {
+            maintenance = Boolean.parseBoolean(redisHandler.get("maintenance"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return maintenance;
     }
 
     private void saveServersToConfig() {
@@ -304,7 +290,7 @@ public final class SettingsProxy extends Settings {
     }
 
     @Nullable
-    MySQL getMySQL() {
-        return mySQL;
+    RedisHandler getRedisHandler() {
+        return redisHandler;
     }
 }

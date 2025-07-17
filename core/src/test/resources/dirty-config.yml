@@ -30,15 +30,10 @@ custom-maintenance-icon: false
 send-join-notification: false
 kick-online-players: true
 language: de
-mysql:
-  use-mysql: false
-  host: host
-  port: 3306
-  database: database
-  username: useer
-  password: password
+redis:
+  use-redis: false
+  uri: ""
   update-interval: 15
-  use-ssl: true
 continue-endtimer-after-restart:
   enabled: false
   end: 0

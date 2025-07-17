@@ -24,6 +24,8 @@ import eu.kennytv.maintenance.api.proxy.MaintenanceProxy;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
+import eu.kennytv.maintenance.core.proxy.redis.impl.MaintenanceAddWhitelistPacket;
+import eu.kennytv.maintenance.core.proxy.redis.impl.MaintenanceRemoveWhitelistPacket;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
@@ -64,15 +66,15 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public void disable() {
         super.disable();
-        if (settingsProxy.getMySQL() != null) {
-            settingsProxy.getMySQL().close();
+        if (settingsProxy.getRedisHandler() != null) {
+            settingsProxy.getRedisHandler().close();
         }
     }
 
     @Override
     public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.hasMySQL()) {
-            settingsProxy.setMaintenanceToSQL(maintenance);
+        if (settingsProxy.hasRedis()) {
+            settingsProxy.setMaintenanceToRedis(maintenance);
         }
         super.setMaintenance(maintenance);
     }
@@ -269,6 +271,18 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     public SettingsProxy getSettingsProxy() {
         return settingsProxy;
+    }
+
+
+
+    @Override
+    public void addWhitelist(UUID uuid, String player) {
+        settingsProxy.getRedisHandler().sendPacket(new MaintenanceAddWhitelistPacket(uuid, player));
+    }
+
+    @Override
+    public void removeWhitelist(UUID uuid) {
+        settingsProxy.getRedisHandler().sendPacket(new MaintenanceRemoveWhitelistPacket(uuid));
     }
 
     @Nullable
