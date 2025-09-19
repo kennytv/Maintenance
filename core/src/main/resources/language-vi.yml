@@ -97,7 +97,7 @@ helpWhitelistRemove: "<gold>/maintenance remove <Tên Người Chơi/UUID> <gray
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Nếu chạy, bộ đếm thời gian hiện tại sẽ bị hủy bỏ)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [máy chủ] <khoảng thời gian sẽ được bật sau> <khoảng thời gian bảo trì> <gray>(Sau khoảng thời gian được cho, ví dụ 1h5m (1 giờ 5 phút), chết độ bảo trì sẽ được bật)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Bật/tắt chế độ bảo trì)"
 helpStatus: "<gold>/maintenance status <gray>(Liệt kê tất cả các máy chủ proxy hiện đang được bảo trì)"
 #Used for autoupdating the language file, do not change this value.
