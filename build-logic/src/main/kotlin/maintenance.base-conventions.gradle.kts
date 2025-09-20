@@ -13,7 +13,7 @@ tasks {
         val ver = project.version.toString()
         val desc = project.description
         filesMatching(listOf("plugin.yml", "bungee.yml", "META-INF/sponge_plugins.json")) {
-            expand("version" to ver, "description" to desc)
+            expand(mapOf("version" to ver, "description" to desc))
         }
     }
     javadoc {
