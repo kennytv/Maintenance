@@ -3,7 +3,7 @@
 #If you want to contribute changes to the default messages, you can do so via https://crowdin.com/project/maintenance
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<yellow><bold>Sunucu<bold> <dark_gray>▸ "
-noPermission: "<red>Bunun için iznin yok."
+noPermission: "<red>You do not have the permission to execute that command."
 kickmessage: "<red>The server is currently under maintenance!<br>Try again later!"
 maintenanceActivated: "<prefix><gold>Bakım modu aktifleştirildi."
 maintenanceDeactivated: "<prefix><gold>Bakım modu deaktifleştirildi."
