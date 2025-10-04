@@ -4,7 +4,7 @@
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
 noPermission: "<red>У вас недостаточно прав."
-kickmessage: "<red>Сервер закрыт на технические работы!<br>Попробуйте позже!"
+kickmessage: "<red>В настоящее время сервер находится на техническом обслуживании!<br>Повторите попытку позже!"
 maintenanceActivated: "<prefix><gold>Режим обслуживания включен."
 maintenanceDeactivated: "<prefix><gold>Режим обслуживания выключен."
 alreadyEnabled: "<prefix><red>Режим обслуживания уже включён!"
