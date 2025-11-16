@@ -78,7 +78,7 @@ helpHeader: "<dark_gray>========[ <yellow>%NAME% <dark_gray>| <yellow>%PAGE%/%MA
 helpPageNotFound: "<prefix><gray>No hay pagina con ese número."
 helpNextPage: "<gray>Utilice <aqua>/maintenance help %PAGE% <gray>Para pasar a la siguiente ventana de ayuda."
 helpAbortTimer: "<gold>/maintenance aborttimer <dark_gray>(<gray>Si se ejecuta, se abortará el temporizador actual<dark_gray>)"
-helpEndtimer: "<gold>/maintenance endtimer <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpEndtimer: ""
 helpStarttimer: "<gold>/maintenance starttimer <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpDebug: "<gold>/maintenance debug <gray>(Activa algunos registros de depuración)"
