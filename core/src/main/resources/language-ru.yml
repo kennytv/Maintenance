@@ -3,12 +3,12 @@
 #If you want to contribute changes to the default messages, you can do so via https://crowdin.com/project/maintenance
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
-noPermission: "<red>У вас недостаточно прав."
-kickmessage: "<red>В настоящее время сервер находится на техническом обслуживании!<br>Повторите попытку позже!"
-maintenanceActivated: "<prefix><gold>Режим обслуживания включен."
-maintenanceDeactivated: "<prefix><gold>Режим обслуживания выключен."
-alreadyEnabled: "<prefix><red>Режим обслуживания уже включён!"
-alreadyDisabled: "<prefix><red>Режим обслуживания уже выключен!"
+noPermission: "<red>У вас нет разрешения на выполнение этой команды."
+kickmessage: "<red>Сервер закрыт на технические работы!<br>Попробуйте позже!"
+maintenanceActivated: "<prefix><gold>Режим технических работ включен."
+maintenanceDeactivated: "<prefix><gold>Режим технических работ выключен."
+alreadyEnabled: "<prefix><red>Режим технических работ уже включён!"
+alreadyDisabled: "<prefix><red>Режим технических работ не был включен!"
 endtimerBroadcast: "<prefix><gray>Сервер будет открыт через <gold>%TIME%<gray>."
 endtimerStarted: "<prefix><green>Таймер запущен: <gray>Сервер будет открыт через <gold>%TIME%<gray>."
 starttimerBroadcast: "<prefix><gray>Сервер будет закрыт на технические работы через <gold>%TIME%<gray>."
