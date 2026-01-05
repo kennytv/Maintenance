@@ -3,7 +3,7 @@
 #If you want to contribute changes to the default messages, you can do so via https://crowdin.com/project/maintenance
 #Messages containing the placeholder "<prefix>" will have it replaced with the following string
 prefix: "<dark_gray>[<yellow>Maintenance<dark_gray>] "
-noPermission: "<red>Non hai i permessi necessari per eseguire quel comando."
+noPermission: "<red>Non hai il permesso per eseguire questo comando."
 kickmessage: "<red>Il server è momentaneamente in manutenzione!<br>Riprova più tardi!"
 maintenanceActivated: "<prefix><gold>Modalità manutenzione ora attivata."
 maintenanceDeactivated: "<prefix><gold>Modalità manutenzione ora disattivata."
