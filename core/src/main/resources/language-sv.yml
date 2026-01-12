@@ -44,7 +44,7 @@ whitelistEmpty: "<prefix><red>Underhållsvitlistan är tom! Använd <yellow>/mai
 playerNotFound: "<prefix><red>Ingen spelare med detta namn har spelat på servern tidigare."
 playerNotFoundUuid: "<prefix><red>Ingen spelare med det uuid hittades."
 playerNotOnline: "<prefix><red>Det finns ingen spelare med det namnet online."
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: "."
 invalidUuid: "<prefix><red>Ogiltigt uuid format!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<prefix><red>Du har blvitt skickad till en väntserver!"
