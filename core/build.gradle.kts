@@ -16,9 +16,9 @@ sourceSets {
 
 dependencies {
     api(projects.maintenanceApi)
-    api(projects.adventure.adventureApi) {
-        targetConfiguration = "shadow"
-    }
+    compileOnlyApi(libs.adventureApi)
+    compileOnlyApi(libs.adventureTextMinimessage)
+    compileOnlyApi(libs.adventureTextSerializerLegacy)
     compileOnly(libs.luckperms)
     compileOnly(libs.serverlistplus)
     compileOnly(libs.guava)

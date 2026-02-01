@@ -18,39 +18,41 @@
 package eu.kennytv.maintenance.paper.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
-
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
-public final class BukkitOfflinePlayerInfo implements SenderInfo {
-    private final OfflinePlayer player;
+public final class PaperSenderInfo implements SenderInfo {
+    private final CommandSender sender;
 
-    public BukkitOfflinePlayerInfo(final OfflinePlayer player) {
-        this.player = player;
+    public PaperSenderInfo(final CommandSender sender) {
+        this.sender = sender;
     }
 
     @Override
     public UUID getUuid() {
-        return player.getUniqueId();
+        return sender instanceof Player ? ((Entity) sender).getUniqueId() : null;
     }
 
     @Override
     public String getName() {
-        return player.getName();
+        return sender.getName();
     }
 
     @Override
     public boolean hasPermission(final String permission) {
-        return false;
+        return sender.hasPermission(permission);
     }
 
     @Override
     public void send(final Component component) {
+        sender.sendMessage(component);
     }
 
     @Override
     public boolean isPlayer() {
-        return true;
+        return sender instanceof Player;
     }
 }

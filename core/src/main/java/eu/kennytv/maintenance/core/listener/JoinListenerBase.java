@@ -20,16 +20,15 @@ package eu.kennytv.maintenance.core.listener;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.TextDecoration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public abstract class JoinListenerBase {
     protected final MaintenancePlugin plugin;

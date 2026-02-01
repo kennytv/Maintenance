@@ -20,12 +20,12 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.ClickEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.event.HoverEvent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
 import java.util.concurrent.TimeUnit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public final class DumpCommand extends CommandInfo {
     private long lastDump;

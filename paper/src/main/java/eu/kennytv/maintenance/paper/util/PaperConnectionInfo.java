@@ -17,44 +17,55 @@
  */
 package eu.kennytv.maintenance.paper.util;
 
-import eu.kennytv.maintenance.api.MaintenanceProvider;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
+import io.papermc.paper.connection.PlayerConfigurationConnection;
+import io.papermc.paper.connection.PlayerConnection;
+import io.papermc.paper.connection.PlayerLoginConnection;
 import java.util.UUID;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-public final class BukkitSenderInfo implements SenderInfo {
-    private final CommandSender sender;
+public final class PaperConnectionInfo implements SenderInfo {
+    private final PlayerConnection connection;
 
-    public BukkitSenderInfo(final CommandSender sender) {
-        this.sender = sender;
+    public PaperConnectionInfo(final PlayerConnection connection) {
+        this.connection = connection;
     }
 
     @Override
     public UUID getUuid() {
-        return sender instanceof Player ? ((Entity) sender).getUniqueId() : null;
+        return profile().getId();
     }
 
     @Override
     public String getName() {
-        return sender.getName();
+        return profile().getName();
     }
 
     @Override
     public boolean hasPermission(final String permission) {
-        return sender.hasPermission(permission);
+        // TODO needs to be possible
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void send(final Component component) {
-        ((MaintenancePaperPlugin) MaintenanceProvider.get()).audiences().sender(sender).sendMessage(component);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isPlayer() {
-        return sender instanceof Player;
+        return connection instanceof Player;
+    }
+
+    private PlayerProfile profile() {
+        // TODO Verify this once used
+        if (connection instanceof PlayerLoginConnection loginConnection) {
+            return loginConnection.getAuthenticatedProfile();
+        } else if (connection instanceof PlayerConfigurationConnection configurationConnection) {
+            return configurationConnection.getProfile();
+        }
+        throw new IllegalArgumentException("Unknown connection type: " + connection.getClass());
     }
 }

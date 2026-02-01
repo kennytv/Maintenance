@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.util;
 public enum ServerType {
 
     BUNGEE("Bungee"),
-    SPIGOT("Spigot"),
+    PAPER("Paper"),
     SPONGE("Sponge"),
     VELOCITY("Velocity");
 

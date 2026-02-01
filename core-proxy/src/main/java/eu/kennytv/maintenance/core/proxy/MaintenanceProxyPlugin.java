@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -213,7 +214,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
      */
     @Nullable
     private ProfileLookup doUUIDLookupMojangAPI(final String name) throws IOException {
-        final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+        final URL url = URI.create("https://api.mojang.com/users/profiles/minecraft/" + name).toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
@@ -241,7 +242,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
      */
     @Nullable
     private ProfileLookup doUUIDLookupAshconAPI(final String name) throws IOException {
-        final URL url = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+        final URL url = URI.create("https://api.ashcon.app/mojang/v2/user/" + name).toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         if (connection.getResponseCode() == 403) {

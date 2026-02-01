@@ -18,14 +18,12 @@
 package eu.kennytv.maintenance.sponge.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import java.util.UUID;
 import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.util.Identifiable;
-
-import java.util.UUID;
 
 public final class SpongeSenderInfo implements SenderInfo {
     private final CommandCause cause;
@@ -51,10 +49,6 @@ public final class SpongeSenderInfo implements SenderInfo {
 
     @Override
     public void send(final Component component) {
-        cause.sendMessage(Identity.nil(), ComponentUtil.toSponge(component));
-    }
-
-    public void send(final net.kyori.adventure.text.Component component) {
         cause.sendMessage(Identity.nil(), component);
     }
 

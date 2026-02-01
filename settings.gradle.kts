@@ -14,9 +14,9 @@ dependencyResolutionManagement {
 
 pluginManagement {
     plugins {
-        id("net.kyori.blossom") version "2.1.0"
-        id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
-        id("com.gradleup.shadow") version "8.3.8"
+        id("net.kyori.blossom") version "2.2.0"
+        id("org.jetbrains.gradle.plugin.idea-ext") version "1.4"
+        id("com.gradleup.shadow") version "9.3.1"
         id("dev.lukebemish.central-portal-publishing") version "0.1.7"
     }
 }
@@ -24,9 +24,6 @@ pluginManagement {
 rootProject.name = "maintenance-parent"
 
 includeBuild("build-logic")
-
-include("adventure", "adventure:adventure-api",
-    "adventure:adventure-platform-bukkit", "adventure:adventure-platform-bungee")
 
 subproject("api")
 subproject("api-proxy")
@@ -36,10 +33,6 @@ subproject("paper")
 subproject("sponge")
 subproject("bungee")
 subproject("velocity")
-
-setupSubproject("maintenance") {
-    projectDir = file("universal")
-}
 
 fun subproject(name: String) {
     setupSubproject("maintenance-$name") {

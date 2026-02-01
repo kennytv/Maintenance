@@ -22,7 +22,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     protected final Server server;

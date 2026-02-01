@@ -19,11 +19,10 @@ package eu.kennytv.maintenance.sponge.listener;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import eu.kennytv.maintenance.sponge.util.SpongePlayer;
 import eu.kennytv.maintenance.sponge.util.SpongeUser;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Listener;
@@ -41,7 +40,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
     public void login(final ServerSideConnectionEvent.Login event) {
         if (shouldKick(new SpongeUser(event.user()), false)) {
             event.setCancelled(true);
-            event.setMessage(ComponentUtil.toSponge(settings.getKickMessage()));
+            event.setMessage(settings.getKickMessage());
             if (settings.isJoinNotifications()) {
                 broadcastJoinNotification(event.user().name());
             }
@@ -58,7 +57,7 @@ public final class ClientConnectionListener extends JoinListenerBase {
         final Component component = settings.getMessage("joinNotification", "%PLAYER%", name);
         for (final ServerPlayer player : Sponge.server().onlinePlayers()) {
             if (plugin.hasPermission(player, "joinnotification")) {
-                player.sendMessage(ComponentUtil.toSponge(component));
+                player.sendMessage(component);
             }
         }
     }

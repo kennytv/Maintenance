@@ -5,7 +5,7 @@ author: kennytv
 description: ${description}
 softdepend: [ProtocolLib, ServerListPlus, ProtocolSupport, LuckPerms]
 website: https://hangar.papermc.io/kennytv/Maintenance
-api-version: 1.13
+api-version: 1.20
 folia-supported: true
 
 commands:

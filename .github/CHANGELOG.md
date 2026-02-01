@@ -2,7 +2,14 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## 4.3.1 - Unreleased
+## 5.0.0 - Unreleased
+
+This update removes *a lot* of legacy code, making the code-base a great bit more simple and a lot more performant.
+
+### Changed
+- The Paper part now requires at least Paper 1.20.1 and no longer supports Spigot
+- The universal jar has been removed, each platform now has its own (as small as possible) jar
+- Maintenance now requires at least Java 21
 
 ### Fixed
 * Velocity/Bungee: Fixed the `/maintenance schedule` command for single servers having swapped time arguments.

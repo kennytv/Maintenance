@@ -21,9 +21,9 @@ import com.google.common.base.Preconditions;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 
 public final class HelpCommand extends CommandInfo {
     private static final int COMMANDS_PER_PAGE = 8;

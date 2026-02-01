@@ -27,11 +27,9 @@ import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.sponge.command.MaintenanceSpongeCommand;
 import eu.kennytv.maintenance.sponge.listener.ClientConnectionListener;
 import eu.kennytv.maintenance.sponge.listener.ClientPingServerListener;
-import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import eu.kennytv.maintenance.sponge.util.LoggerWrapper;
 import eu.kennytv.maintenance.sponge.util.SpongePlayer;
 import eu.kennytv.maintenance.sponge.util.SpongeTask;
@@ -47,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import net.kyori.adventure.text.Component;
 import org.bstats.sponge.Metrics;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
@@ -160,7 +159,7 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     public void broadcast(final Component component) {
-        game.server().sendMessage(ComponentUtil.toSponge(component));
+        game.server().sendMessage(component);
     }
 
     @Override
@@ -187,10 +186,9 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     @Override
     protected void kickPlayers() {
-        final net.kyori.adventure.text.Component component = ComponentUtil.toSponge(settings.getKickMessage());
         for (final ServerPlayer player : getServer().onlinePlayers()) {
             if (!hasPermission(player, "bypass") && !settings.isWhitelisted(player.uniqueId())) {
-                player.kick(component);
+                player.kick(settings.getKickMessage());
             }
         }
     }

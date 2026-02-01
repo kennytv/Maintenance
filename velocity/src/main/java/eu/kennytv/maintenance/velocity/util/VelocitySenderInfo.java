@@ -21,8 +21,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.util.ProxySenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
 public final class VelocitySenderInfo implements ProxySenderInfo {
@@ -49,7 +49,7 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
 
     @Override
     public void send(final Component component) {
-        sender.sendMessage(ComponentUtil.toVelocity(component));
+        sender.sendMessage(component);
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class VelocitySenderInfo implements ProxySenderInfo {
     @Override
     public void disconnect(final Component component) {
         if (sender instanceof Player) {
-            ((Player) sender).disconnect(ComponentUtil.toVelocity(component));
+            ((Player) sender).disconnect(component);
         }
     }
 }

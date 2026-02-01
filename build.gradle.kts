@@ -20,13 +20,8 @@ val platforms = setOf(
 ).map { it.path }
 
 val special = setOf(
-    projects.maintenance,
     projects.maintenanceApi,
-    projects.maintenanceApiProxy,
-    projects.adventure,
-    projects.adventure.adventureApi,
-    projects.adventure.adventurePlatformBukkit,
-    projects.adventure.adventurePlatformBungee,
+    projects.maintenanceApiProxy
 ).map { it.path }
 
 subprojects {

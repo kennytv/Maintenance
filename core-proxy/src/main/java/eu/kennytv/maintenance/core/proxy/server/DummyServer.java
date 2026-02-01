@@ -18,7 +18,7 @@
 package eu.kennytv.maintenance.core.proxy.server;
 
 import eu.kennytv.maintenance.api.proxy.Server;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 public final class DummyServer implements Server {
     private final String name;

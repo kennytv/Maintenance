@@ -36,8 +36,6 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
 import eu.kennytv.maintenance.core.util.Version;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.format.NamedTextColor;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -47,7 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -62,6 +60,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
@@ -237,11 +237,9 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     public boolean installUpdate() throws Exception {
-        // Sponge and Velocity need their own jar
-        final String platformInfix = serverType == ServerType.VELOCITY ? "Velocity-" : serverType == ServerType.SPONGE ? "Sponge-" : "";
-        final String fileName = "Maintenance-" + platformInfix + newestVersion + ".jar";
+        final String fileName = "Maintenance-" + serverType.name() + "-" + newestVersion + ".jar";
         final Path tempFilePath = Paths.get(getPluginFolder() + "Maintenance.tmp");
-        final URLConnection connection = new URL("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/" + fileName).openConnection();
+        final URLConnection connection = URI.create("https://github.com/kennytv/Maintenance/releases/download/" + newestVersion + "/" + fileName).toURL().openConnection();
         try (final BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
              final BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(tempFilePath))) {
             writeFile(is, os);
@@ -273,7 +271,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     private void checkNewestVersion() throws Exception {
-        final URLConnection connection = new URL("https://hangar.papermc.io/api/v1/projects/Maintenance/latestrelease").openConnection();
+        final URLConnection connection = URI.create("https://hangar.papermc.io/api/v1/projects/Maintenance/latestrelease").toURL().openConnection();
         connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             final String newVersionString = reader.readLine();
@@ -287,7 +285,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     public String pasteDump() {
         final MaintenanceDump dump = new MaintenanceDump(this, settings);
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL("https://api.pastes.dev/post").openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) URI.create("https://api.pastes.dev/post").toURL().openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());

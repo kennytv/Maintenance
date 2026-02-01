@@ -17,31 +17,12 @@
  */
 package eu.kennytv.maintenance.paper.util;
 
-import com.google.gson.JsonElement;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public final class ComponentUtil {
 
-    public static final boolean PAPER = isPaper();
-
-    public static Component toPaperComponent(final eu.kennytv.maintenance.lib.kyori.adventure.text.Component component) {
-        final JsonElement json = eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serializeToTree(component);
-        return GsonComponentSerializer.gson().deserializeFromTree(json);
-    }
-
-    public static String toLegacy(final eu.kennytv.maintenance.lib.kyori.adventure.text.Component component) {
+    public static String toLegacy(final Component component) {
         return LegacyComponentSerializer.legacySection().serialize(component);
-    }
-
-    private static boolean isPaper() {
-        try {
-            final Class<?> componentClass = Class.forName("net.kyori.adventure.text.Component");
-            Class.forName("org.bukkit.entity.Player").getDeclaredMethod("kick", componentClass);
-            return true;
-        } catch (final NoSuchMethodException | ClassNotFoundException e) {
-            return false;
-        }
     }
 }

@@ -15,16 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.velocity.util;
+package eu.kennytv.maintenance.paper.util;
 
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import eu.kennytv.maintenance.core.util.Task;
+import org.bukkit.Bukkit;
 
-public final class ComponentUtil {
+public final class PaperTask implements Task {
+    private final int id;
 
-    public static Component toVelocity(final eu.kennytv.maintenance.lib.kyori.adventure.text.Component component) {
-        final JsonElement json = eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serializeToTree(component);
-        return GsonComponentSerializer.gson().deserializeFromTree(json);
+    public PaperTask(final int id) {
+        this.id = id;
+    }
+
+    @Override
+    public void cancel() {
+        Bukkit.getScheduler().cancelTask(id);
     }
 }

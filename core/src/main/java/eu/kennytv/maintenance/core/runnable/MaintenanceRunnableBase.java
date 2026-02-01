@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.runnable;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.util.Task;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 public abstract class MaintenanceRunnableBase implements Runnable {
     protected final MaintenancePlugin plugin;

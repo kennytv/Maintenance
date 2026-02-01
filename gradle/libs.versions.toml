@@ -3,29 +3,30 @@ metadata.format.version = "1.1"
 [versions]
 
 # Shaded
-adventure = "4.17.0"
-adventurePlatform = "4.3.4"
-mysqlConnector = "8.0.33"
-hikariCP = "4.0.3"
-bstats = "3.0.3"
+adventure = "4.26.1"
+adventurePlatform = "4.4.1"
+
+mysqlConnector = "9.6.0"
+hikariCP = "7.0.2"
+bstats = "3.1.0"
 
 # Provided
 gson = "2.8.8"
 guava = "29.0-jre"
 snakeyaml = "1.23"
-jetbrainsAnnotations = "24.0.1"
+jetbrainsAnnotations = "26.0.2"
 
 protocollib = "5.3.0"
 authlib = "1.5.25"
 luckperms = "5.3"
 serverlistplus = "3.5.0"
 
-paper = "1.16.5-R0.1-SNAPSHOT"
-bungee = "1.20-R0.1-SNAPSHOT"
+paper = "1.21.11-R0.1-SNAPSHOT"
+bungee = "1.21-R0.1-SNAPSHOT"
 sponge = "8.0.0"
-velocity = "3.1.0"
+velocity = "3.4.0"
 
-junitVer = "5.11.0"
+junitVer = "5.14.2"
 
 
 [libraries]
@@ -34,7 +35,6 @@ adventureApi = { group = "net.kyori", name = "adventure-api", version.ref = "adv
 adventureTextMinimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 adventureTextSerializerGson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure" }
 adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
-adventurePlatformBukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventurePlatform" }
 adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
 
 mysqlConnector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysqlConnector" }
@@ -53,7 +53,7 @@ luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }
 
-paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper" }
+paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 bungee = { group = "net.md-5", name = "bungeecord-api", version.ref = "bungee" }
 sponge = { group = "org.spongepowered", name = "spongeapi", version.ref = "sponge" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
@@ -64,5 +64,5 @@ jupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ve
 
 [bundles]
 
-adventure = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerLegacy"]
+adventureBungee = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerLegacy", "adventurePlatformBungee"]
 junit = ["jupiterApi", "jupiterEngine"]

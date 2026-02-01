@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.velocity.util;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 public final class VelocityServer implements Server {
     private final RegisteredServer server;
@@ -41,9 +41,8 @@ public final class VelocityServer implements Server {
 
     @Override
     public void broadcast(final Component component) {
-        final net.kyori.adventure.text.Component c = ComponentUtil.toVelocity(component);
         for (final Player player : server.getPlayersConnected()) {
-            player.sendMessage(c);
+            player.sendMessage(component);
         }
     }
 

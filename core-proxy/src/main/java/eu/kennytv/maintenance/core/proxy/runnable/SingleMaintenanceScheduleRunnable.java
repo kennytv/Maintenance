@@ -21,8 +21,8 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import java.time.Duration;
+import net.kyori.adventure.text.Component;
 
 public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRunnable {
     private final int maintenanceDurationSeconds;

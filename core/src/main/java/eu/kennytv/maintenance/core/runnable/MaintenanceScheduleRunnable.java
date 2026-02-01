@@ -19,8 +19,8 @@ package eu.kennytv.maintenance.core.runnable;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import java.time.Duration;
+import net.kyori.adventure.text.Component;
 
 public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
     private final int maintenanceDuration;

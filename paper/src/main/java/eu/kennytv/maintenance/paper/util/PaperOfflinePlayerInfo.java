@@ -17,18 +17,40 @@
  */
 package eu.kennytv.maintenance.paper.util;
 
-import eu.kennytv.maintenance.core.util.Task;
-import org.bukkit.Bukkit;
+import eu.kennytv.maintenance.core.util.SenderInfo;
+import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 
-public final class BukkitTask implements Task {
-    private final int id;
+import java.util.UUID;
 
-    public BukkitTask(final int id) {
-        this.id = id;
+public final class PaperOfflinePlayerInfo implements SenderInfo {
+    private final OfflinePlayer player;
+
+    public PaperOfflinePlayerInfo(final OfflinePlayer player) {
+        this.player = player;
     }
 
     @Override
-    public void cancel() {
-        Bukkit.getScheduler().cancelTask(id);
+    public UUID getUuid() {
+        return player.getUniqueId();
+    }
+
+    @Override
+    public String getName() {
+        return player.getName();
+    }
+
+    @Override
+    public boolean hasPermission(final String permission) {
+        return false;
+    }
+
+    @Override
+    public void send(final Component component) {
+    }
+
+    @Override
+    public boolean isPlayer() {
+        return true;
     }
 }

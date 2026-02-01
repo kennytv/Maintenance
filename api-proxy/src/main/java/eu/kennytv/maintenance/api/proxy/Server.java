@@ -17,7 +17,7 @@
  */
 package eu.kennytv.maintenance.api.proxy;
 
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 /**
  * Wrapper for a proxied server.

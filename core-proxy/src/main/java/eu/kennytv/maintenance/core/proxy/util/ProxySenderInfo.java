@@ -19,7 +19,7 @@ package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 
 public interface ProxySenderInfo extends SenderInfo {
 

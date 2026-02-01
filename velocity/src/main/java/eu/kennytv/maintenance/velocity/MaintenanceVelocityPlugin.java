@@ -48,11 +48,9 @@ import eu.kennytv.maintenance.core.util.MaintenanceVersion;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.velocity.command.MaintenanceVelocityCommand;
 import eu.kennytv.maintenance.velocity.listener.ProxyPingListener;
 import eu.kennytv.maintenance.velocity.listener.ServerConnectListener;
-import eu.kennytv.maintenance.velocity.util.ComponentUtil;
 import eu.kennytv.maintenance.velocity.util.LoggerWrapper;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
@@ -69,6 +67,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import net.kyori.adventure.text.Component;
 import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,6 +104,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         server.getCommandManager().register(server.getCommandManager().metaBuilder("maintenance").aliases("mt").build(), command);
 
         final EventManager em = server.getEventManager();
+        //noinspection deprecation
         em.register(this, ProxyPingEvent.class, PostOrder.LAST, new ProxyPingListener(this, settingsProxy));
         em.register(this, new ServerConnectListener(this, settingsProxy));
 
@@ -144,7 +144,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     protected void kickPlayersFromProxy() {
         for (final Player p : server.getAllPlayers()) {
             if (!hasPermission(p, "bypass") && !settingsProxy.isWhitelisted(p.getUniqueId())) {
-                p.disconnect(ComponentUtil.toVelocity(settingsProxy.getKickMessage()));
+                p.disconnect(settingsProxy.getKickMessage());
             }
         }
     }
@@ -156,17 +156,17 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         for (final Player player : ((VelocityServer) server).getServer().getPlayersConnected()) {
             if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
                 if (checkForFallback) {
-                    player.sendMessage(ComponentUtil.toVelocity(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName())));
+                    player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
                     // Kick the player if fallback server is not reachable
                     player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful()) {
-                            player.disconnect(ComponentUtil.toVelocity(settingsProxy.getFullServerKickMessage(server.getName())));
+                            player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
                         }
                     });
                 } else
-                    player.disconnect(ComponentUtil.toVelocity(settingsProxy.getFullServerKickMessage(server.getName())));
+                    player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
             } else {
-                player.sendMessage(ComponentUtil.toVelocity(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName())));
+                player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
             }
         }
     }
@@ -182,13 +182,13 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             if (!isMaintenance(waitingServer)) {
                 player.createConnectionRequest(waitingServer).connect().whenComplete((result, e) -> {
                     if (result.isSuccessful()) {
-                        player.sendMessage(ComponentUtil.toVelocity(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName())));
+                        player.sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName()));
                     } else {
-                        player.disconnect(ComponentUtil.toVelocity(settingsProxy.getKickMessage()));
+                        player.disconnect(settingsProxy.getKickMessage());
                     }
                 });
             } else {
-                player.disconnect(ComponentUtil.toVelocity(settingsProxy.getKickMessage()));
+                player.disconnect(settingsProxy.getKickMessage());
             }
         }
     }
@@ -253,7 +253,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     public void broadcast(final Component component) {
-        server.sendMessage(ComponentUtil.toVelocity(component));
+        server.sendMessage(component);
     }
 
     @Override

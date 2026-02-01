@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.paper.command;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.command.MaintenanceCommand;
 import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
-import eu.kennytv.maintenance.paper.util.BukkitSenderInfo;
+import eu.kennytv.maintenance.paper.util.PaperSenderInfo;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,12 +36,12 @@ public final class MaintenancePaperCommand extends MaintenanceCommand implements
 
     @Override
     public boolean onCommand(final CommandSender sender, final Command cmd, final String s, final String[] args) {
-        execute(new BukkitSenderInfo(sender), args);
+        execute(new PaperSenderInfo(sender), args);
         return true;
     }
 
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
-        return getSuggestions(new BukkitSenderInfo(sender), args);
+        return getSuggestions(new PaperSenderInfo(sender), args);
     }
 }

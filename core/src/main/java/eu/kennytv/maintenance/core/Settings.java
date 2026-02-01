@@ -21,10 +21,6 @@ import eu.kennytv.maintenance.api.event.MaintenanceReloadedEvent;
 import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.util.ServerType;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.TextComponent;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +35,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
@@ -250,7 +250,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         String oldDirName = "Maintenance" + plugin.getServerType();
         if (plugin.getServerType() == ServerType.SPONGE || plugin.getServerType() == ServerType.VELOCITY) {
             oldDirName = oldDirName.toLowerCase(Locale.ROOT);
-        } else if (plugin.getServerType() == ServerType.SPIGOT) {
+        } else if (plugin.getServerType() == ServerType.PAPER) {
             oldDirName = "MaintenanceSpigot";
         }
 

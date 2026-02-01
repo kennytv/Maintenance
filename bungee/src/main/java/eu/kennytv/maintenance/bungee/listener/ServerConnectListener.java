@@ -24,7 +24,7 @@ import eu.kennytv.maintenance.bungee.util.BungeeServer;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.listener.ProxyJoinListenerBase;
 import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;

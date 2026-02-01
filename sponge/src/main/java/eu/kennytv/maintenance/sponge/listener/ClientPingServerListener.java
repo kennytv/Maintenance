@@ -19,7 +19,6 @@ package eu.kennytv.maintenance.sponge.listener;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.sponge.MaintenanceSpongePlugin;
-import eu.kennytv.maintenance.sponge.util.ComponentUtil;
 import java.util.List;
 import java.util.UUID;
 import org.spongepowered.api.event.Listener;
@@ -50,7 +49,7 @@ public final class ClientPingServerListener {
         }
 
         if (settings.isEnablePingMessages()) {
-            response.setDescription(ComponentUtil.toSponge(settings.getRandomPingMessage()));
+            response.setDescription(settings.getRandomPingMessage());
         }
 
         if (settings.hasCustomPlayerCountHoverMessage()) {

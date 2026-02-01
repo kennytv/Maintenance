@@ -18,8 +18,8 @@
 package eu.kennytv.maintenance.sponge.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 public final class SpongePlayer implements SenderInfo {
@@ -46,10 +46,6 @@ public final class SpongePlayer implements SenderInfo {
 
     @Override
     public void send(final Component component) {
-        player.sendMessage(ComponentUtil.toSponge(component));
-    }
-
-    public void send(final net.kyori.adventure.text.Component component) {
         player.sendMessage(component);
     }
 

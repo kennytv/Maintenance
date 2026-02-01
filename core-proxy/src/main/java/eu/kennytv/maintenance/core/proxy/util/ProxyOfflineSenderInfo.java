@@ -18,9 +18,9 @@
 package eu.kennytv.maintenance.core.proxy.util;
 
 import eu.kennytv.maintenance.api.proxy.Server;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 
 public final class ProxyOfflineSenderInfo implements ProxySenderInfo {
     private final UUID uuid;

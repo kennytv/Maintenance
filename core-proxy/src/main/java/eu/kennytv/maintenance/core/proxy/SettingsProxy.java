@@ -21,7 +21,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;

@@ -17,9 +17,8 @@
  */
 package eu.kennytv.maintenance.core.util;
 
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 
 public final class DummySenderInfo implements SenderInfo {
     private final UUID uuid;

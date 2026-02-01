@@ -25,16 +25,11 @@ import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
-import eu.kennytv.maintenance.lib.kyori.adventure.platform.bukkit.BukkitAudiences;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
 import eu.kennytv.maintenance.paper.command.MaintenancePaperCommand;
 import eu.kennytv.maintenance.paper.listener.PaperServerListPingListener;
 import eu.kennytv.maintenance.paper.listener.PlayerLoginListener;
-import eu.kennytv.maintenance.paper.listener.ServerInfoPacketListener;
-import eu.kennytv.maintenance.paper.listener.ServerListPingListener;
-import eu.kennytv.maintenance.paper.util.BukkitOfflinePlayerInfo;
-import eu.kennytv.maintenance.paper.util.BukkitTask;
-import eu.kennytv.maintenance.paper.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.util.PaperOfflinePlayerInfo;
+import eu.kennytv.maintenance.paper.util.PaperTask;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -44,6 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import net.kyori.adventure.text.Component;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -57,13 +53,11 @@ import org.jetbrains.annotations.Nullable;
 public final class MaintenancePaperPlugin extends MaintenancePlugin {
     private static final boolean FOLIA = hasClass("io.papermc.paper.threadedregions.RegionizedServer");
     private final MaintenancePaperBase plugin;
-    private final BukkitAudiences audiences;
     private CachedServerIcon favicon;
 
     MaintenancePaperPlugin(final MaintenancePaperBase plugin) {
-        super(plugin.getDescription().getVersion(), ServerType.SPIGOT);
+        super(plugin.getDescription().getVersion(), ServerType.PAPER);
         this.plugin = plugin;
-        this.audiences = BukkitAudiences.create(plugin);
 
         settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
 
@@ -75,15 +69,7 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
 
         final PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this, settings), plugin);
-
-        if (canUsePaperListener()) {
-            pm.registerEvents(new PaperServerListPingListener(this, settings), plugin);
-        } else if (pm.isPluginEnabled("ProtocolLib")) {
-            pm.registerEvents(new ServerInfoPacketListener(this, plugin, settings), plugin);
-        } else {
-            pm.registerEvents(new ServerListPingListener(this, settings), plugin);
-            getLogger().warning("To use this plugin on Spigot to its full extent, you need the plugin ProtocolLib!");
-        }
+        pm.registerEvents(new PaperServerListPingListener(this, settings), plugin);
 
         continueLastEndtimer();
         new Metrics(plugin, 2205);
@@ -112,38 +98,24 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
         }
     }
 
-    private boolean canUsePaperListener() {
-        try {
-            Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
-            if (getServer().getPluginManager().isPluginEnabled("ProtocolSupport")) {
-                getLogger().warning("Found ProtocolSupport - switching to ProtocolLib packet adapter, as PS does not fire Paper's ping event");
-                return false;
-            }
-
-            return true;
-        } catch (final ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
         if (FOLIA) {
             throw new UnsupportedOperationException("Scheduling tasks is not yet supported on Folia");
         }
-        return new BukkitTask(getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20));
+        return new PaperTask(getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20));
     }
 
     @Override
     public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final String name) {
         final OfflinePlayer player = getServer().getOfflinePlayer(name);
-        return CompletableFuture.completedFuture(player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null);
+        return CompletableFuture.completedFuture(player.getName() != null ? new PaperOfflinePlayerInfo(player) : null);
     }
 
     @Override
     public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
-        return CompletableFuture.completedFuture(player.getName() != null ? new BukkitOfflinePlayerInfo(player) : null);
+        return CompletableFuture.completedFuture(player.getName() != null ? new PaperOfflinePlayerInfo(player) : null);
     }
 
     @Override
@@ -163,19 +135,14 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
 
     @Override
     public void broadcast(final Component component) {
-        audiences.all().sendMessage(component);
+        getServer().sendMessage(component);
     }
 
     @Override
     protected void kickPlayers() {
         for (final Player p : getServer().getOnlinePlayers()) {
             if (!hasPermission(p, "bypass") && !settings.isWhitelisted(p.getUniqueId())) {
-                final Component kickMessage = settings.getKickMessage();
-                if (ComponentUtil.PAPER) {
-                    p.kick(ComponentUtil.toPaperComponent(kickMessage));
-                } else {
-                    p.kickPlayer(ComponentUtil.toLegacy(kickMessage));
-                }
+                p.kick(settings.getKickMessage());
             }
         }
     }
@@ -236,9 +203,5 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
 
     public CachedServerIcon getFavicon() {
         return favicon;
-    }
-
-    public BukkitAudiences audiences() {
-        return audiences;
     }
 }

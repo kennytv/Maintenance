@@ -19,9 +19,9 @@ package eu.kennytv.maintenance.paper.listener;
 
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.listener.JoinListenerBase;
+import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.paper.MaintenancePaperPlugin;
-import eu.kennytv.maintenance.paper.util.BukkitSenderInfo;
-import eu.kennytv.maintenance.paper.util.ComponentUtil;
+import eu.kennytv.maintenance.paper.util.PaperSenderInfo;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,15 +36,11 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
     }
 
     @EventHandler
-    public void postLogin(final PlayerLoginEvent event) {
-        final BukkitSenderInfo sender = new BukkitSenderInfo(event.getPlayer());
+    public void postLogin(final PlayerLoginEvent event) { // the validation event does not allow permission checking
+        final SenderInfo sender = new PaperSenderInfo(event.getPlayer());
         if (shouldKick(sender)) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-            if (ComponentUtil.PAPER) {
-                event.kickMessage(ComponentUtil.toPaperComponent(settings.getKickMessage()));
-            } else {
-                event.setKickMessage(ComponentUtil.toLegacy(settings.getKickMessage()));
-            }
+            event.kickMessage(settings.getKickMessage());
             if (settings.isJoinNotifications()) {
                 broadcastJoinNotification(sender.getName());
             }
@@ -55,7 +51,7 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
     protected void broadcastJoinNotification(final String name) {
         for (final Player p : plugin.getServer().getOnlinePlayers()) {
             if (plugin.hasPermission(p, "joinnotification")) {
-                plugin.audiences().player(p).sendMessage(settings.getMessage("joinNotification", "%PLAYER%", name));
+                p.sendMessage(settings.getMessage("joinNotification", "%PLAYER%", name));
             }
         }
     }

@@ -22,7 +22,6 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import eu.kennytv.maintenance.velocity.util.ComponentUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,7 +80,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         }
 
         if (settings.isEnablePingMessages()) {
-            builder.description(ComponentUtil.toVelocity(settings.getRandomPingMessage()));
+            builder.description(settings.getRandomPingMessage());
         }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

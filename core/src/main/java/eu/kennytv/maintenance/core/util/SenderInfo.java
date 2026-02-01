@@ -19,9 +19,9 @@ package eu.kennytv.maintenance.core.util;
 
 import eu.kennytv.maintenance.api.MaintenanceProvider;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.minimessage.MiniMessage;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public interface SenderInfo {
 

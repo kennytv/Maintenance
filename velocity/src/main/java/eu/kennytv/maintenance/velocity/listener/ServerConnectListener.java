@@ -30,12 +30,10 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.listener.ProxyJoinListenerBase;
 import eu.kennytv.maintenance.core.proxy.util.ServerConnectResult;
 import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
-import eu.kennytv.maintenance.velocity.util.ComponentUtil;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import eu.kennytv.maintenance.velocity.util.VelocityServer;
-import net.kyori.adventure.text.Component;
-
 import java.util.Optional;
+import net.kyori.adventure.text.Component;
 
 public final class ServerConnectListener extends ProxyJoinListenerBase {
     private final MaintenanceVelocityPlugin plugin;
@@ -55,7 +53,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
             // Do the actual connecting in the ServerPreConnectEvent handler if a waiting server exists
             if (waitingServer != null) return;
 
-            event.setResult(ResultedEvent.ComponentResult.denied(ComponentUtil.toVelocity(settings.getKickMessage())));
+            event.setResult(ResultedEvent.ComponentResult.denied(settings.getKickMessage()));
             if (settings.isJoinNotifications()) {
                 broadcastJoinNotification(event.getPlayer().getUsername());
             }
@@ -67,6 +65,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
         updateCheck(new VelocitySenderInfo(event.getPlayer()));
     }
 
+    @SuppressWarnings("deprecation")
     @Subscribe(order = PostOrder.LAST)
     public void preConnect(final ServerPreConnectEvent event) {
         if (!event.getResult().isAllowed()) return;
@@ -82,7 +81,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
             // Player has no server to connect to
             if (!hasCurrentServer) {
-                player.disconnect(ComponentUtil.toVelocity(settings.getKickMessage()));
+                player.disconnect(settings.getKickMessage());
             }
         } else if (connectResult.getTarget() != null) {
             final RegisteredServer newTarget = ((VelocityServer) connectResult.getTarget()).getServer();
@@ -101,7 +100,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
     }
 
     private void sendJoinMessage(final Iterable<Player> players, final String name) {
-        final Component message = ComponentUtil.toVelocity(settings.getMessage("joinNotification", "%PLAYER%", name));
+        final Component message = settings.getMessage("joinNotification", "%PLAYER%", name);
         for (final Player player : players) {
             if (plugin.hasPermission(player, "joinnotification")) {
                 player.sendMessage(message);

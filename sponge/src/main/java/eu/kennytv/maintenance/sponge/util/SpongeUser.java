@@ -18,7 +18,7 @@
 package eu.kennytv.maintenance.sponge.util;
 
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import eu.kennytv.maintenance.lib.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.User;
 
 import java.util.UUID;
