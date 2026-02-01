@@ -7,9 +7,10 @@ This file contains update logs for this project. The top may contain a `Unreleas
 This update removes *a lot* of legacy code, making the code-base a great bit more simple and a lot more performant.
 
 ### Changed
-- The Paper part now requires at least Paper 1.20.1 and no longer supports Spigot
+- The Paper part now **requires at least Paper 1.20.1** and no longer supports Spigot
 - The universal jar has been removed. Each platform now has its own jar (that is as small as possible)
-- Maintenance now requires at least Java 21
+- Maintenance now **requires at least Java 21**
+- Velocity/Bungee: **Replaced `mysql` section with `redis`**. This is a more suitable database for such reading and sharing of data and no longer means some server pings can take multiple seconds, if you have multiple proxies linked
 
 ### Fixed
 * Velocity/Bungee: Fixed the `/maintenance schedule` command for single servers having swapped time arguments.

@@ -28,7 +28,7 @@ public interface Server {
     /**
      * @return name of the server
      */
-    String name();
+    String getName();
 
     /**
      * @return true if there are players on the server

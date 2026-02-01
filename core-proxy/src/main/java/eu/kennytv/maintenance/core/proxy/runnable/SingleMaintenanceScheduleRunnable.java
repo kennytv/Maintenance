@@ -41,7 +41,7 @@ public final class SingleMaintenanceScheduleRunnable extends SingleMaintenanceRu
     @Override
     protected Component getStartMessage() {
         return settings.getMessage("singleScheduletimerBroadcast",
-                "%SERVER%", server.name(),
+                "%SERVER%", server.getName(),
                 "%TIME%", getTime(), "%DURATION%", plugin.getFormattedTime(maintenanceDurationSeconds));
     }
 }

@@ -23,7 +23,7 @@ import java.util.UUID;
 public interface Settings {
 
     /**
-     * Note that the value might need a few seconds to update, if you're on BungeeCord with MySQL enabled
+     * Returns whether maintenance is currently enabled.
      *
      * @return true if maintenance is currently enabled
      */

@@ -18,16 +18,15 @@
 package eu.kennytv.maintenance.api.proxy;
 
 import eu.kennytv.maintenance.api.Maintenance;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
 
 public interface MaintenanceProxy extends Maintenance {
 
     /**
      * Enables/disables maintenance mode on a proxied server.
      * If enabled, all non-permitted players will be kicked.
-     * If MySQL is enabled, it will also be written into the database.
+     * If Redis is enabled, it will also be written into the database.
      *
      * @param server      server to apply the maintenance status to
      * @param maintenance true to enable, false to disable maintenance mode
@@ -58,6 +57,18 @@ public interface MaintenanceProxy extends Maintenance {
      */
     @Nullable
     Server getServer(String server);
+
+    /**
+     * Returns a wrapped {@link Server} object of a proxied server, or a dummy server if not registered.
+     *
+     * @param serverName name of the proxied server
+     * @return wrapped server object, or a dummy if not registered
+     * @see Server#isRegisteredServer()
+     */
+    default Server getServerOrDummy(final String serverName) {
+        final Server server = getServer(serverName);
+        return server != null ? server : new DummyServer(serverName);
+    }
 
     /**
      * Returns the currently registered proxied servers.

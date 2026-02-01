@@ -17,10 +17,8 @@
  */
 package eu.kennytv.maintenance.core.config;
 
-import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,7 +61,7 @@ public final class Config extends ConfigSection {
     public Config(final File file, final String... unsupportedFields) {
         super(null, "");
         this.file = file;
-        this.unsupportedFields = unsupportedFields.length == 0 ? Collections.emptySet() : Sets.newHashSet(unsupportedFields);
+        this.unsupportedFields = unsupportedFields.length == 0 ? Collections.emptySet() : Set.of(unsupportedFields);
     }
 
     public void load() throws IOException {

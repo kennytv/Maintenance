@@ -98,17 +98,7 @@ public abstract class MaintenancePlugin implements Maintenance {
     @Override
     public void setMaintenance(final boolean maintenance) {
         settings.setMaintenance(maintenance);
-        settings.getConfig().set("maintenance-enabled", maintenance);
-        settings.saveConfig();
         serverActions(maintenance);
-
-        for (final String command : (maintenance ? settings.getCommandsOnMaintenanceEnable() : settings.getCommandsOnMaintenanceDisable())) {
-            try {
-                executeConsoleCommand(command);
-            } catch (final Exception e) {
-                getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
-            }
-        }
     }
 
     public void serverActions(final boolean maintenance) {
@@ -129,6 +119,14 @@ public abstract class MaintenancePlugin implements Maintenance {
         }
 
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
+
+        for (final String command : (maintenance ? settings.getCommandsOnMaintenanceEnable() : settings.getCommandsOnMaintenanceDisable())) {
+            try {
+                executeConsoleCommand(command);
+            } catch (final Exception e) {
+                getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
+            }
+        }
     }
 
     public String replacePingVariables(String component) {
@@ -431,6 +429,10 @@ public abstract class MaintenancePlugin implements Maintenance {
 
     protected String getPluginFolder() {
         return "plugins/";
+    }
+
+    public void sync(final Runnable runnable) {
+        async(runnable);
     }
 
     public abstract void async(Runnable runnable);

@@ -20,7 +20,7 @@ package eu.kennytv.maintenance.core.proxy.command.subcommand;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
-import eu.kennytv.maintenance.core.proxy.server.DummyServer;
+import eu.kennytv.maintenance.api.proxy.DummyServer;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
@@ -67,11 +67,11 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             }
 
             if (plugin.setMaintenanceToServer(server, maintenance)) {
-                if (!sender.isPlayer() || !server.name().equals(plugin.getServerNameOf(sender))) {
-                    sender.send(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated", "%SERVER%", server.name()));
+                if (!sender.isPlayer() || !server.getName().equals(plugin.getServerNameOf(sender))) {
+                    sender.send(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated", "%SERVER%", server.getName()));
                 }
             } else {
-                sender.send(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled", "%SERVER%", server.name()));
+                sender.send(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled", "%SERVER%", server.getName()));
             }
         } else {
             sender.send(getHelpMessage());

@@ -25,7 +25,7 @@ import net.kyori.adventure.text.Component;
 public record VelocityServer(RegisteredServer server) implements Server {
 
     @Override
-    public String name() {
+    public String getName() {
         return server.getServerInfo().getName();
     }
 

@@ -1,6 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.jvm.tasks.Jar
-import org.gradle.kotlin.dsl.named
 
 plugins {
     id("maintenance.base-conventions")
@@ -24,6 +23,10 @@ tasks {
 publishShadowJar()
 
 fun ShadowJar.configureRelocations() {
-    relocate("com.zaxxer.hikari", "eu.kennytv.maintenance.lib.hikari")
     relocate("org.bstats", "eu.kennytv.maintenance.lib.bstats")
+
+    // Proxy
+    relocate("redis.client", "eu.kennytv.maintenance.lib.redis.client")
+    relocate("org.json", "eu.kennytv.maintenance.lib.json")
+    relocate("org.apache.commons.pool2", "eu.kennytv.maintenance.lib.apache.commons.pool2")
 }

@@ -6,8 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.26.1"
 adventurePlatform = "4.4.1"
 
-mysqlConnector = "9.6.0"
-hikariCP = "7.0.2"
+jedis = "7.2.1"
 bstats = "3.1.0"
 
 # Provided
@@ -37,8 +36,9 @@ adventureTextSerializerGson = { group = "net.kyori", name = "adventure-text-seri
 adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
 adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
 
-mysqlConnector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysqlConnector" }
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
+
+jedis = {group = "redis.clients", name = "jedis", version.ref = "jedis"}
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 bstatsBukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
@@ -48,7 +48,6 @@ bstatsVelocity = { group = "org.bstats", name = "bstats-velocity", version.ref =
 
 authlib = { group = "com.mojang", name = "authlib", version.ref = "authlib" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
-hikariCP = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikariCP" }
 luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }

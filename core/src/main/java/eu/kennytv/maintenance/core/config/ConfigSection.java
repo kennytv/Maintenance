@@ -17,7 +17,6 @@
  */
 package eu.kennytv.maintenance.core.config;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class ConfigSection {
     protected Map<String, Object> values;
 
     ConfigSection(final Config root, final String currentPath) {
-        this(root, currentPath, new HashMap<>());
+        this(root, currentPath, new LinkedHashMap<>());
     }
 
     ConfigSection(final Config root, final String currentPath, final Map<String, Object> values) {
@@ -63,20 +62,18 @@ public class ConfigSection {
 
     @Nullable
     public Object getObject(final String key, final Object def) {
-        int nextSeparatorIndex = -1;
-        int sectionStartIndex;
+        final String[] parts = key.split("\\.");
         ConfigSection section = this;
-        while ((nextSeparatorIndex = key.indexOf('.', sectionStartIndex = nextSeparatorIndex + 1)) != -1) {
-            section = section.getSection(key.substring(sectionStartIndex, nextSeparatorIndex));
-            if (section == null) return def;
+        for (int i = 0; i < parts.length - 1; i++) {
+            section = section.getSection(parts[i]);
+            if (section == null) {
+                return def;
+            }
         }
 
-        final String subKey = key.substring(sectionStartIndex);
-        if (section == this) {
-            final Object result = values.get(subKey);
-            return result != null ? result : def;
-        }
-        return section.getObject(subKey, def);
+        final String valueKey = parts[parts.length - 1];
+        final Object o = section.values.get(valueKey);
+        return o != null ? o : def;
     }
 
     @Nullable
@@ -253,6 +250,6 @@ public class ConfigSection {
     }
 
     protected String getFullKeyInPath(final String key) {
-        return currentPath.isEmpty() ? key : currentPath + "." + key;
+        return currentPath.isEmpty() ? key : currentPath + '.' + key;
     }
 }

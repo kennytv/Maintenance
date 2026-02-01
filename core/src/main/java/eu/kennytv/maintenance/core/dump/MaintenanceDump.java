@@ -24,6 +24,7 @@ import eu.kennytv.maintenance.core.Settings;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 public final class MaintenanceDump {
@@ -35,17 +36,22 @@ public final class MaintenanceDump {
         general = new ServerDump(plugin.getVersion(), plugin.getServerType().toString(), plugin.getServerVersion(), plugin.getMaintenanceServersDump());
 
         configuration = new LinkedHashMap<>(settings.getConfig().getValues());
-        final Object o = configuration.get("mysql");
-        if (o instanceof Map) {
-            final Map<String, Object> map = new LinkedHashMap<>(((Map<String, Object>) o));
-            map.keySet().removeIf(key -> !key.equals("use-mysql") && !key.equals("update-interval"));
-            configuration.put("mysql", map);
-        }
+        addDBSettings("redis", "enabled");
         configuration.put("whitelisted-players", settings.getWhitelistedPlayers());
         configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());
 
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("plugins", MaintenancePlugin.GSON.toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;
+    }
+
+    private void addDBSettings(final String key, final String... allowedSubKeys) {
+        final Set<String> allowedSubKeysSet = Set.of(allowedSubKeys);
+        final Object o = configuration.get(key);
+        if (o instanceof Map) {
+            final Map<String, Object> map = new LinkedHashMap<>(((Map<String, Object>) o));
+            map.keySet().removeIf(subKey -> !allowedSubKeysSet.contains(subKey));
+            configuration.put(key, map);
+        }
     }
 }

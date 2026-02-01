@@ -66,48 +66,34 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Override
     public void disable() {
         super.disable();
-        if (settingsProxy.getMySQL() != null) {
-            settingsProxy.getMySQL().close();
+        if (settingsProxy.redisHandler() != null) {
+            settingsProxy.redisHandler().close();
         }
-    }
-
-    @Override
-    public void setMaintenance(final boolean maintenance) {
-        if (settingsProxy.hasMySQL()) {
-            settingsProxy.setMaintenanceToSQL(maintenance);
-        }
-        super.setMaintenance(maintenance);
     }
 
     @Override
     public boolean isMaintenance(final Server server) {
-        return settingsProxy.isMaintenance(server.name());
+        return settingsProxy.isMaintenance(server.getName());
     }
 
     @Override
     public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
         if (maintenance) {
-            if (!settingsProxy.addMaintenanceServer(server.name())) {
+            if (!settingsProxy.addMaintenanceServer(server.getName())) {
                 return false;
             }
-        } else if (!settingsProxy.removeMaintenanceServer(server.name())) {
+        } else if (!settingsProxy.removeMaintenanceServer(server.getName())) {
             return false;
         }
 
         serverActions(server, maintenance);
-
-        for (final String command : (maintenance ? settingsProxy.getCommandsOnMaintenanceEnable(server) : settingsProxy.getCommandsOnMaintenanceDisable(server))) {
-            try {
-                executeConsoleCommand(command.replace("%SERVER%", server.name()));
-            } catch (final Exception e) {
-                getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
-            }
-        }
         return true;
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
-        if (server == null) return;
+        if (server == null) {
+            return;
+        }
 
         // Skip to the even fire for dummy servers
         if (server.isRegisteredServer()) {
@@ -120,18 +106,26 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
                 }
                 kickPlayers(server, fallback);
             } else {
-                server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated", "%SERVER%", server.name()));
+                server.broadcast(settingsProxy.getMessage("singleMaintenanceDeactivated", "%SERVER%", server.getName()));
             }
 
             cancelSingleTask(server);
         }
 
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
+
+        for (final String command : (maintenance ? settingsProxy.getCommandsOnMaintenanceEnable(server) : settingsProxy.getCommandsOnMaintenanceDisable(server))) {
+            try {
+                executeConsoleCommand(command.replace("%SERVER%", server.getName()));
+            } catch (final Exception e) {
+                getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
+            }
+        }
     }
 
     @Override
     public boolean isServerTaskRunning(final Server server) {
-        return serverTasks.containsKey(server.name());
+        return serverTasks.containsKey(server.getName());
     }
 
     @Override
@@ -140,7 +134,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     public void cancelSingleTask(final Server server) {
-        final Task task = serverTasks.remove(server.name());
+        final Task task = serverTasks.remove(server.getName());
         if (task != null) {
             task.cancel();
         }
@@ -148,14 +142,14 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) duration.getSeconds(), enable, server);
-        serverTasks.put(server.name(), runnable.getTask());
+        serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
 
     public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final Duration enableIn, final Duration maintenanceDuration) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
                 (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), server);
-        serverTasks.put(server.name(), runnable.getTask());
+        serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
 

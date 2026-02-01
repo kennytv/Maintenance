@@ -14,7 +14,7 @@ Its features include:
 * Nearly all messages are editable via the language file, given in a multitude of different languages
 * Features specifically for Bungee/Velocity
   * Only want to enable maintenance on a single server? You can also do so by using the `/maintenance <on/off> <servername>` command
-  * Link multiple proxy instances through a MySQL database connection, so you don't have to change maintenance on each proxy by hand
+  * Link multiple proxy instances through a Redis connection, so you don't have to change maintenance status or whitelisted players on each proxy by hand
   * Use PlaceholderAPI placeholders with the [**MaintenanceAddon**](https://hangar.papermc.io/kennytv/MaintenanceAddon) (for Velocity and Bungee)
 
 A full list of commands, permissions and configuration options can be found in the wiki listed below.

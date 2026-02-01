@@ -123,13 +123,13 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         for (final ProxiedPlayer player : ((BungeeServer) server).server().getPlayers()) {
             if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
                 if (checkForFallback && fallbackServer.canAccess(player)) {
-                    audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
+                    audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
                     player.connect(fallbackServer);
                 } else {
-                    player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getFullServerKickMessage(server.name())));
+                    player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getFullServerKickMessage(server.getName())));
                 }
             } else {
-                audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
+                audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
             }
         }
     }
@@ -144,7 +144,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
             if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName()))
                 continue;
             if (serverInfo.canAccess(player) && !isMaintenance(serverInfo)) {
-                audiences.player(player).sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.name()));
+                audiences.player(player).sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName()));
                 player.connect(serverInfo);
             } else {
                 player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getKickMessage()));

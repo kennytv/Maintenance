@@ -25,7 +25,7 @@ public interface Maintenance {
      * Enables/disables maintenance mode.
      * If enabled, all non-permitted players will be kicked.
      * <p>
-     * If using the BungeeCord version and MySQL is enabled,
+     * If using the BungeeCord version and Redis is enabled,
      * it will also be written into the database.
      * </p>
      *

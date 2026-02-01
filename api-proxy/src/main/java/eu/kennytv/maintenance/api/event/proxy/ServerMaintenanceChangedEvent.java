@@ -23,7 +23,14 @@ import eu.kennytv.maintenance.api.proxy.Server;
 /**
  * Notification event fired when maintenance mode has been changed on a proxied server.
  */
-public record ServerMaintenanceChangedEvent(Server server, boolean maintenance) implements MaintenanceEvent {
+public final class ServerMaintenanceChangedEvent implements MaintenanceEvent {
+    private final Server server;
+    private final boolean maintenance;
+
+    public ServerMaintenanceChangedEvent(final Server server, final boolean maintenance) {
+        this.server = server;
+        this.maintenance = maintenance;
+    }
 
     /**
      * Returns wrapped server object for the server.
@@ -33,16 +40,14 @@ public record ServerMaintenanceChangedEvent(Server server, boolean maintenance) 
      *
      * @return wrapped server object for the server
      */
-    @Override
-    public Server server() {
+    public Server getServer() {
         return server;
     }
 
     /**
      * @return true if maintenance has been enabled on the server, false otherwise
      */
-    @Override
-    public boolean maintenance() {
+    public boolean isMaintenance() {
         return maintenance;
     }
 }

@@ -156,17 +156,17 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         for (final Player player : ((VelocityServer) server).server().getPlayersConnected()) {
             if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
                 if (checkForFallback) {
-                    player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
+                    player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
                     // Kick the player if fallback server is not reachable
                     player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful()) {
-                            player.disconnect(settingsProxy.getFullServerKickMessage(server.name()));
+                            player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
                         }
                     });
                 } else
-                    player.disconnect(settingsProxy.getFullServerKickMessage(server.name()));
+                    player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
             } else {
-                player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
+                player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
             }
         }
     }
@@ -182,7 +182,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             if (!isMaintenance(waitingServer)) {
                 player.createConnectionRequest(waitingServer).connect().whenComplete((result, e) -> {
                     if (result.isSuccessful()) {
-                        player.sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.name()));
+                        player.sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName()));
                     } else {
                         player.disconnect(settingsProxy.getKickMessage());
                     }

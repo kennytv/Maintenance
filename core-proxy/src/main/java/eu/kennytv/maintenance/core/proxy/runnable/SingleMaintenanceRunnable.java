@@ -46,13 +46,13 @@ public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     protected Component getStartMessage() {
         return settings.getMessage("singleStarttimerBroadcast",
                 "%TIME%", getTime(),
-                "%SERVER%", server.name());
+                "%SERVER%", server.getName());
     }
 
     @Override
     protected Component getEndMessage() {
         return settings.getMessage("singleEndtimerBroadcast",
                 "%TIME%", getTime(),
-                "%SERVER%", server.name());
+                "%SERVER%", server.getName());
     }
 }

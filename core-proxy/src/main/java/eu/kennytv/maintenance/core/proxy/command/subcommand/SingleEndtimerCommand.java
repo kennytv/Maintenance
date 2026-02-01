@@ -67,7 +67,7 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
             final Server server = plugin.getCommandManager().checkSingleTimerServerArg(sender, args[1]);
             if (server == null) return;
             if (!plugin.isMaintenance(server)) {
-                sender.send(getMessage("singleServerAlreadyDisabled", "%SERVER%", server.name()));
+                sender.send(getMessage("singleServerAlreadyDisabled", "%SERVER%", server.getName()));
                 return;
             }
 
@@ -75,7 +75,7 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
             sender.send(getMessage(
                     "singleEndtimerStarted",
                     "%TIME%", runnable.getTime(),
-                    "%SERVER%", server.name()
+                    "%SERVER%", server.getName()
             ));
         } else {
             sender.send(getHelpMessage());

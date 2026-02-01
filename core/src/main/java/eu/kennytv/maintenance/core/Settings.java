@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 9;
+    private static final int CONFIG_VERSION = 10;
     private static final int LANGUAGE_VERSION = 2;
     private static final Random RANDOM = new Random();
     protected final MaintenancePlugin plugin;
@@ -233,6 +233,12 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             plugin.loadMaintenanceIcon();
         }
 
+        loadWhitelistedPlayers();
+
+        loadExtraSettings();
+    }
+
+    protected void loadWhitelistedPlayers() {
         whitelistedPlayers.clear();
         for (final Map.Entry<String, Object> entry : whitelist.getValues().entrySet()) {
             try {
@@ -241,8 +247,6 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                 plugin.getLogger().warning("Invalid WhitelistedPlayers entry: " + entry.getKey());
             }
         }
-
-        loadExtraSettings();
     }
 
     private void updatePluginDirectory() {
@@ -447,18 +451,19 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             return false;
         }
 
-        whitelistedPlayers.remove(uuid);
-        whitelist.remove(uuid.toString());
-        saveWhitelistedPlayers();
-        return true;
+        return removeWhitelistedPlayer(uuid);
     }
 
     @Override
     public boolean addWhitelistedPlayer(final UUID uuid, final String name) {
-        final boolean added = whitelistedPlayers.put(uuid, name) == null;
+        final boolean added = !name.equals(whitelistedPlayers.put(uuid, name));
+        if (!added) {
+            return false;
+        }
+
         whitelist.set(uuid.toString(), name);
         saveWhitelistedPlayers();
-        return added;
+        return true;
     }
 
     @Override
@@ -477,7 +482,11 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     public void setMaintenance(final boolean maintenance) {
-        this.maintenance = maintenance;
+        if (this.maintenance != maintenance) {
+            this.maintenance = maintenance;
+            config.set("maintenance-enabled", maintenance);
+            saveConfig();
+        }
     }
 
     @Override

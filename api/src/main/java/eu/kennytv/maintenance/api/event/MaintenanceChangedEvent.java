@@ -22,5 +22,5 @@ import eu.kennytv.maintenance.api.event.manager.MaintenanceEvent;
 /**
  * Notification event fired when maintenance mode has been changed.
  */
-public record MaintenanceChangedEvent(boolean maintenance) implements MaintenanceEvent {
+public record MaintenanceChangedEvent(boolean isMaintenance) implements MaintenanceEvent {
 }

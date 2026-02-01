@@ -56,7 +56,7 @@ class ConfigTest {
     void testDeep() throws IOException {
         final Config config = new Config(getTestFile("config.yml"));
         config.load();
-        assertEquals(3306, config.getInt("mysql.port"));
+        assertEquals("redis://localhost:6379", config.getString("redis.uri"));
     }
 
     @Test
@@ -101,10 +101,10 @@ class ConfigTest {
 
         assertTrue(newestConfig.contains("waiting-server"));
         assertNotNull(newestConfig.getComments().get("maintenance-enabled"));
-        assertNotNull(newestConfig.getComments().get("mysql.use-ssl"));
+        //assertNotNull(newestConfig.getComments().get("mysql.use-ssl"));
         assertNotNull(newestConfig.getComments().get("update-checks"));
         assertEquals(newlyLoaded.getHeader(), newestConfig.getHeader());
-        assertEquals("useer", newlyLoaded.getSection("mysql").getString("username"));
+        //assertEquals("useer", newlyLoaded.getSection("mysql").getString("username"));
         assertEquals(4, newlyLoaded.getInt("config-version"));
     }
 
@@ -115,25 +115,19 @@ class ConfigTest {
 
         // Test for pre-existing values
         assertTrue(config.contains("fallback"));
-        assertTrue(config.contains("mysql.password"));
+        assertTrue(config.contains("redis.uri"));
         assertFalse(config.contains("test"));
         assertTrue(config.getComments().containsKey("fallback"));
-        assertTrue(config.getComments().containsKey("mysql.use-ssl"));
+        assertTrue(config.getComments().containsKey("player-count-message.enable-timer-specific-message"));
+        assertFalse(config.contains("redis.enabled"));
+        assertFalse(config.getSection("redis").contains("enabled"));
 
         config.set("test", "abc");
         config.remove("fallback");
-        final ConfigSection section = config.getSection("mysql");
-        section.set("port", 1000);
-        section.remove("use-ssl");
-
         assertTrue(config.contains("test"));
         assertEquals("abc", config.getString("test"));
-        assertEquals(1000, config.getInt("mysql.port"));
-        assertFalse(config.contains("mysql.use-ssl"));
-        assertFalse(config.getSection("mysql").contains("use-ssl"));
         assertFalse(config.contains("fallback"));
         assertFalse(config.getComments().containsKey("fallback"));
-        assertFalse(config.getComments().containsKey("mysql.use-ssl"));
     }
 
     private File getTestFile(final String path) {

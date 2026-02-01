@@ -26,7 +26,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public record BungeeServer(ServerInfo server) implements Server {
 
     @Override
-    public String name() {
+    public String getName() {
         return server.getName();
     }
 

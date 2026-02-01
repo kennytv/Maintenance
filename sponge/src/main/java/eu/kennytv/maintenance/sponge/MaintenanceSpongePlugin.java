@@ -71,7 +71,7 @@ import org.spongepowered.plugin.metadata.model.PluginContributor;
 public final class MaintenanceSpongePlugin extends MaintenancePlugin {
 
     private static final String[] UNSUPPORTED_FIELDS = {
-            "mysql", "proxied-maintenance-servers", "fallback", "waiting-server",
+            "redis", "proxied-maintenance-servers", "fallback", "waiting-server",
             "playercountmessage", "enable-timerspecific-playercountmessage", "timer-playercountmessage",
             "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable",
     };
@@ -140,6 +140,12 @@ public final class MaintenanceSpongePlugin extends MaintenancePlugin {
     public Task startMaintenanceRunnable(final Runnable runnable) {
         final org.spongepowered.api.scheduler.Task task = org.spongepowered.api.scheduler.Task.builder().plugin(container).execute(runnable).interval(1, TimeUnit.SECONDS).build();
         return new SpongeTask(game.server().scheduler().submit(task));
+    }
+
+    @Override
+    public void sync(Runnable runnable) {
+        final org.spongepowered.api.scheduler.Task task = org.spongepowered.api.scheduler.Task.builder().plugin(container).execute(runnable).build();
+        game.server().scheduler().submit(task);
     }
 
     @Override

@@ -59,7 +59,7 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
         super(plugin.getDescription().getVersion(), ServerType.PAPER);
         this.plugin = plugin;
 
-        settings = new Settings(this, "mysql", "proxied-maintenance-servers", "fallback", "waiting-server", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
+        settings = new Settings(this, "redis", "proxied-maintenance-servers", "fallback", "waiting-server", "commands-on-single-maintenance-enable", "commands-on-single-maintenance-disable");
 
         sendEnableMessage();
 
@@ -116,6 +116,11 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
     public CompletableFuture<@Nullable SenderInfo> getOfflinePlayer(final UUID uuid) {
         final OfflinePlayer player = getServer().getOfflinePlayer(uuid);
         return CompletableFuture.completedFuture(player.getName() != null ? new PaperOfflinePlayerInfo(player) : null);
+    }
+
+    @Override
+    public void sync(Runnable runnable) {
+        getServer().getScheduler().runTask(plugin, runnable);
     }
 
     @Override

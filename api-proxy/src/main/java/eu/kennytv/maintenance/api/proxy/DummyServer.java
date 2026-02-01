@@ -15,12 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.core.proxy.server;
+package eu.kennytv.maintenance.api.proxy;
 
-import eu.kennytv.maintenance.api.proxy.Server;
 import net.kyori.adventure.text.Component;
 
 public record DummyServer(String name) implements Server {
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean hasPlayers() {
