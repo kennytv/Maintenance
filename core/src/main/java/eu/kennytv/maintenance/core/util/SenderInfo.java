@@ -25,9 +25,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public interface SenderInfo {
 
-    UUID getUuid();
+    UUID uuid();
 
-    String getName();
+    String name();
 
     boolean hasPermission(String permission);
 

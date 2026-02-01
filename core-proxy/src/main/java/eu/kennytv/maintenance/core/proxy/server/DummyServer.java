@@ -20,17 +20,7 @@ package eu.kennytv.maintenance.core.proxy.server;
 import eu.kennytv.maintenance.api.proxy.Server;
 import net.kyori.adventure.text.Component;
 
-public final class DummyServer implements Server {
-    private final String name;
-
-    public DummyServer(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
+public record DummyServer(String name) implements Server {
 
     @Override
     public boolean hasPlayers() {

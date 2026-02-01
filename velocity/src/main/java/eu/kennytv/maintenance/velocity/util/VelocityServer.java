@@ -22,15 +22,10 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import eu.kennytv.maintenance.api.proxy.Server;
 import net.kyori.adventure.text.Component;
 
-public final class VelocityServer implements Server {
-    private final RegisteredServer server;
-
-    public VelocityServer(final RegisteredServer server) {
-        this.server = server;
-    }
+public record VelocityServer(RegisteredServer server) implements Server {
 
     @Override
-    public String getName() {
+    public String name() {
         return server.getServerInfo().getName();
     }
 
@@ -49,9 +44,5 @@ public final class VelocityServer implements Server {
     @Override
     public boolean isRegisteredServer() {
         return true;
-    }
-
-    public RegisteredServer getServer() {
-        return server;
     }
 }

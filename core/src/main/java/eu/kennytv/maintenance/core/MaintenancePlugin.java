@@ -168,7 +168,7 @@ public abstract class MaintenancePlugin implements Maintenance {
 
     private void append(final StringBuilder builder, final String timeUnit, final int time) {
         if (time == 0) return;
-        if (builder.length() != 0) {
+        if (!builder.isEmpty()) {
             builder.append(' ');
         }
         builder.append(time).append(' ').append(settings.language.getString(time == 1 ? timeUnit : timeUnit + "s"));
@@ -326,8 +326,7 @@ public abstract class MaintenancePlugin implements Maintenance {
         try {
             loadIcon(file);
         } catch (final Exception e) {
-            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!");
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "Could not load the 'maintenance-icon.png' file!", e);
         }
     }
 

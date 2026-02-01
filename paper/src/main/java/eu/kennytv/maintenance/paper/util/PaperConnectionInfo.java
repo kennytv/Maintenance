@@ -34,12 +34,12 @@ public final class PaperConnectionInfo implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return profile().getId();
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return profile().getName();
     }
 

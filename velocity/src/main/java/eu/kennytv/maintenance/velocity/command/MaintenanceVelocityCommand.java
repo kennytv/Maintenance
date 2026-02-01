@@ -27,6 +27,7 @@ import eu.kennytv.maintenance.velocity.MaintenanceVelocityPlugin;
 import eu.kennytv.maintenance.velocity.util.VelocitySenderInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand implements SimpleCommand {
     private final MaintenanceVelocityPlugin plugin;
@@ -58,7 +59,7 @@ public final class MaintenanceVelocityCommand extends MaintenanceProxyCommand im
         final List<String> list = new ArrayList<>();
         for (final RegisteredServer server : plugin.getServer().getAllServers()) {
             final String name = server.getServerInfo().getName();
-            if (name.toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(name)) {
+            if (name.toLowerCase(Locale.ROOT).startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(name)) {
                 list.add(name);
             }
         }

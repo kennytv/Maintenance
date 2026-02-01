@@ -164,7 +164,7 @@ public class ConfigSection {
     @Nullable
     public String getString(final String key, @Nullable final String def) {
         final Object o = getObject(key);
-        return o instanceof String ? (String) o : def;
+        return o instanceof String s ? s : def;
     }
 
     public int getInt(final String key) {
@@ -173,7 +173,7 @@ public class ConfigSection {
 
     public int getInt(final String key, final int def) {
         final Object o = getObject(key);
-        return o instanceof Number ? ((Number) o).intValue() : def;
+        return o instanceof Number number ? number.intValue() : def;
     }
 
     public double getDouble(final String key) {
@@ -182,7 +182,7 @@ public class ConfigSection {
 
     public double getDouble(final String key, final double def) {
         final Object o = getObject(key);
-        return o instanceof Number ? ((Number) o).doubleValue() : def;
+        return o instanceof Number number ? number.doubleValue() : def;
     }
 
     public long getLong(final String key) {
@@ -191,7 +191,7 @@ public class ConfigSection {
 
     public long getLong(final String key, final long def) {
         final Object o = getObject(key);
-        return o instanceof Number ? ((Number) o).longValue() : def;
+        return o instanceof Number number ? number.longValue() : def;
     }
 
     @Nullable

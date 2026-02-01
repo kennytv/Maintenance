@@ -97,7 +97,7 @@ public abstract class MaintenanceCommand {
             return;
         }
 
-        final CommandInfo command = commandExecutors.get(args[0].toLowerCase());
+        final CommandInfo command = commandExecutors.get(args[0].toLowerCase(Locale.ROOT));
         if (command == null) {
             help.sendUsage(sender);
             return;
@@ -112,7 +112,7 @@ public abstract class MaintenanceCommand {
 
     public List<String> getSuggestions(final SenderInfo sender, final String[] args) {
         if (!sender.hasMaintenancePermission("command") || args.length == 0) return Collections.emptyList();
-        final String s = args[0].toLowerCase();
+        final String s = args[0].toLowerCase(Locale.ROOT);
         if (args.length == 1) {
             final List<String> list = new ArrayList<>();
             for (final Map.Entry<String, CommandInfo> entry : commandExecutors.entrySet()) {

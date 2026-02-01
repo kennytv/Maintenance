@@ -43,6 +43,7 @@ public final class PaperServerListPingListener implements Listener {
                 playerInfoList.add(new ListedPlayerInfo(string, UUID.randomUUID()));
             }
         } : (event, settings) -> {
+            //noinspection removal - Keep compatibility for now (changed in 1.20.6)
             final List<PlayerProfile> sample = event.getPlayerSample();
             sample.clear();
             for (final String string : settings.getLegacyParsedPlayerCountHoverLines()) {

@@ -77,8 +77,7 @@ public final class MySQL {
                 callback.accept(preparedStatement.executeUpdate());
             }
         } catch (final SQLException e) {
-            logger.log(Level.SEVERE, "Error while executing update method: " + query);
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while executing update method: " + query, e);
         }
     }
 
@@ -96,8 +95,7 @@ public final class MySQL {
                 }
             }
         } catch (final SQLException e) {
-            logger.log(Level.SEVERE, "Error while executing query method: " + query);
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while executing query method: " + query, e);
         }
     }
 

@@ -31,12 +31,12 @@ public final class PaperOfflinePlayerInfo implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return player.getUniqueId();
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return player.getName();
     }
 

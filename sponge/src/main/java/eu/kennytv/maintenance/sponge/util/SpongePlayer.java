@@ -30,12 +30,12 @@ public final class SpongePlayer implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return player.uniqueId();
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return player.name();
     }
 

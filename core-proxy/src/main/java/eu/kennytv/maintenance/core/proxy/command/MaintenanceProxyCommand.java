@@ -26,6 +26,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
     private final MaintenanceProxyPlugin plugin;
@@ -52,7 +53,7 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
     public List<String> getMaintenanceServersCompletion(final String s) {
         final List<String> list = new ArrayList<>();
         for (final String server : settingsBungee.getMaintenanceServers()) {
-            if (server.toLowerCase().startsWith(s)) {
+            if (server.toLowerCase(Locale.ROOT).startsWith(s)) {
                 list.add(server);
             }
         }

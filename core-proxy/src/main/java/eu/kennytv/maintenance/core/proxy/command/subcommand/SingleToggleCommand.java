@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public final class SingleToggleCommand extends ProxyCommandInfo {
 
@@ -66,11 +67,11 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
             }
 
             if (plugin.setMaintenanceToServer(server, maintenance)) {
-                if (!sender.isPlayer() || !server.getName().equals(plugin.getServerNameOf(sender))) {
-                    sender.send(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated", "%SERVER%", server.getName()));
+                if (!sender.isPlayer() || !server.name().equals(plugin.getServerNameOf(sender))) {
+                    sender.send(getMessage(maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated", "%SERVER%", server.name()));
                 }
             } else {
-                sender.send(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled", "%SERVER%", server.getName()));
+                sender.send(getMessage(maintenance ? "singleServerAlreadyEnabled" : "singleServerAlreadyDisabled", "%SERVER%", server.name()));
             }
         } else {
             sender.send(getHelpMessage());
@@ -80,7 +81,7 @@ public final class SingleToggleCommand extends ProxyCommandInfo {
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
         if (args.length != 2 || !sender.hasMaintenancePermission("singleserver.toggle")) return Collections.emptyList();
-        return args[0].equalsIgnoreCase("off") ? plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase())
-                : plugin.getCommandManager().getServersCompletion(args[1].toLowerCase());
+        return args[0].equalsIgnoreCase("off") ? plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase(Locale.ROOT))
+                : plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT));
     }
 }

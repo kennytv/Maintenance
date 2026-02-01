@@ -31,12 +31,12 @@ public final class SpongeUser implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return user.uniqueId();
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return user.name();
     }
 

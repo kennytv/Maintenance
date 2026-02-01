@@ -37,12 +37,12 @@ public final class BungeeSenderInfo implements ProxySenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
-        return sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : null;
+    public UUID uuid() {
+        return sender instanceof ProxiedPlayer proxiedPlayer ? proxiedPlayer.getUniqueId() : null;
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return sender.getName();
     }
 
@@ -67,13 +67,13 @@ public final class BungeeSenderInfo implements ProxySenderInfo {
 
     @Override
     public boolean canAccess(final Server server) {
-        return ((BungeeServer) server).getServer().canAccess(sender);
+        return ((BungeeServer) server).server().canAccess(sender);
     }
 
     @Override
     public void disconnect(final Component component) {
-        if (sender instanceof Connection) {
-            ((Connection) sender).disconnect(ComponentUtil.toBadComponent(component));
+        if (sender instanceof Connection connection) {
+            connection.disconnect(ComponentUtil.toBadComponent(component));
         }
     }
 }

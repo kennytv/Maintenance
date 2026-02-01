@@ -21,7 +21,6 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public final class PaperSenderInfo implements SenderInfo {
@@ -32,12 +31,12 @@ public final class PaperSenderInfo implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
-        return sender instanceof Player ? ((Entity) sender).getUniqueId() : null;
+    public UUID uuid() {
+        return sender instanceof Player player ? player.getUniqueId() : null;
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return sender.getName();
     }
 

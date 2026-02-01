@@ -20,24 +20,7 @@ package eu.kennytv.maintenance.core.util;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 
-public final class DummySenderInfo implements SenderInfo {
-    private final UUID uuid;
-    private final String name;
-
-    public DummySenderInfo(final UUID uuid, final String name) {
-        this.uuid = uuid;
-        this.name = name;
-    }
-
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
+public record DummySenderInfo(UUID uuid, String name) implements SenderInfo {
 
     @Override
     public boolean hasPermission(final String permission) {

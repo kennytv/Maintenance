@@ -47,7 +47,7 @@ public abstract class JoinListenerBase {
      * @return true if the sender should be kicked
      */
     protected boolean shouldKick(final SenderInfo sender, final boolean updateCheck) {
-        if (!settings.isMaintenance() || sender.hasMaintenancePermission("bypass") || settings.isWhitelisted(sender.getUuid())) {
+        if (!settings.isMaintenance() || sender.hasMaintenancePermission("bypass") || settings.isWhitelisted(sender.uuid())) {
             if (updateCheck) {
                 updateCheck(sender);
             }
@@ -63,15 +63,16 @@ public abstract class JoinListenerBase {
 
     protected void updateCheck(final SenderInfo sender) {
         if (!settings.hasUpdateChecks()) return;
-        if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.getUuid())) return;
+        if (!sender.hasPermission("maintenance.admin") || notifiedPlayers.contains(sender.uuid())) return;
         plugin.async(() -> {
             if (!plugin.updateAvailable()) {
                 return;
             }
 
-            notifiedPlayers.add(sender.getUuid());
+            notifiedPlayers.add(sender.uuid());
             sender.sendPrefixedRich("<red>There is a newer version available: <green>Version " + plugin.getNewestVersion() + "<red>, you're on <green>" + plugin.getVersion());
 
+            //noinspection deprecation
             final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
                     .append(Component.text().content(MaintenancePlugin.HANGAR_URL).color(NamedTextColor.GOLD))
                     .append(Component.text().content(" (CLICK ME)").color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD))

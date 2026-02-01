@@ -56,6 +56,7 @@ public final class DumpCommand extends CommandInfo {
             final String url = "https://pastes.dev/" + key;
             sender.sendPrefixedRich("<red><click:open_url:'" + url + "'>" + url + "</click>");
             if (sender.isPlayer()) {
+                //noinspection deprecation
                 final TextComponent text = Component.text().content("Click here to copy the link").color(NamedTextColor.GRAY)
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
                         .hoverEvent(HoverEvent.showText(Component.text("Click here to copy the link to your clipboard").color(NamedTextColor.GREEN)))

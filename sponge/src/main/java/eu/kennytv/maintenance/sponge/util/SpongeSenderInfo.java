@@ -23,7 +23,6 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.util.Identifiable;
 
 public final class SpongeSenderInfo implements SenderInfo {
     private final CommandCause cause;
@@ -33,12 +32,12 @@ public final class SpongeSenderInfo implements SenderInfo {
     }
 
     @Override
-    public UUID getUuid() {
-        return cause instanceof Player ? ((Identifiable) cause).uniqueId() : null;
+    public UUID uuid() {
+        return cause instanceof Player player ? player.uniqueId() : null;
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return cause.friendlyIdentifier().orElse(cause.identifier());
     }
 

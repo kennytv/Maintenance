@@ -48,13 +48,13 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
         final BungeeSenderInfo player = new BungeeSenderInfo(event.getPlayer());
         if (plugin.isDebug()) {
             plugin.getLogger().info("Join permission check for " + event.getPlayer().getName()
-                    + " - Permission: " + player.hasMaintenancePermission("bypass") + ", whitelist: " + settings.isWhitelisted(player.getUuid()));
+                    + " - Permission: " + player.hasMaintenancePermission("bypass") + ", whitelist: " + settings.isWhitelisted(player.uuid()));
         }
 
         if (shouldKick(player)) {
             final Server waitingServer = shouldConnectToWaitingServer(player);
             if (waitingServer != null) {
-                event.setTarget(((BungeeServer) waitingServer).getServer());
+                event.setTarget(((BungeeServer) waitingServer).server());
                 player.send(settings.getMessage("sentToWaitingServer"));
 
                 if (plugin.isDebug()) {
@@ -67,7 +67,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
 
             player.disconnect(settings.getKickMessage());
             if (settings.isJoinNotifications()) {
-                broadcastJoinNotification(player.getName());
+                broadcastJoinNotification(player.name());
             }
         }
     }
@@ -83,7 +83,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
         final BungeeSenderInfo player = new BungeeSenderInfo(proxiedPlayer);
         final ServerConnectResult connectResult = serverConnect(player, new BungeeServer(event.getTarget()), normalServerConnect);
         if (plugin.isDebug()) {
-            plugin.getLogger().info("Connectresult for " + player.getName() + " to " + event.getTarget().getName() + ": " + connectResult);
+            plugin.getLogger().info("Connectresult for " + player.name() + " to " + event.getTarget().getName() + ": " + connectResult);
         }
 
         if (connectResult.isCancelled()) {
@@ -94,7 +94,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
                 player.disconnect(settings.getKickMessage());
             }
         } else if (connectResult.getTarget() != null) {
-            event.setTarget(((BungeeServer) connectResult.getTarget()).getServer());
+            event.setTarget(((BungeeServer) connectResult.getTarget()).server());
         }
     }
 
@@ -105,7 +105,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase implement
 
     @Override
     protected void broadcastJoinNotification(final String name, final Server server) {
-        sendJoinMessage(((BungeeServer) server).getServer().getPlayers(), name);
+        sendJoinMessage(((BungeeServer) server).server().getPlayers(), name);
     }
 
     private void sendJoinMessage(final Iterable<ProxiedPlayer> players, final String name) {

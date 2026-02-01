@@ -151,29 +151,29 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
 
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
-        final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).getServer() : null;
+        final RegisteredServer fallbackServer = fallback != null ? ((VelocityServer) fallback).server() : null;
         final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
-        for (final Player player : ((VelocityServer) server).getServer().getPlayersConnected()) {
+        for (final Player player : ((VelocityServer) server).server().getPlayersConnected()) {
             if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
                 if (checkForFallback) {
-                    player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
+                    player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
                     // Kick the player if fallback server is not reachable
                     player.createConnectionRequest(fallbackServer).connect().whenComplete((result, e) -> {
                         if (!result.isSuccessful()) {
-                            player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
+                            player.disconnect(settingsProxy.getFullServerKickMessage(server.name()));
                         }
                     });
                 } else
-                    player.disconnect(settingsProxy.getFullServerKickMessage(server.getName()));
+                    player.disconnect(settingsProxy.getFullServerKickMessage(server.name()));
             } else {
-                player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
+                player.sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
             }
         }
     }
 
     @Override
     protected void kickPlayersTo(final Server server) {
-        final RegisteredServer waitingServer = ((VelocityServer) server).getServer();
+        final RegisteredServer waitingServer = ((VelocityServer) server).server();
         // Notifications done in global method
         for (final Player player : this.server.getAllPlayers()) {
             if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
@@ -182,7 +182,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
             if (!isMaintenance(waitingServer)) {
                 player.createConnectionRequest(waitingServer).connect().whenComplete((result, e) -> {
                     if (result.isSuccessful()) {
-                        player.sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName()));
+                        player.sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.name()));
                     } else {
                         player.disconnect(settingsProxy.getKickMessage());
                     }
@@ -220,7 +220,7 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 final ProfileLookup profile = doUUIDLookup(name);
-                return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
+                return new ProxyOfflineSenderInfo(profile.uuid(), profile.name());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -236,8 +236,8 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     @Override
     @Nullable
     public String getServerNameOf(final SenderInfo sender) {
-        final Optional<Player> player = server.getPlayer(sender.getUuid());
-        if (!player.isPresent() || !player.get().getCurrentServer().isPresent()) return null;
+        final Optional<Player> player = server.getPlayer(sender.uuid());
+        if (player.isEmpty() || player.get().getCurrentServer().isEmpty()) return null;
         return player.get().getCurrentServer().get().getServerInfo().getName();
     }
 

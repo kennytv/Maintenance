@@ -22,14 +22,7 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 
-public final class ProxyOfflineSenderInfo implements ProxySenderInfo {
-    private final UUID uuid;
-    private final String name;
-
-    public ProxyOfflineSenderInfo(final UUID uuid, final String name) {
-        this.uuid = uuid;
-        this.name = name;
-    }
+public record ProxyOfflineSenderInfo(UUID uuid, String name) implements ProxySenderInfo {
 
     @Override
     public boolean canAccess(final Server server) {
@@ -38,16 +31,6 @@ public final class ProxyOfflineSenderInfo implements ProxySenderInfo {
 
     @Override
     public void disconnect(final Component component) {
-    }
-
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

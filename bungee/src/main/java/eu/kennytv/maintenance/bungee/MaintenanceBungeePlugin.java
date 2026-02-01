@@ -118,18 +118,18 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     protected void kickPlayers(final Server server, final Server fallback) {
         // Kick players from a proxied server
-        final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).getServer() : null;
+        final ServerInfo fallbackServer = fallback != null ? ((BungeeServer) fallback).server() : null;
         final boolean checkForFallback = fallbackServer != null && !isMaintenance(fallback);
-        for (final ProxiedPlayer player : ((BungeeServer) server).getServer().getPlayers()) {
+        for (final ProxiedPlayer player : ((BungeeServer) server).server().getPlayers()) {
             if (!hasPermission(player, "bypass") && !settingsProxy.isWhitelisted(player.getUniqueId())) {
                 if (checkForFallback && fallbackServer.canAccess(player)) {
-                    audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
+                    audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
                     player.connect(fallbackServer);
                 } else {
-                    player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getFullServerKickMessage(server.getName())));
+                    player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getFullServerKickMessage(server.name())));
                 }
             } else {
-                audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.getName()));
+                audiences.player(player).sendMessage(settingsProxy.getMessage("singleMaintenanceActivated", "%SERVER%", server.name()));
             }
         }
     }
@@ -137,14 +137,14 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     protected void kickPlayersTo(final Server server) {
         // Kick all players to a single waiting server
-        final ServerInfo serverInfo = ((BungeeServer) server).getServer();
+        final ServerInfo serverInfo = ((BungeeServer) server).server();
         // Notifications done in global method
         for (final ProxiedPlayer player : getProxy().getPlayers()) {
             if (hasPermission(player, "bypass") || settingsProxy.isWhitelisted(player.getUniqueId())) continue;
             if (player.getServer() != null && player.getServer().getInfo().getName().equals(serverInfo.getName()))
                 continue;
             if (serverInfo.canAccess(player) && !isMaintenance(serverInfo)) {
-                audiences.player(player).sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.getName()));
+                audiences.player(player).sendMessage(settingsProxy.getMessage("sentToWaitingServer", "%SERVER%", server.name()));
                 player.connect(serverInfo);
             } else {
                 player.disconnect(ComponentUtil.toBadComponents(settingsProxy.getKickMessage()));
@@ -167,7 +167,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 final ProfileLookup profile = doUUIDLookup(name);
-                return new ProxyOfflineSenderInfo(profile.getUuid(), profile.getName());
+                return new ProxyOfflineSenderInfo(profile.uuid(), profile.name());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -195,7 +195,7 @@ public final class MaintenanceBungeePlugin extends MaintenanceProxyPlugin {
     @Override
     @Nullable
     public String getServerNameOf(final SenderInfo sender) {
-        final ProxiedPlayer player = getProxy().getPlayer(sender.getUuid());
+        final ProxiedPlayer player = getProxy().getPlayer(sender.uuid());
         if (player == null || player.getServer() == null) return null;
         return player.getServer().getInfo().getName();
     }

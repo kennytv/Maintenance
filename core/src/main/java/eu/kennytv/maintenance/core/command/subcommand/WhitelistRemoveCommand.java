@@ -24,6 +24,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public final class WhitelistRemoveCommand extends CommandInfo {
@@ -50,9 +51,9 @@ public final class WhitelistRemoveCommand extends CommandInfo {
         if (args.length != 2) return Collections.emptyList();
 
         final List<String> list = new ArrayList<>();
-        String matchNameLowerCase = args[1].toLowerCase();
+        String matchNameLowerCase = args[1].toLowerCase(Locale.ROOT);
         for (final String name : getSettings().getWhitelistedPlayers().values()) {
-            if (name.toLowerCase().startsWith(matchNameLowerCase)) {
+            if (name.toLowerCase(Locale.ROOT).startsWith(matchNameLowerCase)) {
                 list.add(name);
             }
         }
@@ -70,7 +71,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
                 return;
             }
 
-            removePlayerFromWhitelist(sender, selected.getUuid(), selected.getName());
+            removePlayerFromWhitelist(sender, selected.uuid(), selected.name());
         });
     }
 
@@ -79,7 +80,7 @@ public final class WhitelistRemoveCommand extends CommandInfo {
             if (selected == null) {
                 removePlayerFromWhitelist(sender, uuid, uuid.toString());
             } else {
-                removePlayerFromWhitelist(sender, selected.getUuid(), selected.getName());
+                removePlayerFromWhitelist(sender, selected.uuid(), selected.name());
             }
         });
     }

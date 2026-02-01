@@ -8,7 +8,7 @@ This update removes *a lot* of legacy code, making the code-base a great bit mor
 
 ### Changed
 - The Paper part now requires at least Paper 1.20.1 and no longer supports Spigot
-- The universal jar has been removed, each platform now has its own (as small as possible) jar
+- The universal jar has been removed. Each platform now has its own jar (that is as small as possible)
 - Maintenance now requires at least Java 21
 
 ### Fixed

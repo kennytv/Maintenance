@@ -42,7 +42,7 @@ public final class PlayerLoginListener extends JoinListenerBase implements Liste
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
             event.kickMessage(settings.getKickMessage());
             if (settings.isJoinNotifications()) {
-                broadcastJoinNotification(sender.getName());
+                broadcastJoinNotification(sender.name());
             }
         }
     }

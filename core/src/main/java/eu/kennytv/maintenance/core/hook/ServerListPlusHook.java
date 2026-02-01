@@ -24,10 +24,10 @@ public final class ServerListPlusHook {
     private final ServerListPlusCore serverListPlusCore;
 
     public ServerListPlusHook(final Object serverListPlus) {
-        if (!(serverListPlus instanceof ServerListPlusPlugin)) {
+        if (!(serverListPlus instanceof ServerListPlusPlugin serverListPlusPlugin)) {
             throw new IllegalArgumentException("Couldn't parse ServerListPlus instance!");
         }
-        this.serverListPlusCore = ((ServerListPlusPlugin) serverListPlus).getCore();
+        this.serverListPlusCore = serverListPlusPlugin.getCore();
     }
 
     public void setEnabled(final boolean enable) {

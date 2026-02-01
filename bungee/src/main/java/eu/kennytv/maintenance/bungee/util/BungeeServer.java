@@ -23,15 +23,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public final class BungeeServer implements Server {
-    private final ServerInfo server;
-
-    public BungeeServer(final ServerInfo server) {
-        this.server = server;
-    }
+public record BungeeServer(ServerInfo server) implements Server {
 
     @Override
-    public String getName() {
+    public String name() {
         return server.getName();
     }
 
@@ -51,9 +46,5 @@ public final class BungeeServer implements Server {
     @Override
     public boolean isRegisteredServer() {
         return true;
-    }
-
-    public ServerInfo getServer() {
-        return server;
     }
 }

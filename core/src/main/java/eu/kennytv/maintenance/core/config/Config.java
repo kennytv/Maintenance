@@ -40,18 +40,20 @@ import org.yaml.snakeyaml.Yaml;
 public final class Config extends ConfigSection {
 
     private static final String AWESOME_HEADER =
-            "###################################################################################################################\n" +
-                    "#   __  __       _       _                                    _             _                          _          #\n" +
-                    "#  |  \\/  | __ _(_)_ __ | |_ ___ _ __   __ _ _ __   ___ ___  | |__  _   _  | | _____ _ __  _ __  _   _| |___   __ #\n" +
-                    "#  | |\\/| |/ _` | | '_ \\| __/ _ \\ '_ \\ / _` | '_ \\ / __/ _ \\ | '_ \\| | | | | |/ / _ \\ '_ \\| '_ \\| | | | __\\ \\ / / #\n" +
-                    "#  | |  | | (_| | | | | | ||  __/ | | | (_| | | | | (_|  __/ | |_) | |_| | |   <  __/ | | | | | | |_| | |_ \\ V /  #\n" +
-                    "#  |_|  |_|\\__,_|_|_| |_|\\__\\___|_| |_|\\__,_|_| |_|\\___\\___| |_.__/ \\__, | |_|\\_\\___|_| |_|_| |_|\\__, |\\__| \\_/   #\n" +
-                    "#                                                                  |___/                        |___/             #\n" +
-                    "###################################################################################################################\n" +
-                    "# You can report bugs here: https://github.com/kennytv/Maintenance/issues\n" +
-                    "# If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq\n" +
-                    "# The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.\n" +
-                    "# For a full list of formats and fancy examples of MiniMessage, see https://docs.adventure.kyori.net/minimessage/format.html\n";
+            """
+                    ###################################################################################################################
+                    #   __  __       _       _                                    _             _                          _          #
+                    #  |  \\/  | __ _(_)_ __ | |_ ___ _ __   __ _ _ __   ___ ___  | |__  _   _  | | _____ _ __  _ __  _   _| |___   __ #
+                    #  | |\\/| |/ _` | | '_ \\| __/ _ \\ '_ \\ / _` | '_ \\ / __/ _ \\ | '_ \\| | | | | |/ / _ \\ '_ \\| '_ \\| | | | __\\ \\ / / #
+                    #  | |  | | (_| | | | | | ||  __/ | | | (_| | | | | (_|  __/ | |_) | |_| | |   <  __/ | | | | | | |_| | |_ \\ V /  #
+                    #  |_|  |_|\\__,_|_|_| |_|\\__\\___|_| |_|\\__,_|_| |_|\\___\\___| |_.__/ \\__, | |_|\\_\\___|_| |_|_| |_|\\__, |\\__| \\_/   #
+                    #                                                                  |___/                        |___/             #
+                    ###################################################################################################################
+                    # You can report bugs here: https://github.com/kennytv/Maintenance/issues
+                    # If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq
+                    # The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.
+                    # For a full list of formats and fancy examples of MiniMessage, see https://docs.adventure.kyori.net/minimessage/format.html
+                    """;
     private final Yaml yaml = createYaml();
     private final File file;
     private final Set<String> unsupportedFields;
@@ -65,7 +67,7 @@ public final class Config extends ConfigSection {
     }
 
     public void load() throws IOException {
-        final String data = new String(Files.readAllBytes(this.file.toPath()), StandardCharsets.UTF_8);
+        final String data = Files.readString(this.file.toPath());
         final Map<String, Object> map = yaml.load(data);
         this.values = map != null ? map : new LinkedHashMap<>();
         this.comments = ConfigSerializer.deserializeComments(data);
@@ -101,12 +103,11 @@ public final class Config extends ConfigSection {
     }
 
     public void saveTo(final File file) throws IOException {
-        final byte[] bytes = toString().getBytes(StandardCharsets.UTF_8);
         if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
         }
         file.createNewFile();
-        Files.write(file.toPath(), bytes);
+        Files.writeString(file.toPath(), toString());
     }
 
     public void replaceComments(final Config fromConfig) {

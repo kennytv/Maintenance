@@ -19,20 +19,5 @@ package eu.kennytv.maintenance.core.proxy.util;
 
 import java.util.UUID;
 
-public final class ProfileLookup {
-    private final UUID uuid;
-    private final String name;
-
-    public ProfileLookup(final UUID uuid, final String name) {
-        this.uuid = uuid;
-        this.name = name;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
+public record ProfileLookup(UUID uuid, String name) {
 }

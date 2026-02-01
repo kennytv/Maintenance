@@ -21,9 +21,6 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.config.ConfigSection;
 import eu.kennytv.maintenance.core.proxy.mysql.MySQL;
-import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Nullable;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +30,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 public final class SettingsProxy extends Settings {
     private final MaintenanceProxyPlugin proxyPlugin;
@@ -92,13 +92,12 @@ public final class SettingsProxy extends Settings {
                 setupMySQL();
             } catch (final Exception e) {
                 mySQL = null;
-                plugin.getLogger().warning("Error while trying do open database connection!");
-                e.printStackTrace();
+                plugin.getLogger().log(Level.WARNING, "Error while trying do open database connection!", e);
             }
         }
 
         final Object fallback = config.getObject("fallback");
-        fallbackServers = fallback instanceof String ? Collections.singletonList((String) fallback) : config.getStringList("fallback", Collections.emptyList());
+        fallbackServers = fallback instanceof String s ? Collections.singletonList(s) : config.getStringList("fallback", Collections.emptyList());
 
         waitingServer = config.getString("waiting-server", "");
         if (waitingServer.isEmpty() || waitingServer.equalsIgnoreCase("none")) {
@@ -234,8 +233,7 @@ public final class SettingsProxy extends Settings {
                     maintenanceServers.add(rs.getString("server"));
                 }
             } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the list of single servers with maintenance!");
-                e.printStackTrace();
+                plugin.getLogger().log(Level.WARNING, "An error occured while trying to get the list of single servers with maintenance!", e);
             }
         });
         return maintenanceServers;
@@ -249,8 +247,7 @@ public final class SettingsProxy extends Settings {
                     databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
                 }
             } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the maintenance value from the database!");
-                e.printStackTrace();
+                plugin.getLogger().log(Level.WARNING, "An error occured while trying to get the maintenance value from the database!", e);
             }
         }, "maintenance");
         return databaseValue[0];
@@ -269,7 +266,7 @@ public final class SettingsProxy extends Settings {
     public Server getFallbackServer() {
         for (final String fallbackServer : fallbackServers) {
             final Server server = proxyPlugin.getServer(fallbackServer);
-            if (server != null && !isMaintenance(server.getName())) {
+            if (server != null && !isMaintenance(server.name())) {
                 return server;
             }
         }
@@ -287,7 +284,7 @@ public final class SettingsProxy extends Settings {
 
     public List<String> getCommandsOnMaintenanceEnable(final Server server) {
         final List<String> enableCommands = commandsOnMaintenanceEnable.getOrDefault("all", new ArrayList<>());
-        final List<String> serverEnableCommands = commandsOnMaintenanceEnable.get(server.getName().toLowerCase(Locale.ROOT));
+        final List<String> serverEnableCommands = commandsOnMaintenanceEnable.get(server.name().toLowerCase(Locale.ROOT));
         if (serverEnableCommands != null) {
             enableCommands.addAll(serverEnableCommands);
         }
@@ -296,7 +293,7 @@ public final class SettingsProxy extends Settings {
 
     public List<String> getCommandsOnMaintenanceDisable(final Server server) {
         final List<String> disableCommands = commandsOnMaintenanceDisable.getOrDefault("all", new ArrayList<>());
-        final List<String> serverDisableCommands = commandsOnMaintenanceDisable.get(server.getName().toLowerCase(Locale.ROOT));
+        final List<String> serverDisableCommands = commandsOnMaintenanceDisable.get(server.name().toLowerCase(Locale.ROOT));
         if (serverDisableCommands != null) {
             disableCommands.addAll(serverDisableCommands);
         }

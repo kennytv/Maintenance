@@ -220,7 +220,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
             legacyParsedTimerPlayerCountHoverLines = null;
         }
 
-        languageName = config.getString("language").toLowerCase();
+        languageName = config.getString("language").toLowerCase(Locale.ROOT);
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
@@ -321,11 +321,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         plugin.getLogger().info("Updating language file to the latest version...");
         if (version < 1) {
             for (final Map.Entry<String, Object> entry : language.getValues().entrySet()) {
-                if (!(entry.getValue() instanceof String)) {
+                if (!(entry.getValue() instanceof String value)) {
                     continue;
                 }
 
-                String value = (String) entry.getValue();
                 value = value.replace("&8[&eMaintenance&8] ", "<prefix>");
                 value = legacyToMinimessage(value);
                 value = value.replace("%NEWLINE%", NEW_LINE_REPLACEMENT);
@@ -411,7 +410,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     private Component getPingMessage(final List<String> list) {
-        final String component = list.size() == 1 ? list.get(0) : list.get(RANDOM.nextInt(list.size()));
+        final String component = list.size() == 1 ? list.getFirst() : list.get(RANDOM.nextInt(list.size()));
         return parse(plugin.replacePingVariables(component));
     }
 
@@ -598,7 +597,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     /*
-     * Note on why this even exists: Yaml will force save all strings containing line breaks '\n' in this rather chunky format:
+     * Note on why this even exists: YAML will force save all strings containing line breaks '\n' in this rather chunky format:
      *   key: |-
      *     First line text
      *      Second line text.

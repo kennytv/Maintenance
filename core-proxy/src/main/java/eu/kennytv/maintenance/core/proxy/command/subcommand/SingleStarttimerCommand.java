@@ -25,6 +25,7 @@ import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
@@ -66,7 +67,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             final Server server = plugin.getCommandManager().checkSingleTimerServerArg(sender, args[1]);
             if (server == null) return;
             if (plugin.isMaintenance(server)) {
-                sender.send(getMessage("singleServerAlreadyEnabled", "%SERVER%", server.getName()));
+                sender.send(getMessage("singleServerAlreadyEnabled", "%SERVER%", server.name()));
                 return;
             }
 
@@ -74,7 +75,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             sender.send(getMessage(
                     "singleStarttimerStarted",
                     "%TIME%", runnable.getTime(),
-                    "%SERVER%", server.getName()
+                    "%SERVER%", server.name()
             ));
         } else {
             sender.send(getHelpMessage());
@@ -83,6 +84,6 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase()) : Collections.emptyList();
+        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT)) : Collections.emptyList();
     }
 }

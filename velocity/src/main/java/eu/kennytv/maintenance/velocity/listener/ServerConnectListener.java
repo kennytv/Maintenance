@@ -71,7 +71,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
         if (!event.getResult().isAllowed()) return;
 
         final Optional<RegisteredServer> optionalTarget = event.getResult().getServer();
-        if (!optionalTarget.isPresent()) return;
+        if (optionalTarget.isEmpty()) return;
 
         final Player player = event.getPlayer();
         final boolean hasCurrentServer = player.getCurrentServer().isPresent();
@@ -84,7 +84,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
                 player.disconnect(settings.getKickMessage());
             }
         } else if (connectResult.getTarget() != null) {
-            final RegisteredServer newTarget = ((VelocityServer) connectResult.getTarget()).getServer();
+            final RegisteredServer newTarget = ((VelocityServer) connectResult.getTarget()).server();
             event.setResult(ServerPreConnectEvent.ServerResult.allowed(newTarget));
         }
     }
@@ -96,7 +96,7 @@ public final class ServerConnectListener extends ProxyJoinListenerBase {
 
     @Override
     protected void broadcastJoinNotification(final String name, final Server server) {
-        sendJoinMessage(((VelocityServer) server).getServer().getPlayersConnected(), name);
+        sendJoinMessage(((VelocityServer) server).server().getPlayersConnected(), name);
     }
 
     private void sendJoinMessage(final Iterable<Player> players, final String name) {

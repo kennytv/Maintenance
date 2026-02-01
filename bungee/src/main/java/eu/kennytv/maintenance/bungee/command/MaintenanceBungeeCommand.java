@@ -22,6 +22,7 @@ import eu.kennytv.maintenance.core.proxy.SettingsProxy;
 import eu.kennytv.maintenance.core.proxy.command.MaintenanceProxyCommand;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -40,7 +41,7 @@ public final class MaintenanceBungeeCommand extends MaintenanceProxyCommand {
         final List<String> list = new ArrayList<>();
         for (final Map.Entry<String, ServerInfo> entry : plugin.getProxy().getServers().entrySet()) {
             final String serverName = entry.getValue().getName();
-            if (entry.getKey().toLowerCase().startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(serverName)) {
+            if (entry.getKey().toLowerCase(Locale.ROOT).startsWith(s) && !plugin.getSettingsProxy().getMaintenanceServers().contains(serverName)) {
                 list.add(serverName);
             }
         }
