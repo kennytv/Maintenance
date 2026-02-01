@@ -96,7 +96,7 @@ helpWhitelistRemove: "<gold>/maintenance remove <name/uuid> <gray>(将玩家从�
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(中止指定服务器开启的计时器)"
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(在指定时间后关闭指定服务器的维护模式，例如\"1h5m\")"
-helpSingleStarttimer: "<gold>/maintenance endtimer [server] <enable in> <gray>(在指定时间后开启指定服务器的维护模式，例如\"1h5m\")"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(在指定时间后开启指定服务器的维护模式，例如\"1h5m\")"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer <enable in> <maintenance duration> <gray>(在指定时间后开启指定服务器的维护模式直到指定时长结束，例如\"1h5m\")"
 helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(开启/关闭指定服务器的维护模式)"
 helpStatus: "<gold>/maintenance status <gray>(列出当前正在维护的所有服务器)"
