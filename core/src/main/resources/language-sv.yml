@@ -18,7 +18,7 @@ scheduletimerStarted: "<prefix><green>Startade timer: <gray>Underhållsläge kom
 timerAlreadyRunning: "<prefix><red>Det finns redan en timer schemalagd!"
 timerNotRunning: "<prefix><red>Ingen timer är aktiverad för tillfället."
 timerCancelled: "<prefix><red>Den nuvarande timern har blivit inaktiverad."
-timerTooLong: "<prefix><red>Talet måste vara mindre än 40320 (28 days)!"
+timerTooLong: "<prefix><red>Talet måste vara mindre än 40320 (28 dagar)!"
 timerMotdDisabled: "<prefix><red>Du måste sätta värdet för 'enable-timerspecific-messages' i konfigurationsfilen filen till 'true', om du vill använda/redigera tidsspecifika motds."
 motdTimer: "%HOURS%:%MINUTES%:%SECONDS%"
 motdTimerNotRunning: "-"
