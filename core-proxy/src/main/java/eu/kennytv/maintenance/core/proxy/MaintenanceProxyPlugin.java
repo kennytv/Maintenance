@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 3.0
  */
 public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implements MaintenanceProxy {
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_.]{1,16}$");
     private final Map<String, Task> serverTasks = new HashMap<>();
     protected SettingsProxy settingsProxy;
 
@@ -187,15 +189,17 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     @Blocking
     @Nullable
     protected ProfileLookup doUUIDLookup(final String name) throws IOException {
-        ProfileLookup profileLookup;
-        try {
-            profileLookup = doUUIDLookupMojangAPI(name);
-        } catch (RateLimitedException e) {
-            // Use fallback API if rate limit is reached
-            profileLookup = doUUIDLookupAshconAPI(name);
+        ProfileLookup profileLookup = null;
+        if (USERNAME_PATTERN.matcher(name).matches()) {
+            try {
+                profileLookup = doUUIDLookupMojangAPI(name);
+            } catch (RateLimitedException e) {
+                // Use fallback API if rate limit is reached
+                profileLookup = doUUIDLookupAshconAPI(name);
+            }
         }
 
-        if (settingsProxy.isFallbackToOfflineUUID() && profileLookup == null) {
+        if (profileLookup == null && settingsProxy.isFallbackToOfflineUUID()) {
             // Use offline uuid
             return new ProfileLookup(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)), name);
         }
