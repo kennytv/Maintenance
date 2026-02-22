@@ -25,7 +25,7 @@ bungee = "1.21-R0.1-SNAPSHOT"
 sponge = "8.0.0"
 velocity = "3.4.0"
 
-junitVer = "5.14.2"
+junitVer = "6.0.2"
 
 
 [libraries]
