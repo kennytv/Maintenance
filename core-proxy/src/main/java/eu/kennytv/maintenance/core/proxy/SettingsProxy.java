@@ -94,6 +94,7 @@ public final class SettingsProxy extends Settings {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to open Redis connection!", e);
             e.printStackTrace();
             redisHandler.close();
+            redisHandler = null;
             return;
         }
 
