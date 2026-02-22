@@ -77,8 +77,8 @@ This update removes *a lot* of legacy code, making the code-base a great bit mor
 ### Changed
 * Added support for hex colors in messages and replaced the component parsing with adventure-minimessage
   * This means that section symbols (`§`) are no longer the intended/supported format
-  * You can use the following page to edit and preview formatted text: https://webui.adventure.kyori.net/
-  * You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more) here: https://docs.adventure.kyori.net/minimessage/format
+  * You can use the following page to edit and preview formatted text: https://webui.advntr.dev/
+  * You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more) here: https://docs.papermc.io/adventure/minimessage/format/
   * Your config and language file will be updated to the new format automatically, you won't have to change anything manually!
   * Note that the player count and player count hover messages do not support rgb colors
 * Updated Sponge module to SpongeAPI v8 (Minecraft 1.15+)

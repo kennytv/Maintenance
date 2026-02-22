@@ -49,8 +49,8 @@ public final class Config extends ConfigSection {
                     ###################################################################################################################
                     # You can report bugs here: https://github.com/kennytv/Maintenance/issues
                     # If you need any other help/support, you can also join my Discord server: https://discord.gg/vGCUzHq
-                    # The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.adventure.kyori.net/ to edit and preview the formatted text.
-                    # For a full list of formats and fancy examples of MiniMessage, see https://docs.adventure.kyori.net/minimessage/format.html
+                    # The config and language files use MiniMessage, NOT legacy text for input. Use https://webui.advntr.dev/ to edit and preview the formatted text.
+                    # For a full list of formats and fancy examples of MiniMessage, see https://docs.papermc.io/adventure/minimessage/format/
                     """;
     private final Yaml yaml = createYaml();
     private final File file;
