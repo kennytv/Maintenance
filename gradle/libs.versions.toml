@@ -12,7 +12,7 @@ bstats = "3.1.0"
 # Provided
 gson = "2.8.8"
 guava = "29.0-jre"
-snakeyaml = "1.23"
+snakeyaml = "2.5"
 jetbrainsAnnotations = "26.0.2"
 
 protocollib = "5.3.0"
