@@ -10,7 +10,7 @@ jedis = "7.2.1"
 bstats = "3.1.0"
 
 # Provided
-gson = "2.8.8"
+gson = "2.13.2"
 guava = "29.0-jre"
 snakeyaml = "1.23"
 jetbrainsAnnotations = "26.0.2"
