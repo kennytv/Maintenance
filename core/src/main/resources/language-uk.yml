@@ -14,7 +14,7 @@ endtimerStarted: "<green>Таймер успішно запущено! Серв�
 starttimerBroadcast: "<green>Сервер буде закрито на технічні роботи через <white>%TIME%<green>!"
 starttimerStarted: "<green>Таймер успішно запущено! Сервер буде закрито на технічні роботи через <white>%TIME%<green>!"
 scheduletimerBroadcast: "<prefix><gray>Технічні роботи розпочнуться в<gold>%TIME% <gray>і триватимуть <gold>%DURATION%<gray>."
-scheduletimerStarted: "<prefix><green>Started timer: <gray>Maintenance mode will be enabled in <gold>%TIME% <gray>and will last for <gold>%DURATION%<gray>."
+scheduletimerStarted: "<prefix><green>стартований таймер: <gray>режим підтримки буде ввімкнуто в <gold>%TIME% <gray>і буде тривати <gold>%DURATION%<gray>."
 timerAlreadyRunning: "<red>Таймер вже запущено!"
 timerNotRunning: "<red>Таймер не було запущено."
 timerCancelled: "<gray>Таймер було зупинено."
@@ -44,7 +44,7 @@ whitelistEmpty: "<red>Білий список порожній! Використ
 playerNotFound: "<red>Жоден гравець з таким іменем раніше не грав на цьому сервері."
 playerNotFoundUuid: "<red>Гравець з таким UUID не знайдений!"
 playerNotOnline: "<red>Гравець повинен бути онлайн."
-offlinePlayerFetchError: "<prefix><red>There was an error while fetching offline player. Please try again later."
+offlinePlayerFetchError: "<prefix><red>Помилка при отриманні автономного гравця. Будь ласка, спробуйте ще раз."
 invalidUuid: "<red>Неправильний uuid формат!"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 sentToWaitingServer: "<red>Ви були переміщені у лобі!"
