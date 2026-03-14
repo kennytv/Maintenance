@@ -13,7 +13,7 @@ bstats = "3.1.0"
 gson = "2.8.8"
 guava = "29.0-jre"
 snakeyaml = "1.23"
-jetbrainsAnnotations = "26.0.2"
+jetbrainsAnnotations = "26.1.0"
 
 protocollib = "5.3.0"
 authlib = "1.5.25"
