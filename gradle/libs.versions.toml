@@ -6,7 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.26.1"
 adventurePlatform = "4.4.1"
 
-jedis = "7.2.1"
+jedis = "7.3.0"
 bstats = "3.1.0"
 
 # Provided
