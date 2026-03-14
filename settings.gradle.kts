@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 pluginManagement {
     plugins {
         id("net.kyori.blossom") version "2.2.0"
-        id("org.jetbrains.gradle.plugin.idea-ext") version "1.4"
+        id("org.jetbrains.gradle.plugin.idea-ext") version "1.4.1"
         id("com.gradleup.shadow") version "9.3.1"
         id("dev.lukebemish.central-portal-publishing") version "0.1.7"
     }
