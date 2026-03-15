@@ -21,11 +21,13 @@ import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import net.kyori.adventure.text.Component;
 
 public final class SingleEndtimerCommand extends ProxyCommandInfo {
 
@@ -54,7 +56,10 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
             }
 
             plugin.startMaintenanceRunnable(duration, false);
-            sender.send(getMessage("endtimerStarted", "%TIME%", plugin.getRunnable().getTime()));
+
+            final Component message = getMessage("endtimerStarted", "%TIME%", plugin.getRunnable().getTime());
+            sender.send(message);
+            plugin.sendWebhookMessage(message, DiscordWebhook.EventType.ENDTIMER_STARTED);
         } else if (args.length == 3) {
             if (checkPermission(sender, "singleserver.timer")) return;
 
@@ -72,11 +77,13 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
             }
 
             final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, false);
-            sender.send(getMessage(
+            final Component message = getMessage(
                     "singleEndtimerStarted",
                     "%TIME%", runnable.getTime(),
                     "%SERVER%", server.getName()
-            ));
+            );
+            sender.send(message);
+            plugin.sendWebhookMessage(message, DiscordWebhook.EventType.ENDTIMER_STARTED);
         } else {
             sender.send(getHelpMessage());
         }

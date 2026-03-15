@@ -32,6 +32,7 @@ import eu.kennytv.maintenance.core.dump.PluginDump;
 import eu.kennytv.maintenance.core.hook.ServerListPlusHook;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceScheduleRunnable;
+import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
 import eu.kennytv.maintenance.core.util.Task;
@@ -62,6 +63,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MaintenancePlugin implements Maintenance {
@@ -109,16 +111,14 @@ public abstract class MaintenancePlugin implements Maintenance {
             serverListPlusHook.setEnabled(!maintenance);
         }
 
-        if (maintenance) {
-            broadcast(settings.getMessage("maintenanceActivated"));
-            if (settings.isKickOnlinePlayers()) {
-                kickPlayers();
-            }
-        } else {
-            broadcast(settings.getMessage("maintenanceDeactivated"));
+        final Component message = maintenance ? settings.getMessage("maintenanceActivated") : settings.getMessage("maintenanceDeactivated");
+        broadcast(message);
+        if (maintenance && settings.isKickOnlinePlayers()) {
+            kickPlayers();
         }
 
         eventManager.callEvent(new MaintenanceChangedEvent(maintenance));
+        sendWebhookMessage(message, maintenance ? DiscordWebhook.EventType.MAINTENANCE_ENABLED : DiscordWebhook.EventType.MAINTENANCE_DISABLED);
 
         for (final String command : (maintenance ? settings.getCommandsOnMaintenanceEnable() : settings.getCommandsOnMaintenanceDisable())) {
             try {
@@ -127,6 +127,23 @@ public abstract class MaintenancePlugin implements Maintenance {
                 getLogger().log(Level.SEVERE, "Error while executing extra maintenance " + (maintenance ? "enable" : "disable") + " command: " + command, e);
             }
         }
+    }
+
+    public void sendWebhookMessage(final Component message, final DiscordWebhook.EventType eventType) {
+        if (!settings.isWebhookEnabled() || !settings.isWebhookEventEnabled(eventType.configKey())) {
+            return;
+        }
+
+        async(() -> {
+            try {
+                // Small hack instead of adding a bunch of extra messages: Re-use existing language file entries, but strip the prefix
+                final String plainMessage = PlainTextComponentSerializer.plainText().serialize(message)
+                        .replace(settings.getPlainTextPrefix(), "").trim();
+                DiscordWebhook.sendMessage(plainMessage, eventType, settings);
+            } catch (final Exception e) {
+                getLogger().log(Level.WARNING, "Could not send Discord webhook message", e);
+            }
+        });
     }
 
     public String replacePingVariables(String component) {

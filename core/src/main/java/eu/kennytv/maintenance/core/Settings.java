@@ -39,6 +39,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
@@ -60,6 +61,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private List<String> legacyParsedPlayerCountHoverLines;
     private List<String> legacyParsedTimerPlayerCountHoverLines;
     private String prefixString;
+    private String plainTextPrefix;
     private String languageName;
     private boolean enablePingMessages;
     private boolean customPlayerCountMessage;
@@ -71,6 +73,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     private boolean kickOnlinePlayers;
     private boolean debug;
     private long savedEndtimer;
+
+    // Webhook settings
+    private boolean webhookEnabled;
+    private Set<String> webhookEnabledEvents;
+    private String webhookUrl;
+    private String webhookUsername;
+    private String webhookAvatarUrl;
 
     protected Config config;
     protected Config language;
@@ -119,6 +128,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         }
 
         prefixString = language.getString("prefix");
+        plainTextPrefix = PlainTextComponentSerializer.plainText().serialize(parse(prefixString));
 
         plugin.getEventManager().callEvent(new MaintenanceReloadedEvent());
     }
@@ -224,6 +234,13 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         kickOnlinePlayers = config.getBoolean("kick-online-players", true);
         updateChecks = config.getBoolean("update-checks", true);
         debug = config.getBoolean("debug");
+
+        final ConfigSection webhookSection = config.getSection("webhook");
+        webhookEnabled = webhookSection.getBoolean("enabled");
+        webhookEnabledEvents = new HashSet<>(webhookSection.getStringList("enabled-events"));
+        webhookUrl = webhookSection.getString("url", "");
+        webhookUsername = webhookSection.getString("username", "Maintenance");
+        webhookAvatarUrl = webhookSection.getString("avatar-url", "");
 
         final ConfigSection section = config.getSection("continue-endtimer-after-restart");
         saveEndtimerOnStop = section.getBoolean("enabled");
@@ -561,6 +578,30 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     public Set<Integer> getBroadcastIntervals() {
         return broadcastIntervals;
+    }
+
+    public boolean isWebhookEnabled() {
+        return webhookEnabled;
+    }
+
+    public boolean isWebhookEventEnabled(final String event) {
+        return webhookEnabledEvents.contains(event);
+    }
+
+    public String getWebhookUrl() {
+        return webhookUrl;
+    }
+
+    public String getWebhookUsername() {
+        return webhookUsername;
+    }
+
+    public String getWebhookAvatarUrl() {
+        return webhookAvatarUrl;
+    }
+
+    public String getPlainTextPrefix() {
+        return plainTextPrefix;
     }
 
     public String getLegacyParsedPlayerCountMessage() {

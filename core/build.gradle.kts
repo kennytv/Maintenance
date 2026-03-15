@@ -18,6 +18,7 @@ dependencies {
     api(projects.maintenanceApi)
     compileOnlyApi(libs.adventureApi)
     compileOnlyApi(libs.adventureTextMinimessage)
+    compileOnlyApi(libs.adventureTextSerializerPlain)
     compileOnlyApi(libs.adventureTextSerializerLegacy)
     compileOnly(libs.luckperms)
     compileOnly(libs.serverlistplus)

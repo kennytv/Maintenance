@@ -19,9 +19,10 @@ package eu.kennytv.maintenance.core.command.subcommand;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-
 import java.time.Duration;
+import net.kyori.adventure.text.Component;
 
 public final class StarttimerCommand extends CommandInfo {
 
@@ -44,6 +45,9 @@ public final class StarttimerCommand extends CommandInfo {
         }
 
         plugin.startMaintenanceRunnable(duration, true);
-        sender.send(getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime()));
+
+        final Component message = getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime());
+        sender.send(message);
+        plugin.sendWebhookMessage(message, DiscordWebhook.EventType.STARTTIMER_STARTED);
     }
 }

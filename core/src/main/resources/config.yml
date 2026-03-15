@@ -104,6 +104,18 @@ continue-endtimer-after-restart:
 # If using the timer command: In what intervalls before enabling/disabling maintenance there will be a broadcast.
 timer-broadcast-for-seconds: [1200, 900, 600, 300, 120, 60, 30, 20, 10, 5, 4, 3, 2, 1]
 
+# Allows sending a Discord webhook on certain events.
+webhook:
+  enabled: false
+  # Possible values: maintenance_status, starttimer_started, endtimer_started, blocked_join
+  enabled-events: ["maintenance_status", "starttimer_started", "endtimer_started"]
+  # Copy and paste the webhook url from Server Settings --> Apps Integrations --> Webhooks
+  url: ""
+  # The username displayed for the webhook bot message.
+  username: "Maintenance"
+  # The avatar URL used for the webhook bot message. Leave empty to use the default Discord webhook avatar.
+  avatar-url: ""
+
 # If you have 2 or more proxy instances, the Redis connection will make sure all proxies
 # have the same maintenance status (global as well as per server) and whitelisted players,
 # so you won't have to update these on every proxy by hand.

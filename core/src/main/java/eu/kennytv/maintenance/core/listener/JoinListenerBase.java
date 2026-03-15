@@ -19,6 +19,7 @@ package eu.kennytv.maintenance.core.listener;
 
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
+import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,6 +55,9 @@ public abstract class JoinListenerBase {
             return false;
         }
 
+        if (settings.isWebhookEnabled()) {
+            plugin.sendWebhookMessage(settings.getMessage("joinNotification", "%PLAYER%", sender.name()), DiscordWebhook.EventType.BLOCKED_JOIN);
+        }
         return true;
     }
 

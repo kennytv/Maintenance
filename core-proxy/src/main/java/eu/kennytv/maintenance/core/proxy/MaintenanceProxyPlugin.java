@@ -28,6 +28,7 @@ import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceRunnable;
 import eu.kennytv.maintenance.core.proxy.runnable.SingleMaintenanceScheduleRunnable;
 import eu.kennytv.maintenance.core.proxy.util.ProfileLookup;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
+import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.RateLimitedException;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
@@ -49,6 +50,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,6 +117,13 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         }
 
         eventManager.callEvent(new ServerMaintenanceChangedEvent(server, maintenance));
+        if (settingsProxy.isWebhookEnabled()) {
+            final Component message = settingsProxy.getMessage(
+                    maintenance ? "singleMaintenanceActivated" : "singleMaintenanceDeactivated",
+                    "%SERVER%", server.getName()
+            );
+            sendWebhookMessage(message, maintenance ? DiscordWebhook.EventType.MAINTENANCE_ENABLED : DiscordWebhook.EventType.MAINTENANCE_DISABLED);
+        }
 
         for (final String command : (maintenance ? settingsProxy.getCommandsOnMaintenanceEnable(server) : settingsProxy.getCommandsOnMaintenanceDisable(server))) {
             try {

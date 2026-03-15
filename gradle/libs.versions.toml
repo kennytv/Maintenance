@@ -33,6 +33,7 @@ junitVer = "5.14.2"
 adventureApi = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 adventureTextMinimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 adventureTextSerializerGson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure" }
+adventureTextSerializerPlain = { group = "net.kyori", name = "adventure-text-serializer-plain", version.ref = "adventure" }
 adventureTextSerializerLegacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
 adventurePlatformBungee = { group = "net.kyori", name = "adventure-platform-bungeecord", version.ref = "adventurePlatform" }
 
@@ -63,5 +64,5 @@ jupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ve
 
 [bundles]
 
-adventureBungee = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerLegacy", "adventurePlatformBungee"]
+adventureBungee = ["adventureApi", "adventureTextMinimessage", "adventureTextSerializerGson", "adventureTextSerializerPlain", "adventureTextSerializerLegacy", "adventurePlatformBungee"]
 junit = ["jupiterApi", "jupiterEngine"]
