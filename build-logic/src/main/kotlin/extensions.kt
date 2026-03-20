@@ -33,7 +33,3 @@ fun Project.latestCommitHash(): String {
         commandLine = listOf("git", "rev-parse", "--short", "HEAD")
     }.standardOutput.asBytes.get().toString(Charsets.UTF_8).trim()
 }
-
-fun JavaPluginExtension.javaTarget(version: Int) {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(version))
-}
