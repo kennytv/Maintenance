@@ -98,8 +98,8 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     @Override
-    public void setMaintenance(final boolean maintenance) {
-        settings.setMaintenance(maintenance);
+    public void setMaintenance(final boolean maintenance, final String mode) {
+        settings.setMaintenance(maintenance, mode);
         serverActions(maintenance);
     }
 
@@ -146,10 +146,17 @@ public abstract class MaintenancePlugin implements Maintenance {
         });
     }
 
-    public String replacePingVariables(String component) {
+    public String replacePingVariables(final String component) {
+        return replacePingVariables(component, settings.activeMode());
+    }
+
+    public String replacePingVariables(String component, @Nullable final String mode) {
         if (component.contains("%TIMER%")) {
             component = component.replace("%TIMER%", getTimerMessage());
         }
+        final String reason = settings.activeReason() == null ? "" : settings.activeReason();
+        component = component.replace("%REASON%", reason);
+        component = component.replace("%MODE%", mode == null ? "default" : mode);
         component = component.replace("%ONLINE%", String.valueOf(getOnlinePlayers()));
         component = component.replace("%MAX%", String.valueOf(getMaxPlayers()));
         return component;

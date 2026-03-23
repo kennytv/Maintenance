@@ -23,13 +23,17 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
     protected final Server server;
+    protected final String mode;
 
-    public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable, final Server server) {
+    public SingleMaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds,
+                                     final boolean enable, final Server server, @Nullable final String mode) {
         super(plugin, settings, seconds, enable);
         this.server = server;
+        this.mode = mode;
     }
 
     @Override
@@ -39,7 +43,7 @@ public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
 
     @Override
     protected void finish() {
-        ((MaintenanceProxy) plugin).setMaintenanceToServer(server, enable);
+        ((MaintenanceProxy) plugin).setMaintenanceToServer(server, enable, mode);
     }
 
     @Override

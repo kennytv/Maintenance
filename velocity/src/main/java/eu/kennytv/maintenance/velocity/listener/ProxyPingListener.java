@@ -42,6 +42,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         Map<String, List<String>> forcedHosts = plugin.getServer().getConfiguration().getForcedHosts();
 
         boolean maintenanceEnabledOnHost = false;
+        String pingMode = settings.activeMode();
 
         if (event.getConnection().getVirtualHost().isPresent()) {
             String host = event.getConnection().getVirtualHost().get().getHostName();
@@ -53,6 +54,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
                 for (String forcedHostTarget : forcedHostTargets) {
                     if (maintenanceServers.contains(forcedHostTarget)) {
                         maintenanceEnabledOnHost = true;
+                        pingMode = settings.activeMode(forcedHostTarget);
                         break;
                     }
                 }
@@ -66,11 +68,11 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         final ServerPing ping = event.getPing();
         final ServerPing.Builder builder = ping.asBuilder();
         if (settings.hasCustomPlayerCountMessage()) {
-            builder.version(new ServerPing.Version(1, settings.getLegacyParsedPlayerCountMessage()));
+            builder.version(new ServerPing.Version(1, settings.getLegacyParsedPlayerCountMessage(pingMode)));
         }
 
         if (settings.hasCustomPlayerCountHoverMessage()) {
-            final String[] lines = settings.getLegacyParsedPlayerCountHoverLines();
+            final String[] lines = settings.getLegacyParsedPlayerCountHoverLines(pingMode);
             final ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[lines.length];
             for (int i = 0; i < lines.length; i++) {
                 samplePlayers[i] = new ServerPing.SamplePlayer(lines[i], ZERO_UUID);
@@ -80,7 +82,7 @@ public final class ProxyPingListener implements EventHandler<ProxyPingEvent> {
         }
 
         if (settings.isEnablePingMessages()) {
-            builder.description(settings.getRandomPingMessage());
+            builder.description(settings.getRandomPingMessage(pingMode));
         }
 
         if (settings.hasCustomIcon() && plugin.getFavicon() != null) {

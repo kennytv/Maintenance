@@ -33,7 +33,11 @@ public interface MaintenanceProxy extends Maintenance {
      * @return true if the mode was changed
      * @see #getServer(String)
      */
-    boolean setMaintenanceToServer(Server server, boolean maintenance);
+    boolean setMaintenanceToServer(Server server, boolean maintenance, @Nullable String mode);
+
+    default boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
+        return setMaintenanceToServer(server, maintenance, null);
+    }
 
     /**
      * @param server server to check

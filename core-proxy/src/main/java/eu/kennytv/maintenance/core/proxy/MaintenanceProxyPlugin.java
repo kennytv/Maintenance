@@ -81,17 +81,37 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
     }
 
     @Override
-    public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
+    public boolean setMaintenanceToServer(final Server server, final boolean maintenance, @Nullable final String mode) {
         if (maintenance) {
-            if (!settingsProxy.addMaintenanceServer(server.getName())) {
-                return false;
+            if (settingsProxy.addMaintenanceServer(server.getName(), mode)) {
+                serverActions(server, true);
+                return true;
             }
-        } else if (!settingsProxy.removeMaintenanceServer(server.getName())) {
+            return mode != null && settingsProxy.setMaintenanceServerMode(server.getName(), mode);
+        }
+
+        if (!settingsProxy.removeMaintenanceServer(server.getName())) {
             return false;
         }
 
-        serverActions(server, maintenance);
+        serverActions(server, false);
         return true;
+    }
+
+    @Override
+    public boolean setMaintenanceToServer(final Server server, final boolean maintenance) {
+        return setMaintenanceToServer(server, maintenance, null);
+    }
+
+    public boolean setMaintenanceModeToServer(final Server server, @Nullable final String mode) {
+        if (!settingsProxy.isMaintenance(server.getName())) {
+            return false;
+        }
+        return settingsProxy.setMaintenanceServerMode(server.getName(), mode);
+    }
+
+    public @Nullable String activeMode(final Server server) {
+        return settingsProxy.activeMode(server.getName());
     }
 
     public void serverActions(final Server server, final boolean maintenance) {
@@ -151,15 +171,20 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         }
     }
 
-    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable) {
-        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) duration.getSeconds(), enable, server);
+    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable, @Nullable final String mode) {
+        final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) duration.getSeconds(), enable, server, mode);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }
 
-    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final Duration enableIn, final Duration maintenanceDuration) {
+    public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable) {
+        return startSingleMaintenanceRunnable(server, duration, enable, null);
+    }
+
+    public MaintenanceRunnableBase scheduleSingleMaintenanceRunnable(final Server server, final Duration enableIn,
+                                                                     final Duration maintenanceDuration, @Nullable final String mode) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
-                (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), server);
+                (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), server, mode);
         serverTasks.put(server.getName(), runnable.getTask());
         return runnable;
     }

@@ -19,6 +19,7 @@ package eu.kennytv.maintenance.api;
 
 import java.util.Map;
 import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 public interface Settings {
 
@@ -28,6 +29,28 @@ public interface Settings {
      * @return true if maintenance is currently enabled
      */
     boolean isMaintenance();
+
+    /**
+     * Returns the current active maintenance mode, or null is set to default.
+     * Used when getting MOTD/player count messages.
+     *
+     * @return the current active maintenance mode, or null if set to default
+     */
+    @Nullable String activeMode();
+
+    /**
+     * Returns the reason for the current active mode.
+     *
+     * @return variable reason for the current active mode, or empty if no reason is set
+     */
+    String activeReason();
+
+    /**
+     * Sets the reason for the current active mode, used in %REASON% message placeholders.
+     *
+     * @param reason reason to set for the current active mode, or null to remove the reason
+     */
+    void setActiveReason(@Nullable String reason);
 
     /**
      * @return true if custom ping messages during maintenance should be used
@@ -73,8 +96,8 @@ public interface Settings {
      *
      * @param name name of the player to remove with original lower-/uppercase letters
      * @return true if removing the player was successful
-     * @deprecated if a player changes their name, the list will still contain the old one
      * @see #removeWhitelistedPlayer(UUID)
+     * @deprecated if a player changes their name, the list will still contain the old one
      */
     @Deprecated
     boolean removeWhitelistedPlayer(String name);

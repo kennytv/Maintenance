@@ -60,11 +60,14 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
                     "%TIME%", plugin.getRunnable().getTime(),
                     "%DURATION%", plugin.getFormattedTime((int) duration.getSeconds())
             ));
-        } else if (args.length == 4) {
+        } else if (args.length == 4 || args.length == 5) {
             if (checkPermission(sender, "singleserver.timer")) return;
 
-            final Duration enableIn = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[2], false);
-            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[3], false);
+            final String mode = args.length == 5 ? args[2] : null;
+            final String enableInArg = args.length == 5 ? args[3] : args[2];
+            final String durationArg = args.length == 5 ? args[4] : args[3];
+            final Duration enableIn = plugin.getCommandManager().parseDurationAndCheckTask(sender, enableInArg, false);
+            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, durationArg, false);
             if (enableIn == null || duration == null) {
                 sender.send(getHelpMessage());
                 return;
@@ -77,7 +80,7 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, enableIn, duration);
+            final MaintenanceRunnableBase runnable = plugin.scheduleSingleMaintenanceRunnable(server, enableIn, duration, mode);
             sender.send(getMessage(
                     "singleScheduletimerStarted",
                     "%TIME%", runnable.getTime(),
@@ -91,6 +94,17 @@ public final class SingleScheduleTimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT)) : Collections.emptyList();
+        if (!sender.hasMaintenancePermission("singleserver.timer")) {
+            return Collections.emptyList();
+        }
+        if (args.length == 2) {
+            return plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT));
+        }
+        if (args.length == 3 && plugin.getServer(args[1]) != null) {
+            final List<String> modes = new java.util.ArrayList<>(getSettings().getPingMessages().getKeys());
+            modes.remove("default");
+            return modes;
+        }
+        return Collections.emptyList();
     }
 }

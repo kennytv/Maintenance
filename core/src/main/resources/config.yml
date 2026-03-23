@@ -20,10 +20,19 @@ language: en
 # Enables maintenance mode.
 maintenance-enabled: false
 
+# The currently active maintenance mode key (used for mode-specific messages/icons).
+# Use 'default' or leave empty to use fallback messages.
+active-mode: default
+
+# Value for the %REASON% placeholder in maintenance messages.
+# This can be changed via /maintenance setreason <text>.
+active-reason: ""
+
 # Enables maintenance on certain servers managed by your proxy instance(s).
+# The value is the mode key used for ping/player count messages for that server.
 proxied-maintenance-servers:
-  - PaperServer1
-# - AnotherServer
+  PaperServer1: default
+# AnotherServer: release
 
 # If maintenance is enabled on a proxied server with players on it, they will be sent to the fallback server instead of being kicked off the network.
 # If the fallback server is not reachable/not set, they will just be kicked off the network.
@@ -36,35 +45,48 @@ waiting-server: ""
 
 # The message (MOTD) shown in the multiplayer server list motd when maintenance is enabled.
 # If you put in multiple entries, one of them will be chosen randomly on every ping.
-# If running an endtimer, the time left can be displayed by including '%TIMER%' in a ping message.
+# The type of mode can be defined in the command, or will be the default mode.
 ping-message:
   enabled: true
   messages:
-    - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
+    default:
+      - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
+    reason:
+      - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>%REASON%"
+    release:
+      - "<gold>We're currently preparing the relase, come back soon!"
   # If set to true and an endtimer is currently running, a message from this pool will be chosen
   # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
   enable-timer-specific-messages: true
+  # If running an endtimer, the time left can be displayed by including '%TIMER%' in a ping message.
   timer-messages:
-    - "<red>Currently under maintenance<br><gradient:#fbffc2:#fffff>Come back in:</gradient> <color:#aa55ee>%TIMER%"
+    default:
+      - "<red>Currently under maintenance<br><gradient:#fbffc2:#fffff>Come back in:</gradient> <color:#aa55ee>%TIMER%"
 
 # If enabled, the message below will be shown in the top right corner of the server in the server list, where the player count would normally be displayed.
+# Same as the ping-message, you can define messages for different modes.
 # You can use '%ONLINE%' and '%MAX%' if you want to include the player count in a custom message (e.g. "Maintenance %ONLINE%/%MAX%").
 # DOES NOT SUPPORT RGB!
 player-count-message:
   enabled: true
-  message: "<dark_red>Maintenance"
+  messages:
+    default: "<dark_red>Maintenance"
   # If set to true and an endtimer is currently running, the timer message will be used instead of the normal one.
   enable-timer-specific-message: false
-  timer-message: "<dark_red>Come back in: <yellow>%TIMER%"
+  timer-messages:
+    default: "<dark_red>Come back in: <yellow>%TIMER%"
 
 # Is shown when you move your mouse above the text in the top right corner of the server in the server list, where the player count would normally be displayed.
+# Same as the ping-message, you can define messages for different modes.
 # DOES NOT SUPPORT RGB!
 player-list-hover-message:
   enabled: true
-  message: "<red>Currently under<br><red>maintenance"
+  messages:
+    default: "<red>Currently under<br><red>maintenance"
   # If set to true and an endtimer is currently running, the timer message will be used instead of the normal one.
   enable-timer-specific-message: false
-  timer-message: "<red>Come back in:<br><red><yellow>%TIMER%"
+  timer-messages:
+    default: "<red>Come back in:<br><red><yellow>%TIMER%"
 
 # Any extra commands inside the arrays will be executed when maintenance is enabled/disabled.
 # Example: commands-on-maintenance-enable: ["say hello!", "stop"]
@@ -132,4 +154,4 @@ redis:
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 10
+config-version: 11

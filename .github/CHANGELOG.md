@@ -6,10 +6,19 @@ This file contains update logs for this project. The top may contain a `Unreleas
 
 This update removes *a lot* of legacy code, making the code-base a great bit more simple and a lot more performant.
 
-### Changed
+### Requirements
 - The Paper part now **requires at least Paper 1.20.1** and no longer supports Spigot
 - The universal jar has been removed. Each platform now has its own jar (that is as small as possible)
 - Maintenance now **requires at least Java 21**
+
+### Changed
+- **Added mode-based maintenance messages** for `ping-message`, `player-count-message`, and `player-list-hover-message`
+  - You can have different MOTDs depending on the pre-configured mode, e.g. a generic `default` or one for `upcoming-release`.
+  - Updated proxy/global toggle syntax: `/maintenance on [mode]`
+    - For proxy servers: `/maintenance on global [mode]`, `/maintenance on <server> [mode]`
+  - Other updated commands: `/maintenance motd [timer] [mode]`, `/maintenance setmotd [timer] [mode] ...`, `/maintenance removemotd [timer] [mode] ...`
+- **Added `%REASON%` variable to messages**, using the `active-reason` config option. This allows for dynamic MOTD and other messages via a quick command without modifying the messages themselves
+  - Can be changed via the `/maintenance setreason <reason>` command
 - Velocity/Bungee: **Replaced `mysql` section with `redis`**. This is a more suitable database for such reading and sharing of data and no longer means some server pings can take multiple seconds, if you have multiple proxies linked
 
 ### Fixed

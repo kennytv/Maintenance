@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import static eu.kennytv.maintenance.core.Settings.NEW_LINE_REPLACEMENT;
 
@@ -36,28 +37,41 @@ public final class SetMotdCommand extends CommandInfo {
     }
 
     @Override
-    public void execute(final SenderInfo sender, String[] args) {
+    public void execute(final SenderInfo sender, final String[] args) {
+        int indexOffset = 1;
         boolean timerPingMessages = false;
-        if (args.length > 1 && args[1].equalsIgnoreCase("timer")) {
+        if (args.length > indexOffset && args[indexOffset].equalsIgnoreCase("timer")) {
             if (!getSettings().hasTimerSpecificPingMessages()) {
                 sender.send(getMessage("timerMotdDisabled"));
                 return;
             }
 
-            // remove the "timer" off the args to keep the rest the code cleaner
-            args = plugin.removeArrayIndex(args, 1);
+            indexOffset++;
             timerPingMessages = true;
         }
-        if (args.length < 4 || !plugin.isNumeric(args[1])) {
+
+        if (args.length <= indexOffset + 2) {
+            sender.send(getHelpMessage());
+            return;
+        }
+
+        String mode = "default";
+        if (!plugin.isNumeric(args[indexOffset])) {
+            mode = args[indexOffset].toLowerCase(Locale.ROOT);
+            indexOffset++;
+        }
+
+        if (args.length <= indexOffset + 2 || !plugin.isNumeric(args[indexOffset])) {
             sender.send(getHelpMessage());
             return;
         }
 
         final Settings settings = getSettings();
-        final List<String> pingComponents = timerPingMessages ? settings.getTimerSpecificPingMessages() : settings.getPingMessages();
         final ConfigSection section = settings.getConfig().getSection("ping-message");
-        final List<String> pingMessages = section.getStringList(timerPingMessages ? "timer-messages" : "messages");
-        final int index = Integer.parseInt(args[1]);
+        final ConfigSection messageSection = section.getSection(timerPingMessages ? "timer-messages" : "messages");
+        final List<String> pingMessages = getOrCreateModeMessages(messageSection, mode);
+
+        final int index = Integer.parseInt(args[indexOffset]);
         if (index == 0 || index > pingMessages.size() + 1) {
             sender.send(getMessage("setMotdIndexError",
                     "%MOTDS%", Integer.toString(pingMessages.size()),
@@ -65,63 +79,96 @@ public final class SetMotdCommand extends CommandInfo {
             return;
         }
 
-        if (!plugin.isNumeric(args[2])) {
+        if (!plugin.isNumeric(args[indexOffset + 1])) {
             sender.send(getMessage("setMotdLineError"));
             return;
         }
 
-        final int line = Integer.parseInt(args[2]);
+        final int line = Integer.parseInt(args[indexOffset + 1]);
         if (line != 1 && line != 2) {
             sender.send(getMessage("setMotdLineError"));
             return;
         }
 
-        final String message = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+        final String message = String.join(" ", Arrays.copyOfRange(args, indexOffset + 2, args.length));
         final String oldMessage = index > pingMessages.size() ? "" : pingMessages.get(index - 1);
         final String newMessage;
         if (line == 1) {
-            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT) ?
-                    message + NEW_LINE_REPLACEMENT + oldMessage.split(NEW_LINE_REPLACEMENT, 2)[1] : message;
+            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT)
+                    ? message + NEW_LINE_REPLACEMENT + oldMessage.split(NEW_LINE_REPLACEMENT, 2)[1]
+                    : message;
         } else {
-            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT) ?
-                    oldMessage.split(NEW_LINE_REPLACEMENT, 2)[0] + NEW_LINE_REPLACEMENT + message : oldMessage + NEW_LINE_REPLACEMENT + message;
+            newMessage = oldMessage.contains(NEW_LINE_REPLACEMENT)
+                    ? oldMessage.split(NEW_LINE_REPLACEMENT, 2)[0] + NEW_LINE_REPLACEMENT + message
+                    : oldMessage + NEW_LINE_REPLACEMENT + message;
         }
 
-        // Replace component in config and the cached list
-        final String componentString = newMessage.replace(NEW_LINE_REPLACEMENT, "\n");
         if (index > pingMessages.size()) {
             pingMessages.add(newMessage);
-            pingComponents.add(componentString);
         } else {
             pingMessages.set(index - 1, newMessage);
-            pingComponents.set(index - 1, componentString);
         }
 
-        section.set(timerPingMessages ? "timer-messages" : "messages", pingMessages);
+        messageSection.set(mode, pingMessages);
         settings.saveConfig();
+        settings.reloadConfigs();
+
         sender.send(settings.getMessage(
                 "setMotd",
-                "%LINE%", args[2],
-                "%INDEX%", args[1],
-                "%MOTD%", componentString
+                "%LINE%", Integer.toString(line),
+                "%INDEX%", Integer.toString(index),
+                "%MOTD%", newMessage.replace(NEW_LINE_REPLACEMENT, "\n")
         ));
     }
 
     @Override
-    public List<String> getTabCompletion(final SenderInfo sender, String[] args) {
-        boolean timer = false;
+    public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
+        final int indexOffset;
+        final boolean timer;
         if (args.length > 1 && args[1].equalsIgnoreCase("timer")) {
-            args = plugin.removeArrayIndex(args, 1);
             timer = true;
+            indexOffset = 2;
+        } else {
+            timer = false;
+            indexOffset = 1;
         }
-        if (args.length == 3) return Arrays.asList("1", "2");
-        if (args.length == 2) {
+
+        if (args.length == indexOffset + 2) {
+            return Arrays.asList("1", "2");
+        }
+
+        if (args.length == indexOffset + 1 && !plugin.isNumeric(args[indexOffset])) {
+            return getModeCompletions(timer);
+        }
+
+        if (args.length == indexOffset + 1) {
+            final String mode = plugin.isNumeric(args[indexOffset]) ? "default" : args[indexOffset].toLowerCase(Locale.ROOT);
+            final ConfigSection section = getSettings().getConfig().getSection("ping-message").getSection(timer ? "timer-messages" : "messages");
+            final int size = getOrCreateModeMessages(section, mode).size();
             final List<String> list = new ArrayList<>();
-            for (int i = 1; i <= (timer ? getSettings().getTimerSpecificPingMessages() : getSettings().getPingMessages()).size() + 1; i++) {
+            for (int i = 1; i <= size + 1; i++) {
                 list.add(String.valueOf(i));
             }
             return list;
         }
         return Collections.emptyList();
+    }
+
+    private List<String> getModeCompletions(final boolean timer) {
+        final List<String> modes = new ArrayList<>(getSettings().getConfig().getSection("ping-message").getSection(timer ? "timer-messages" : "messages").getKeys());
+        modes.remove("default");
+        return modes;
+    }
+
+    private List<String> getOrCreateModeMessages(final ConfigSection section, final String mode) {
+        final Object value = section.getObject(mode);
+        if (value == null) {
+            return new ArrayList<>();
+        }
+
+        if (value instanceof String s) {
+            return new ArrayList<>(Collections.singletonList(s));
+        }
+        return new ArrayList<>(section.getStringList(mode));
     }
 }

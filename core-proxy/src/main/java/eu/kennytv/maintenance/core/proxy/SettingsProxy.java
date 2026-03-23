@@ -25,7 +25,7 @@ import eu.kennytv.maintenance.core.proxy.redis.RedisHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class SettingsProxy extends Settings {
 
-    private Set<String> maintenanceServers = new HashSet<>();
+    private Map<String, String> maintenanceServers = new LinkedHashMap<>();
     private List<String> fallbackServers;
     private String waitingServer;
     private boolean fallbackToOfflineUUID;
@@ -81,8 +81,13 @@ public final class SettingsProxy extends Settings {
         }
 
         if (!hasRedis()) {
-            final List<String> list = config.getStringList("proxied-maintenance-servers");
-            maintenanceServers = new HashSet<>(list);
+            final ConfigSection maintenanceServersSection = config.getSection("proxied-maintenance-servers");
+            maintenanceServers = new LinkedHashMap<>();
+            for (final Map.Entry<String, ?> entry : maintenanceServersSection.getValues().entrySet()) {
+                if (entry.getKey() != null) {
+                    maintenanceServers.put(entry.getKey(), normalizeServerMode(entry.getValue()));
+                }
+            }
         }
     }
 
@@ -99,11 +104,17 @@ public final class SettingsProxy extends Settings {
         }
 
         maintenance = redisHandler.loadMaintenanceStatus();
+        activeMode = normalizeMode(redisHandler.loadGlobalMode());
         maintenanceServers = redisHandler.loadMaintenanceServers();
     }
 
     public boolean isMaintenance(final String serverName) {
-        return maintenanceServers.contains(serverName);
+        return maintenanceServers.containsKey(serverName);
+    }
+
+    public @Nullable String activeMode(final String serverName) {
+        final String mode = maintenanceServers.get(serverName);
+        return mode == null || mode.equals("default") ? null : mode;
     }
 
     public Component getServerKickMessage(final String server) {
@@ -111,7 +122,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getLanguageString("singleMaintenanceKick", "%SERVER%", server);
         }
-        return parse(plugin.replacePingVariables(message));
+        return parse(plugin.replacePingVariables(message, activeMode(server)));
     }
 
     public Component getFullServerKickMessage(final String server) {
@@ -119,7 +130,7 @@ public final class SettingsProxy extends Settings {
         if (message == null) {
             message = getLanguageString("singleMaintenanceKickComplete", "%SERVER%", server);
         }
-        return parse(plugin.replacePingVariables(message));
+        return parse(plugin.replacePingVariables(message, activeMode(server)));
     }
 
     public boolean hasRedis() {
@@ -136,15 +147,27 @@ public final class SettingsProxy extends Settings {
     }
 
     @Override
-    public void setMaintenance(final boolean maintenance) {
-        super.setMaintenance(maintenance);
+    public void setMaintenance(final boolean maintenance, @Nullable final String mode) {
+        super.setMaintenance(maintenance, mode);
         if (hasRedis()) {
-            redisHandler.set(maintenance);
+            redisHandler.set(maintenance, mode != null ? mode : "default");
         }
     }
 
-    public void setMaintenanceDirect(final boolean maintenance) {
-        super.setMaintenance(maintenance);
+    @Override
+    public void setActiveMode(@Nullable final String activeMode) {
+        super.setActiveMode(activeMode);
+        if (hasRedis() && isMaintenance()) {
+            redisHandler.set(true, activeMode != null ? activeMode : "default");
+        }
+    }
+
+    public void setActiveModeDirect(@Nullable final String activeMode) {
+        super.setActiveMode(activeMode);
+    }
+
+    public void setMaintenanceDirect(final boolean maintenance, @Nullable final String mode) {
+        super.setMaintenance(maintenance, mode);
     }
 
     @Override
@@ -177,17 +200,34 @@ public final class SettingsProxy extends Settings {
         return super.removeWhitelistedPlayer(uuid);
     }
 
-    boolean addMaintenanceServer(final String server) {
+    boolean addMaintenanceServer(final String server, @Nullable final String mode) {
+        final String normalizedMode = normalizeServerMode(mode);
         if (hasRedis()) {
-            if (redisHandler.addServer(server)) {
-                maintenanceServers.add(server);
+            if (redisHandler.addServer(server, normalizedMode)) {
+                maintenanceServers.put(server, normalizedMode);
                 return true;
             }
-        } else if (maintenanceServers.add(server)) {
+        } else if (maintenanceServers.putIfAbsent(server, normalizedMode) == null) {
             saveServersToConfig();
             return true;
         }
         return false;
+    }
+
+    boolean setMaintenanceServerMode(final String server, @Nullable final String mode) {
+        final String normalizedMode = normalizeServerMode(mode);
+        final String oldMode = maintenanceServers.get(server);
+        if (oldMode == null || oldMode.equals(normalizedMode)) {
+            return false;
+        }
+
+        maintenanceServers.put(server, normalizedMode);
+        if (hasRedis()) {
+            redisHandler.setServerMode(server, normalizedMode);
+        } else {
+            saveServersToConfig();
+        }
+        return true;
     }
 
     boolean removeMaintenanceServer(final String server) {
@@ -196,20 +236,34 @@ public final class SettingsProxy extends Settings {
                 maintenanceServers.remove(server);
                 return true;
             }
-        } else if (maintenanceServers.remove(server)) {
+        } else if (maintenanceServers.remove(server) != null) {
             saveServersToConfig();
             return true;
         }
         return false;
     }
 
+    public boolean addMaintenanceServerDirect(final String server, @Nullable final String mode) {
+        return maintenanceServers.put(server, normalizeServerMode(mode)) == null;
+    }
+
+    public boolean removeMaintenanceServerDirect(final String server) {
+        return maintenanceServers.remove(server) != null;
+    }
+
+    public void setMaintenanceServerModeDirect(final String server, @Nullable final String mode) {
+        if (maintenanceServers.containsKey(server)) {
+            maintenanceServers.put(server, normalizeServerMode(mode));
+        }
+    }
+
     private void saveServersToConfig() {
-        config.set("proxied-maintenance-servers", new ArrayList<>(maintenanceServers));
+        config.set("proxied-maintenance-servers", new LinkedHashMap<>(maintenanceServers));
         saveConfig();
     }
 
     public Set<String> getMaintenanceServers() {
-        return maintenanceServers;
+        return maintenanceServers.keySet();
     }
 
     @Nullable
@@ -252,5 +306,13 @@ public final class SettingsProxy extends Settings {
 
     public @Nullable RedisHandler redisHandler() {
         return redisHandler;
+    }
+
+    private static String normalizeServerMode(@Nullable final Object mode) {
+        if (mode == null) {
+            return "default";
+        }
+        final String value = String.valueOf(mode).toLowerCase(Locale.ROOT);
+        return value.isBlank() ? "default" : value;
     }
 }

@@ -20,6 +20,7 @@ package eu.kennytv.maintenance.core;
 import eu.kennytv.maintenance.api.event.MaintenanceReloadedEvent;
 import eu.kennytv.maintenance.core.config.Config;
 import eu.kennytv.maintenance.core.config.ConfigSection;
+import eu.kennytv.maintenance.core.config.DisplayedMessages;
 import eu.kennytv.maintenance.core.util.ServerType;
 import java.io.File;
 import java.io.IOException;
@@ -28,12 +29,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -44,22 +47,23 @@ import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 10;
-    private static final int LANGUAGE_VERSION = 2;
-    private static final Random RANDOM = new Random();
+    private static final int CONFIG_VERSION = 11;
+    private static final int LANGUAGE_VERSION = 3;
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
     private final String[] unsupportedFields;
     protected boolean maintenance;
+    protected String activeMode;
+    protected String activeReason;
     private Set<Integer> broadcastIntervals;
-    private List<String> pingMessages;
-    private List<String> timerSpecificPingMessages;
+    private DisplayedMessages pingMessages;
+    private DisplayedMessages timerSpecificPingMessages;
     private List<String> commandsOnMaintenanceEnable;
     private List<String> commandsOnMaintenanceDisable;
-    private String legacyParsedPlayerCountMessage;
-    private String legacyParsedTimerPlayerCountMessage;
-    private List<String> legacyParsedPlayerCountHoverLines;
-    private List<String> legacyParsedTimerPlayerCountHoverLines;
+    private DisplayedMessages legacyParsedPlayerCountMessages;
+    private DisplayedMessages legacyParsedTimerPlayerCountMessages;
+    private DisplayedMessages legacyParsedPlayerCountHoverLines;
+    private DisplayedMessages legacyParsedTimerPlayerCountHoverLines;
     private String prefixString;
     private String plainTextPrefix;
     private String languageName;
@@ -189,14 +193,16 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         final ConfigSection pingMessageSection = config.getSection("ping-message");
         enablePingMessages = pingMessageSection.getBoolean("enabled", true);
         // Can't store this pre-parsed as components because gradients will break replacements
-        pingMessages = loadPingMessages(pingMessageSection.getStringList("messages"));
+        pingMessages = loadPingMessages(pingMessageSection.getSection("messages"));
         if (pingMessageSection.getBoolean("enable-timer-specific-messages")) {
-            timerSpecificPingMessages = loadPingMessages(pingMessageSection.getStringList("timer-messages"));
+            timerSpecificPingMessages = loadPingMessages(pingMessageSection.getSection("timer-messages"));
         } else {
             timerSpecificPingMessages = null;
         }
 
         maintenance = config.getBoolean("maintenance-enabled");
+        activeMode = normalizeMode(config.getString("active-mode"));
+        activeReason = normalizeReason(config.getString("active-reason"));
         commandsOnMaintenanceEnable = config.getStringList("commands-on-maintenance-enable");
         commandsOnMaintenanceDisable = config.getStringList("commands-on-maintenance-disable");
         customMaintenanceIcon = config.getBoolean("custom-maintenance-icon");
@@ -207,25 +213,19 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         if (plugin.getServerType() != ServerType.SPONGE) {
             final ConfigSection playerCountMessageSection = config.getSection("player-count-message");
             customPlayerCountMessage = playerCountMessageSection.getBoolean("enabled");
-            legacyParsedPlayerCountMessage = toLegacy(parse(getConfigMessage(playerCountMessageSection, "message")));
+            legacyParsedPlayerCountMessages = loadPlayerCountMessages(playerCountMessageSection.getSection("messages"));
             if (playerCountMessageSection.getBoolean("enable-timer-specific-message")) {
-                legacyParsedTimerPlayerCountMessage = toLegacy(parse(getConfigMessage(playerCountMessageSection, "timer-message")));
+                legacyParsedTimerPlayerCountMessages = loadPlayerCountMessages(playerCountMessageSection.getSection("timer-messages"));
             } else {
-                legacyParsedTimerPlayerCountMessage = null;
+                legacyParsedTimerPlayerCountMessages = null;
             }
         }
 
         final ConfigSection listHoverMessageSection = config.getSection("player-list-hover-message");
         customPlayerCountHoverMessage = listHoverMessageSection.getBoolean("enabled");
-        legacyParsedPlayerCountHoverLines = new ArrayList<>();
-        for (final String line : listHoverMessageSection.getString("message").split("<br>")) {
-            legacyParsedPlayerCountHoverLines.add(toLegacy(parse(line)));
-        }
+        legacyParsedPlayerCountHoverLines = loadPlayerCountHoverMessages(listHoverMessageSection.getSection("messages"));
         if (listHoverMessageSection.getBoolean("enable-timer-specific-message")) {
-            legacyParsedTimerPlayerCountHoverLines = new ArrayList<>();
-            for (final String line : listHoverMessageSection.getString("timer-message").split("<br>")) {
-                legacyParsedTimerPlayerCountHoverLines.add(toLegacy(parse(line)));
-            }
+            legacyParsedTimerPlayerCountHoverLines = loadPlayerCountHoverMessages(listHoverMessageSection.getSection("timer-messages"));
         } else {
             legacyParsedTimerPlayerCountHoverLines = null;
         }
@@ -311,6 +311,31 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                 config.move("enable-playercounthovermessage", "player-list-hover-message.enabled");
                 config.move("playercounthovermessage", "player-list-hover-message.message");
             }
+            if (version < 11) {
+                config.move("player-count-message.message", "player-count-message.messages.default");
+                config.move("player-count-message.timer-message", "player-count-message.timer-messages.default");
+
+                config.move("player-list-hover-message.message", "player-list-hover-message.messages.default");
+                config.move("player-list-hover-message.timer-message", "player-list-hover-message.timer-messages.default");
+
+                migrateModeSection("ping-message.messages");
+                migrateModeSection("ping-message.timer-messages");
+                migrateModeSection("player-count-message.messages");
+                migrateModeSection("player-count-message.timer-messages");
+                migrateModeSection("player-list-hover-message.messages");
+                migrateModeSection("player-list-hover-message.timer-messages");
+
+                final Object proxiedMaintenanceServers = config.getObject("proxied-maintenance-servers");
+                if (proxiedMaintenanceServers instanceof List<?> list) {
+                    final Map<String, String> migratedServers = new LinkedHashMap<>();
+                    for (final Object entry : list) {
+                        if (entry != null) {
+                            migratedServers.put(String.valueOf(entry), "default");
+                        }
+                    }
+                    config.set("proxied-maintenance-servers", migratedServers);
+                }
+            }
 
             createFile("config-new.yml", "config.yml");
             final File file = new File(plugin.getDataFolder(), "config-new.yml");
@@ -381,6 +406,17 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return serialized.replaceAll("</[a-z_]+>", "");
     }
 
+    private void migrateModeSection(final String path) {
+        final Object section = config.getObject(path);
+        if (section == null || section instanceof Map<?, ?>) {
+            return;
+        }
+
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("default", section);
+        config.set(path, map);
+    }
+
     private String getConfigMessage(final ConfigSection section, final String path) {
         final String s = section.getString(path);
         if (s == null) {
@@ -423,24 +459,53 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
 
     // TODO Cache platform components if there are no replacements
     public Component getRandomPingMessage() {
-        if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable()
-                && hasTimerSpecificPingMessages() && !timerSpecificPingMessages.isEmpty()) {
-            return getPingMessage(timerSpecificPingMessages);
-        }
-        return pingMessages.isEmpty() ? Component.empty() : getPingMessage(pingMessages);
+        return getRandomPingMessage(activeMode);
     }
 
-    private Component getPingMessage(final List<String> list) {
-        final String component = list.size() == 1 ? list.getFirst() : list.get(RANDOM.nextInt(list.size()));
-        return parse(plugin.replacePingVariables(component));
+    public Component getRandomPingMessage(@Nullable final String mode) {
+        if (plugin.isTaskRunning() && !plugin.getRunnable().shouldEnable() && hasTimerSpecificPingMessages()) {
+            return getPingMessage(timerSpecificPingMessages, mode);
+        }
+        return pingMessages.isEmpty() ? Component.empty() : getPingMessage(pingMessages, mode);
     }
 
-    private List<String> loadPingMessages(final List<String> list) {
-        final List<String> components = new ArrayList<>(list.size());
-        for (final String s : list) {
-            components.add(replaceNewlineVar(s));
+    private Component getPingMessage(final DisplayedMessages list, @Nullable final String mode) {
+        final String component = list.getRandomEntry(mode);
+        return parse(plugin.replacePingVariables(component, mode));
+    }
+
+    private DisplayedMessages loadPingMessages(final ConfigSection section) {
+        return loadDisplayedMessages(section, (list, s) -> list.add(replaceNewlineVar(s)));
+    }
+
+    private DisplayedMessages loadPlayerCountHoverMessages(final ConfigSection section) {
+        return loadDisplayedMessages(section, (list, s) -> {
+            // Split into separate messages (one per player entry)
+            for (final String line : s.split("<br>")) {
+                list.add(toLegacy(parse(line)));
+            }
+        });
+    }
+
+    private DisplayedMessages loadPlayerCountMessages(final ConfigSection section) {
+        return loadDisplayedMessages(section, (list, s) -> list.add(toLegacy(parse(s))));
+    }
+
+    private DisplayedMessages loadDisplayedMessages(final ConfigSection section, final BiConsumer<List<String>, String> messageFunction) {
+        final Map<String, List<String>> modes = new HashMap<>(section.getKeys().size());
+        for (final Map.Entry<String, Object> entry : section.getValues().entrySet()) {
+            final List<String> components = new ArrayList<>();
+            if (entry.getValue() instanceof String s) {
+                messageFunction.accept(components, s);
+            } else if (entry.getValue() instanceof List<?> list) {
+                //noinspection unchecked
+                for (final String s : ((Iterable<String>) list)) {
+                    messageFunction.accept(components, s);
+                }
+            }
+            modes.put(entry.getKey(), components);
         }
-        return components;
+        return new DisplayedMessages(modes);
     }
 
     @Override
@@ -498,10 +563,45 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return maintenance;
     }
 
-    public void setMaintenance(final boolean maintenance) {
+    @Override
+    public @Nullable String activeMode() {
+        return activeMode;
+    }
+
+    public void setActiveMode(@Nullable final String activeMode) {
+        final String normalized = normalizeMode(activeMode);
+        if (Objects.equals(this.activeMode, normalized)) {
+            return;
+        }
+
+        this.activeMode = normalized;
+        config.set("active-mode", normalized != null ? normalized : "default");
+        saveConfig();
+    }
+
+    @Override
+    public String activeReason() {
+        return activeReason;
+    }
+
+    @Override
+    public void setActiveReason(@Nullable final String reason) {
+        final String normalized = normalizeReason(reason);
+        if (Objects.equals(this.activeReason, normalized)) {
+            return;
+        }
+
+        this.activeReason = normalized;
+        config.set("active-reason", normalized);
+        saveConfig();
+    }
+
+    public void setMaintenance(final boolean maintenance, @Nullable final String mode) {
         if (this.maintenance != maintenance) {
             this.maintenance = maintenance;
             config.set("maintenance-enabled", maintenance);
+            this.activeMode = normalizeMode(mode);
+            config.set("active-mode", this.activeMode != null ? this.activeMode : "default");
             saveConfig();
         }
     }
@@ -560,7 +660,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return config;
     }
 
-    public List<String> getPingMessages() {
+    public DisplayedMessages getPingMessages() {
         return pingMessages;
     }
 
@@ -572,7 +672,7 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         return commandsOnMaintenanceDisable;
     }
 
-    public @Nullable List<String> getTimerSpecificPingMessages() {
+    public @Nullable DisplayedMessages getTimerSpecificPingMessages() {
         return timerSpecificPingMessages;
     }
 
@@ -605,15 +705,25 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
     }
 
     public String getLegacyParsedPlayerCountMessage() {
-        final String message = timerDependent(legacyParsedPlayerCountMessage, legacyParsedTimerPlayerCountMessage);
-        return plugin.replacePingVariables(message);
+        return getLegacyParsedPlayerCountMessage(activeMode);
+    }
+
+    public String getLegacyParsedPlayerCountMessage(@Nullable final String mode) {
+        final DisplayedMessages messages = timerDependent(legacyParsedPlayerCountMessages, legacyParsedTimerPlayerCountMessages);
+        final String message = messages.getRandomEntry(mode);
+        return plugin.replacePingVariables(message, mode);
     }
 
     public String[] getLegacyParsedPlayerCountHoverLines() {
-        final List<String> lines = timerDependent(legacyParsedPlayerCountHoverLines, legacyParsedTimerPlayerCountHoverLines);
+        return getLegacyParsedPlayerCountHoverLines(activeMode);
+    }
+
+    public String[] getLegacyParsedPlayerCountHoverLines(@Nullable final String mode) {
+        final DisplayedMessages messages = timerDependent(legacyParsedPlayerCountHoverLines, legacyParsedTimerPlayerCountHoverLines);
+        final List<String> lines = messages.getMessages(mode);
         final String[] parsedLines = new String[lines.size()];
         for (int i = 0; i < lines.size(); i++) {
-            parsedLines[i] = plugin.replacePingVariables(lines.get(i));
+            parsedLines[i] = plugin.replacePingVariables(lines.get(i), mode);
         }
         return parsedLines;
     }
@@ -658,6 +768,17 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
      */
     protected String replaceNewlineVar(final String s) {
         return s.replace(NEW_LINE_REPLACEMENT, "\n");
+    }
+
+    protected @Nullable String normalizeMode(@Nullable final String mode) {
+        if (mode == null || mode.isBlank() || mode.equalsIgnoreCase("default")) {
+            return null;
+        }
+        return mode.toLowerCase(Locale.ROOT);
+    }
+
+    private String normalizeReason(@Nullable final String reason) {
+        return reason == null || reason.isBlank() ? "" : reason;
     }
 
     protected void loadExtraSettings() {

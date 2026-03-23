@@ -59,10 +59,12 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
             final Component message = getMessage("starttimerStarted", "%TIME%", plugin.getRunnable().getTime());
             sender.send(message);
             plugin.sendWebhookMessage(message, DiscordWebhook.EventType.STARTTIMER_STARTED);
-        } else if (args.length == 3) {
+        } else if (args.length == 3 || args.length == 4) {
             if (checkPermission(sender, "singleserver.timer")) return;
 
-            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[2], false);
+            final String mode = args.length == 4 ? args[2] : null;
+            final String durationArg = args.length == 4 ? args[3] : args[2];
+            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, durationArg, false);
             if (duration == null) {
                 sender.send(getHelpMessage());
                 return;
@@ -75,7 +77,7 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
                 return;
             }
 
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, true);
+            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, true, mode);
             final Component message = getMessage(
                     "singleStarttimerStarted",
                     "%TIME%", runnable.getTime(),
@@ -90,6 +92,17 @@ public final class SingleStarttimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT)) : Collections.emptyList();
+        if (!sender.hasMaintenancePermission("singleserver.timer")) {
+            return Collections.emptyList();
+        }
+        if (args.length == 2) {
+            return plugin.getCommandManager().getServersCompletion(args[1].toLowerCase(Locale.ROOT));
+        }
+        if (args.length == 3 && plugin.getServer(args[1]) != null) {
+            final List<String> modes = new java.util.ArrayList<>(getSettings().getPingMessages().getKeys());
+            modes.remove("default");
+            return modes;
+        }
+        return Collections.emptyList();
     }
 }

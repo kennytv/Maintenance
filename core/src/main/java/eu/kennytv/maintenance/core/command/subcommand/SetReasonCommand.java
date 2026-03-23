@@ -20,58 +20,40 @@ package eu.kennytv.maintenance.core.command.subcommand;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-public final class ToggleCommand extends CommandInfo {
+public final class SetReasonCommand extends CommandInfo {
 
-    public ToggleCommand(final MaintenancePlugin plugin) {
-        super(plugin, "toggle");
+    public SetReasonCommand(final MaintenancePlugin plugin) {
+        super(plugin, "setreason");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (args.length == 0 || args.length > 2) {
+        if (args.length < 2) {
             sender.send(getHelpMessage());
             return;
         }
 
-        final boolean maintenance = args[0].equalsIgnoreCase("on");
-        final String mode;
-        if (maintenance && args.length == 2) {
-            mode = args[1].toLowerCase(Locale.ROOT);
-        } else if (!maintenance && args.length == 1) {
-            mode = null;
-        } else if (maintenance) {
-            mode = null;
+        final String value = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
+        final String reason;
+        if (value.equalsIgnoreCase("none") || value.equalsIgnoreCase("clear") || value.equals("-")) {
+            reason = null;
         } else {
-            sender.send(getHelpMessage());
-            return;
+            reason = value;
         }
 
-        if (maintenance == plugin.isMaintenance()) {
-            if (mode != null) {
-                plugin.getSettings().setActiveMode(mode);
-                return;
-            }
-
-            sender.send(getMessage(maintenance ? "alreadyEnabled" : "alreadyDisabled"));
-            return;
-        }
-
-        plugin.setMaintenance(maintenance, mode);
+        getSettings().setActiveReason(reason);
+        sender.send(getMessage("setReason", "%REASON%", reason == null ? "-" : reason));
     }
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        if (args.length != 2 || !args[0].equalsIgnoreCase("on")) {
+        if (args.length != 2) {
             return Collections.emptyList();
         }
-
-        final List<String> modes = new ArrayList<>(getSettings().getPingMessages().getKeys());
-        modes.remove("default");
-        return modes;
+        return Collections.singletonList("none");
     }
 }

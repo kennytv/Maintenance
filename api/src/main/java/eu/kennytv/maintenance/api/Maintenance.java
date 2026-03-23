@@ -18,6 +18,7 @@
 package eu.kennytv.maintenance.api;
 
 import eu.kennytv.maintenance.api.event.manager.EventManager;
+import org.jetbrains.annotations.Nullable;
 
 public interface Maintenance {
 
@@ -30,8 +31,13 @@ public interface Maintenance {
      * </p>
      *
      * @param maintenance true to enable, false to disable maintenance mode
+     * @param mode        mode, used for custom messages
      */
-    void setMaintenance(boolean maintenance);
+    void setMaintenance(boolean maintenance, @Nullable String mode);
+
+    default void setMaintenance(boolean maintenance) {
+        setMaintenance(maintenance, null);
+    }
 
     /**
      * @return true if maintenance is currently enabled
