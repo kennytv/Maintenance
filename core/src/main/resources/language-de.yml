@@ -29,6 +29,7 @@ reload: "<prefix><green>Die Config, die Liste der Spieler die während Maintenan
 removedMotd: "<prefix><green>Die %INDEX%. Maintenance MOTD wurde entfernt."
 removeMotdError: "<prefix><red>Du hast nur eine Maintenance MOTD eingestellt, daher kannst du auch keine entfernen!"
 setMotd: "<prefix><green>Die %LINE%. Zeile der %INDEX%. Maintenance MOTD wurde geändert zu: %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Momentan gibt es %MOTDS% MOTDs, du musst also eine Zahl, die zwischen 1 und %NEWAMOUNT% liegt, wählen."
 setMotdLineError: "<prefix><red>Das zweite Argument des Befehls muss die Zeilennummer sein (1 oder 2)!"
 updateDownloading: "<prefix><red><bold>Das Update wird heruntergeladen..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [Seite] <gray>(Zeigt diese wunderschöne Hilf
 helpMotd: "<gold>/maintenance motd [Timer] <gray>(Zeigt die momentan gesetzten Maintenance Motds an. Mit dem 'timer' Argument werden die timerspezifischen Motds angezeigt)"
 helpRemoveMotd: "<gold>/maintenance removemotd [Timer] <Index> <gray>(Entfernt eine Maintenance Motd. Mit dem 'timer' Argument wird eine timerspezifischen Motd entfernt)"
 helpSetMotd: "<gold>/maintenance setmotd [Timer] <Index> <1/2> <Nachricht> <gray>(Setzte eine Motd für den Wartungsmodus. Mit dem 'timer' Argument wird eine timerspezifische Motd gesetzt)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Lädt Config, Language und Whitelist Dateien sowie das Maintenance Icon neu)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Aktiviert/deaktiviert den Wartungsmodus)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Sucht nach neuen Updates für das Plugin und lädt diese auf den Server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Zeigt alle gewhitelisteten Spieler für den Wartungsmodus an)"
 helpWhitelistAdd: "<gold>/maintenance add <Name/UUID> <gray>(Whitelistet einen Spieler für den Wartungsmodus, sodass dieser während Wartungen den Server betreten kann)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [Server] <gray>(Falls momen
 helpSingleEndtimer: "<gold>/maintenance endtimer [Server] <Deaktiviere in> <gray>(Sobald der Timer, bspw. 1h5m, abläuft wird der Wartungsmodus deaktiviert)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [Server] <Aktiviere in> <gray>(Sobald der Timer, bspw. 1h5m, abläuft wird der Wartungsmodus aktiviert)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [Server] <Starte in> <Wartungsdauer> <gray>(Sobald der Timer, bspw. 1h5m, abläuft wird der Wartungsmodus für die gegebene Länge aktiviert)"
-helpSingleToggle: "<gold>/maintenance <on/off> [Server] <gray>(Aktiviert/deaktiviert den Wartungsmodus)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Zeigt alle Server an, auf denen momentan der Wartungsmodus aktiviert ist)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
