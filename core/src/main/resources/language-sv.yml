@@ -29,6 +29,7 @@ reload: "<prefix><green>Laddade om konfigurationsfilen, vitlistade spelare, spr�
 removedMotd: "<prefix><green>Tog bort motd nummer %INDEX%."
 removeMotdError: "<prefix><red>Du har bara en motd, så du kan inte ta bort några!"
 setMotd: "<prefix><green>Satte linjen %LINE% av %INDEX%. underhålls motd till %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Du har just nu %MOTDS% motds, så du måste välja ett nummer mellan 1 och %NEWAMOUNT%."
 setMotdLineError: "<prefix><red>Det andra argumentet måste vara linjenumret (1 or 2)!"
 updateDownloading: "<prefix><red><bold>Laddar ner uppdatering..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [sida] <gray>(Visar denna magiskt fina hjälp
 helpMotd: "<gold>/maintenance motd [timer] <gray>(Listar alla för närvarande aktiva underhålls motds. Om argumentet 'timer' specificeras, kommer alla timer motds visas)"
 helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Tar bort ett motd. Om 'timer' används som argument, kommer ett timerspecifikt pingmeddelande bli borttaget)"
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <meddelande> <gray>(Sätter ett specifikt motd. If using. Om argumentet 'timer' specificeras, kommer ett timerspecifikt pingmeddelande bli satt)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Laddar om konfigurationsfilen, vitlistan and server ikonen)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Aktiverar/avaktiverar underhållsläget)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Avlägset laddar ner senaste versionen av insticksprogrammet på din server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Visar alla vitlistade spelare för underhållsläget)"
 helpWhitelistAdd: "<gold>/maintenance add <namn/uuid> <gray>(Lägger till en spelare på vitlistan för underhållsläget, så de kan logga in även om underhåll är aktiverat)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Vid utfärd
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Aktiverar/avaktiverar underhållsläge)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Listar alla proxiade servrar som är i underhåll)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
