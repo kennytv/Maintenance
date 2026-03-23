@@ -29,6 +29,7 @@ reload: "<prefix><green>Genindlæs konfigurationsfilen, hvidlistede spillere, sp
 removedMotd: "<prefix><green>Slet motd nummer %INDEX%."
 removeMotdError: "<prefix><red>Du har kun én motd, så du kan ikke slette nogen!"
 setMotd: "<prefix><green>Angiv linje %LINE% af %INDEX%. vedligeholdelses motd til %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Du har %MOTDS% motds, så du skal angive et nummer mellem 1 og %NEWAMOUNT%."
 setMotdLineError: "<prefix><red>Det andet argument skal være linjenummer (1 or 2)!"
 updateDownloading: "<prefix><red><bold>Downloader opdatering..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [page] <gray>(Viser dette smukke hjælpevindu
 helpMotd: "<gold>/maintenance motd [timer] <gray>(Viser den aktuelle vedligeholdelses motds. Hvis 'timer' er angivet, bliver dennes motds vist)"
 helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Sletter en vedligeholdelses motd. Hvis 'timer' er angivet, vil en tidsspecifik pingbesked blive slettet)"
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <message> <gray>(Angiver en motd for vedligeholdelsestilstand. Hvis 'timer' er angivet, vil en tidsspecifik pingbesked blive angivet)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Genindlæser konfigurationsfilen, hvidlisten og serverikonet)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Aktiverer/deaktiverer vedligeholdelsestilstand)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Downloader den nyeste version af plugin'et på din server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Viser alle hvidlistede spillere for vedligeholdelsestilstand)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Tilføjer spilleren til vedligeholdelseshvidlisten, så de kan forbinde til serveren, selvom vedligeholdelsestilstand er aktiveret)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Hvis timere
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Aktiverer/deaktiverer vedligeholdelsestilstand)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Viser alle proxyservere, der har Vedligeholdelsestilstand aktiveret)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
