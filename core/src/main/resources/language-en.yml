@@ -90,7 +90,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] [mode] <index> <gray>(Rem
 helpSetMotd: "<gold>/maintenance setmotd [timer] [mode] <index> <1/2> <message> <gray>(Sets a maintenance motd in the selected mode)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Reloads the config file, whitelist file and the server-icon)"
-helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
+helpToggle: "<gold>/maintenance on [mode] <gray>(Enables maintenance mode with an optional display mode)"
 helpUpdate: "<gold>/maintenance update <gray>(Remotely downloads the newest version of the plugin onto your server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Shows all whitelisted players for the maintenance mode)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)"
@@ -100,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(If running,
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
+helpSingleToggle: "<gold>/maintenance on [server|global] [mode] <gray>(Use /maintenance on <server> [mode] for single-server mode and /maintenance on global [mode] for global mode)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
