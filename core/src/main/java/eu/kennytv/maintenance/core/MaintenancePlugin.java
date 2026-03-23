@@ -249,7 +249,7 @@ public abstract class MaintenancePlugin implements Maintenance {
             if (compare < 0) {
                 getLogger().warning("Newest version available: Version " + newestVersion + ", you're on " + version);
             } else if (compare > 0) {
-                if (version.getTag().equalsIgnoreCase("snapshot")) {
+                if (version.getTag() != null && !version.getTag().isBlank()) {
                     getLogger().info("You're running a development version, please report bugs on the Discord server (https://discord.gg/vGCUzHq) or the GitHub issue tracker (https://github.com/kennytv/Maintenance/issues)");
                 } else {
                     getLogger().info("You're running a version, that doesn't exist!");

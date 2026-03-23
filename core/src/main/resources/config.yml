@@ -48,13 +48,18 @@ waiting-server: ""
 # The type of mode can be defined in the command, or will be the default mode.
 ping-message:
   enabled: true
+  # Always uses 'default' if not defined in the command or not present in the config.
+  # Additional examples could look as follows:
+  #  default:
+  #    - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
+  #    - "<red>Wooow you found our secondary MOTD!"
+  #  reason:
+  #    - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>%REASON%"
+  #  release:
+  #    - "<gold>We're currently preparing the release, come back soon!"
   messages:
     default:
       - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>We will be back soon!"
-    reason:
-      - "<red>Currently under maintenance<br><gradient:#fbffc2:#0fffff>%REASON%"
-    release:
-      - "<gold>We're currently preparing the relase, come back soon!"
   # If set to true and an endtimer is currently running, a message from this pool will be chosen
   # instead of the ones above, so you can have different messages for when an endtimer is running/not running.
   enable-timer-specific-messages: true
