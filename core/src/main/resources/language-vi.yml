@@ -29,6 +29,7 @@ reload: "<prefix><green>Đã tải lại cấu hình, người chơi được đ
 removedMotd: "<prefix><green>Đã xóa motd %INDEX%."
 removeMotdError: "<prefix><red>Bạn chỉ có một motd nên bạn không thể xóa bất kỳ cái nào!"
 setMotd: "<prefix><green>Đặt dòng %LINE% của %INDEX%. phương thức bảo trì để %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Bạn hiện có %MOTDS% motds, vì vậy bạn phải chọn một số trong khoảng từ 1 đến %NEWAMOUNT%."
 setMotdLineError: "<prefix><red> Đối số thứ hai phải số dòng (1 hoặc 2)!"
 updateDownloading: "<prefix><red><bold>Đang Tải Bản Cập Nhật..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [Trang] <gray>(Hiển thị cửa sổ trợ 
 helpMotd: "<gold>/maintenance motd [hẹn giờ] <gray>(Liệt kê các chế độ bảo trì hiện được thiết lập. Nếu chỉ định 'bộ hẹn giờ', các mô-đun hẹn giờ sẽ được hiển thị)"
 helpRemoveMotd: "<gold>/maintenance removemotd [hẹn giờ] <index> <gray>(Loại bỏ một motd bảo trì. Nếu sử dụng 'bộ hẹn giờ' làm đối số, tin nhắn ping dành riêng cho bộ hẹn giờ sẽ bị xóa)"
 helpSetMotd: "<gold>/maintenance setmotd [hẹn giờ] <index> <1/2> <tin nhắn> <gray>(Loại bỏ một motd bảo trì. Nếu sử dụng 'bộ hẹn giờ' làm đối số, tin nhắn ping dành riêng cho bộ hẹn giờ sẽ bị xóa)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Tải lại tệp cấu hình, tệp danh sách trắng và biểu tượng máy chủ)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Bật/tắt chế độ bảo trì)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Tải từ xa phiên bản mới nhất của plugin xuống máy chủ của bạn)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Hiển thị tất cả người chơi trong danh sách trắng cho chế độ bảo trì)"
 helpWhitelistAdd: "<gold>/maintenance add <Tên Người Chơi/UUID> <gray>(Thêm người chơi vào danh sách trắng bảo trì, để họ có thể tham gia máy chủ ngay cả khi bảo trì được bật)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Nếu chạ
 helpSingleEndtimer: "<gold>/maintenance endtimer [máy chủ] <khoảng thời gian sẽ tắt sau> <gray>(Sau khoảng thời gian được cho, ví dụ 1h5m (1 giờ 5 phút), chế độ bảo trì sẽ được tắt)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [máy chủ] <khoảng thời gian sẽ bật sau> <gray>(Sau khoảng thời gian được cho, ví dụ 1h5m (1 giờ 5 phút), chế độ bảo trì sẽ được bật)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [máy chủ] <khoảng thời gian sẽ được bật sau> <khoảng thời gian bảo trì> <gray>(Sau khoảng thời gian được cho, ví dụ 1h5m (1 giờ 5 phút), chế độ bảo trì sẽ được bật)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Bật/tắt chế độ bảo trì)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Liệt kê tất cả các máy chủ proxy hiện đang được bảo trì)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
