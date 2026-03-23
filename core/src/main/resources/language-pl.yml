@@ -29,6 +29,7 @@ reload: "<prefix><green>Ponownie załadowano plik konfiguracji, białą listę, 
 removedMotd: "<prefix><green>Usunięto motd numer %INDEX%."
 removeMotdError: "<prefix><red>Masz tylko jedno motd, którego nie możesz usunąć!"
 setMotd: "<prefix><green>Ustawiono wiersz %LINE% od %INDEX%. motd konserwacji na %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Masz aktualnie %MOTDS% motd, więc musisz wybrać liczbę między 1 a %NEWAMOUNT%."
 setMotdLineError: "<prefix><red>Drugi argument musi być numerem lini (1 lub 2)!"
 updateDownloading: "<prefix><red><bold>Pobieranie aktualizacji..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [strona] <gray>(Pokazuje tą piękną stronę
 helpMotd: "<gold>/maintenance motd [timer] <gray>(Wyświetla aktualnie ustawione motd. Jeśli wstawiono 'timer', motd z timerem zostaną pokazane)"
 helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Usuwa motd konserwacji. Jeśli wstawiono 'timer', motd z timerem zostanie usunięte)"
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <wiadomość> <gray>(Ustawia motd konserwacji. Jeśli wstawiono 'timer', motd z timerem zostanie ustawione)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Przeładowuje plik konfiguracji, białej listy i ikonę serwera)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Włącza/wyłącza tryb konserwacji)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Pobiera najnowszą wersję plugina)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Pokazuje białą listę trybu konserwacji)"
 helpWhitelistAdd: "<gold>/maintenance add <nazwa/uuid> <gray>(Dodaje gracza do listy konserwacji, aby mogli dołączyć do serwera w trakcie konserwacji)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [serwer] <gray>(Jeśli akty
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleToggle: "<gold>/maintenance <on/off> [serwer] <gray>(Włącza/wyłącza tryb konserwacji)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Wyświetla wszystkie serwery w trybie konserwacji)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2

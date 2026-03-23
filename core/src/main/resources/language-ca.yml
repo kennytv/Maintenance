@@ -29,6 +29,7 @@ reload: "<prefix><green>S'han recarregat la configuració, la llista de jugadors
 removedMotd: "<prefix><green>S'ha eliminat el missatge MOTD número %INDEX%."
 removeMotdError: "<prefix><red>Només tens un missatge MOTD, no en pots eliminar cap!"
 setMotd: "<prefix><green>S'ha configurat la línia %LINE% del missatge MOTD de manteniment %INDEX% a %MOTD%"
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>Actualment tens %MOTDS% missatges MOTD, has de triar un número entre 1 i %NEWAMOUNT%."
 setMotdLineError: "<prefix><red>El segon argument ha de ser el número de línia (1 o 2)!"
 updateDownloading: "<prefix><red><bold>S'està descarregant l'actualització..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [pàgina] <gray>(Mostra aquesta finestra d'aj
 helpMotd: "<gold>/maintenance motd [timer] <gray>(Mostra els missatges MOTD de manteniment. Si s'especifica 'timer', es mostraran els MOTD del temporitzador)"
 helpRemoveMotd: "<gold>/maintenance removemotd [timer] <índex> <gray>(Elimina un missatge MOTD de manteniment. Si s'usa 'timer', s'eliminarà un missatge específic del temporitzador)"
 helpSetMotd: "<gold>/maintenance setmotd [timer] <índex> <1/2> <missatge> <gray>(Configura un missatge MOTD per al manteniment. Si s'usa 'timer', es configurarà un missatge específic del temporitzador)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Recarrega el fitxer de configuració, la llista de permitits i la icona del servidor)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Activa/desactiva el mode de manteniment)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Descarrega la versió més recent del plugin al servidor)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Mostra tots els jugadors permitits durant el manteniment)"
 helpWhitelistAdd: "<gold>/maintenance add <nom/uuid> <gray>(Afegeix el jugador a la llista de permitits del manteniment)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <gray>(Si està 
 helpSingleEndtimer: "<gold>/maintenance endtimer [servidor] <desactivar en> <gray>(Després del temps indicat, es desactivarà el manteniment al servidor)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [servidor] <activar en> <gray>(Després del temps indicat, s'activarà el manteniment al servidor)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [servidor] <activar en> <durada del manteniment> <gray>(Programa l'activació del manteniment al servidor)"
-helpSingleToggle: "<gold>/maintenance <on/off> [servidor] <gray>(Activa/desactiva el manteniment al servidor)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Mostra tots els servidors proxy en manteniment)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2

@@ -29,6 +29,7 @@ reload: "<prefix><green>설정, 화이트리스트 플레이어, 언어 파일 �
 removedMotd: "<prefix><green>%INDEX%번째 motd를 삭제했습니다."
 removeMotdError: "<prefix><red>motd가 하나만 있으므로 제거할 수 없습니다!"
 setMotd: "<prefix><green>INDEX%의 %LINE% 줄을 %MOTD%로 설정합니다."
+setReason: "<prefix><green>Set maintenance reason to: <yellow>%REASON%"
 setMotdIndexError: "<prefix><red>현재 %MOTDS% motd가 있으므로 1에서 %NEWAMOUNT% 사이의 숫자를 선택해야 합니다."
 setMotdLineError: "<prefix><red>두 번째 인수는 줄 번호(1 또는 2)여야 합니다!"
 updateDownloading: "<prefix><red><bold>업데이트 다운로드 중..."
@@ -87,8 +88,9 @@ helpHelp: "<gold>/maintenance help [page] <gray>(Shows this beautiful help windo
 helpMotd: "<gold>/maintenance motd [timer] <gray>(Lists the currently set maintenance motds. If specifying 'timer', the timer motds are shown)"
 helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Removes a maintenance motd. If using 'timer' as an argument, a timerspecific pingmessage will be removed)"
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <message> <gray>(Sets a motd for maintenance mode. If using 'timer' as an argument, a timerspecific pingmessage will be set)"
+helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Reloads the config file, whitelist file and the server-icon)"
-helpToggle: "<gold>/maintenance <on/off> <gray>(Enables/disables maintenance mode)"
+helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Remotely downloads the newest version of the plugin onto your server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Shows all whitelisted players for the maintenance mode)"
 helpWhitelistAdd: "<gold>/maintenance add <name/uuid> <gray>(Adds the player to the maintenance whitelist, so they can join the server even though maintenance is enabled)"
@@ -98,7 +100,7 @@ helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(If running,
 helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
 helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleToggle: "<gold>/maintenance <on/off> [server] <gray>(Enables/disables maintenance mode)"
+helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
 language-version: 2
