@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Sletter en
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <message> <gray>(Angiver en motd for vedligeholdelsestilstand. Hvis 'timer' er angivet, vil en tidsspecifik pingbesked blive angivet)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Genindlæser konfigurationsfilen, hvidlisten og serverikonet)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Downloader den nyeste version af plugin'et på din server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Viser alle hvidlistede spillere for vedligeholdelsestilstand)"
