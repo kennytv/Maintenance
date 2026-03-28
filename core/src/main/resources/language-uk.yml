@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd <timer> [індекс] <gray>- <w
 helpSetMotd: "<gold>/maintenance setmotd <timer> [індекс] [1|2] [сообщение] <gray>- <white>Додати нове титульне повідомлення."
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>- <white>Перезавантажити плагін."
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>- <white>Оновити плагін."
 helpWhitelist: "<gold>/maintenance whitelist <gray>- <white>Відобразити всіх гравців із білого листа."

@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Usuwa motd
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <wiadomość> <gray>(Ustawia motd konserwacji. Jeśli wstawiono 'timer', motd z timerem zostanie ustawione)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Przeładowuje plik konfiguracji, białej listy i ikonę serwera)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Pobiera najnowszą wersję plugina)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Pokazuje białą listę trybu konserwacji)"

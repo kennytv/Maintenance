@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] <index> <gray>(Tar bort e
 helpSetMotd: "<gold>/maintenance setmotd [timer] <index> <1/2> <meddelande> <gray>(Sätter ett specifikt motd. If using. Om argumentet 'timer' specificeras, kommer ett timerspecifikt pingmeddelande bli satt)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Laddar om konfigurationsfilen, vitlistan and server ikonen)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Avlägset laddar ner senaste versionen av insticksprogrammet på din server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Visar alla vitlistade spelare för underhållsläget)"
