@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] <índex> <gray>(Elimina u
 helpSetMotd: "<gold>/maintenance setmotd [timer] <índex> <1/2> <missatge> <gray>(Configura un missatge MOTD per al manteniment. Si s'usa 'timer', es configurarà un missatge específic del temporitzador)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Recarrega el fitxer de configuració, la llista de permitits i la icona del servidor)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Descarrega la versió més recent del plugin al servidor)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Mostra tots els jugadors permitits durant el manteniment)"
