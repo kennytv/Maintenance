@@ -23,6 +23,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
 
 public final class ProxyStatusCommand extends ProxyCommandInfo {
 
@@ -64,5 +65,10 @@ public final class ProxyStatusCommand extends ProxyCommandInfo {
                 sender.send(getMessage("singleServerMaintenanceListEntryWithStartTimer", "%SERVER%", entry.getKey(), "%TIME%", serverTask.getTime()));
             }
         }
+    }
+
+    @Override
+    public Component getHelpMessage() {
+        return getMessage("helpStatus");
     }
 }

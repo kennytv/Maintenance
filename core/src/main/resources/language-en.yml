@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [timer] [mode] <index> <gray>(Rem
 helpSetMotd: "<gold>/maintenance setmotd [timer] [mode] <index> <1/2> <message> <gray>(Sets a maintenance motd in the selected mode)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Reloads the config file, whitelist file and the server-icon)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Remotely downloads the newest version of the plugin onto your server)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Shows all whitelisted players for the maintenance mode)"
@@ -109,4 +110,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] [mode] <enab
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Lists all proxied servers, that are currently under maintenance)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 2
+language-version: 4

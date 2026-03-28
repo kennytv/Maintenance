@@ -109,4 +109,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [servidor] <activar e
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Mostra tots els servidors proxy en manteniment)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 2
+language-version: 4

@@ -109,4 +109,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [serveur] <activer da
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Répertorie tous les serveurs mandatés actuellement en maintenance)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 2
+language-version: 4

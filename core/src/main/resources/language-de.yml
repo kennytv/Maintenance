@@ -109,4 +109,4 @@ helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [Server] [Modus] <Sta
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Aktiviert/deaktiviert den Wartungsmodus global oder auf einem bestimmten Server mit optionalem Anzeigemodus beim Aktivieren)"
 helpStatus: "<gold>/maintenance status <gray>(Zeigt alle Server an, auf denen momentan der Wartungsmodus aktiviert ist)"
 #Used for autoupdating the language file, do not change this value.
-language-version: 2
+language-version: 4

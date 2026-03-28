@@ -21,6 +21,7 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
+import net.kyori.adventure.text.Component;
 
 public final class StatusCommand extends CommandInfo {
 
@@ -37,5 +38,10 @@ public final class StatusCommand extends CommandInfo {
         } else {
             sender.send(getMessage(plugin.isMaintenance() ? "maintenanceStatusOn" : "maintenanceStatusOff"));
         }
+    }
+
+    @Override
+    public Component getHelpMessage() {
+        return getMessage("helpGlobalStatus");
     }
 }
