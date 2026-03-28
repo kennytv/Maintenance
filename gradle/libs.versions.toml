@@ -15,7 +15,6 @@ guava = "29.0-jre"
 snakeyaml = "1.23"
 jetbrainsAnnotations = "26.1.0"
 
-protocollib = "5.3.0"
 authlib = "1.5.25"
 luckperms = "5.3"
 serverlistplus = "3.5.0"
@@ -48,7 +47,6 @@ bstatsSponge = { group = "org.bstats", name = "bstats-sponge", version.ref = "bs
 bstatsVelocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bstats" }
 
 authlib = { group = "com.mojang", name = "authlib", version.ref = "authlib" }
-protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
 luckperms = { group = "net.luckperms", name = "api", version.ref = "luckperms" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 serverlistplus = { group = "net.minecrell", name = "ServerListPlus", version.ref = "serverlistplus" }

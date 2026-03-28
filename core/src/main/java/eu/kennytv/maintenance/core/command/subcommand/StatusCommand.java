@@ -15,28 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.kennytv.maintenance.core.proxy.command.subcommand;
+package eu.kennytv.maintenance.core.command.subcommand;
 
-import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
-import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
+import eu.kennytv.maintenance.core.MaintenancePlugin;
+import eu.kennytv.maintenance.core.command.CommandInfo;
+import eu.kennytv.maintenance.core.runnable.MaintenanceRunnable;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
-public final class StatusCommand extends ProxyCommandInfo {
+public final class StatusCommand extends CommandInfo {
 
-    public StatusCommand(final MaintenanceProxyPlugin plugin) {
-        super(plugin, "singleserver.status");
+    public StatusCommand(final MaintenancePlugin plugin) {
+        super(plugin, "status");
     }
 
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
-        if (getSettings().getMaintenanceServers().isEmpty()) {
-            sender.send(getMessage("singleServerMaintenanceListEmpty"));
-            return;
-        }
-
-        sender.send(getMessage("singleServerMaintenanceList"));
-        for (final String server : getSettings().getMaintenanceServers()) {
-            sender.send(getMessage("singleServerMaintenanceListEntry", "%SERVER%", server));
+        final MaintenanceRunnable task = plugin.getCurrentTask();
+        if (task != null) {
+            final String key = task.shouldEnable() ? "maintenanceStatusOffWithStartTimer" : "maintenanceStatusOnWithEndTimer";
+            sender.send(getMessage(key, "%TIME%", task.getTime()));
+        } else {
+            sender.send(getMessage(plugin.isMaintenance() ? "maintenanceStatusOn" : "maintenanceStatusOff"));
         }
     }
 }

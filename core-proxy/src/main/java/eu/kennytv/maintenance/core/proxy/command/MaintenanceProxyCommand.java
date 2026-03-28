@@ -41,7 +41,7 @@ public abstract class MaintenanceProxyCommand extends MaintenanceCommand {
     @Override
     protected void addToggleAndTimerCommands() {
         add(new SingleToggleCommand(plugin), "on", "off");
-        add(new StatusCommand(plugin), "status");
+        add(new ProxyStatusCommand(plugin), "status");
 
         add(new SingleStarttimerCommand(plugin), "starttimer", "start");
         add(new SingleEndtimerCommand(plugin), "endtimer", "end");

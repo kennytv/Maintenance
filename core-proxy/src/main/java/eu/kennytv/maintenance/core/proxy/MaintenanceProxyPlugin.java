@@ -32,7 +32,6 @@ import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.RateLimitedException;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import eu.kennytv.maintenance.core.util.ServerType;
-import eu.kennytv.maintenance.core.util.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,7 +59,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implements MaintenanceProxy {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_.]{1,16}$");
-    private final Map<String, Task> serverTasks = new HashMap<>();
+    private final Map<String, MaintenanceRunnableBase> serverTasks = new HashMap<>();
     protected SettingsProxy settingsProxy;
 
     protected MaintenanceProxyPlugin(final String version, final ServerType serverType) {
@@ -159,21 +158,33 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
         return serverTasks.containsKey(server.getName());
     }
 
+    public boolean hasServerTasks() {
+        return !serverTasks.isEmpty();
+    }
+
+    public Map<String, MaintenanceRunnableBase> getServerTasks() {
+        return serverTasks;
+    }
+
+    public MaintenanceRunnableBase getServerTask(final String server) {
+        return serverTasks.get(server);
+    }
+
     @Override
     public Set<String> getMaintenanceServers() {
         return Collections.unmodifiableSet(settingsProxy.getMaintenanceServers());
     }
 
     public void cancelSingleTask(final Server server) {
-        final Task task = serverTasks.remove(server.getName());
+        final MaintenanceRunnableBase task = serverTasks.remove(server.getName());
         if (task != null) {
-            task.cancel();
+            task.getTask().cancel();
         }
     }
 
     public MaintenanceRunnableBase startSingleMaintenanceRunnable(final Server server, final Duration duration, final boolean enable, @Nullable final String mode) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceRunnable(this, settingsProxy, (int) duration.getSeconds(), enable, server, mode);
-        serverTasks.put(server.getName(), runnable.getTask());
+        serverTasks.put(server.getName(), runnable);
         return runnable;
     }
 
@@ -185,7 +196,7 @@ public abstract class MaintenanceProxyPlugin extends MaintenancePlugin implement
                                                                      final Duration maintenanceDuration, @Nullable final String mode) {
         final MaintenanceRunnableBase runnable = new SingleMaintenanceScheduleRunnable(this, settingsProxy,
                 (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), server, mode);
-        serverTasks.put(server.getName(), runnable.getTask());
+        serverTasks.put(server.getName(), runnable);
         return runnable;
     }
 

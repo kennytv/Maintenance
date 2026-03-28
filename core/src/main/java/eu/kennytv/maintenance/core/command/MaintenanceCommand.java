@@ -31,6 +31,7 @@ import eu.kennytv.maintenance.core.command.subcommand.ScheduleTimerCommand;
 import eu.kennytv.maintenance.core.command.subcommand.SetReasonCommand;
 import eu.kennytv.maintenance.core.command.subcommand.SetMotdCommand;
 import eu.kennytv.maintenance.core.command.subcommand.StarttimerCommand;
+import eu.kennytv.maintenance.core.command.subcommand.StatusCommand;
 import eu.kennytv.maintenance.core.command.subcommand.ToggleCommand;
 import eu.kennytv.maintenance.core.command.subcommand.UpdateCommand;
 import eu.kennytv.maintenance.core.command.subcommand.WhitelistAddCommand;
@@ -170,6 +171,7 @@ public abstract class MaintenanceCommand {
 
     protected void addToggleAndTimerCommands() {
         add(new ToggleCommand(plugin), "on", "off");
+        add(new StatusCommand(plugin), "status");
 
         add(new StarttimerCommand(plugin), "starttimer", "start");
         add(new EndtimerCommand(plugin), "endtimer", "end");

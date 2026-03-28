@@ -393,6 +393,10 @@ public abstract class MaintenancePlugin implements Maintenance {
         return runnable != null;
     }
 
+    public @Nullable MaintenanceRunnable getCurrentTask() {
+        return runnable;
+    }
+
     @Override
     public Settings getSettings() {
         return settings;

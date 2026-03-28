@@ -19,6 +19,8 @@ This update removes *a lot* of legacy code, making the code-base a great bit mor
   - Other updated commands: `/maintenance motd [timer] [mode]`, `/maintenance setmotd [timer] [mode] ...`, `/maintenance removemotd [timer] [mode] ...`
 - **Added `%REASON%` variable to messages**, using the `active-reason` config option. This allows for dynamic MOTD and other messages via a quick command without modifying the messages themselves
   - Can be changed via the `/maintenance setreason <reason>` command
+- **Added `/maintenance status` command** on Paper/Sponge to display the current maintenance status as well as any running start or end timers.
+- Velocity/Bungee: **The existing timer command now displays start and end timers** for proxied servers.
 - Velocity/Bungee: **Replaced `mysql` section with `redis`**. This is a more suitable database for such reading and sharing of data and no longer means some server pings can take multiple seconds, if you have multiple proxies linked
 
 ### Fixed
