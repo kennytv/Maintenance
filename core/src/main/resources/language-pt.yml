@@ -96,6 +96,7 @@ helpRemoveMotd: "<gold>/maintenance removemotd [temporizador] <índice> <gray>(R
 helpSetMotd: "<gold>/maintenance setmotd [temporizador] <índice> <1/2> <mensagem> <gray>(Define uma motd para o modo de manutenção. Se usar 'temporizador' como argumento, uma mensagem de ping específica do temporizador será definida)"
 helpSetReason: "<gold>/maintenance setreason <reason/none> <gray>(Sets or clears the %REASON% placeholder value)"
 helpReload: "<gold>/maintenance reload <gray>(Recarrega o arquivo de configuração, arquivo de lista branca e o ícone do servidor)"
+helpGlobalStatus: "<gold>/maintenance status <gray>(Shows the current maintenance status and any running timers)"
 helpToggle: "<gold>/maintenance <on/off> [mode] <gray>(Enables/disables maintenance mode with an optional display mode when enabling)"
 helpUpdate: "<gold>/maintenance update <gray>(Baixa remotamente a versão mais recente do plugin para o seu servidor)"
 helpWhitelist: "<gold>/maintenance whitelist <gray>(Mostra todos os jogadores na lista branca para o modo de manutenção)"
