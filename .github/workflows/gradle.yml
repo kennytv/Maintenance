@@ -22,7 +22,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Maintenance Files
           path: build/libs
