@@ -1,10 +1,8 @@
-import dev.lukebemish.centralportalpublishing.CentralPortalRepositoryHandlerExtension
-
 plugins {
     `java-library`
     `maven-publish`
     signing
-    id("dev.lukebemish.central-portal-publishing")
+    id("com.gradleup.nmcp")
 }
 
 tasks {
@@ -27,25 +25,18 @@ tasks {
     test {
         useJUnitPlatform()
     }
-    publish {
-        dependsOn(tasks.named("publishMaintenanceCentralPortalBundle"))
-    }
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
     withSourcesJar()
+    withJavadocJar()
 }
 
 signing {
     useGpgCmd()
     sign(publishing.publications)
-}
-
-centralPortalPublishing.bundle("maintenance") {
-    username = System.getenv("MAVEN_CENTRAL_USERNAME")
-    password = System.getenv("MAVEN_CENTRAL_PASSWORD")
 }
 
 publishing {
@@ -57,6 +48,11 @@ publishing {
             name.set("Maintenance")
             description.set("Paper plugin to enable maintenance mode on your Minecraft server.")
             url.set("https://github.com/kennytv/Maintenance")
+            scm {
+                url.set("https://github.com/kennytv/Maintenance")
+                connection.set("scm:git:https://github.com/kennytv/Maintenance.git")
+                developerConnection.set("scm:git:ssh://git@github.com/kennytv/Maintenance.git")
+            }
             licenses {
                 license {
                     name.set("GNU GPLv3")
@@ -69,13 +65,6 @@ publishing {
                     name.set("Nassim Jahnke")
                 }
             }
-        }
-    }
-
-    if (!name.startsWith("adventure")) {
-        repositories {
-            val portal = (this as ExtensionAware).extensions.getByType(CentralPortalRepositoryHandlerExtension::class)
-            portal.portalBundle(":", "maintenance")
         }
     }
 }

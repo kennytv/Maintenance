@@ -4,6 +4,7 @@ import org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_ONLY_CONFIGURATION_NAME
 plugins {
     base
     id("maintenance.build-logic")
+    id("com.gradleup.nmcp.aggregation") version "1.4.4"
 }
 
 allprojects {
@@ -35,5 +36,21 @@ subprojects {
         TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.bundles.junit)
         TEST_IMPLEMENTATION_CONFIGURATION_NAME(rootProject.libs.snakeyaml)
         TEST_RUNTIME_ONLY_CONFIGURATION_NAME("org.junit.platform:junit-platform-launcher")
+    }
+}
+
+dependencies {
+    allprojects {
+        nmcpAggregation(project(path))
+    }
+}
+
+nmcpAggregation {
+    centralPortal {
+        username = System.getenv("MAVEN_CENTRAL_USERNAME")
+        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+        publishingType = "USER_MANAGED"
+        publicationName = "maintenance:$version"
+        publishingTimeout = java.time.Duration.ZERO
     }
 }

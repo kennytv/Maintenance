@@ -11,6 +11,7 @@ fun Project.publishShadowJar() {
     configurePublication {
         artifact(tasks["shadowJar"])
         artifact(tasks["sourcesJar"])
+        artifact(tasks["javadocJar"])
     }
 }
 

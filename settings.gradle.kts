@@ -6,7 +6,6 @@ dependencyResolutionManagement {
         maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://repo.dmulloy2.net/repository/public/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         mavenCentral()
     }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -17,7 +16,7 @@ pluginManagement {
         id("net.kyori.blossom") version "2.2.0"
         id("org.jetbrains.gradle.plugin.idea-ext") version "1.4.1"
         id("com.gradleup.shadow") version "9.3.1"
-        id("dev.lukebemish.central-portal-publishing") version "0.1.7"
+        id("com.gradleup.nmcp") version "1.4.4"
     }
 }
 
