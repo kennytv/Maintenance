@@ -2,12 +2,12 @@ metadata.format.version = "1.1"
 
 [versions]
 
-# Shaded
+jedis = "7.4.0"
+bstats = "3.2.1"
+
+# Provided on good platforms, shaded in Bungee
 adventure = "4.26.1"
 adventurePlatform = "4.4.1"
-
-jedis = "7.3.0"
-bstats = "3.1.0"
 
 # Provided
 gson = "2.8.8"
@@ -24,7 +24,7 @@ bungee = "1.21-R0.4-SNAPSHOT"
 sponge = "8.0.0"
 velocity = "3.4.0"
 
-junitVer = "5.14.2"
+junitVer = "6.0.3"
 
 
 [libraries]
