@@ -2,7 +2,7 @@
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
 ---
-## 5.0.0 - Unreleased
+## 5.0.0 - April 17th 2026
 
 This update removes *a lot* of legacy code, making the code-base a great bit more simple and a lot more performant.
 
