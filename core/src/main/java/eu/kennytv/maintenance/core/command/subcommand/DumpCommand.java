@@ -27,6 +27,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import static eu.kennytv.maintenance.core.util.ComponentUtil.clickEvent;
+
 public final class DumpCommand extends CommandInfo {
     private long lastDump;
 
@@ -56,9 +58,8 @@ public final class DumpCommand extends CommandInfo {
             final String url = "https://pastes.dev/" + key;
             sender.sendPrefixedRich("<red><click:open_url:'" + url + "'>" + url + "</click>");
             if (sender.isPlayer()) {
-                //noinspection deprecation
                 final TextComponent text = Component.text().content("Click here to copy the link").color(NamedTextColor.GRAY)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
+                        .clickEvent(clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
                         .hoverEvent(HoverEvent.showText(Component.text("Click here to copy the link to your clipboard").color(NamedTextColor.GREEN)))
                         .build();
                 sender.send(plugin.prefix().append(text));

@@ -31,6 +31,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import static eu.kennytv.maintenance.core.util.ComponentUtil.clickEvent;
+
 public abstract class JoinListenerBase {
     protected final MaintenancePlugin plugin;
     protected final Settings settings;
@@ -76,11 +78,10 @@ public abstract class JoinListenerBase {
             notifiedPlayers.add(sender.uuid());
             sender.sendPrefixedRich("<red>There is a newer version available: <green>Version " + plugin.getNewestVersion() + "<red>, you're on <green>" + plugin.getVersion());
 
-            //noinspection deprecation
             final TextComponent text = Component.text().content("Download it at: ").color(NamedTextColor.RED)
                     .append(Component.text().content(MaintenancePlugin.HANGAR_URL).color(NamedTextColor.GOLD))
                     .append(Component.text().content(" (CLICK ME)").color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD))
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, MaintenancePlugin.HANGAR_URL))
+                    .clickEvent(clickEvent(ClickEvent.Action.OPEN_URL, MaintenancePlugin.HANGAR_URL))
                     .hoverEvent(HoverEvent.showText(Component.text("Download the latest version").color(NamedTextColor.GREEN)))
                     .build();
             sender.send(plugin.prefix().append(text));
