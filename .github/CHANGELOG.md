@@ -17,6 +17,7 @@ This update removes *a lot* of legacy code, making the code-base a great bit mor
   - Updated proxy/global toggle syntax: `/maintenance on [mode]`
     - For proxy servers: `/maintenance on global [mode]`, `/maintenance on <server> [mode]`
   - Other updated commands: `/maintenance motd [timer] [mode]`, `/maintenance setmotd [timer] [mode] ...`, `/maintenance removemotd [timer] [mode] ...`
+- **Added `webhook` config option for Discord webhooks** when the maintenance status changes, a timer is started or a join is blocked
 - **Added `%REASON%` variable to messages**, using the `active-reason` config option. This allows for dynamic MOTD and other messages via a quick command without modifying the messages themselves
   - Can be changed via the `/maintenance setreason <reason>` command
 - **Added `/maintenance status` command** on Paper/Sponge to display the current maintenance status as well as any running start or end timers.
