@@ -7,7 +7,7 @@ noPermission: "<red>Du hast nicht die erforderliche Berechtigung, um diesen Befe
 kickmessage: "<red>Der Server befindet sich momentan im Wartungsmodus!<br>Bitte versuche es später nochmal!"
 maintenanceActivated: "<prefix><gold>Der Wartungsmodus ist jetzt aktiviert."
 maintenanceDeactivated: "<prefix><gold>Der Wartungsmodus ist nun deaktiviert."
-maintenanceStatusOn: "<prefix><gold>Maintenance mode is currently <green>enabled<gold>."
+maintenanceStatusOn: "<prefix><gold>Wartungsmodus ist derzeit <green>aktiviert<gold>."
 maintenanceStatusOff: "<prefix><gold>Maintenance mode is currently <red>disabled<gold>."
 maintenanceStatusOnWithEndTimer: "<prefix><gold>Maintenance mode is currently <green>enabled <grey>and will be disabled in <gold>%TIME%."
 maintenanceStatusOffWithStartTimer: "<prefix><gold>Maintenance mode is currently <red>disabled <grey>and will be enabled in <gold>%TIME%."
