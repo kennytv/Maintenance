@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class SettingsProxy extends Settings {
 
-    private Map<String, String> maintenanceServers = new LinkedHashMap<>();
+    private Map<String, String> maintenanceServers;
     private List<String> fallbackServers;
     private String waitingServer;
     private boolean fallbackToOfflineUUID;
