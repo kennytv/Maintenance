@@ -8,6 +8,6 @@ repositories {
 
 dependencies {
     // version must be manually kept in sync with the one in root project settings.gradle.kts
-    implementation("com.gradleup.shadow:shadow-gradle-plugin:9.3.1")
+    implementation("com.gradleup.shadow:shadow-gradle-plugin:9.4.1")
     implementation("com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin:1.4.4")
 }
