@@ -2,7 +2,7 @@ metadata.format.version = "1.1"
 
 [versions]
 
-jedis = "7.4.0"
+jedis = "7.4.1"
 bstats = "3.2.1"
 
 # Provided on good platforms, shaded in Bungee
