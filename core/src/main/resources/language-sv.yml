@@ -109,5 +109,16 @@ helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>
 helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Listar alla proxiade servrar som är i underhåll)"
+#Discord webhook messages. These use Discord markdown, not MiniMessage.
+#For timer webhooks, %TIMESTAMP% is a Unix timestamp for use in Discord timestamp tags, e.g. <t:%TIMESTAMP%:R>.
+webhookMaintenanceActivated: "**Maintenance mode enabled.**"
+webhookMaintenanceDeactivated: "**Maintenance mode disabled.**"
+webhookStarttimerStarted: "Maintenance mode will be enabled <t:%TIMESTAMP%:R> (`%TIME%`)."
+webhookEndtimerStarted: "Maintenance mode will be disabled <t:%TIMESTAMP%:R> (`%TIME%`)."
+webhookJoinNotification: "Blocked join: `%PLAYER%` tried to join during maintenance."
+webhookSingleMaintenanceActivated: "Maintenance mode enabled on `%SERVER%`."
+webhookSingleMaintenanceDeactivated: "Maintenance mode disabled on `%SERVER%`."
+webhookSingleStarttimerStarted: "Maintenance mode will be enabled on `%SERVER%` <t:%TIMESTAMP%:R> (`%TIME%`)."
+webhookSingleEndtimerStarted: "Maintenance mode will be disabled on `%SERVER%` <t:%TIMESTAMP%:R> (`%TIME%`)."
 #Used for autoupdating the language file, do not change this value.
-language-version: 4
+language-version: 5
