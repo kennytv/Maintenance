@@ -16,7 +16,7 @@ pluginManagement {
         id("net.kyori.blossom") version "2.2.0"
         id("org.jetbrains.gradle.plugin.idea-ext") version "1.4.1"
         id("com.gradleup.shadow") version "9.4.1"
-        id("com.gradleup.nmcp") version "1.4.4"
+        id("com.gradleup.nmcp") version "1.5.0"
     }
 }
 
