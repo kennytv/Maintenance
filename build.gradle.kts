@@ -4,7 +4,7 @@ import org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_ONLY_CONFIGURATION_NAME
 plugins {
     base
     id("maintenance.build-logic")
-    id("com.gradleup.nmcp.aggregation") version "1.4.4"
+    id("com.gradleup.nmcp.aggregation") version "1.5.0"
 }
 
 allprojects {
