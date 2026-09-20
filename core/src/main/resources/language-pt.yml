@@ -118,7 +118,7 @@ webhookEndtimerStarted: "Manutenção será desativada em <t:%TIMESTAMP%:R> (`%T
 webhookJoinNotification: "Entrada bloqueada: `%PLAYER%` tentou conectar durante a manutenção."
 webhookSingleMaintenanceActivated: "Manutenção será ativada em `%SERVER%`."
 webhookSingleMaintenanceDeactivated: "Manutenção será desativada em `%SERVER%`."
-webhookSingleStarttimerStarted: "Maintenance mode will be enabled on `%SERVER%` <t:%TIMESTAMP%:R> (`%TIME%`)."
+webhookSingleStarttimerStarted: ""
 webhookSingleEndtimerStarted: "Maintenance mode will be disabled on `%SERVER%` <t:%TIMESTAMP%:R> (`%TIME%`)."
 #Used for autoupdating the language file, do not change this value.
 language-version: 5
