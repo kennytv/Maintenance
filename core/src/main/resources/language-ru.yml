@@ -104,9 +104,9 @@ helpWhitelistAdd: "<gold>/maintenance add [ник|uuid] <gray>- <white>Доба�
 helpWhitelistRemove: "<gold>/maintenance remove [ник|uuid] <gray>- <white>Удалить игрока из белого списка."
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [сервер] <gray>- <white>Остановить таймер включения/выключения режима технических работ."
-helpSingleEndtimer: "<gold>/maintenance endtimer [сервер] <disable in> <gray>(По истечению заданного времени, например 1h5m, режим технических работ будет выключен)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [сервер] <enable in> <gray>(По истечению заданного времени, например 1h5m, режим технических работ будет включен)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [сервер] <enable in> <maintenance duration> <gray>(По истечению заданного времени, например 1h5m, режим технических работ будет включен)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server|global] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server|global] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server|global] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray> (включает/отключает режим обслуживания глобально или на определенном сервере с дополнительным режимом отображения при включении)"
 helpStatus: "<gold>/maintenance status <gray>- <white>Список всех серверов закрытых на технические работы."
 #Discord webhook messages. These use Discord markdown, not MiniMessage.
