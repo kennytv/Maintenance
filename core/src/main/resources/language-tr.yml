@@ -104,9 +104,9 @@ helpWhitelistAdd: "<gold>/maintenance add <isim/uuid> <gray>(Oyuncuyu bakım bey
 helpWhitelistRemove: "<gold>/maintenance remove <isim/uuid> <gray>(Oyuncuyu bakım beyaz listesinden kaldırır)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [sunucu] <gray>(Çalışıyorsa, mevcut zamanlayıcı iptal edilecektir.)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(Belirtilen süreden sonra, Örnek: 1h5m, bakım modu deaktif olacaktır)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(Belirtilen süreden sonra, Örnek: 1h5m, bakım modu aktif olacaktır)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(Belirtilen süreden sonra, Örnek: 1h5m, bakım modu deaktif olacaktır)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server|global] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server|global] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server|global] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Şu anda bakımda olan tüm sunucuları listeler)"
 #Discord webhook messages. These use Discord markdown, not MiniMessage.
