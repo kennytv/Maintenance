@@ -104,9 +104,9 @@ helpWhitelistAdd: "<gold>/maintenance add <名稱/uuid> <gray>(將玩家新增�
 helpWhitelistRemove: "<gold>/maintenance remove <名稱/uuid> <gray>(將玩家從維護白名單中移除)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [伺服器] <gray>(如果正在執行，目前的計時器將會被中止)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [伺服器] <停用時間> <gray>(經過指定的時間後，例如 1 小時 5 分鐘，維護模式將會被停用)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [伺服器] <啟用時間> <gray>(經過指定的時間後，例如 1 小時 5 分鐘，維護模式將會被啟用)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [伺服器] <啟用時間> <維護持續時間> <gray>(經過指定的時間後，例如 1 小時 5 分鐘，維護模式將會被啟用)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server|global] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server|global] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server|global] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(列出目前正在維護的所有代理伺服器)"
 #Discord webhook messages. These use Discord markdown, not MiniMessage.
