@@ -20,16 +20,23 @@ package eu.kennytv.maintenance.core.runnable;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 public class MaintenanceRunnable extends MaintenanceRunnableBase {
+    protected final String mode;
 
     public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable) {
+        this(plugin, settings, seconds, enable, null);
+    }
+
+    public MaintenanceRunnable(final MaintenancePlugin plugin, final Settings settings, final int seconds, final boolean enable, @Nullable final String mode) {
         super(plugin, settings, seconds, enable);
+        this.mode = mode;
     }
 
     @Override
     protected void finish() {
-        plugin.setMaintenance(enable);
+        plugin.setMaintenance(enable, mode);
     }
 
     @Override

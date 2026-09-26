@@ -21,12 +21,17 @@ import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 public final class MaintenanceScheduleRunnable extends MaintenanceRunnable {
     private final int maintenanceDuration;
 
     public MaintenanceScheduleRunnable(final MaintenancePlugin plugin, final Settings settings, final int secondsToEnable, final int maintenanceDuration) {
-        super(plugin, settings, secondsToEnable, true);
+        this(plugin, settings, secondsToEnable, maintenanceDuration, null);
+    }
+
+    public MaintenanceScheduleRunnable(final MaintenancePlugin plugin, final Settings settings, final int secondsToEnable, final int maintenanceDuration, @Nullable final String mode) {
+        super(plugin, settings, secondsToEnable, true, mode);
         this.maintenanceDuration = maintenanceDuration;
     }
 

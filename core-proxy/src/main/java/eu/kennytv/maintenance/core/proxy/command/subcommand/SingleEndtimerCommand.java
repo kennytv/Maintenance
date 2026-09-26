@@ -24,6 +24,7 @@ import eu.kennytv.maintenance.core.runnable.MaintenanceRunnableBase;
 import eu.kennytv.maintenance.core.util.DiscordWebhook;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -43,59 +44,82 @@ public final class SingleEndtimerCommand extends ProxyCommandInfo {
     @Override
     public void execute(final SenderInfo sender, final String[] args) {
         if (args.length == 2) {
-            if (checkPermission(sender, "timer")) return;
-
-            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[1]);
-            if (duration == null) {
-                sender.send(getHelpMessage());
-                return;
-            }
-            if (!plugin.isMaintenance()) {
-                sender.send(getMessage("alreadyDisabled"));
-                return;
-            }
-
-            plugin.startMaintenanceRunnable(duration, false);
-
-            final Component message = getMessage("endtimerStarted", "%TIME%", plugin.getRunnable().getTime());
-            sender.send(message);
-            plugin.sendWebhookMessage("webhookEndtimerStarted", DiscordWebhook.EventType.ENDTIMER_STARTED,
-                    "%TIME%", plugin.getRunnable().getTime(),
-                    "%TIMESTAMP%", plugin.getTargetTimestamp(duration));
+            endGlobal(sender, args[1]);
         } else if (args.length == 3) {
-            if (checkPermission(sender, "singleserver.timer")) return;
-
-            final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, args[2], false);
-            if (duration == null) {
-                sender.send(getHelpMessage());
-                return;
+            if (args[1].equalsIgnoreCase("global")) {
+                endGlobal(sender, args[2]);
+            } else {
+                endSingle(sender, args[1], args[2]);
             }
-
-            final Server server = plugin.getCommandManager().checkSingleTimerServerArg(sender, args[1]);
-            if (server == null) return;
-            if (!plugin.isMaintenance(server)) {
-                sender.send(getMessage("singleServerAlreadyDisabled", "%SERVER%", server.getName()));
-                return;
-            }
-
-            final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, false);
-            final Component message = getMessage(
-                    "singleEndtimerStarted",
-                    "%TIME%", runnable.getTime(),
-                    "%SERVER%", server.getName()
-            );
-            sender.send(message);
-            plugin.sendWebhookMessage("webhookSingleEndtimerStarted", DiscordWebhook.EventType.ENDTIMER_STARTED,
-                    "%TIME%", runnable.getTime(),
-                    "%SERVER%", server.getName(),
-                    "%TIMESTAMP%", plugin.getTargetTimestamp(duration));
         } else {
             sender.send(getHelpMessage());
         }
     }
 
+    private void endGlobal(final SenderInfo sender, final String durationArg) {
+        if (checkPermission(sender, "timer")) return;
+
+        final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, durationArg);
+        if (duration == null) {
+            sender.send(getHelpMessage());
+            return;
+        }
+        if (!plugin.isMaintenance()) {
+            sender.send(getMessage("alreadyDisabled"));
+            return;
+        }
+
+        plugin.startMaintenanceRunnable(duration, false);
+
+        final Component message = getMessage("endtimerStarted", "%TIME%", plugin.getRunnable().getTime());
+        sender.send(message);
+        plugin.sendWebhookMessage("webhookEndtimerStarted", DiscordWebhook.EventType.ENDTIMER_STARTED,
+                "%TIME%", plugin.getRunnable().getTime(),
+                "%TIMESTAMP%", plugin.getTargetTimestamp(duration));
+    }
+
+    private void endSingle(final SenderInfo sender, final String serverArg, final String durationArg) {
+        if (checkPermission(sender, "singleserver.timer")) return;
+
+        final Duration duration = plugin.getCommandManager().parseDurationAndCheckTask(sender, durationArg, false);
+        if (duration == null) {
+            sender.send(getHelpMessage());
+            return;
+        }
+
+        final Server server = plugin.getCommandManager().checkSingleTimerServerArg(sender, serverArg);
+        if (server == null) return;
+        if (!plugin.isMaintenance(server)) {
+            sender.send(getMessage("singleServerAlreadyDisabled", "%SERVER%", server.getName()));
+            return;
+        }
+
+        final MaintenanceRunnableBase runnable = plugin.startSingleMaintenanceRunnable(server, duration, false);
+        final Component message = getMessage(
+                "singleEndtimerStarted",
+                "%TIME%", runnable.getTime(),
+                "%SERVER%", server.getName()
+        );
+        sender.send(message);
+        plugin.sendWebhookMessage("webhookSingleEndtimerStarted", DiscordWebhook.EventType.ENDTIMER_STARTED,
+                "%TIME%", runnable.getTime(),
+                "%SERVER%", server.getName(),
+                "%TIMESTAMP%", plugin.getTargetTimestamp(duration));
+    }
+
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase(Locale.ROOT)) : Collections.emptyList();
+        if (args.length != 2) {
+            return Collections.emptyList();
+        }
+
+        final List<String> suggestions = new ArrayList<>();
+        if (sender.hasMaintenancePermission("timer") && plugin.isMaintenance()) {
+            suggestions.add("global");
+        }
+        if (sender.hasMaintenancePermission("singleserver.timer")) {
+            suggestions.addAll(plugin.getCommandManager().getMaintenanceServersCompletion(args[1].toLowerCase(Locale.ROOT)));
+        }
+        return suggestions;
     }
 }

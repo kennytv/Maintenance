@@ -200,7 +200,11 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     public void startMaintenanceRunnable(final Duration duration, final boolean enable) {
-        runnable = new MaintenanceRunnable(this, settings, (int) duration.getSeconds(), enable);
+        startMaintenanceRunnable(duration, enable, null);
+    }
+
+    public void startMaintenanceRunnable(final Duration duration, final boolean enable, @Nullable final String mode) {
+        runnable = new MaintenanceRunnable(this, settings, (int) duration.getSeconds(), enable, mode);
         // Save the endtimer to be able to continue it after a server stop
         if (settings.isSaveEndtimerOnStop() && !runnable.shouldEnable()) {
             settings.setSavedEndtimer(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(runnable.getSecondsLeft()));
@@ -208,7 +212,11 @@ public abstract class MaintenancePlugin implements Maintenance {
     }
 
     public void scheduleMaintenanceRunnable(final Duration enableIn, final Duration maintenanceDuration) {
-        runnable = new MaintenanceScheduleRunnable(this, settings, (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds());
+        scheduleMaintenanceRunnable(enableIn, maintenanceDuration, null);
+    }
+
+    public void scheduleMaintenanceRunnable(final Duration enableIn, final Duration maintenanceDuration, @Nullable final String mode) {
+        runnable = new MaintenanceScheduleRunnable(this, settings, (int) enableIn.getSeconds(), (int) maintenanceDuration.getSeconds(), mode);
     }
 
     public boolean updateAvailable() {

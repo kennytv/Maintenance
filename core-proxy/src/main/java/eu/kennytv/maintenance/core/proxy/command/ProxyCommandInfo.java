@@ -20,6 +20,8 @@ package eu.kennytv.maintenance.core.proxy.command;
 import eu.kennytv.maintenance.core.command.CommandInfo;
 import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.SettingsProxy;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ProxyCommandInfo extends CommandInfo {
     protected final MaintenanceProxyPlugin plugin;
@@ -32,5 +34,11 @@ public abstract class ProxyCommandInfo extends CommandInfo {
     @Override
     protected SettingsProxy getSettings() {
         return plugin.getSettingsProxy();
+    }
+
+    protected List<String> getModesCompletion() {
+        final List<String> modes = new ArrayList<>(getSettings().getPingMessages().getKeys());
+        modes.remove("default");
+        return modes;
     }
 }
