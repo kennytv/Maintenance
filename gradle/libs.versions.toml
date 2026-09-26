@@ -2,11 +2,11 @@ metadata.format.version = "1.1"
 
 [versions]
 
-jedis = "7.5.0"
+jedis = "8.0.1"
 bstats = "3.2.1"
 
 # Provided on good platforms, shaded in Bungee
-adventure = "4.26.1"
+adventure = "5.2.0"
 adventurePlatform = "4.4.1"
 
 # Provided
@@ -16,15 +16,15 @@ snakeyaml = "1.23"
 jetbrainsAnnotations = "26.1.0"
 
 authlib = "1.5.25"
-luckperms = "5.3"
+luckperms = "5.5"
 serverlistplus = "3.5.0"
 
 paper = "1.21.11-R0.1-SNAPSHOT"
-bungee = "1.21-R0.4-SNAPSHOT"
+bungee = "26.1-R0.1-SNAPSHOT"
 sponge = "17.0.0"
 velocity = "3.4.0"
 
-junitVer = "6.0.3"
+junitVer = "6.1.3"
 
 
 [libraries]

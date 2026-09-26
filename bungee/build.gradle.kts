@@ -6,10 +6,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        relocate("net.kyori", "eu.kennytv.maintenance.lib.kyori") {
-            exclude("net.kyori", "adventure-bom")
-            exclude("com.google.code.gson", "gson")
-        }
+        relocate("net.kyori", "eu.kennytv.maintenance.lib.kyori")
     }
 }
 
