@@ -104,9 +104,9 @@ helpWhitelistAdd: "<gold>/maintenance add <nom/uuid> <gray>(Afegeix el jugador a
 helpWhitelistRemove: "<gold>/maintenance remove <nom/uuid> <gray>(Elimina el jugador de la llista de permitits del manteniment)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [servidor] <gray>(Si està actiu, cancel·la el temporitzador del servidor)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [servidor] <desactivar en> <gray>(Després del temps indicat, es desactivarà el manteniment al servidor)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [servidor] <activar en> <gray>(Després del temps indicat, s'activarà el manteniment al servidor)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [servidor] <activar en> <durada del manteniment> <gray>(Programa l'activació del manteniment al servidor)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server|global] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server|global] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server|global] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Mostra tots els servidors proxy en manteniment)"
 #Discord webhook messages. These use Discord markdown, not MiniMessage.
