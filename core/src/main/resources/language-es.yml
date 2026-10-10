@@ -38,7 +38,7 @@ setMotdIndexError: "<prefix><green>Actualmente tiene <gold>%MOTDS%<green> Motd(s
 setMotdLineError: "<prefix><gray>El segundo argumento tiene que ser el numero de línea.(1 ó 2<dark_gray>)!"
 updateDownloading: "<prefix><green>Descargando actualización..."
 updateFailed: "<prefix><red>Actualizacion fallida!"
-updateFinished: "<prefix><green>La actualización fue exitosa!, debes reiniciar el servidor!"
+updateFinished: "<prefix><green><bold>The update was successful! To prevent issues with tasks and to complete the update, you have to restart the server!"
 whitelistedPlayers: "<prefix><gold>Jugadores en lista blanca:"
 whitelistedPlayersFormat: "<gray>- <green>%NAME% <dark_gray>(<gray>%UUID%<dark_gray>)"
 whitelistAdded: "<prefix><green>%PLAYER% <gray>Añadido a la lista de mantenimiento!"
