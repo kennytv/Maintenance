@@ -147,7 +147,7 @@ webhook:
 # have the same maintenance status (global as well as per server) and whitelisted players,
 # so you won't have to update these on every proxy by hand.
 redis:
-  enables: false
+  enabled: false
   # Make sure your Redis instance is properly protected.
   # URI format: redis[s]://[[username][:password]@][host][:port][/db-number]
   # E.g. an SSL connection to a password protected redis could look like this: "rediss://user:password@127.0.0.1:6379"
@@ -159,4 +159,4 @@ redis:
 update-checks: true
 
 # Used for autoupdating the config, do not change this value.
-config-version: 11
+config-version: 12

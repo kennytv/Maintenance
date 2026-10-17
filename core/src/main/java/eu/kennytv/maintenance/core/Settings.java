@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Settings implements eu.kennytv.maintenance.api.Settings {
     public static final String NEW_LINE_REPLACEMENT = "<br>";
-    private static final int CONFIG_VERSION = 11;
+    private static final int CONFIG_VERSION = 12;
     private static final int LANGUAGE_VERSION = 5;
     protected final MaintenancePlugin plugin;
     private final Map<UUID, String> whitelistedPlayers = new HashMap<>();
@@ -175,6 +175,9 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
         if (file.exists()) return;
 
         try (final InputStream in = plugin.getResource(fileName)) {
+            if (in == null) {
+                throw new IOException("No bundled language file " + fileName);
+            }
             Files.copy(in, file.toPath());
         } catch (final IOException e) {
             plugin.getLogger().warning("Unable to provide language " + languageName);
@@ -335,6 +338,10 @@ public class Settings implements eu.kennytv.maintenance.api.Settings {
                     }
                     config.set("proxied-maintenance-servers", migratedServers);
                 }
+            }
+            if (version < 12) {
+                // Fix typo in the shipped config key :>
+                config.move("redis.enables", "redis.enabled");
             }
 
             createFile("config-new.yml", "config.yml");
