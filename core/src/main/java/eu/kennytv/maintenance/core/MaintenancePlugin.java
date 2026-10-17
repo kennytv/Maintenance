@@ -306,6 +306,8 @@ public abstract class MaintenancePlugin implements Maintenance {
     private void checkNewestVersion() throws Exception {
         final URLConnection connection = URI.create("https://hangar.papermc.io/api/v1/projects/Maintenance/latestrelease").toURL().openConnection();
         connection.setRequestProperty("User-Agent", "Maintenance/" + getVersion());
+        connection.setConnectTimeout(5_000);
+        connection.setReadTimeout(10_000);
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             final String newVersionString = reader.readLine();
             final Version newVersion = new Version(newVersionString);

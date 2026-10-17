@@ -101,9 +101,9 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
     @Override
     public Task startMaintenanceRunnable(final Runnable runnable) {
         if (FOLIA) {
-            throw new UnsupportedOperationException("Scheduling tasks is not yet supported on Folia");
+            return new PaperTask(getServer().getGlobalRegionScheduler().runAtFixedRate(plugin, task -> runnable.run(), 1, 20));
         }
-        return new PaperTask(getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0, 20));
+        return new PaperTask(getServer().getScheduler().runTaskTimer(plugin, runnable, 0, 20));
     }
 
     @Override
@@ -119,15 +119,18 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
     }
 
     @Override
-    public void sync(Runnable runnable) {
+    public void sync(final Runnable runnable) {
+        if (FOLIA) {
+            getServer().getGlobalRegionScheduler().run(plugin, task -> runnable.run());
+            return;
+        }
         getServer().getScheduler().runTask(plugin, runnable);
     }
 
     @Override
     public void async(final Runnable runnable) {
         if (FOLIA) {
-            // Preliminary Folia support
-            runnable.run();
+            getServer().getAsyncScheduler().runNow(plugin, task -> runnable.run());
             return;
         }
         getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
@@ -147,7 +150,11 @@ public final class MaintenancePaperPlugin extends MaintenancePlugin {
     protected void kickPlayers() {
         for (final Player p : getServer().getOnlinePlayers()) {
             if (!hasPermission(p, "bypass") && !settings.isWhitelisted(p.getUniqueId())) {
-                p.kick(settings.getKickMessage());
+                if (FOLIA) {
+                    p.getScheduler().run(plugin, task -> p.kick(settings.getKickMessage()), null);
+                } else {
+                    p.kick(settings.getKickMessage());
+                }
             }
         }
     }
