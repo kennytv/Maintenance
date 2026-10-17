@@ -17,7 +17,7 @@
  */
 package eu.kennytv.maintenance.core.proxy.runnable;
 
-import eu.kennytv.maintenance.api.proxy.MaintenanceProxy;
+import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.api.proxy.Server;
 import eu.kennytv.maintenance.core.MaintenancePlugin;
 import eu.kennytv.maintenance.core.Settings;
@@ -43,7 +43,12 @@ public class SingleMaintenanceRunnable extends MaintenanceRunnableBase {
 
     @Override
     protected void finish() {
-        ((MaintenanceProxy) plugin).setMaintenanceToServer(server, enable, mode);
+        final MaintenanceProxyPlugin proxyPlugin = (MaintenanceProxyPlugin) plugin;
+        proxyPlugin.setMaintenanceToServer(server, enable, mode);
+        // Make sure no-ops have the platform task cancelled as well
+        if (proxyPlugin.getServerTasks().remove(server.getName(), this)) {
+            getTask().cancel();
+        }
     }
 
     @Override
