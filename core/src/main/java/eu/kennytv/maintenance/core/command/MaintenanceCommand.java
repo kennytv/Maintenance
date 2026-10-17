@@ -132,6 +132,24 @@ public abstract class MaintenanceCommand {
         return info != null && info.hasPermission(sender) ? info.getTabCompletion(sender, args) : Collections.emptyList();
     }
 
+    /**
+     * Converts a user given time like {@code 2d}, {@code 2d12h}, {@code 1h5m}, or {@code 30s} to an ISO-8601 duration string.
+     * Days are supported in addition to hours, minutes, and seconds.
+     *
+     * @return ISO duration string
+     */
+    private static String toIsoDuration(final String time) {
+        final String upper = time.toUpperCase(Locale.ROOT);
+        final int dayIndex = upper.indexOf('D');
+        if (dayIndex == -1) {
+            return "PT" + upper;
+        }
+
+        final String days = upper.substring(0, dayIndex + 1);
+        final String rest = upper.substring(dayIndex + 1);
+        return rest.isEmpty() ? "P" + days : "P" + days + "T" + rest;
+    }
+
     public @Nullable Duration parseDurationAndCheckTask(final SenderInfo sender, final String time, final boolean taskCheck) {
         final Duration duration;
         if (plugin.isNumeric(time)) {
@@ -139,8 +157,7 @@ public abstract class MaintenanceCommand {
             duration = Duration.ofMinutes(Integer.parseInt(time));
         } else {
             try {
-                // Only accept hours, minutes, and seconds
-                duration = Duration.parse("PT" + time.toUpperCase(Locale.ROOT));
+                duration = Duration.parse(toIsoDuration(time));
             } catch (final DateTimeParseException e) {
                 return null;
             }
