@@ -58,6 +58,11 @@ public final class SettingsProxy extends Settings {
         if (!hasRedis() && redisSection.getBoolean("enabled")) {
             connectToRedis(redisSection.getString("uri"));
         }
+        if (hasRedis()) {
+            maintenance = redisHandler.loadMaintenanceStatus();
+            activeMode = normalizeMode(redisHandler.loadGlobalMode());
+            maintenanceServers = redisHandler.loadMaintenanceServers();
+        }
 
         final Object fallback = config.getObject("fallback");
         fallbackServers = fallback instanceof String s ? Collections.singletonList(s) : config.getStringList("fallback", Collections.emptyList());
@@ -100,12 +105,7 @@ public final class SettingsProxy extends Settings {
             e.printStackTrace();
             redisHandler.close();
             redisHandler = null;
-            return;
         }
-
-        maintenance = redisHandler.loadMaintenanceStatus();
-        activeMode = normalizeMode(redisHandler.loadGlobalMode());
-        maintenanceServers = redisHandler.loadMaintenanceServers();
     }
 
     public boolean isMaintenance(final String serverName) {
@@ -287,7 +287,7 @@ public final class SettingsProxy extends Settings {
     }
 
     public List<String> getCommandsOnMaintenanceEnable(final Server server) {
-        final List<String> enableCommands = commandsOnMaintenanceEnable.getOrDefault("all", new ArrayList<>());
+        final List<String> enableCommands = new ArrayList<>(commandsOnMaintenanceEnable.getOrDefault("all", Collections.emptyList()));
         final List<String> serverEnableCommands = commandsOnMaintenanceEnable.get(server.getName().toLowerCase(Locale.ROOT));
         if (serverEnableCommands != null) {
             enableCommands.addAll(serverEnableCommands);
@@ -296,7 +296,7 @@ public final class SettingsProxy extends Settings {
     }
 
     public List<String> getCommandsOnMaintenanceDisable(final Server server) {
-        final List<String> disableCommands = commandsOnMaintenanceDisable.getOrDefault("all", new ArrayList<>());
+        final List<String> disableCommands = new ArrayList<>(commandsOnMaintenanceDisable.getOrDefault("all", Collections.emptyList()));
         final List<String> serverDisableCommands = commandsOnMaintenanceDisable.get(server.getName().toLowerCase(Locale.ROOT));
         if (serverDisableCommands != null) {
             disableCommands.addAll(serverDisableCommands);
