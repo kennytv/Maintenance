@@ -37,12 +37,27 @@ public final class MaintenanceDump {
 
         configuration = new LinkedHashMap<>(settings.getConfig().getValues());
         addDBSettings("redis", "enabled");
+        redact("webhook", "url");
         configuration.put("whitelisted-players", settings.getWhitelistedPlayers());
         configuration.put("icon-exists", new File(plugin.getDataFolder(), "maintenance-icon.png").exists());
 
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("plugins", MaintenancePlugin.GSON.toJsonTree(plugin.getPlugins()));
         plugins = jsonObject;
+    }
+
+    private void redact(final String key, final String... subKeys) {
+        final Object o = configuration.get(key);
+        if (o instanceof Map) {
+            final Map<String, Object> map = new LinkedHashMap<>(((Map<String, Object>) o));
+            for (final String subKey : subKeys) {
+                final Object value = map.get(subKey);
+                if (value != null) {
+                    map.put(subKey, value.toString().isEmpty() ? "" : "<redacted>");
+                }
+            }
+            configuration.put(key, map);
+        }
     }
 
     private void addDBSettings(final String key, final String... allowedSubKeys) {
