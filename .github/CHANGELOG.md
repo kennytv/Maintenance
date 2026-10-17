@@ -1,6 +1,19 @@
 # Maintenance Changelog
 This file contains update logs for this project. The top may contain a `Unreleased` section, gathering update logs for a future update during development.
 
+## 5.1.1 - October 17th 2026
+
+### Changed
+- Velocity/Bungee: Timer commands now accept `global` as the server argument, with an optional mode: `/maintenance starttimer global [mode] <time>`, `/maintenance scheduletimer global [mode] <time> <duration>`, `/maintenance endtimer global <time>`
+- Timer durations now also accept days, e.g. `2d` or `1d12h`
+- Folia: Now supports timers
+
+### Fixed
+- Folia: Fixed the update check stalling the global region thread
+- Velocity/Bungee: Fixed the `redis.enabled` confg key
+- Velocity/Bungee: `/maintenance reload` now keeps the maintenance status from Redis instead of overriding it with the local config
+- Velocity/Bungee: Fixed `/maintenance aborttimer` tab completion not suggesting servers with running timers
+
 ---
 ## 5.1.0 - May 17th 2026
 
