@@ -22,8 +22,10 @@ import eu.kennytv.maintenance.core.proxy.MaintenanceProxyPlugin;
 import eu.kennytv.maintenance.core.proxy.command.ProxyCommandInfo;
 import eu.kennytv.maintenance.core.util.SenderInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
@@ -67,6 +69,17 @@ public final class AbortSingleTimerCommand extends ProxyCommandInfo {
 
     @Override
     public List<String> getTabCompletion(final SenderInfo sender, final String[] args) {
-        return args.length == 2 && sender.hasMaintenancePermission("singleserver.timer") ? plugin.getCommandManager().getServersCompletion(args[1]) : Collections.emptyList();
+        if (args.length != 2 || !sender.hasMaintenancePermission("singleserver.timer")) {
+            return Collections.emptyList();
+        }
+
+        final String prefix = args[1].toLowerCase(Locale.ROOT);
+        final List<String> list = new ArrayList<>();
+        for (final String server : plugin.getServerTasks().keySet()) {
+            if (server.toLowerCase(Locale.ROOT).startsWith(prefix)) {
+                list.add(server);
+            }
+        }
+        return list;
     }
 }
