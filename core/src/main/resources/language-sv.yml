@@ -104,9 +104,9 @@ helpWhitelistAdd: "<gold>/maintenance add <namn/uuid> <gray>(Lägger till en spe
 helpWhitelistRemove: "<gold>/maintenance remove <namn/uuid> <gray>(Tar bort spelaren från vitlistan för underhållsläget)"
 #Messages for the Bungee/Velocity part, you can ignore them if you use the plugin on Paper/Sponge
 helpAbortSingleTimer: "<gold>/maintenance aborttimer [server] <gray>(Vid utfärdandet av detta kommando kommer den nuvarande timern bli avbruten)"
-helpSingleEndtimer: "<gold>/maintenance endtimer [server] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
-helpSingleStarttimer: "<gold>/maintenance starttimer [server] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
-helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleEndtimer: "<gold>/maintenance endtimer [server|global] <disable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be disabled)"
+helpSingleStarttimer: "<gold>/maintenance starttimer [server|global] [mode] <enable in> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
+helpSingleScheduleTimer: "<gold>/maintenance scheduletimer [server|global] [mode] <enable in> <maintenance duration> <gray>(After the given time, e.g. 1h5m, maintenance mode will be enabled)"
 helpSingleToggle: "<gold>/maintenance <on/off> [server|global] [mode] <gray>(Enables/disables maintenance mode globally or on a specific server with an optional display mode when enabling)"
 helpStatus: "<gold>/maintenance status <gray>(Listar alla proxiade servrar som är i underhåll)"
 #Discord webhook messages. These use Discord markdown, not MiniMessage.
